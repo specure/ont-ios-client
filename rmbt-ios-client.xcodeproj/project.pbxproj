@@ -13,17 +13,32 @@
 		E0B1C8181CF4B19000F19282 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8171CF4B19000F19282 /* Test.swift */; };
 		E0B1C8191CF4B19000F19282 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8171CF4B19000F19282 /* Test.swift */; };
 		E0B1C81A1CF4B19000F19282 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8171CF4B19000F19282 /* Test.swift */; };
+		E0B1C8251CF4B5A200F19282 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8231CF4B5A200F19282 /* News.swift */; };
+		E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8241CF4B5A200F19282 /* Speed.swift */; };
+		E0B1C8281CF4B5C200F19282 /* RMBTHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8271CF4B5C200F19282 /* RMBTHelpers.swift */; };
+		E0B1C82A1CF4B5D800F19282 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8231CF4B5A200F19282 /* News.swift */; };
+		E0B1C82B1CF4B5D900F19282 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8231CF4B5A200F19282 /* News.swift */; };
+		E0B1C82F1CF4B63700F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
+		E0B1C8301CF4B65A00F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
+		E0B1C8311CF4B65A00F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0B1C7EC1CF4ADF100F19282 /* RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0B1C7F91CF4AE1100F19282 /* RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C8071CF4AEFC00F19282 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		E0B1C8081CF4AEFC00F19282 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-OSX.plist"; sourceTree = "<group>"; };
 		E0B1C8091CF4AEFC00F19282 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBTClient.h; sourceTree = "<group>"; };
 		E0B1C8171CF4B19000F19282 /* Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		E0B1C81C1CF4B37800F19282 /* README.adoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.adoc; sourceTree = "<group>"; };
+		E0B1C8201CF4B38800F19282 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		E0B1C8211CF4B39900F19282 /* RMBTClient.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = RMBTClient.podspec; sourceTree = "<group>"; };
+		E0B1C8231CF4B5A200F19282 /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
+		E0B1C8241CF4B5A200F19282 /* Speed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speed.swift; sourceTree = "<group>"; };
+		E0B1C8271CF4B5C200F19282 /* RMBTHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTHelpers.swift; sourceTree = "<group>"; };
+		E0B1C82E1CF4B63700F19282 /* Ping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ping.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +69,7 @@
 		E0B1C7D21CF4AC8800F19282 = {
 			isa = PBXGroup;
 			children = (
+				E0B1C81B1CF4B36300F19282 /* Metadata */,
 				E0B1C8061CF4AEFC00F19282 /* Sources */,
 				E0B1C7DF1CF4ADBA00F19282 /* Products */,
 			);
@@ -62,9 +78,9 @@
 		E0B1C7DF1CF4ADBA00F19282 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E0B1C7DE1CF4ADBA00F19282 /* RMBTClient_iOS.framework */,
-				E0B1C7EC1CF4ADF100F19282 /* RMBTClient_tvOS.framework */,
-				E0B1C7F91CF4AE1100F19282 /* RMBTClient_OSX.framework */,
+				E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */,
+				E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */,
+				E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,6 +88,9 @@
 		E0B1C8061CF4AEFC00F19282 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E0B1C8241CF4B5A200F19282 /* Speed.swift */,
+				E0B1C8291CF4B5C500F19282 /* Helpers */,
+				E0B1C8221CF4B53400F19282 /* Model */,
 				E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */,
 				E0B1C8071CF4AEFC00F19282 /* Info-iOS.plist */,
 				E0B1C8081CF4AEFC00F19282 /* Info-OSX.plist */,
@@ -79,6 +98,33 @@
 				E0B1C8171CF4B19000F19282 /* Test.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		E0B1C81B1CF4B36300F19282 /* Metadata */ = {
+			isa = PBXGroup;
+			children = (
+				E0B1C81C1CF4B37800F19282 /* README.adoc */,
+				E0B1C8201CF4B38800F19282 /* LICENSE */,
+				E0B1C8211CF4B39900F19282 /* RMBTClient.podspec */,
+			);
+			name = Metadata;
+			sourceTree = "<group>";
+		};
+		E0B1C8221CF4B53400F19282 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E0B1C82E1CF4B63700F19282 /* Ping.swift */,
+				E0B1C8231CF4B5A200F19282 /* News.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		E0B1C8291CF4B5C500F19282 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E0B1C8271CF4B5C200F19282 /* RMBTHelpers.swift */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,7 +172,7 @@
 			);
 			name = RMBTClient_iOS;
 			productName = "RMBTClient iOS";
-			productReference = E0B1C7DE1CF4ADBA00F19282 /* RMBTClient_iOS.framework */;
+			productReference = E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E0B1C7EB1CF4ADF100F19282 /* RMBTClient_tvOS */ = {
@@ -144,7 +190,7 @@
 			);
 			name = RMBTClient_tvOS;
 			productName = "RMBTClient tvOS";
-			productReference = E0B1C7EC1CF4ADF100F19282 /* RMBTClient_tvOS.framework */;
+			productReference = E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E0B1C7F81CF4AE1100F19282 /* RMBTClient_OSX */ = {
@@ -162,7 +208,7 @@
 			);
 			name = RMBTClient_OSX;
 			productName = "RMBTClient OSX";
-			productReference = E0B1C7F91CF4AE1100F19282 /* RMBTClient_OSX.framework */;
+			productReference = E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -232,7 +278,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0B1C8281CF4B5C200F19282 /* RMBTHelpers.swift in Sources */,
+				E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */,
 				E0B1C8181CF4B19000F19282 /* Test.swift in Sources */,
+				E0B1C8251CF4B5A200F19282 /* News.swift in Sources */,
+				E0B1C82F1CF4B63700F19282 /* Ping.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +290,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0B1C8311CF4B65A00F19282 /* Ping.swift in Sources */,
 				E0B1C81A1CF4B19000F19282 /* Test.swift in Sources */,
+				E0B1C82B1CF4B5D900F19282 /* News.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,7 +300,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0B1C8301CF4B65A00F19282 /* Ping.swift in Sources */,
 				E0B1C8191CF4B19000F19282 /* Test.swift in Sources */,
+				E0B1C82A1CF4B5D800F19282 /* News.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,12 +312,18 @@
 		E0B1C7D71CF4AC8800F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 			};
 			name = Debug;
 		};
 		E0B1C7D81CF4AC8800F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 			};
 			name = Release;
 		};
@@ -316,7 +376,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -368,7 +428,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -425,7 +485,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -476,7 +536,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -538,7 +598,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-OSX";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -591,7 +651,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-OSX";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RMBTClient;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -618,6 +678,7 @@
 				E0B1C7E61CF4ADBA00F19282 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E0B1C7F11CF4ADF100F19282 /* Build configuration list for PBXNativeTarget "RMBTClient_tvOS" */ = {
 			isa = XCConfigurationList;
@@ -626,6 +687,7 @@
 				E0B1C7F31CF4ADF100F19282 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E0B1C7FE1CF4AE1100F19282 /* Build configuration list for PBXNativeTarget "RMBTClient_OSX" */ = {
 			isa = XCConfigurationList;
@@ -634,6 +696,7 @@
 				E0B1C8001CF4AE1100F19282 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
