@@ -1,0 +1,11 @@
+CODE_SIGN_IDENTITY =
+EMBEDDED_CONTENT_CONTAINS_SWIFT = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/AFNetworking.root-NSURLConnection-NSURLSession-Reachability-Security-Serialization" "$PODS_CONFIGURATION_BUILD_DIR/BlocksKit.common" "$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket-OSX" "$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-OSX" "$PODS_CONFIGURATION_BUILD_DIR/XCGLogger-OSX"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/../Frameworks' '@loader_path/Frameworks'
+OTHER_CFLAGS = $(inherited) -iquote "$PODS_CONFIGURATION_BUILD_DIR/AFNetworking.root-NSURLConnection-NSURLSession-Reachability-Security-Serialization/AFNetworking.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/BlocksKit.common/BlocksKit.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket-OSX/CocoaAsyncSocket.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-OSX/GCNetworkReachability.framework/Headers" -iquote "$PODS_CONFIGURATION_BUILD_DIR/XCGLogger-OSX/XCGLogger.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -framework "AFNetworking" -framework "BlocksKit" -framework "CocoaAsyncSocket" -framework "GCNetworkReachability" -framework "XCGLogger"
+OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
+PODS_BUILD_DIR = $BUILD_DIR
+PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_ROOT = ${SRCROOT}/Pods

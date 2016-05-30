@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// taken from http://stackoverflow.com/questions/24051904/how-do-you-add-a-dictionary-of-items-into-another-dictionary
 /// this should be in the swift standard library!
@@ -86,11 +85,6 @@ func RMBTLocalizeURLString(urlString: NSString) -> String {
     // logger.debug("replaced $lang in string, output: \(replacedURL)")
 
     return replacedURL
-}
-
-///
-func RMBTIsRunningOnWideScreen() -> Bool {
-    return (UIScreen.mainScreen().bounds.size.height >= 568)
 }
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)

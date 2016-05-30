@@ -1,0 +1,13 @@
+/*framework module RMBTClient {
+  umbrella header "RMBTClient.h"
+
+  export *
+  module * { export * }
+
+}
+
+framework module RMBTClientPrivate {
+    export *
+    header "Includes.h"
+}
+*/

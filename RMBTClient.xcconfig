@@ -1,0 +1,12 @@
+//
+//  RMBTClient.xcconfig
+//  rmbt-ios-client
+//
+//  Created by Benjamin Pucher on 25.05.16.
+//
+//
+
+// TODO: use this
+
+SWIFT_INCLUDE_PATHS = $(SRCROOT)/Sources
+MODULEMAP_PRIVATE_FILE = $(SRCROOT)/Sources/RMBTClient.private.modulemap
