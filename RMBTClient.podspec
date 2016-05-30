@@ -16,9 +16,11 @@ TODO: APACHE LICENSE v2
 
 #s.default_subspec = 'All'
 
-  s.source_files = 'Sources/**/*.swift', 'Sources/*.h'
+s.source_files = 'Sources/**/*.swift', 'Sources/RMBTTrafficCounter.h', 'Sources/RMBTRAMMonitor.h', 'Sources/RMBTCPUMonitor.h', 'Sources/GetDNSIP.h', 'Sources/NSString+IPAddress.h', 'Sources/PingUtil.h'
 
-#'Sources/RMBTClient.h', 'Sources/RMBTTrafficCounter.h', 'Sources/RMBTRAMMonitor.h', 'Sources/RMBTCPUMonitor.h', 'Sources/GetDNSIP.h', 'Sources/NSString+IPAddress.h', 'Sources/PingUtil.h'
+#'Sources/*.h'
+
+#'Sources/RMBTClient.h',
 
   s.dependency 'AFNetworking', '~> 2.5.4'
   s.dependency 'BlocksKit', '~> 2.2.5'
@@ -30,17 +32,22 @@ TODO: APACHE LICENSE v2
 
   s.osx.exclude_files = 'Sources/RMBTHelpers_iOS.swift'
 
+#s.public_header_files = "Sources/RMBTClient.h"
 
-  s.pod_target_xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/'}
-  s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/'}
-  s.preserve_paths = 'Sources/RMBTClientPrivate/module.modulemap'
+  s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/'}
+#s.module_map = 'Sources/module.modulemap'
+  s.preserve_paths = 'Sources/*.modulemap'
 
-#s.xcconfig = { 'SWIFT_INCLUDE_PATHS' => '${SRCROOT}/../rmbt-ios-client/RMBTClientPrivate' }
+
+#s.pod_target_xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/','MODULEMAP_PRIVATE_FILE' => '$(SRCROOT)/Sources/module.private.modulemap'}
+#s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/'}
 #s.preserve_paths = 'Sources/RMBTClientPrivate/module.modulemap'
 
+  #s.xcconfig = { 'SWIFT_INCLUDE_PATHS' => '${SRCROOT}/../rmbt-ios-client/RMBTClientPrivate' }
+  #s.preserve_paths = 'Sources/RMBTClientPrivate/module.modulemap'
   #s.xcconfig = { 'SWIFT_INCLUDE_PATHS' => '"${SRCROOT}/../rmbt-ios-client/RMBTClientPrivate"' }
-  s.preserve_paths = 'Sources/RMBTClientPrivate'
-#s.module_map = 'Sources/module.modulemap'
+  #s.preserve_paths = 'Sources/RMBTClientPrivate'
+  #s.module_map = 'Sources/module.modulemap'
 
   s.ios.deployment_target = '8.4'
   s.tvos.deployment_target = '9.0'

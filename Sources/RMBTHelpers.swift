@@ -142,7 +142,7 @@ func RMBTSecondsStringWithNanos(nanos: UInt64) -> String {
 }
 
 ///
-func RMBTTimestampWithNSDate(date: NSDate) -> NSNumber {
+public func RMBTTimestampWithNSDate(date: NSDate) -> NSNumber {
     return NSNumber(unsignedLongLong: UInt64(date.timeIntervalSince1970) * 1000)
 }
 

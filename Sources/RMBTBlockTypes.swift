@@ -9,15 +9,15 @@
 import Foundation
 
 ///
-typealias EmptyCallback = () -> ()
+public typealias EmptyCallback = () -> ()
 
 ///
-typealias SuccessCallback = (response: AnyObject) -> ()
+public typealias SuccessCallback = (response: AnyObject) -> ()
 
 ///
-typealias ErrorCallback = (error: NSError, info: NSDictionary?) -> ()
+public typealias ErrorCallback = (error: NSError, info: NSDictionary?) -> ()
 
 /// old block types
-typealias RMBTBlock = EmptyCallback
-typealias RMBTSuccessBlock = SuccessCallback
-typealias RMBTErrorBlock = ErrorCallback
+public typealias RMBTBlock = EmptyCallback
+public typealias RMBTSuccessBlock = SuccessCallback
+public typealias RMBTErrorBlock = ErrorCallback

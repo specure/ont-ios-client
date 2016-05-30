@@ -8,5 +8,5 @@
 
 // TODO: use this
 
-SWIFT_INCLUDE_PATHS = $(SRCROOT)/Sources
-MODULEMAP_PRIVATE_FILE = $(SRCROOT)/Sources/RMBTClient.private.modulemap
+//SWIFT_INCLUDE_PATHS = $(SRCROOT)/Sources
+//MODULEMAP_PRIVATE_FILE = $(SRCROOT)/Sources/RMBTClient.private.modulemap

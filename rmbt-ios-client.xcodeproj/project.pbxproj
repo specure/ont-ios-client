@@ -179,6 +179,7 @@
 		E02D19AA1CF5AAE1002A02FE /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E02D19AB1CF5AAF4002A02FE /* RMBTTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184C1CF59262002A02FE /* RMBTTestResult.swift */; };
 		E02D19B31CF5B0B9002A02FE /* ServiceTypeMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18611CF59262002A02FE /* ServiceTypeMapping.swift */; };
+		E02D19C11CFC6EBB002A02FE /* Includes.h in Headers */ = {isa = PBXBuildFile; fileRef = E02D19BF1CFC6EBB002A02FE /* Includes.h */; };
 		E0B1C8141CF4AFFD00F19282 /* RMBTClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0B1C8251CF4B5A200F19282 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8231CF4B5A200F19282 /* News.swift */; };
 		E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8241CF4B5A200F19282 /* Speed.swift */; };
@@ -311,9 +312,10 @@
 		E02D19491CF5A3D2002A02FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E02D194B1CF5A3D7002A02FE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		E02D19921CF5A568002A02FE /* RMBTHelpers_iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTHelpers_iOS.swift; sourceTree = "<group>"; };
-		E02D19B81CF5C9AF002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E02D19BA1CF5CA20002A02FE /* RMBTClient.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RMBTClient.xcconfig; sourceTree = "<group>"; };
 		E02D19BE1CF5CCC9002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = Sources/module.modulemap; sourceTree = "<group>"; };
+		E02D19BF1CFC6EBB002A02FE /* Includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Includes.h; path = Sources/Includes.h; sourceTree = "<group>"; };
+		E02D19C01CFC6EBB002A02FE /* module.private.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.private.modulemap; path = Sources/module.private.modulemap; sourceTree = "<group>"; };
 		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,19 +532,11 @@
 		E02D19AC1CF5AE5C002A02FE /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				E02D19BF1CFC6EBB002A02FE /* Includes.h */,
+				E02D19C01CFC6EBB002A02FE /* module.private.modulemap */,
 				E02D19BE1CF5CCC9002A02FE /* module.modulemap */,
-				E02D19B71CF5C9AF002A02FE /* RMBTClientPrivate */,
 			);
 			name = Modules;
-			sourceTree = "<group>";
-		};
-		E02D19B71CF5C9AF002A02FE /* RMBTClientPrivate */ = {
-			isa = PBXGroup;
-			children = (
-				E02D19B81CF5C9AF002A02FE /* module.modulemap */,
-			);
-			name = RMBTClientPrivate;
-			path = Sources/RMBTClientPrivate;
 			sourceTree = "<group>";
 		};
 		E0B1C7D21CF4AC8800F19282 = {
@@ -671,6 +665,7 @@
 				E02D199B1CF5AA7C002A02FE /* PingUtil.h in Headers */,
 				E02D199A1CF5AA77002A02FE /* NSString+IPAddress.h in Headers */,
 				E02D19981CF5AA53002A02FE /* RMBTCPUMonitor.h in Headers */,
+				E02D19C11CFC6EBB002A02FE /* Includes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1095,8 +1090,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				ENABLE_TESTABILITY = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
@@ -1158,7 +1155,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/RMBTClientPrivate/module.modulemap";
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS";
@@ -1217,7 +1214,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/RMBTClientPrivate/module.modulemap";
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS";
 				PRODUCT_NAME = RMBTClient;
@@ -1278,12 +1275,14 @@
 				INFOPLIST_FILE = "Sources/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Sources";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1333,11 +1332,13 @@
 				INFOPLIST_FILE = "Sources/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Sources";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -1397,12 +1398,14 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-OSX";
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Sources";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1454,11 +1457,13 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MODULEMAP_PRIVATE_FILE = "$(SRCROOT)/Sources/module.private.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-OSX";
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Sources";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

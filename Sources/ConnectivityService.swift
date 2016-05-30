@@ -9,10 +9,10 @@
 import Foundation
 import AFNetworking
 import CocoaAsyncSocket
-import RMBTClientPrivate
+import RMBTClient.Private
 
 ///
-struct IPInfo: CustomStringConvertible {
+public struct IPInfo: CustomStringConvertible {
 
     ///
     var connectionAvailable = false
@@ -29,13 +29,13 @@ struct IPInfo: CustomStringConvertible {
     var externalIp: String? = nil
 
     ///
-    var description: String {
+    public var description: String {
         return "IPInfo: connectionAvailable: \(connectionAvailable), nat: \(nat), internalIp: \(internalIp), externalIp: \(externalIp)"
     }
 }
 
 ///
-struct ConnectivityInfo: CustomStringConvertible {
+public struct ConnectivityInfo: CustomStringConvertible {
 
     ///
     var ipv4 = IPInfo()
@@ -44,15 +44,15 @@ struct ConnectivityInfo: CustomStringConvertible {
     var ipv6 = IPInfo()
 
     ///
-    var description: String {
+    public var description: String {
         return "ConnectivityInfo: ipv4: \(ipv4), ipv6: \(ipv6)"
     }
 }
 
 ///
-class ConnectivityService: NSObject {
+public class ConnectivityService: NSObject {
 
-    typealias ConnectivityInfoCallback = (connectivityInfo: ConnectivityInfo) -> ()
+    public typealias ConnectivityInfoCallback = (connectivityInfo: ConnectivityInfo) -> ()
 
     //
 
@@ -72,7 +72,7 @@ class ConnectivityService: NSObject {
     var ipv6Finished = false
 
     ///
-    override init() {
+    public override init() {
         manager = AFHTTPRequestOperationManager(baseURL: NSURL(string: ControlServer.sharedControlServer.baseURLString()))
 
         manager.requestSerializer = AFJSONRequestSerializer()
@@ -83,7 +83,7 @@ class ConnectivityService: NSObject {
     }
 
     ///
-    func checkConnectivity(callback: ConnectivityInfoCallback) {
+    public func checkConnectivity(callback: ConnectivityInfoCallback) {
         if self.callback != nil { // don't allow multiple concurrent executions
             return
         }
@@ -270,7 +270,7 @@ extension ConnectivityService {
 extension ConnectivityService: GCDAsyncUdpSocketDelegate {
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
+    public func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
         connectivityInfo.ipv4.internalIp = sock.localHost_IPv4()
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
 
@@ -281,14 +281,14 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
+    public func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
         logger.debug("didNotConnect: \(error)")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
-    func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
+    public func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
         logger.debug("udpSocketDidClose: \(error)")
 
         getLocalIpAddresses() // fallback

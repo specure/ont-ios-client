@@ -10,7 +10,7 @@ import Foundation
 import AFNetworking
 
 ///
-class ControlServer {
+public class ControlServer {
 
     ///
     private let LAST_NEWS_UID_PREFERENCE_KEY = "last_news_uid"
@@ -78,7 +78,7 @@ class ControlServer {
     //
 
     ///
-    static let sharedControlServer = ControlServer()
+    public static let sharedControlServer = ControlServer()
 
     ///
     private init() {
@@ -144,7 +144,7 @@ class ControlServer {
     }
 
     ///
-    func getSettings(success: EmptyCallback, error failure: ErrorCallback) {
+    public func getSettings(success: EmptyCallback, error failure: ErrorCallback) {
         requestWithMethod("POST", path: "settings", params: ["terms_and_conditions_accepted": true], success: { (response: AnyObject) in
 
             logger.debug("getSettings: \(response)")
@@ -225,7 +225,7 @@ class ControlServer {
     }
 
     ///
-    func getVersion(success: SuccessCallback, error failure: ErrorCallback) {
+    public func getVersion(success: SuccessCallback, error failure: ErrorCallback) {
         requestWithMethod("GET", path: "version", params: [:], success: { (response: AnyObject) in
 
             logger.debug("getVersion: \(response)")
@@ -245,7 +245,7 @@ class ControlServer {
     }
 
     ///
-    func getNews(success: SuccessCallback) {
+    public func getNews(success: SuccessCallback) {
         requestWithMethod("POST", path: "result", params: ["lastNewsUid": "\(lastNewsUid)"], success: { (response: AnyObject) in
 
             // TODO: check "error" in json
@@ -281,7 +281,7 @@ class ControlServer {
     }
 
     /// <TODO: is this in use?>
-    func getRoamingStatusWithParams(params: NSDictionary, success: SuccessCallback) {
+    public func getRoamingStatusWithParams(params: NSDictionary, success: SuccessCallback) {
         logger.debug("Checking roaming status (params = \(params))")
 
         performWithUUID({
@@ -311,7 +311,7 @@ class ControlServer {
     }
 
     ///
-    func getTestParamsWithParams(params: NSDictionary, success: SuccessCallback, error errorCallback: EmptyCallback) {
+    public func getTestParamsWithParams(params: NSDictionary, success: SuccessCallback, error errorCallback: EmptyCallback) {
         let requestParams: NSMutableDictionary = NSMutableDictionary(dictionary: [
             "ndt": false,
             "time": RMBTTimestampWithNSDate(NSDate())
@@ -339,7 +339,7 @@ class ControlServer {
     }
 
     ///
-    func submitResult(result: NSDictionary, success: SuccessCallback, error failure: EmptyCallback) {
+    public func submitResult(result: NSDictionary, success: SuccessCallback, error failure: EmptyCallback) {
         let mergedParams = NSMutableDictionary()
         mergedParams.addEntriesFromDictionary(result as [NSObject: AnyObject])
 
@@ -391,7 +391,7 @@ class ControlServer {
     }
 
     ///
-    func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: SuccessCallback, error errorCallback: ErrorCallback) {
+    public func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: SuccessCallback, error errorCallback: ErrorCallback) {
         let params: NSMutableDictionary = NSMutableDictionary(dictionary: [
             "result_offset": NSNumber(unsignedLong: offset),
             "result_limit": NSNumber(unsignedLong: length)
@@ -421,7 +421,7 @@ class ControlServer {
     }
 
     ///
-    func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: SuccessCallback, error errorCallback: ErrorCallback) {
+    public func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: SuccessCallback, error errorCallback: ErrorCallback) {
         let key = fullDetails ? "testresultdetail" : "testresult"
 
         performWithUUID({
@@ -466,7 +466,7 @@ class ControlServer {
     ///////////////////////////
 
     ///
-    func getQOSObjectives(success: SuccessCallback, error errorCallback: ErrorCallback) {
+    public func getQOSObjectives(success: SuccessCallback, error errorCallback: ErrorCallback) {
         self.requestWithMethod("POST", path: "qosTestRequest", params: ["a": "b"] /* <TODO> */, success: { response in
             // TODO: check "error" in json
 
@@ -477,7 +477,7 @@ class ControlServer {
     }
 
     ///
-    func submitQOSTestResult(result: [String: AnyObject], success: EmptyCallback, error errorCallback: ErrorCallback) {
+    public func submitQOSTestResult(result: [String: AnyObject], success: EmptyCallback, error errorCallback: ErrorCallback) {
         let mergedParams = NSMutableDictionary()
         mergedParams.addEntriesFromDictionary(result)
 
@@ -509,7 +509,7 @@ class ControlServer {
     }
 
     ///
-    func getQOSHistoryResultWithUUID(testUuid: String, success: SuccessCallback, error errorCallback: ErrorCallback) {
+    public func getQOSHistoryResultWithUUID(testUuid: String, success: SuccessCallback, error errorCallback: ErrorCallback) {
         performWithUUID({
 
             self.requestWithMethod("POST", path: "qosTestResult", params: ["test_uuid": testUuid], success: { response in
@@ -531,7 +531,7 @@ class ControlServer {
     ///////////////////////////
 
     ///
-    func getSyncCode(success: SuccessCallback, error errorCallback: ErrorCallback) {
+    public func getSyncCode(success: SuccessCallback, error errorCallback: ErrorCallback) {
         performWithUUID({
 
             self.requestWithMethod("POST", path: "sync", params: [:], success: { response in
@@ -556,7 +556,7 @@ class ControlServer {
     }
 
     ///
-    func syncWithCode(code: String, success: EmptyCallback, error errorCallback: ErrorCallback) {
+    public func syncWithCode(code: String, success: EmptyCallback, error errorCallback: ErrorCallback) {
         performWithUUID({
 
             self.requestWithMethod("POST", path: "sync", params: ["sync_code": code], success: { response in
@@ -589,7 +589,7 @@ class ControlServer {
 // MARK: logs
 
     ///
-    func submitLogFile(logFileJson: [String: AnyObject], success: EmptyCallback, error errorCallback: ErrorCallback) {
+    public func submitLogFile(logFileJson: [String: AnyObject], success: EmptyCallback, error errorCallback: ErrorCallback) {
         performWithUUID({
 
             self.requestWithMethod("POST", path: "log", params: logFileJson, success: { response in

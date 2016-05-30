@@ -10,21 +10,21 @@ import Foundation
 import CoreLocation
 
 ///
-class RMBTHistoryResultItem {
+public class RMBTHistoryResultItem {
 
     ///
-    let title: String
+    public let title: String
 
     ///
-    let value: String
+    public let value: String
 
     ///
-    let classification: Int
+    public let classification: Int
 
     //
 
     ///
-    init(response: [String: AnyObject]) {
+    public init(response: [String: AnyObject]) {
         self.title = response["title"] as! String
         self.value = response["value"]!.description
 
@@ -37,40 +37,40 @@ class RMBTHistoryResultItem {
 }
 
 ///
-enum RMBTHistoryResultDataState {
+public enum RMBTHistoryResultDataState {
     case Index
     case Basic
     case Full
 }
 
 ///
-class RMBTHistoryResult {
+public class RMBTHistoryResult {
 
     ///
-    var dataState: RMBTHistoryResultDataState = .Index
+    public var dataState: RMBTHistoryResultDataState = .Index
 
-    var uuid: String!
-    var timestamp: NSDate!
-    var timeString: String = ""
-    var downloadSpeedMbpsString: String!
-    var uploadSpeedMbpsString: String!
-    var shortestPingMillisString: String!
-    var deviceModel: String!
-    var coordinate: CLLocationCoordinate2D!
-    var locationString: String!
+    public var uuid: String!
+    public var timestamp: NSDate!
+    public var timeString: String = ""
+    public var downloadSpeedMbpsString: String!
+    public var uploadSpeedMbpsString: String!
+    public var shortestPingMillisString: String!
+    public var deviceModel: String!
+    public var coordinate: CLLocationCoordinate2D!
+    public var locationString: String!
 
     /// "WLAN", "2G/3G" etc.
-    let networkTypeServerDescription: String!
+    public let networkTypeServerDescription: String!
 
     /// Available in basic details
-    var networkType: RMBTNetworkType!
-    var shareText: String!
-    var shareURL: NSURL!
-    var netItems = [RMBTHistoryResultItem]()
-    var measurementItems = [RMBTHistoryResultItem]()
+    public var networkType: RMBTNetworkType!
+    public var shareText: String!
+    public var shareURL: NSURL!
+    public var netItems = [RMBTHistoryResultItem]()
+    public var measurementItems = [RMBTHistoryResultItem]()
 
     /// Full details
-    var fullDetailsItems = [RMBTHistoryResultItem]()
+    public var fullDetailsItems = [RMBTHistoryResultItem]()
 
     //
 
@@ -83,7 +83,7 @@ class RMBTHistoryResult {
     //
 
     ///
-    init(response: [String: AnyObject]) { // this methods takes only ["test_uuid": ...] after a new test...
+    public init(response: [String: AnyObject]) { // this methods takes only ["test_uuid": ...] after a new test...
         downloadSpeedMbpsString = response["speed_download"] as? String
         uploadSpeedMbpsString = response["speed_upload"] as? String
         shortestPingMillisString = response["ping_shortest"] as? String
@@ -129,7 +129,7 @@ class RMBTHistoryResult {
     }
 
     ///
-    func ensureBasicDetails(success: EmptyCallback) { // TODO: rewrite, always get full results...
+    public func ensureBasicDetails(success: EmptyCallback) { // TODO: rewrite, always get full results...
         if dataState != .Index {
             success()
         } else {
@@ -195,7 +195,7 @@ class RMBTHistoryResult {
     }
 
     ///
-    func ensureFullDetails(success: EmptyCallback) {
+    public func ensureFullDetails(success: EmptyCallback) {
         if dataState == .Full {
             success()
         } else {

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RMBTClientPrivate
+import RMBTClient.Private
 
 // TODO: is this the Rcode?
 /* enum DNSStatus {
