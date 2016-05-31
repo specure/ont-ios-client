@@ -9,6 +9,9 @@ abstract_target 'All' do
   #pod 'CocoaAsyncSocket', '~> 7.4.2'
   pod 'CocoaAsyncSocket', :git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git'
 
+  pod 'Alamofire', '~> 3.4'
+  pod 'AlamofireObjectMapper', '~> 3.0'
+
   # swift pods
   pod 'XCGLogger', '~> 3.3'
   #pod 'BrightFutures', '~> 1.0.0'
