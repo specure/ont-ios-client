@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# FROM https://github.com/svdo/swift-netutils/blob/master/ifaddrs/injectXcodePath.sh
+
 set -x
 
 defaultXcodePath="/Applications/Xcode.app/Contents/Developer"

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ifaddrs
+import RMBTClientPrivate
 
 ///
 extension Int {

@@ -25,6 +25,14 @@
         "Sources/NSString+IPAddress.{h,m}",
         "Sources/PingUtil.{h,m}"
     ],
+    "___public_header_files": [
+        "Sources/RMBTTrafficCounter.h",
+        "Sources/RMBTRAMMonitor.h",
+        "Sources/RMBTCPUMonitor.h",
+        "Sources/GetDNSIP.h",
+        "Sources/NSString+IPAddress.h",
+        "Sources/PingUtil.h"
+    ],
     "dependencies": {
         "AFNetworking": ["~> 2.5.4"],
         "BlocksKit": ["~> 2.2.5"],
@@ -43,10 +51,10 @@
     ],
     "requires_arc": true,
     "xcconfig": {
-        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/iphoneos",
-        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/iphonesimulator",
-        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/macosx"
+        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
+        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator",
+        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx"
     },
-    "preserve_paths": [ "ifaddrs/*" ],
-    "prepare_command": "ifaddrs/injectXcodePath.sh"
+    "preserve_paths": [ "RMBTClientPrivate/*" ],
+    "prepare_command": "RMBTClientPrivate/injectXcodePath.sh"
 }

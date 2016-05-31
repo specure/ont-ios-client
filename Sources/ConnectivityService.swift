@@ -9,7 +9,7 @@
 import Foundation
 import AFNetworking
 import CocoaAsyncSocket
-import ifaddrs
+import RMBTClientPrivate
 
 ///
 public struct IPInfo: CustomStringConvertible {

@@ -1,0 +1,3 @@
+SWIFT_INCLUDE_PATHS[sdk=iphoneos*] = $(SRCROOT)/RMBTClientPrivate/iphoneos
+SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*] = $(SRCROOT)/RMBTClientPrivate/iphonesimulator
+SWIFT_INCLUDE_PATHS[sdk=macosx*] = $(SRCROOT)/RMBTClientPrivate/macosx
