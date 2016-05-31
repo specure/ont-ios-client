@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-protocol QualityOfServiceTestDelegate {
+public protocol QualityOfServiceTestDelegate {
 
     ///
     func qualityOfServiceTestDidStart(test: QualityOfServiceTest)

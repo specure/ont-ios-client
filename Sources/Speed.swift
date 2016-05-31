@@ -12,7 +12,7 @@ let GAUGE_PARTS = 4.25
 let LOG10_MAX = log10(250.0)
 
 ///
-func RMBTSpeedLogValue(kbps: UInt32) -> Double {
+public func RMBTSpeedLogValue(kbps: UInt32) -> Double {
     let bps = UInt64(kbps * 1_000)
     var log: Double
 
@@ -30,7 +30,7 @@ func RMBTSpeedLogValue(kbps: UInt32) -> Double {
 }
 
 ///
-func RMBTSpeedMbpsString(kbps: UInt32) -> String {
+public func RMBTSpeedMbpsString(kbps: UInt32) -> String {
     let localizedMps = NSLocalizedString("test.speed.unit", value: "Mbps", comment: "Speed suffix")
 
     return String(format: "%@ %@", RMBTFormatNumber(NSNumber(double: Double(kbps) / 1000.0)), localizedMps)

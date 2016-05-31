@@ -11,7 +11,7 @@ import CoreTelephony
 import GCNetworkReachability
 
 ///
-protocol RMBTConnectivityTrackerDelegate {
+public protocol RMBTConnectivityTrackerDelegate {
 
     ///
     func connectivityTracker(tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity)
@@ -24,7 +24,7 @@ protocol RMBTConnectivityTrackerDelegate {
 }
 
 ///
-class RMBTConnectivityTracker: NSObject {
+public class RMBTConnectivityTracker: NSObject {
 
     /// GCNetworkReachability is not made to be multiply instantiated, so we create a global
     /// singleton first time a RMBTConnectivityTracker is instatiated
@@ -58,7 +58,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    init(delegate: RMBTConnectivityTrackerDelegate, stopOnMixed: Bool) {
+    public init(delegate: RMBTConnectivityTrackerDelegate, stopOnMixed: Bool) {
         self.delegate = delegate
         self.stopOnMixed = stopOnMixed
 
@@ -68,7 +68,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func appWillEnterForeground(notification: NSNotification) {
+    public func appWillEnterForeground(notification: NSNotification) {
         dispatch_async(queue) {
             // Restart various observartions and force update (if already started)
             if self.started {
@@ -78,7 +78,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func start() {
+    public func start() {
         dispatch_async(queue) {
             self.started = true
             self.lastRadioAccessTechnology = nil
@@ -100,7 +100,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func stop() {
+    public func stop() {
         dispatch_async(queue) {
             NSNotificationCenter.defaultCenter().removeObserver(self)
 
@@ -109,7 +109,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func forceUpdate() {
+    public func forceUpdate() {
         dispatch_async(queue) {
             assert(self.lastConnectivity != nil, "Connectivity should be known by now")
             self.delegate.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
@@ -117,7 +117,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func reachabilityDidChange(n: NSNotification) {
+    public func reachabilityDidChange(n: NSNotification) {
         if let status = n.userInfo?[kGCNetworkReachabilityStatusKey] as? NSNumber {
             dispatch_async(queue) {
                 self.reachabilityDidChangeToStatus(GCNetworkReachabilityStatus.init(status.unsignedCharValue))
@@ -126,7 +126,7 @@ class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    func radioDidChange(n: NSNotification) {
+    public func radioDidChange(n: NSNotification) {
         dispatch_async(queue) {
             // Note:Sometimes iOS delivers multiple notification w/o radio technology actually changing
             if (n.object as? String) == self.lastRadioAccessTechnology {

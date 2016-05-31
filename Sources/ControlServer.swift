@@ -18,25 +18,25 @@ public class ControlServer {
     //
 
     ///
-    var uuidKey: String!
+    public var uuidKey: String!
 
     ///
-    var uuid: String?
+    public var uuid: String?
 
     ///
     private var uuidQueue: dispatch_queue_t = dispatch_queue_create("at.rtr.rmbt.controlserver.uuid", DISPATCH_QUEUE_SERIAL)
 
     ///
-    var historyFilters: [String: [String]]!
+    public var historyFilters: [String: [String]]!
 
     ///
-    var openTestBaseURL: String?
+    public var openTestBaseURL: String?
 
     ///
-    var ipv4RequestUrl: String = RMBT_CONTROL_SERVER_IPV4_URL + "/ip"
+    public var ipv4RequestUrl: String = RMBT_CONTROL_SERVER_IPV4_URL + "/ip"
 
     ///
-    var ipv6RequestUrl: String = RMBT_CONTROL_SERVER_IPV6_URL + "/ip"
+    public var ipv6RequestUrl: String = RMBT_CONTROL_SERVER_IPV6_URL + "/ip"
 
     //
 
@@ -86,7 +86,7 @@ public class ControlServer {
     }
 
     ///
-    func updateWithCurrentSettings() {
+    public func updateWithCurrentSettings() {
         let settings = RMBTSettings.sharedSettings()
 
         var urlString = RMBT_CONTROL_SERVER_URL
@@ -610,7 +610,7 @@ public class ControlServer {
 // MARK: convenience methods
 
     ///
-    func performWithUUID(callback: EmptyCallback, error errorCallback: ErrorCallback) {
+    public func performWithUUID(callback: EmptyCallback, error errorCallback: ErrorCallback) {
         dispatch_async(uuidQueue) {
             if let _ = self.uuid {
                 callback()
@@ -702,22 +702,22 @@ public class ControlServer {
     }
 
     ///
-    func systemInfoDeviceInternalModel() -> String {
+    public func systemInfoDeviceInternalModel() -> String {
         return UIDeviceHardware.platform()
     }
 
     ///
-    func baseURL() -> NSURL {
+    public func baseURL() -> NSURL {
         return self.manager.baseURL
     }
 
     ///
-    func baseURLString() -> String {
+    public func baseURLString() -> String {
         return self.manager.baseURL!.absoluteString
     }
 
     ///
-    func cancelAllRequests() {
+    public func cancelAllRequests() {
         self.manager.operationQueue.cancelAllOperations()
     }
 

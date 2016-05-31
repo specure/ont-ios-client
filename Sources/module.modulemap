@@ -1,8 +1,8 @@
-module RMBTClient {
+/*module RMBTClient {
   header "RMBTClient.h"
   
   export *
-}
+}*/
 
 /*framework module RMBTClient {
   umbrella header "RMBTClient.h"

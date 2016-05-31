@@ -1,6 +1,6 @@
-explicit module RMBTClient.Private {
+/*explicit module RMBTClient.Private {
   header "Includes.h"
 
   export *
 }
-
+*/

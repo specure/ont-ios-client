@@ -1,0 +1,52 @@
+{
+    "name": "RMBTClient",
+    "version": "0.0.1",
+    "summary": "RMBTClient libary for iOS, OS X and tvOS.",
+    "homepage": "https://github.com/specure/...",
+    "license": {
+        "type": "TODO: Apache v2"
+    },
+    "source": {
+        "git": "https://github.com/specure/...",
+        "tag": "0.0.1"
+    },
+    "authors": "Specure GmbH",
+    "platforms": {
+        "ios": "8.4",
+        "osx": "10.9",
+        "tvos": "9.0"
+    },
+    "source_files": [
+        "Sources/**/*.swift",
+        "Sources/RMBTTrafficCounter.{h,m}",
+        "Sources/RMBTRAMMonitor.{h,m}",
+        "Sources/RMBTCPUMonitor.{h,m}",
+        "Sources/GetDNSIP.{h,m}",
+        "Sources/NSString+IPAddress.{h,m}",
+        "Sources/PingUtil.{h,m}"
+    ],
+    "dependencies": {
+        "AFNetworking": ["~> 2.5.4"],
+        "BlocksKit": ["~> 2.2.5"],
+        "GCNetworkReachability": ["~> 1.3.2"],
+        "CocoaAsyncSocket": [],
+        "XCGLogger": ["~> 3.3"]
+    },
+    "frameworks": [
+       "Foundation",
+       "CoreLocation",
+       "MobileCoreServices",
+       "SystemConfiguration"
+    ],
+    "libraries": [
+        "resolv"
+    ],
+    "requires_arc": true,
+    "xcconfig": {
+        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/iphoneos",
+        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/iphonesimulator",
+        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/ifaddrs/macosx"
+    },
+    "preserve_paths": [ "ifaddrs/*" ],
+    "prepare_command": "ifaddrs/injectXcodePath.sh"
+}

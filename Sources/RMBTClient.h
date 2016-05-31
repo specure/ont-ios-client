@@ -32,10 +32,8 @@ FOUNDATION_EXPORT const unsigned char RMBTClientVersionString[];
 #import "RMBTCPUMonitor.h"
 
 // dns
-#include "dns_sd.h"
 #import "GetDNSIP.h"
 
 // traceroute
 #import "NSString+IPAddress.h"
 #import "PingUtil.h"
-

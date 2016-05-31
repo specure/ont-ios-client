@@ -11,16 +11,16 @@ import CoreTelephony
 import SystemConfiguration.CaptiveNetwork
 
 ///
-class RMBTConnectivity {
+public class RMBTConnectivity {
 
     ///
-    let networkType: RMBTNetworkType
+    public let networkType: RMBTNetworkType
 
     ///
-    let timestamp: NSDate
+    public let timestamp: NSDate
 
     ///
-    var networkTypeDescription: String {
+    public var networkTypeDescription: String {
         switch networkType {
         case .None:
             return NSLocalizedString("connectivity.not-connected", tableName: nil, bundle: NSBundle.mainBundle(), value: "Not connected", comment: "network type description not connected")
@@ -39,7 +39,7 @@ class RMBTConnectivity {
     }
 
     ///
-    var networkName: String!
+    public var networkName: String!
 
     ///
     private var bssid: String!
@@ -87,7 +87,7 @@ class RMBTConnectivity {
     ]
 
     ///
-    init(networkType: RMBTNetworkType) {
+    public init(networkType: RMBTNetworkType) {
         self.networkType = networkType
         self.timestamp = NSDate()
         getNetworkDetails()
@@ -96,7 +96,7 @@ class RMBTConnectivity {
 // MARK: Internal
 
     ///
-    func getNetworkDetails() {
+    public func getNetworkDetails() {
         networkName = nil
         bssid = nil
         cellularCode = nil
@@ -193,7 +193,7 @@ class RMBTConnectivity {
     }
 
     ///
-    func testResultDictionary() -> NSDictionary {
+    public func testResultDictionary() -> NSDictionary {
         var result = [String: AnyObject]()
 
         let code = networkType.rawValue
@@ -223,7 +223,7 @@ class RMBTConnectivity {
     }
 
     ///
-    func isEqualToConnectivity(otherConn: RMBTConnectivity?) -> Bool {
+    public func isEqualToConnectivity(otherConn: RMBTConnectivity?) -> Bool {
         if let other = otherConn {
             if other === self {
                 return true
@@ -239,7 +239,7 @@ class RMBTConnectivity {
     }
 
     ///
-    func getInterfaceInfo() -> RMBTConnectivityInterfaceInfo {
+    public func getInterfaceInfo() -> RMBTConnectivityInterfaceInfo {
         return RMBTTrafficCounter.getInterfaceInfo(networkType.rawValue)
     }
 

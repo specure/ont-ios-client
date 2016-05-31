@@ -11,7 +11,7 @@ import AFNetworking
 import CoreLocation
 
 ///
-class RMBTMapServer {
+public class RMBTMapServer {
 
     ///
     private var manager: AFHTTPRequestOperationManager!
@@ -19,7 +19,7 @@ class RMBTMapServer {
     //
 
     ///
-    init() {
+    public init() {
         let mapServerURL = ControlServer.sharedControlServer.mapServerURL
 
         manager = AFHTTPRequestOperationManager(baseURL: mapServerURL)
@@ -29,7 +29,7 @@ class RMBTMapServer {
     }
 
     ///
-    func getMapOptionsWithSuccess(success: SuccessCallback) {
+    public func getMapOptionsWithSuccess(success: SuccessCallback) {
         self.requestWithMethod("POST", path: "tiles/info", params: nil, success: { response in
 
             let mapOptions = RMBTMapOptions(response: response as! [String:AnyObject])
@@ -41,7 +41,7 @@ class RMBTMapServer {
     }
 
     ///
-    func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Float, params: NSDictionary, success: SuccessCallback) {
+    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Float, params: NSDictionary, success: SuccessCallback) {
         //logger.debug(String(format: "Getting measurements at coordinate %f, %f, zoom: %f", coordinate.latitude, coordinate.longitude, zoom))
 
         let finalParams = NSMutableDictionary(dictionary: params)
@@ -77,7 +77,7 @@ class RMBTMapServer {
     }
 
     ///
-    func tileURLForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: NSDictionary) -> NSURL {
+    public func tileURLForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: NSDictionary) -> NSURL {
         let urlString: NSMutableString = NSMutableString(string: manager.baseURL.absoluteString)
 
         urlString.appendFormat("tiles/%@?path=%lu/%lu/%lu&", overlayType, zoom, x, y)
@@ -91,7 +91,7 @@ class RMBTMapServer {
     }
 
     ///
-    func getURLStringForOpenTestUUID(openTestUUID: String, success: SuccessCallback) {
+    public func getURLStringForOpenTestUUID(openTestUUID: String, success: SuccessCallback) {
         let sharedControlServer = ControlServer.sharedControlServer
 
         if let openTestBaseURL = sharedControlServer.openTestBaseURL {

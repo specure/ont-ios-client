@@ -7,12 +7,12 @@
 //
 
 import Foundation
-import RMBTClient.Private
+import ifaddrs
 
 ///
 extension Int {
 
-    func hexString() -> String {
+    public func hexString() -> String {
         return String(format: "%02x", self)
     }
 
@@ -21,7 +21,7 @@ extension Int {
 ///
 extension NSData {
 
-    func hexString() -> String {
+    public func hexString() -> String {
         var string = String()
         for i in UnsafeBufferPointer<UInt8>(start: UnsafeMutablePointer<UInt8>(bytes), count: length) {
             string += Int(i).hexString()
@@ -29,13 +29,13 @@ extension NSData {
         return string
     }
 
-    func MD5() -> NSData {
+    public func MD5() -> NSData {
         let result = NSMutableData(length: Int(CC_MD5_DIGEST_LENGTH))!
         CC_MD5(bytes, CC_LONG(length), UnsafeMutablePointer<UInt8>(result.mutableBytes))
         return NSData(data: result)
     }
 
-    func SHA1() -> NSData {
+    public func SHA1() -> NSData {
         let result = NSMutableData(length: Int(CC_SHA1_DIGEST_LENGTH))!
         CC_SHA1(bytes, CC_LONG(length), UnsafeMutablePointer<UInt8>(result.mutableBytes))
         return NSData(data: result)

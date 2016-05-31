@@ -10,25 +10,25 @@ import Foundation
 import CoreLocation
 
 ///
-class RMBTMapMeasurement {
+public class RMBTMapMeasurement {
 
     ///
-    var coordinate: CLLocationCoordinate2D
+    public var coordinate: CLLocationCoordinate2D
 
     ///
-    var timeString: String
+    public var timeString: String
 
     ///
-    var openTestUUID: String
+    public var openTestUUID: String
 
     /// Arrays of RMBTHistoryResultItem
-    var netItems = [RMBTHistoryResultItem]()
+    public var netItems = [RMBTHistoryResultItem]()
 
     ///
-    var measurementItems = [RMBTHistoryResultItem]()
+    public var measurementItems = [RMBTHistoryResultItem]()
 
     ///
-    init(response: [String: AnyObject]) {
+    public init(response: [String: AnyObject]) {
         let lat = response["lat"] as! NSNumber
         let lon = response["lon"] as! NSNumber
 
@@ -49,7 +49,7 @@ class RMBTMapMeasurement {
     }
 
     ///
-    func snippetText() -> String {
+    public func snippetText() -> String {
         let result: NSMutableString = ""
 
         for i in measurementItems {
@@ -69,7 +69,7 @@ class RMBTMapMeasurement {
 extension RMBTMapMeasurement: CustomStringConvertible {
 
     ///
-    var description: String {
+    public var description: String {
         return String(format: "RMBTMapMarker (%f, %f)", coordinate.latitude, coordinate.longitude)
     }
 }

@@ -9,22 +9,22 @@
 import Foundation
 
 ///
-func currentTimeMillis() -> UInt64 {
+public func currentTimeMillis() -> UInt64 {
     return nanoTime() / NSEC_PER_MSEC
 }
 
 ///
-func nanoTime() -> UInt64 {
+public func nanoTime() -> UInt64 {
     return ticksToNanoTime(getCurrentTimeTicks())
 }
 
 ///
-func getCurrentTimeTicks() -> UInt64 {
+public func getCurrentTimeTicks() -> UInt64 {
     return mach_absolute_time()
 }
 
 ///
-func ticksToNanoTime(ticks: UInt64) -> UInt64 {
+public func ticksToNanoTime(ticks: UInt64) -> UInt64 {
     var sTimebaseInfo = mach_timebase_info(numer: 0, denom: 0)
     mach_timebase_info(&sTimebaseInfo)
 
@@ -34,7 +34,7 @@ func ticksToNanoTime(ticks: UInt64) -> UInt64 {
 }
 
 ///
-func getTimeDifferenceInNanoSeconds(fromTicks: UInt64) -> UInt64 {
+public func getTimeDifferenceInNanoSeconds(fromTicks: UInt64) -> UInt64 {
     let to: UInt64 = mach_absolute_time()
     let elapsed: UInt64 = to - fromTicks
 

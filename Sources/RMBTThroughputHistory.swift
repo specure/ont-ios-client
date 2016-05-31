@@ -9,29 +9,29 @@
 import Foundation
 
 ///
-class RMBTThroughputHistory: CustomStringConvertible {
+public class RMBTThroughputHistory: CustomStringConvertible {
 
     /// Total bytes/time transferred so far. Equal to sum of all reported lengths / largest reported timestamp.
-    var totalThroughput = RMBTThroughput(length: 0, startNanos: 0, endNanos: 0)
+    public var totalThroughput = RMBTThroughput(length: 0, startNanos: 0, endNanos: 0)
 
     /// Time axis is split into periods of this duration. Each period has a throughput object associated with it.
     /// Reported transfers are then proportionally divided accross the throughputs it spans over.
-    var resolutionNanos: UInt64
+    public var resolutionNanos: UInt64
 
     /// Array of throughput objects for each period
-    var periods = [RMBTThroughput]()
+    public var periods = [RMBTThroughput]()
 
     /// Returns the index of the last period which is complete, meaning that no reports can change its value.
     /// -1 if not even the first period is complete yet
-    var lastFrozenPeriodIndex: Int = -1
+    public var lastFrozenPeriodIndex: Int = -1
 
     /// See freeze
-    var isFrozen: Bool = false
+    public var isFrozen: Bool = false
 
     //
 
     ///
-    init(resolutionNanos: UInt64) {
+    public init(resolutionNanos: UInt64) {
         self.resolutionNanos = resolutionNanos
     }
 
@@ -137,7 +137,7 @@ class RMBTThroughputHistory: CustomStringConvertible {
     }
 
     ///
-    var description: String {
+    public var description: String {
         return "total = \(totalThroughput), entries = \(periods.description)"
     }
 }

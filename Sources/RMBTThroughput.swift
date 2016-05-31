@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-class RMBTThroughput: CustomStringConvertible {
+public class RMBTThroughput: CustomStringConvertible {
 
     ///
     var length: UInt64
@@ -79,12 +79,12 @@ class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    func kilobitsPerSecond() -> UInt32 {
+    public func kilobitsPerSecond() -> UInt32 {
         return UInt32(Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6))) // TODO: improve
     }
 
     ///
-    var description: String {
+    public var description: String {
         return String(format: "(%@-%@, %lld bytes, %@)",
                         RMBTSecondsStringWithNanos(_startNanos),
                         RMBTSecondsStringWithNanos(_endNanos),

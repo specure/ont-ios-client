@@ -10,22 +10,22 @@ import Foundation
 import CoreLocation
 
 ///
-let RMBTLocationTrackerNotification: String = "RMBTLocationTrackerNotification"
+public let RMBTLocationTrackerNotification: String = "RMBTLocationTrackerNotification"
 
 ///
-class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
+public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
-    static let sharedTracker = RMBTLocationTracker()
+    public static let sharedTracker = RMBTLocationTracker()
 
     ///
-    let locationManager: CLLocationManager
+    public let locationManager: CLLocationManager
 
     ///
-    var authorizationCallback: RMBTBlock?
+    public var authorizationCallback: RMBTBlock?
 
     ///
-    var location: CLLocation? {
+    public var location: CLLocation? {
         // TODO: if app is not allowed to get location this code fails! WORKS without ".copy() as? CLLocation", but are there any consequences?
         if let result: CLLocation = locationManager.location/*.copy() as? CLLocation*/ {
             if CLLocationCoordinate2DIsValid(result.coordinate) {
@@ -49,13 +49,13 @@ class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    func stop() {
+    public func stop() {
         locationManager.stopMonitoringSignificantLocationChanges()
         locationManager.stopUpdatingLocation()
     }
 
     ///
-    func startIfAuthorized() -> Bool {
+    public func startIfAuthorized() -> Bool {
         let authorizationStatus = CLLocationManager.authorizationStatus()
 
         if authorizationStatus == .AuthorizedWhenInUse || authorizationStatus == .AuthorizedAlways {
@@ -67,7 +67,7 @@ class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    func startAfterDeterminingAuthorizationStatus(callback: RMBTBlock) {
+    public func startAfterDeterminingAuthorizationStatus(callback: RMBTBlock) {
         if startIfAuthorized() {
             callback()
         } else if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.NotDetermined {
@@ -82,12 +82,12 @@ class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         NSNotificationCenter.defaultCenter().postNotificationName(RMBTLocationTrackerNotification, object: self, userInfo:["locations": locations])
     }
 
     ///
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if locationManager.respondsToSelector(#selector(CLLocationManager.startUpdatingLocation)) {
             locationManager.startUpdatingLocation()
         }
@@ -98,12 +98,12 @@ class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         logger.error("Failed to obtain location \(error)")
     }
 
     ///
-    func forceUpdate() {
+    public func forceUpdate() {
         stop()
         startIfAuthorized()
     }

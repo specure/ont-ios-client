@@ -9,19 +9,19 @@
 import Foundation
 
 ///
-final class News {
+public final class News {
 
     ///
-    let title: String
+    public let title: String
 
     ///
-    let text: String
+    public let text: String
 
     ///
-    let uid: UInt
+    public let uid: UInt
 
     ///
-    init(response: [String: AnyObject]) {
+    public init(response: [String: AnyObject]) {
         self.title = response["title"] as! String
         self.text = response["text"] as! String
         self.uid = (response["uid"] as! NSNumber).unsignedLongValue

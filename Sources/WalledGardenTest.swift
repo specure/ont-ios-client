@@ -9,13 +9,13 @@
 import Foundation
 
 ///
-class WalledGardenTest {
+public class WalledGardenTest {
 
     ///
-    typealias WalledGardenResultCallback = (isWalledGarden: Bool) -> ()
+    public typealias WalledGardenResultCallback = (isWalledGarden: Bool) -> ()
 
     ///
-    class func isWalledGardenConnection(callback: WalledGardenResultCallback) {
+    public class func isWalledGardenConnection(callback: WalledGardenResultCallback) {
         if let url: NSURL = NSURL(string: WALLED_GARDEN_URL) {
 
             let request: NSMutableURLRequest = NSMutableURLRequest(URL: url)

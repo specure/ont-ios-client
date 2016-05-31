@@ -32,12 +32,17 @@ s.source_files = 'Sources/**/*.swift', 'Sources/RMBTTrafficCounter.h', 'Sources/
 
   s.osx.exclude_files = 'Sources/RMBTHelpers_iOS.swift'
 
-#s.public_header_files = "Sources/RMBTClient.h"
 
-  s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/'}
+#s.xcconfig = {"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" => "$(SRCROOT)/NetUtils/ifaddrs/iphoneos", "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" => "$(SRCROOT)/NetUtils/ifaddrs/iphonesimulator", "SWIFT_INCLUDE_PATHS[sdk=macosx*]" => "$(SRCROOT)/NetUtils/ifaddrs/macosx" }
+#s.preserve_paths= [ "ifaddrs/*" ],
+#s.repare_command": "ifaddrs/injectXcodePath.sh"
+
+  #s.public_header_files = "Sources/RMBTClient.h"
+
+#s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/RMBTCLient','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/RMBTCLient/'}
+#s.preserve_paths = 'Sources/*.modulemap'
+
 #s.module_map = 'Sources/module.modulemap'
-  s.preserve_paths = 'Sources/*.modulemap'
-
 
 #s.pod_target_xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/','MODULEMAP_PRIVATE_FILE' => '$(SRCROOT)/Sources/module.private.modulemap'}
 #s.xcconfig = {'SWIFT_INCLUDE_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/**','LIBRARY_SEARCH_PATHS' => '$(SRCROOT)/Sources/RMBTClientPrivate/'}

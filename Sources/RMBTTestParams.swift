@@ -9,54 +9,54 @@
 import Foundation
 
 ///
-class RMBTTestParams {
+public class RMBTTestParams {
 
     ///
-    let clientRemoteIp: String
+    public let clientRemoteIp: String
 
     ///
-    let pingCount = UInt(RMBT_TEST_PING_COUNT)
+    public let pingCount = UInt(RMBT_TEST_PING_COUNT)
 
     ///
-    let pretestDuration: NSTimeInterval = RMBT_TEST_PRETEST_DURATION_S
+    public let pretestDuration: NSTimeInterval = RMBT_TEST_PRETEST_DURATION_S
 
     ///
-    let pretestMinChunkCountForMultithreading = UInt(RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST)
+    public let pretestMinChunkCountForMultithreading = UInt(RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST)
 
     ///
-    let serverAddress: String
+    public let serverAddress: String
 
     ///
-    let serverEncryption: Bool
+    public let serverEncryption: Bool
 
     ///
-    let serverName: NSString
+    public let serverName: NSString
 
     ///
-    let serverPort: UInt
+    public let serverPort: UInt
 
     ///
-    let resultURLString: String
+    public let resultURLString: String
 
     ///
-    let testDuration: NSTimeInterval
+    public let testDuration: NSTimeInterval
 
     ///
-    let testToken: String
+    public let testToken: String
 
     ///
-    let testUUID: String
+    public let testUUID: String
 
     ///
-    let threadCount: UInt
+    public let threadCount: UInt
 
     ///
-    let waitDuration: NSTimeInterval
+    public let waitDuration: NSTimeInterval
 
     //
 
     ///
-    init(response: [NSObject: AnyObject]) { // TODO: remove NSObject after complete swift rewrite...
+    public init(response: [NSObject: AnyObject]) { // TODO: remove NSObject after complete swift rewrite...
         // TODO: why are some values NSNumber (or long) and some String?
 
         logger.debug("test parameters response: \(response)")

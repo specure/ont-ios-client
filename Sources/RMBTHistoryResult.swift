@@ -112,7 +112,7 @@ public class RMBTHistoryResult {
     }
 
     ///
-    func formattedTimestamp() -> String {
+    public func formattedTimestamp() -> String {
         let historyDateComponents = NSCalendar.currentCalendar().components([.Day, .Month, .Year], fromDate: timestamp)
         let currentDateComponents = NSCalendar.currentCalendar().components([.Day, .Month, .Year], fromDate: NSDate())
 

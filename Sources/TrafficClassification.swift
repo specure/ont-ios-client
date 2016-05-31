@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-enum TrafficClassification: String {
+public enum TrafficClassification: String {
     case UNKNOWN = "unknown" // = nil
     case NONE = "none" // = 0..1249
     case LOW = "low" // = 1250..12499
@@ -17,7 +17,7 @@ enum TrafficClassification: String {
     case HIGH = "high" // = 125000..UInt64.max
 
     ///
-    static func classifyBytesPerSecond(bytesPerSecond: Int64?) -> TrafficClassification {
+    public static func classifyBytesPerSecond(bytesPerSecond: Int64?) -> TrafficClassification {
         if let bps = bytesPerSecond {
             switch bps {
                 case 0...1249:

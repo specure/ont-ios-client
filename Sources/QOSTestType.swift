@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-enum QOSTestType: String {
+public enum QOSTestType: String {
     case HttpProxy              = "http_proxy"
     case NonTransparentProxy    = "non_transparent_proxy"
     case WEBSITE                = "website"
@@ -27,7 +27,7 @@ enum QOSTestType: String {
 extension QOSTestType: CustomStringConvertible {
 
     ///
-    var description: String {
+    public var description: String {
         return QOSTestType.localizedNameDict[self] ?? self.rawValue
     }
 }

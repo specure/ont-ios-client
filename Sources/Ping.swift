@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-class Ping: CustomStringConvertible {
+public class Ping: CustomStringConvertible {
 
     ///
     let serverNanos: UInt64
@@ -39,7 +39,7 @@ class Ping: CustomStringConvertible {
     }
 
     ///
-    var description: String {
+    public var description: String {
         //return String(format: "RMBTPing (server=%" PRIu64 ", client=%" PRIu64 ")", serverNanos, clientNanos)
         return "RMBTPing  (server = \(serverNanos), client = \(clientNanos))"
     }

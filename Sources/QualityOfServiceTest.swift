@@ -12,10 +12,10 @@ import Foundation
 public class QualityOfServiceTest {
 
     ///
-    typealias ConcurrencyGroup = UInt
+    public typealias ConcurrencyGroup = UInt
 
     ///
-    typealias JsonObjectivesType = [String: [[String: AnyObject]]]
+    public typealias JsonObjectivesType = [String: [[String: AnyObject]]]
 
     //
 
@@ -29,7 +29,7 @@ public class QualityOfServiceTest {
     private let mutualExclusionQueue = dispatch_queue_create("com.specure.rmbt.qos.mutualExclusionQueue", DISPATCH_QUEUE_SERIAL)
 
     ///
-    var delegate: QualityOfServiceTestDelegate?
+    public var delegate: QualityOfServiceTestDelegate?
 
     ///
     private let testToken: String
@@ -67,12 +67,12 @@ public class QualityOfServiceTest {
     //
 
     ///
-    convenience init() {
-        self.init(testToken: "f7e75c4c-f81f-41d6-b5c5-53b9452a459b_1424341414_dXX9tW1uNORSPPw0xaKvYQatfbU=", speedtestStartTime: nanoTime() - 30 * UInt64(NSEC_PER_SEC)) // for testing
+    convenience init() { // only for testing
+        self.init(testToken: "f7e75c4c-f81f-41d6-b5c5-53b9452a459b_1424341414_dXX9tW1uNORSPPw0xaKvYQatfbU=", speedtestStartTime: nanoTime() - 30 * UInt64(NSEC_PER_SEC))
     }
 
     ///
-    init(testToken: String, speedtestStartTime: UInt64) {
+    public init(testToken: String, speedtestStartTime: UInt64) {
         self.testToken = testToken
         self.speedtestStartTime = speedtestStartTime
 

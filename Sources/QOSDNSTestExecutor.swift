@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RMBTClient.Private
+import ifaddrs
 
 ///
 typealias DNSTestExecutor = QOSDNSTestExecutor<QOSDNSTest>

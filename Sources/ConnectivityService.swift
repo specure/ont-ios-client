@@ -9,24 +9,24 @@
 import Foundation
 import AFNetworking
 import CocoaAsyncSocket
-import RMBTClient.Private
+import ifaddrs
 
 ///
 public struct IPInfo: CustomStringConvertible {
 
     ///
-    var connectionAvailable = false
+    public var connectionAvailable = false
 
     ///
-    var nat: Bool {
+    public var nat: Bool {
         return internalIp != externalIp
     }
 
     ///
-    var internalIp: String? = nil
+    public var internalIp: String? = nil
 
     ///
-    var externalIp: String? = nil
+    public var externalIp: String? = nil
 
     ///
     public var description: String {
@@ -38,10 +38,10 @@ public struct IPInfo: CustomStringConvertible {
 public struct ConnectivityInfo: CustomStringConvertible {
 
     ///
-    var ipv4 = IPInfo()
+    public var ipv4 = IPInfo()
 
     ///
-    var ipv6 = IPInfo()
+    public var ipv6 = IPInfo()
 
     ///
     public var description: String {

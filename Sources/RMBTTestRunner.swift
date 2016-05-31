@@ -8,16 +8,19 @@
 
 import Foundation
 import CoreLocation
-import UIKit
 
+#if os(iOS)
+    import UIKit
+#endif
+    
 ///
-let RMBTTestStatusNone              = "NONE"
-let RMBTTestStatusAborted           = "ABORTED"
-let RMBTTestStatusError             = "ERROR"
-let RMBTTestStatusErrorFetching     = "ERROR_FETCH"
-let RMBTTestStatusErrorSubmitting   = "ERROR_SUBMIT"
-let RMBTTestStatusErrorBackgrounded = "ABORTED_BACKGROUNDED"
-let RMBTTestStatusEnded             = "END"
+public let RMBTTestStatusNone              = "NONE"
+public let RMBTTestStatusAborted           = "ABORTED"
+public let RMBTTestStatusError             = "ERROR"
+public let RMBTTestStatusErrorFetching     = "ERROR_FETCH"
+public let RMBTTestStatusErrorSubmitting   = "ERROR_SUBMIT"
+public let RMBTTestStatusErrorBackgrounded = "ABORTED_BACKGROUNDED"
+public let RMBTTestStatusEnded             = "END"
 
 ///
 let RMBTTestRunnerProgressUpdateInterval: NSTimeInterval = 0.1 // seconds
@@ -30,7 +33,7 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 */
 
 ///
-enum RMBTTestRunnerPhase: Int {
+public enum RMBTTestRunnerPhase: Int {
     case None = 0
     case FetchingTestParams
     case Wait
@@ -43,7 +46,7 @@ enum RMBTTestRunnerPhase: Int {
 }
 
 ///
-enum RMBTTestRunnerCancelReason: Int {
+public enum RMBTTestRunnerCancelReason: Int {
     case UserRequested
     case NoConnection
     case MixedConnectivity
@@ -53,7 +56,7 @@ enum RMBTTestRunnerCancelReason: Int {
 }
 
 ///
-protocol RMBTTestRunnerDelegate {
+public protocol RMBTTestRunnerDelegate {
 
     ///
     func testRunnerDidStartPhase(phase: RMBTTestRunnerPhase)
@@ -84,7 +87,7 @@ protocol RMBTTestRunnerDelegate {
 }
 
 ///
-class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
+public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
 
     ///
     private let workerQueue: dispatch_queue_t // We perform all work on this background queue. Workers also callback onto this queue.
@@ -109,10 +112,10 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     private var singleThreaded = false
 
     ///
-    var testParams: RMBTTestParams!
+    public var testParams: RMBTTestParams!
 
     ///
-    let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
+    public let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
 
     ///
     private var connectivityTracker: RMBTConnectivityTracker!
@@ -140,7 +143,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     private var uplinkTestStartedAtNanos: UInt64 = 0
 
     ///
-    init(delegate: RMBTTestRunnerDelegate) {
+    public init(delegate: RMBTTestRunnerDelegate) {
         self.delegate = delegate
         //self.phase = .None
         self.workerQueue = dispatch_queue_create("at.rtr.rmbt.testrunner", nil) // TODO: nil?
@@ -158,7 +161,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     /// Run on main queue (called from VC)
-    func start() {
+    public func start() {
         assert(phase == .None, "Invalid state")
         assert(!dead, "Invalid state")
 
@@ -216,9 +219,11 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
             workers.append(worker)
         }
 
-        // Start observing app going to background notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-
+        #if os(iOS)
+            // Start observing app going to background notifications
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        #endif
+            
         // Register as observer for location tracker updates
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.locationsDidChange(_:)), name: "RMBTLocationTrackerNotification", object: nil)
 
@@ -242,7 +247,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
 // MARK: Test worker delegate method
 
     ///
-    func testWorker(worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64) {
+    public func testWorker(worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Init, "Invalid state")
         assert(!dead, "Invalid state")
@@ -277,7 +282,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorkerDidStop(worker: RMBTTestWorker) {
+    public func testWorkerDidStop(worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Init, "Invalid state")
         assert(!dead, "Invalid state")
@@ -293,7 +298,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64) {
+    public func testWorker(worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Latency, "Invalid state")
         assert(!dead, "Invalid state")
@@ -309,7 +314,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorkerDidFinishLatencyTest(worker: RMBTTestWorker) {
+    public func testWorkerDidFinishLatencyTest(worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Latency, "Invalid state")
         assert(!dead, "Invalid state")
@@ -320,7 +325,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
+    public func testWorker(worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Down, "Invalid state")
         assert(!dead, "Invalid state")
@@ -336,7 +341,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64) {
+    public func testWorker(worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Down, "Invalid state")
         assert(!dead, "Invalid state")
@@ -352,7 +357,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorkerDidFinishDownlinkTest(worker: RMBTTestWorker) {
+    public func testWorkerDidFinishDownlinkTest(worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Down, "Invalid state")
         assert(!dead, "Invalid state")
@@ -377,7 +382,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt) {
+    public func testWorker(worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .InitUp, "Invalid state")
         assert(!dead, "Invalid state")
@@ -392,7 +397,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64 {
+    public func testWorker(worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64 {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Up, "Invalid state")
         assert(!dead, "Invalid state")
@@ -413,7 +418,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorker(worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64) {
+    public func testWorker(worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Up, "Invalid state")
         assert(!dead, "Invalid state")
@@ -426,7 +431,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorkerDidFinishUplinkTest(worker: RMBTTestWorker) {
+    public func testWorkerDidFinishUplinkTest(worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Up, "Invalid state")
         assert(!dead, "Invalid state")
@@ -457,7 +462,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func testWorkerDidFail(worker: RMBTTestWorker) {
+    public func testWorkerDidFail(worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         //assert(!dead, "Invalid state") // TODO: if worker fails, then this assertion lets app terminate
 
@@ -658,12 +663,12 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
 // MARK: Connectivity tracking
 
     ///
-    func connectivityTrackerDidDetectNoConnectivity(tracker: RMBTConnectivityTracker) {
+    public func connectivityTrackerDidDetectNoConnectivity(tracker: RMBTConnectivityTracker) {
         // Ignore for now, let connection time out
     }
 
     ///
-    func connectivityTracker(tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
+    public func connectivityTracker(tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
         dispatch_async(workerQueue) {
             if self.testResult.lastConnectivity() == nil { // TODO: error here?
                 self.startInterfaceInfo = connectivity.getInterfaceInfo()
@@ -680,7 +685,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func connectivityTracker(tracker: RMBTConnectivityTracker, didStopAndDetectIncompatibleConnectivity connectivity: RMBTConnectivity) {
+    public func connectivityTracker(tracker: RMBTConnectivityTracker, didStopAndDetectIncompatibleConnectivity connectivity: RMBTConnectivity) {
         dispatch_async(dispatch_get_main_queue()) {
             self.delegate.testRunnerDidDetectConnectivity(connectivity)
         }
@@ -695,7 +700,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
 // MARK: App state tracking
 
     ///
-    func applicationDidSwitchToBackground(n: NSNotification) {
+    public func applicationDidSwitchToBackground(n: NSNotification) {
         logger.debug("App backgrounded, aborting \(n)")
         dispatch_async(workerQueue) {
             self.cancelWithReason(.AppBackgrounded)
@@ -705,7 +710,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
 // MARK: Tracking location
 
     ///
-    func locationsDidChange(notification: NSNotification) {
+    public func locationsDidChange(notification: NSNotification) {
         var lastLocation: CLLocation?
 
         for l in (notification.userInfo as! [String: AnyObject])["locations"] as! [CLLocation] { // !
@@ -728,7 +733,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
 // MARK: Cancelling and cleanup
 
     ///
-    override func finalize() {
+    override public func finalize() {
         // Stop observing
         connectivityTracker.stop()
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -779,7 +784,7 @@ class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerD
     }
 
     ///
-    func cancel() {
+    public func cancel() {
         dispatch_async(workerQueue) {
             self.cancelWithReason(.UserRequested)
         }

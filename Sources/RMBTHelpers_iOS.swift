@@ -10,6 +10,6 @@ import Foundation
 import UIKit
 
 ///
-func RMBTIsRunningOnWideScreen() -> Bool {
+public func RMBTIsRunningOnWideScreen() -> Bool {
     return (UIScreen.mainScreen().bounds.size.height >= 568)
 }

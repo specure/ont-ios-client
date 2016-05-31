@@ -13,40 +13,40 @@ let RMBTTestResultSpeedNotAvailable = -1
 let RMBTTestResultSpeedMeasurementFinished = -2
 
 ///
-class RMBTTestResult {
+public class RMBTTestResult {
 
     ///
-    var threadCount: Int!
+    public var threadCount: Int!
 
     ///
-    let resolutionNanos: UInt64
+    public let resolutionNanos: UInt64
 
     ///
-    var pings = [Ping]()
+    public var pings = [Ping]()
 
     ///
-    var bestPingNanos: UInt64 = 0
+    public var bestPingNanos: UInt64 = 0
 
     ///
-    var medianPingNanos: UInt64 = 0
+    public var medianPingNanos: UInt64 = 0
 
     ///
-    let totalDownloadHistory: RMBTThroughputHistory
+    public let totalDownloadHistory: RMBTThroughputHistory
 
     ///
-    let totalUploadHistory: RMBTThroughputHistory
+    public let totalUploadHistory: RMBTThroughputHistory
 
     ///
-    weak var totalCurrentHistory: RMBTThroughputHistory!
+    public weak var totalCurrentHistory: RMBTThroughputHistory!
 
     ///
-    var currentHistories: NSMutableArray!//[RMBTThroughputHistory]!
+    public var currentHistories: NSMutableArray!//[RMBTThroughputHistory]!
 
     ///
-    var perThreadDownloadHistories: NSMutableArray!//[RMBTThroughputHistory]()
+    public var perThreadDownloadHistories: NSMutableArray!//[RMBTThroughputHistory]()
 
     ///
-    var perThreadUploadHistories: NSMutableArray!//[RMBTThroughputHistory]()
+    public var perThreadUploadHistories: NSMutableArray!//[RMBTThroughputHistory]()
 
     /// "extended_test_stat": {
     ///     "cpu_usage": {
@@ -69,16 +69,16 @@ class RMBTTestResult {
     ///     }
     /// }
     ///
-    var extendedTestStat = [String:[String:[[String:AnyObject]]]]()
+    public var extendedTestStat = [String:[String:[[String:AnyObject]]]]()
 
     ///
-    var locations = [CLLocation]()
+    public var locations = [CLLocation]()
 
     ///
-    var testStartNanos: UInt64 = 0
+    public var testStartNanos: UInt64 = 0
 
     ///
-    var testStartDate: NSDate!
+    public var testStartDate: NSDate!
 
     ///
     private var maxFrozenPeriodIndex: Int!
@@ -89,7 +89,7 @@ class RMBTTestResult {
     //
 
     ///
-    init(resolutionNanos nanos: UInt64) {
+    public init(resolutionNanos nanos: UInt64) {
         self.resolutionNanos = nanos
 
         self.totalDownloadHistory = RMBTThroughputHistory(resolutionNanos: nanos)
@@ -154,7 +154,7 @@ class RMBTTestResult {
     }
 
     ///
-    func addCpuUsage(cpuUsage: Float, atNanos ns: UInt64) {
+    public func addCpuUsage(cpuUsage: Float, atNanos ns: UInt64) {
         let cpuUsageDict: [String:NSNumber] = [
             "time_ns":  NSNumber(unsignedLongLong: ns),
             "value":    NSNumber(float: cpuUsage)
@@ -164,7 +164,7 @@ class RMBTTestResult {
     }
 
     ///
-    func addMemoryUsage(ramUsage: Float, atNanos ns: UInt64) {
+    public func addMemoryUsage(ramUsage: Float, atNanos ns: UInt64) {
         let ramUsageDict: [String:NSNumber] = [
             "time_ns":  NSNumber(unsignedLongLong: ns),
             "value":    NSNumber(float: ramUsage)

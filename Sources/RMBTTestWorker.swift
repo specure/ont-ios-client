@@ -10,7 +10,7 @@ import Foundation
 import CocoaAsyncSocket
 
 ///
-enum RMBTTestWorkerState: Int {
+public enum RMBTTestWorkerState: Int {
     case Initialized
 
     case DownlinkPretestStarted
@@ -36,7 +36,7 @@ enum RMBTTestWorkerState: Int {
 }
 
 // We use long to be compatible with GCDAsyncSocket tag datatype
-enum RMBTTestTag: Int {
+public enum RMBTTestTag: Int {
     case RxPretestPart = -2
     case RxDownlinkPart = -1
 
@@ -76,7 +76,7 @@ enum RMBTTestTag: Int {
 }
 
 /// All delegate methods are dispatched on the supplied delegate queue
-protocol RMBTTestWorkerDelegate {
+public protocol RMBTTestWorkerDelegate {
 
     ///
     func testWorker(worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
@@ -116,7 +116,7 @@ protocol RMBTTestWorkerDelegate {
 }
 
 ///
-class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
+public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     // Test parameters
     private var params: RMBTTestParams
@@ -182,25 +182,25 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     private var testUploadLastUploadLength: UInt64 = 0
 
     ///
-    var index: UInt
+    public var index: UInt
 
     ///
-    var totalBytesUploaded: UInt64 = 0
+    public var totalBytesUploaded: UInt64 = 0
 
     ///
-    var totalBytesDownloaded: UInt64 = 0
+    public var totalBytesDownloaded: UInt64 = 0
 
     ///
-    var negotiatedEncryptionString: String!
+    public var negotiatedEncryptionString: String!
 
     ///
-    var localIp: String!
+    public var localIp: String!
 
     ///
-    var serverIp: String!
+    public var serverIp: String!
 
     ///
-    init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: RMBTTestParams) {
+    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: RMBTTestParams) {
         self.delegate = delegate
         self.index = index
         self.params = testParams
@@ -214,7 +214,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: State handling
 
     ///
-    func startDownlinkPretest() {
+    public func startDownlinkPretest() {
         assert(state == .Initialized, "Invalid state")
 
         state = .DownlinkPretestStarted
@@ -223,7 +223,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func stop() {
+    public func stop() {
         assert(state == .DownlinkPretestFinished, "Invalid state")
 
         state = .Stopping
@@ -232,7 +232,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func startLatencyTest() {
+    public func startLatencyTest() {
         assert(state == .DownlinkPretestFinished, "Invalid state")
 
         state = .LatencyTestStarted
@@ -244,7 +244,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func startDownlinkTest() {
+    public func startDownlinkTest() {
         assert(state == .LatencyTestFinished || state == .DownlinkPretestFinished, "Invalid state")
 
         state = .DownlinkTestStarted
@@ -253,7 +253,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func startUplinkPretest() {
+    public func startUplinkPretest() {
         assert(state == .DownlinkTestFinished, "Invalid state")
 
         state = .UplinkPretestStarted
@@ -262,7 +262,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func startUplinkTest() {
+    public func startUplinkTest() {
         assert(state == .UplinkPretestFinished, "Invalid state")
 
         state = .UplinkTestStarted
@@ -291,7 +291,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func connect() {
+    public func connect() {
         do {
             // iOS 9: fails with socketDidDisconnect(_:withError:) > Socket disconnected with error Error Domain=kCFStreamErrorDomainNetDB Code=8
             // "nodename nor servname provided, or not known" UserInfo={NSLocalizedDescription=nodename nor servname provided, or not known}
@@ -310,7 +310,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func abort() {
+    public func abort() {
         if state == .Aborted {
             return
         }
@@ -323,7 +323,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func fail() {
+    public func fail() {
         if state == .Failed {
             return
         }
@@ -340,7 +340,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: Socket delegate methods
 
     ///
-    func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    public func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
         if state == .Aborted {
             sock.disconnect()
             return
@@ -361,12 +361,12 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func socket(sock: GCDAsyncSocket!, didReceiveTrust trust: SecTrust!, completionHandler: ((Bool) -> Void)!) {
+    public func socket(sock: GCDAsyncSocket!, didReceiveTrust trust: SecTrust!, completionHandler: ((Bool) -> Void)!) {
         completionHandler(true)
     }
 
     ///
-    func socketDidSecure(sock: GCDAsyncSocket!) {
+    public func socketDidSecure(sock: GCDAsyncSocket!) {
         assert(state == .DownlinkPretestStarted || state == .UplinkPretestStarted, "Invalid state")
 
         socket.performBlock {
@@ -377,7 +377,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
+    public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         if err != nil {
             logger.debug("Socket disconnected with error \(err)")
             fail()
@@ -397,7 +397,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
+    public func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
         if state == .Aborted {
             return
         }
@@ -406,7 +406,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    public func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
         if state == .Aborted {
             return
         }
@@ -417,7 +417,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     /// We unify read and write callbacks for better state documentation
-    func socketDidReadOrWriteData(data: NSData!, withTag tagRaw: Int, read: Bool) {
+    public func socketDidReadOrWriteData(data: NSData!, withTag tagRaw: Int, read: Bool) {
         let tag = RMBTTestTag(rawValue: tagRaw)!
 
         // Pretest
@@ -747,7 +747,7 @@ class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     /// Finishes the uplink test and closes the connection
-    override func finalize() {
+    override public func finalize() {
         state = .UplinkTestFinished
 
         socket.disconnect()

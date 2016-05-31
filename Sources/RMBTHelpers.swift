@@ -17,14 +17,14 @@ import Foundation
 //
 //    return left
 // }
-func +=<K, V>(inout left: [K: V], right: [K: V]) {
+public func +=<K, V>(inout left: [K: V], right: [K: V]) {
     for (k, v) in right {
         left[k] = v
     }
 }
 
 /// Returns a string containing git commit, branch and commit count from Info.plist fields written by the build script
-func RMBTBuildInfoString() -> String {
+public func RMBTBuildInfoString() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
     let gitBranch       = info["GitBranch"] as? String ?? "none"
@@ -36,20 +36,20 @@ func RMBTBuildInfoString() -> String {
 }
 
 ///
-func RMBTBuildDateString() -> String {
+public func RMBTBuildDateString() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
     return info["BuildDate"] as! String
 }
 
-func RMBTVersionString() -> String {
+public func RMBTVersionString() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
     return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
 }
 
 ///
-func RMBTPreferredLanguage() -> String? {
+public func RMBTPreferredLanguage() -> String? {
     let preferredLanguages = NSLocale.preferredLanguages()
 
     // logger.debug("\(preferredLanguages)")
@@ -71,7 +71,7 @@ func RMBTPreferredLanguage() -> String? {
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
-func RMBTLocalizeURLString(urlString: NSString) -> String {
+public func RMBTLocalizeURLString(urlString: NSString) -> String {
     let r = urlString.rangeOfString("$lang")
 
     if r.location == NSNotFound {
@@ -88,32 +88,32 @@ func RMBTLocalizeURLString(urlString: NSString) -> String {
 }
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)
-func RMBTAppTitle() -> String {
+public func RMBTAppTitle() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
     return info["CFBundleDisplayName"] as! String
 }
 
-func RMBTAppCustomerName() -> String {
+public func RMBTAppCustomerName() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
     return info["CFCustomerName"] as! String
 }
 
 ///
-func RMBTValueOrNull(value: AnyObject!) -> AnyObject {
+public func RMBTValueOrNull(value: AnyObject!) -> AnyObject {
 //    return value ?? NSNUll()
     return (value != nil) ? value : NSNull()
 }
 
 ///
-func RMBTValueOrString(value: AnyObject!, _ result: String) -> AnyObject {
+public func RMBTValueOrString(value: AnyObject!, _ result: String) -> AnyObject {
 //    return value ?? result
     return (value != nil) ? value : result
 }
 
 ///
-func RMBTCurrentNanos() -> UInt64 {
+public func RMBTCurrentNanos() -> UInt64 {
     var info = mach_timebase_info(numer: 0, denom: 0)
     mach_timebase_info(&info) // TODO: dispatch_once?
 
@@ -131,13 +131,13 @@ func RMBTCurrentNanos() -> UInt64 {
 }
 
 ///
-func RMBTMillisecondsStringWithNanos(nanos: UInt64) -> String {
+public func RMBTMillisecondsStringWithNanos(nanos: UInt64) -> String {
     let ms = NSNumber(double: Double(nanos) * 1.0e-6)
     return "\(RMBTFormatNumber(ms)) ms"
 }
 
 ///
-func RMBTSecondsStringWithNanos(nanos: UInt64) -> String {
+public func RMBTSecondsStringWithNanos(nanos: UInt64) -> String {
     return NSString(format: "%f s", Double(nanos) * 1.0e-9) as String
 }
 
@@ -147,7 +147,7 @@ public func RMBTTimestampWithNSDate(date: NSDate) -> NSNumber {
 }
 
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
-func RMBTFormatNumber(number: NSNumber) -> String {
+public func RMBTFormatNumber(number: NSNumber) -> String {
     let formatter = NSNumberFormatter()
 
     // TODO: dispatch_once
@@ -161,7 +161,7 @@ func RMBTFormatNumber(number: NSNumber) -> String {
 }
 
 /// Normalize hexadecimal identifier, i.e. 0:1:c -> 00:01:0c
-func RMBTReformatHexIdentifier(identifier: String!) -> String! { // !
+public func RMBTReformatHexIdentifier(identifier: String!) -> String! { // !
     if identifier == nil {
         return nil
     }

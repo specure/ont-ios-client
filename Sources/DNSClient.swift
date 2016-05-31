@@ -8,7 +8,7 @@
 
 import Foundation
 import CocoaAsyncSocket
-import RMBTClient.Private
+import ifaddrs
 
 ///
 class DNSClient: GCDAsyncUdpSocketDelegate {

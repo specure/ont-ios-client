@@ -9,22 +9,22 @@
 import Foundation
 
 ///
-class RMBTTOS: NSObject {
+public class RMBTTOS: NSObject {
 
     ///
     private let TOS_VERSION_KEY: String = "tos_version"
 
     ///
-    dynamic var lastAcceptedVersion: UInt // UInt correct?
+    public dynamic var lastAcceptedVersion: UInt // UInt correct? // dynamic?
 
     ///
-    var currentVersion: UInt // UInt correct?
+    public var currentVersion: UInt // UInt correct?
 
     ///
-    static let sharedTOS = RMBTTOS()
+    public static let sharedTOS = RMBTTOS()
 
     ///
-    override init() {
+    override public init() {
         if let tosVersionNumber = NSUserDefaults.standardUserDefaults().objectForKey(TOS_VERSION_KEY) as? UInt {
             self.lastAcceptedVersion = tosVersionNumber
         } else {
@@ -35,12 +35,12 @@ class RMBTTOS: NSObject {
     }
 
     ///
-    func isCurrentVersionAccepted() -> Bool {
+    public func isCurrentVersionAccepted() -> Bool {
         return self.lastAcceptedVersion >= UInt(currentVersion) // is this correct?
     }
 
     ///
-    func acceptCurrentVersion() {
+    public func acceptCurrentVersion() {
         lastAcceptedVersion = UInt(currentVersion)
 
         NSUserDefaults.standardUserDefaults().setObject(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
@@ -48,7 +48,7 @@ class RMBTTOS: NSObject {
     }
 
     ///
-    func declineCurrentVersion() {
+    public func declineCurrentVersion() {
         lastAcceptedVersion = UInt(currentVersion) > 0 ? UInt(currentVersion) - 1 : 0 // go to previous version or 0 if not accepted
 
         NSUserDefaults.standardUserDefaults().setObject(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
