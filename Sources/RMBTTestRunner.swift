@@ -223,7 +223,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             // Start observing app going to background notifications
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
         #endif
-            
+
         // Register as observer for location tracker updates
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.locationsDidChange(_:)), name: "RMBTLocationTrackerNotification", object: nil)
 

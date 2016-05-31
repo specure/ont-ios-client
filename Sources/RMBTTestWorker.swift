@@ -35,7 +35,7 @@ public enum RMBTTestWorkerState: Int {
     case Failed
 }
 
-// We use long to be compatible with GCDAsyncSocket tag datatype
+/// We use long to be compatible with GCDAsyncSocket tag datatype
 public enum RMBTTestTag: Int {
     case RxPretestPart = -2
     case RxDownlinkPart = -1

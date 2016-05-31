@@ -25,6 +25,40 @@
         "Sources/NSString+IPAddress.{h,m}",
         "Sources/PingUtil.{h,m}"
     ],
+    "osx": {
+        "exclude_files": [
+            "Sources/RMBTHelpers_iOS.swift",
+            "Sources/BasicRequestBuilder_iOS.swift",
+            "Sources/BasicRequestBuilder_tvOS.swift",
+
+            "vvv_remove/these/later_vvv",
+            "Sources/RMBTConnectivity.swift",
+            "Sources/RMBTConnectivityTracker.swift",
+            "Sources/ControlServer.swift",
+            "Sources/ConnectivityService.swift",
+            "Sources/RMBTLocationTracker.swift",
+            "Sources/QualityOfServiceTest.swift",
+            "Sources/RMBTHistoryResult.swift",
+            "Sources/RMBTTestResult.swift",
+            "Sources/RMBTTestRunner.swift",
+            "Sources/RMBTMapMeasurement.swift",
+            "Sources/ConnectivityServiceDelegate.swift",
+            "Sources/RMBTMapServer.swift",
+            "Sources/QualityOfServiceTestDelegate.swift"
+        ]
+    },
+    "ios": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_OSX.swift",
+            "Sources/BasicRequestBuilder_tvOS.swift"
+        ]
+    },
+    "tvos": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_iOS.swift",
+            "Sources/BasicRequestBuilder_OSX.swift"
+        ]
+    },
     "___public_header_files": [
         "Sources/RMBTTrafficCounter.h",
         "Sources/RMBTRAMMonitor.h",
@@ -45,7 +79,6 @@
     "frameworks": [
        "Foundation",
        "CoreLocation",
-       "MobileCoreServices",
        "SystemConfiguration"
     ],
     "libraries": [
