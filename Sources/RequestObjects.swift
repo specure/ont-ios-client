@@ -94,7 +94,7 @@ class SpeedMeasurementRequest: BasicRequest {
     
     var ndt: Bool? = false
     
-    var time: UInt64?
+    var time: Int?
     
     var version: String?
     

@@ -72,6 +72,43 @@ public class ControlServerNew {
         }
     }
 
+    public func requestSpeedMeasurement() {
+        let speedMeasurementRequest = SpeedMeasurementRequest()
+        
+        speedMeasurementRequest.uuid = "bc675374-0270-467f-8be7-97055b962490"
+        speedMeasurementRequest.version = "0.3"
+        speedMeasurementRequest.time = Int(currentTimeMillis())
+        
+        self.request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest) { (response: Response<SpeedMeasurmentResponse, NSError>) in
+            // TODO: check error
+            
+            switch response.result {
+            case .Success:
+                if let speedMeasurmentResponse = response.result.value {
+                    logger.debug("\(speedMeasurmentResponse)")
+                }
+            case .Failure(let error):
+                logger.debug("\(error)")
+            }
+        }
+    }
+    
+    public func requestQosMeasurement() {
+        let qosMeasurementRequest = QosMeasurementRequest()
+        
+        self.request(.POST, path: "/measurements/qos", requestObject: qosMeasurementRequest) { (response: Response<QosMeasurmentResponse, NSError>) in
+            // TODO: check error
+            
+            if let qosMeasurmentResponse = response.result.value {
+                logger.debug("\(qosMeasurmentResponse)")
+            }
+            
+            /*if let error = response.error {
+             errorCallback(error)
+             }*/
+        }
+    }
+    
     ///
     private func request<T: Mappable>(method: Alamofire.Method, path: String, requestObject: BasicRequest, callback: (response: Response<T, NSError>) -> ()) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
@@ -87,6 +124,8 @@ public class ControlServerNew {
             return "Requesting \(path) with object: <json serialization failed>"
         }
 
+        // TODO: TODO: TODO: TODO: TODO: TODO: TIMEOUT CONFIG!!!
+        
         Alamofire.request(method, "http://localhost:8080/api/v1\(path)", parameters: parameters, encoding: .JSON).responseObject { (response: Response<T, NSError>) in
             // TODO: check error
 

@@ -10,13 +10,17 @@ import Foundation
 import ObjectMapper
 
 ///
-public class IpResponse: Mappable, CustomStringConvertible {
+public class BasicResponse: Mappable, CustomStringConvertible {
     
     ///
-    var ip: String = ""
+    public var description: String {
+        return "<empty BasicResponse>"
+    }
     
     ///
-    var version: String = ""
+    public init() {
+        
+    }
     
     ///
     required public init?(_ map: Map) {
@@ -25,11 +29,26 @@ public class IpResponse: Mappable, CustomStringConvertible {
     
     ///
     public func mapping(map: Map) {
+    
+    }
+}
+
+///
+public class IpResponse: BasicResponse {
+    
+    ///
+    var ip: String = ""
+    
+    ///
+    var version: String = ""
+    
+    ///
+    override public func mapping(map: Map) {
         ip <- map["ip"]
         version <- map["version"]
     }
     
-    public var description: String {
+    override public var description: String {
         return "ip: \(ip), version: \(version)"
     }
 }
@@ -79,4 +98,123 @@ public class SettingsReponse: Mappable {
         client <- map["client"]
     }
     
+}
+
+///
+public class SpeedMeasurmentResponse: BasicResponse {
+    
+    ///
+    var testToken: String?
+    
+    ///
+    var testUuid: String?
+    
+    ///
+    var clientRemoteIp: String?
+    
+    ///
+    var duration: Int?
+    
+    ///
+    var numThreads: Int?
+    
+    ///
+    var numPings: Int?
+    
+    ///
+    var testWait: Int?
+    
+    ///
+    var measurementServer: TargetMeasurementServer?
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+        
+        testToken           <- map["test_token"]
+        testUuid            <- map["test_uuid"]
+        
+        clientRemoteIp      <- map["client_remote_ip"]
+        duration            <- map["duration"]
+        numThreads          <- map["num_threads"]
+        numPings            <- map["num_pings"]
+        testWait            <- map["test_wait"]
+        measurementServer <- map["target_measurement_server"]
+        
+    }
+    
+    ///
+    override public var description: String {
+        return "SpeedMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), clientRemoteIp: \n\(clientRemoteIp)"
+    }
+    
+    ///
+    public class TargetMeasurementServer: Mappable {
+
+        ///
+        var address: String?
+        
+        ///
+        var encrypted: Bool?
+        
+        ///
+        var name: String?
+        
+        ///
+        var port: Int?
+        
+        ///
+        var uuid: String?
+        
+        ///
+        var ip: String?
+    
+        ///
+        init() {
+            
+        }
+        
+        ///
+        required public init?(_ map: Map) {
+            
+        }
+        
+        ///
+        public func mapping(map: Map) {
+            address     <- map["address"]
+            encrypted   <- map["is_encrypted"]
+            name        <- map["name"]
+            port        <- map["port"]
+            uuid        <- map["uuid"]
+            ip          <- map["ip"]
+        }
+    }
+}
+
+///
+public class QosMeasurmentResponse: BasicResponse {
+   
+    ///
+    var testToken: String?
+    
+    ///
+    var testUuid: String?
+    
+    ///
+    var objectives: [String: [[String: AnyObject]]]?
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+        
+        testToken <- map["test_token"]
+        testUuid <- map["test_uuid"]
+        
+        objectives <- map["objectives"]
+    }
+    
+    ///
+    override public var description: String {
+        return "QosMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), objectives: \n\(objectives)"
+    }
 }
