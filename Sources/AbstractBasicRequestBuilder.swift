@@ -24,6 +24,9 @@ class AbstractBasicRequestBuilder {
         basicRequest.softwareVersion = infoDictionary["CFBundleShortVersionString"] as? String
         basicRequest.softwareVersionCode = infoDictionary["CFBundleVersion"] as? Int
         basicRequest.softwareVersionName = "0.3" // ??
+        
+        basicRequest.clientVersion = "0.3" // TODO: fix this on server side
+        
         basicRequest.timezone = NSTimeZone.systemTimeZone().name
     }
 

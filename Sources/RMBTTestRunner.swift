@@ -579,18 +579,33 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         speedMeasurementResultRequest.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
         
         ////////////////////////////////////////////////////////////////////
-        // TODO: improve this:
-        speedMeasurementResultRequest.clientLanguage = RMBTPreferredLanguage() // TODO?
-        speedMeasurementResultRequest.clientSoftwareVersion = "0.3" // TODO?
-        speedMeasurementResultRequest.clientVersion = "0.3" // TODO?
-        
+        // TODO: improve this (needs cleanup afterwards)
         speedMeasurementResultRequest.numThreads = testParams.numThreads
         speedMeasurementResultRequest.numThreadsUl = testParams.numThreads // TODO?
         
         speedMeasurementResultRequest.pings = testResult.pings
         
         //speedMeasurementResultRequest.extendedTestStat = // TODO
-        /*speedMeasurementResultRequest.geoLocations =
+        
+        for l in (result["geoLocations"] as? [[String: NSNumber]])! {
+            let geoLocation = GeoLocation()
+            
+            geoLocation.latitude = l["geo_lat"]?.doubleValue
+            geoLocation.longitude = l["geo_long"]?.doubleValue
+            geoLocation.accuracy = l["accuracy"]?.doubleValue
+            geoLocation.altitude = l["altitude"]?.doubleValue
+            //geoLocation.bearing =
+            geoLocation.speed = l["speed"]?.doubleValue
+            //geoLocation.provider =
+            geoLocation.relativeTimeNs = l["time_ns"]?.integerValue
+            //geoLocation.time =
+            
+            speedMeasurementResultRequest.geoLocations.append(geoLocation)
+        }
+        
+        //speedMeasurementResultRequest.geoLocations =
+        
+        /*
         speedMeasurementResultRequest.networkType =
         
         speedMeasurementResultRequest.speedDetail =

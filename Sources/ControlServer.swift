@@ -311,34 +311,6 @@ public class ControlServer {
     }
 
     ///
-    public func getTestParamsWithParams(params: NSDictionary, success: SuccessCallback, error errorCallback: EmptyCallback) {
-        let requestParams: NSMutableDictionary = NSMutableDictionary(dictionary: [
-            "ndt": false,
-            "time": RMBTTimestampWithNSDate(NSDate())
-        ])
-
-        requestParams.addEntriesFromDictionary(params as [NSObject: AnyObject])
-
-        performWithUUID({
-
-            self.requestWithMethod("POST", path: "", params: requestParams, success: { response in
-
-                // TODO: check "error" in json
-
-                let tp = RMBTTestParams(response: response as! [NSObject: AnyObject])
-                success(response: tp)
-
-            }, error: { error, info in
-                // RMBTLog("Fetching test parameters failed with err=%@, response=%@", error, info)
-                errorCallback()
-            })
-
-        }, error: { error, info in
-            errorCallback()
-        })
-    }
-
-    ///
     public func submitResult(result: NSDictionary, success: SuccessCallback, error failure: EmptyCallback) {
         let mergedParams = NSMutableDictionary()
         mergedParams.addEntriesFromDictionary(result as [NSObject: AnyObject])
@@ -464,49 +436,6 @@ public class ControlServer {
     ///////////////////////////
     // QOS
     ///////////////////////////
-
-    ///
-    public func getQOSObjectives(success: SuccessCallback, error errorCallback: ErrorCallback) {
-        self.requestWithMethod("POST", path: "qosTestRequest", params: ["a": "b"] /* <TODO> */, success: { response in
-            // TODO: check "error" in json
-
-            success(response: response)
-        }, error: { error, info in
-            errorCallback(error: error, info: info)
-        })
-    }
-
-    ///
-    public func submitQOSTestResult(result: [String: AnyObject], success: EmptyCallback, error errorCallback: ErrorCallback) {
-        let mergedParams = NSMutableDictionary()
-        mergedParams.addEntriesFromDictionary(result)
-
-        var systemInfo = systemInfoParams()
-
-        let clientParams = NSMutableDictionary()
-        clientParams.setObject(systemInfo["client"]!,           forKey: "client_name")
-        clientParams.setObject(systemInfo["version"]!,          forKey: "client_version")
-        clientParams.setObject(systemInfo["language"]!,         forKey: "client_language")
-        clientParams.setObject(systemInfo["softwareVersion"]!,  forKey: "client_software_version")
-
-        mergedParams.addEntriesFromDictionary(clientParams as [NSObject: AnyObject])
-
-        performWithUUID({
-
-            self.requestWithMethod("POST", path: "resultQoS", params: mergedParams, success: { response in
-
-                // TODO: check "error" in json
-
-                success()
-
-            }, error: { error, info in
-                errorCallback(error: error, info: info)
-            })
-
-        }, error: { error, info in
-            errorCallback(error: error, info: info)
-        })
-    }
 
     ///
     public func getQOSHistoryResultWithUUID(testUuid: String, success: SuccessCallback, error errorCallback: ErrorCallback) {

@@ -57,7 +57,6 @@
 		E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */; };
 		E02D18DE1CF59262002A02FE /* RMBTSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18431CF59262002A02FE /* RMBTSettings.swift */; };
 		E02D18E31CF59262002A02FE /* RMBTSSLHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18481CF59262002A02FE /* RMBTSSLHelper.swift */; };
-		E02D18E61CF59262002A02FE /* RMBTTestParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184B1CF59262002A02FE /* RMBTTestParams.swift */; };
 		E02D18EC1CF59262002A02FE /* RMBTTestWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18511CF59262002A02FE /* RMBTTestWorker.swift */; };
 		E02D18ED1CF59262002A02FE /* RMBTThroughput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18521CF59262002A02FE /* RMBTThroughput.swift */; };
 		E02D18EE1CF59262002A02FE /* RMBTThroughputHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18531CF59262002A02FE /* RMBTThroughputHistory.swift */; };
@@ -120,7 +119,6 @@
 		E02D19641CF5A45F002A02FE /* Speed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8241CF4B5A200F19282 /* Speed.swift */; };
 		E02D19651CF5A468002A02FE /* RMBTThroughputHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18531CF59262002A02FE /* RMBTThroughputHistory.swift */; };
 		E02D19661CF5A46A002A02FE /* RMBTThroughput.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18521CF59262002A02FE /* RMBTThroughput.swift */; };
-		E02D19671CF5A46F002A02FE /* RMBTTestParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184B1CF59262002A02FE /* RMBTTestParams.swift */; };
 		E02D19681CF5A471002A02FE /* RMBTNetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18301CF59262002A02FE /* RMBTNetworkType.swift */; };
 		E02D196A1CF5A4A3002A02FE /* TrafficClassification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18681CF59262002A02FE /* TrafficClassification.swift */; };
 		E02D196B1CF5A4A5002A02FE /* RMBTTOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18541CF59262002A02FE /* RMBTTOS.swift */; };
@@ -324,7 +322,6 @@
 		E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBTRAMMonitor.m; sourceTree = "<group>"; };
 		E02D18431CF59262002A02FE /* RMBTSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTSettings.swift; sourceTree = "<group>"; };
 		E02D18481CF59262002A02FE /* RMBTSSLHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTSSLHelper.swift; sourceTree = "<group>"; };
-		E02D184B1CF59262002A02FE /* RMBTTestParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestParams.swift; sourceTree = "<group>"; };
 		E02D184C1CF59262002A02FE /* RMBTTestResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestResult.swift; sourceTree = "<group>"; };
 		E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestRunner.swift; sourceTree = "<group>"; };
 		E02D18511CF59262002A02FE /* RMBTTestWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestWorker.swift; sourceTree = "<group>"; };
@@ -556,7 +553,6 @@
 			children = (
 				E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */,
 				E02D18301CF59262002A02FE /* RMBTNetworkType.swift */,
-				E02D184B1CF59262002A02FE /* RMBTTestParams.swift */,
 				E02D184C1CF59262002A02FE /* RMBTTestResult.swift */,
 				E02D18521CF59262002A02FE /* RMBTThroughput.swift */,
 				E02D18531CF59262002A02FE /* RMBTThroughputHistory.swift */,
@@ -1151,7 +1147,6 @@
 				E02D18AF1CF59262002A02FE /* RMBTBlockTypes.swift in Sources */,
 				E02D19061CF59262002A02FE /* UDPStreamSender.swift in Sources */,
 				E02D18C81CF59262002A02FE /* RMBTMapServer.swift in Sources */,
-				E02D18E61CF59262002A02FE /* RMBTTestParams.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
 				E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */,
 				E02D18941CF59262002A02FE /* QOSDNSTest.swift in Sources */,
@@ -1246,7 +1241,6 @@
 				E02D19641CF5A45F002A02FE /* Speed.swift in Sources */,
 				E02D196B1CF5A4A5002A02FE /* RMBTTOS.swift in Sources */,
 				E02D196C1CF5A4A8002A02FE /* RMBTJSONHelper.swift in Sources */,
-				E02D19671CF5A46F002A02FE /* RMBTTestParams.swift in Sources */,
 				E02D19901CF5A531002A02FE /* String+Extensions.swift in Sources */,
 				E02D19831CF5A509002A02FE /* QOSControlConnectionTaskDelegate.swift in Sources */,
 				E02D1A321CFC9D44002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
