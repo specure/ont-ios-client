@@ -33,6 +33,9 @@ public class QualityOfServiceTest {
 
     ///
     private let testToken: String
+    
+    ///
+    private let measurementUuid: String
 
     ///
     private let speedtestStartTime: UInt64
@@ -65,15 +68,11 @@ public class QualityOfServiceTest {
     private var stopped = false
 
     //
-
+    
     ///
-    convenience init() { // only for testing
-        self.init(testToken: "f7e75c4c-f81f-41d6-b5c5-53b9452a459b_1424341414_dXX9tW1uNORSPPw0xaKvYQatfbU=", speedtestStartTime: nanoTime() - 30 * UInt64(NSEC_PER_SEC))
-    }
-
-    ///
-    public init(testToken: String, speedtestStartTime: UInt64) {
+    public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64) {
         self.testToken = testToken
+        self.measurementUuid = measurementUuid
         self.speedtestStartTime = speedtestStartTime
 
         logger.debug("QualityOfServiceTest initialized with test token: \(testToken) at start time \(speedtestStartTime)")
@@ -113,20 +112,22 @@ public class QualityOfServiceTest {
         if stopped {
             return
         }
-
-        ControlServer.sharedControlServer.getQOSObjectives({ (response) -> () in
+        
+        let controlServer = ControlServerNew.sharedControlServer
+        
+        controlServer.requestQosMeasurement(measurementUuid, success: { response in
             dispatch_async(self.qosQueue) {
                 self.continueWithQOSParameters(response)
             }
-        }, error: { (error, info) -> () in
+        }) { error in
             logger.debug("ERROR fetching qosTestRequest")
-
+            
             self.fail(nil) // TODO: error message...
-        })
+        }
     }
 
     ///
-    private func continueWithQOSParameters(responseObject: AnyObject) {
+    private func continueWithQOSParameters(responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
@@ -144,61 +145,48 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func parseRequestResult(responseObject: AnyObject) {
+    private func parseRequestResult(responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
+        
+        // loop through objectives
+        if let objectives = responseObject.objectives {
 
-        if let resultDictionary = responseObject as? [String: AnyObject] {
+            // objective type is TCP, UDP, etc.
+            // objective values are arrays of dictionaries for each test
+            for (objectiveType, objectiveValues) in objectives {
 
-            if let errorArray = resultDictionary["error"] as? [AnyObject] { // TODO: type
-                if !errorArray.isEmpty { // error element is always present in json, therefore check if it is empty to find an error
-                    logger.debug("ERROR ON QOS TEST REQUEST: \(errorArray)")
-                    // TODO: call did fail delegate method
-                    self.fail(nil) // TODO: error message...
+                // loop each test
+                for (objectiveParams) in objectiveValues {
+                    logger.verbose("-----")
+                    logger.verbose("\(objectiveType): \(objectiveParams)")
+                    logger.verbose("-------------------")
 
-                    return
-                }
-            }
+                    // try to create qos test object from params
+                    if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams) {
 
-            // loop through objectives
-            if let objectives = resultDictionary["objectives"] as? JsonObjectivesType {
+                        logger.debug("created qos test: \(qosTest)")
 
-                // objective type is TCP, UDP, etc.
-                // objective values are arrays of dictionaries for each test
-                for (objectiveType, objectiveValues) in objectives {
-
-                    // loop each test
-                    for (objectiveParams) in objectiveValues {
-                        logger.verbose("-----")
-                        logger.verbose("\(objectiveType): \(objectiveParams)")
-                        logger.verbose("-------------------")
-
-                        // try to create qos test object from params
-                        if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams) {
-
-                            logger.debug("created qos test: \(qosTest)")
-
-                            var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                            if concurrencyGroupArray == nil {
-                                concurrencyGroupArray = [QOSTest]()
-                            }
-
-                            concurrencyGroupArray!.append(qosTest)
-                            qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-
-                            // increase test count
-                            testCount += 1
-
-                        } else {
-                            logger.debug("unimplemented/unknown qos type: \(objectiveType)")
+                        var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+                        if concurrencyGroupArray == nil {
+                            concurrencyGroupArray = [QOSTest]()
                         }
+
+                        concurrencyGroupArray!.append(qosTest)
+                        qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+
+                        // increase test count
+                        testCount += 1
+
+                    } else {
+                        logger.debug("unimplemented/unknown qos type: \(objectiveType)")
                     }
                 }
             }
-
-            currentTestCount = testCount
         }
+
+        currentTestCount = testCount
 
         // create sorted array of keys to let the concurrencyGroups increase
         sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sort(<)
@@ -553,33 +541,30 @@ public class QualityOfServiceTest {
 
         // don't send results if all results are empty (e.g. only tcp tests and no control connection)
         if _testResultArray.isEmpty {
-
             // inform delegate
             success()
 
             return
         }
+        
+        //
 
-        // let qosDuration = nanoTime() - qosStartTime
-
-        var params: [String: AnyObject] = [
-            "time": NSNumber(unsignedLongLong: /*qosDuration*//*nanoTime()*/currentTimeMillis()), // currently unused on server!
-            "test_token": testToken,
-        ]
-
-        params["qos_result"] = _testResultArray as NSArray // because array is a struct, nsarray is array's objc counterpart and this is an object...
-
-        logger.debug("\(params)")
-
-        ControlServer.sharedControlServer.submitQOSTestResult(params, success: { () -> () in
+        let qosMeasurementResult = QosMeasurementResultRequest()
+        qosMeasurementResult.measurementUuid = measurementUuid
+        qosMeasurementResult.testToken = testToken
+        qosMeasurementResult.time = NSNumber(unsignedLongLong: currentTimeMillis()).integerValue // currently unused on server!
+        qosMeasurementResult.qosResultList = _testResultArray
+        
+        let controlServer = ControlServerNew.sharedControlServer
+        
+        controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { response in
             logger.debug("QOS TEST RESULT SUBMIT SUCCESS")
-
+            
             // now the test has finished...succeeding methods should go here
             self.success()
-
-        }) { (error, info) -> () in
+        }) { error in
             logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
-
+            
             // here the test failed...
             self.fail(error)
         }

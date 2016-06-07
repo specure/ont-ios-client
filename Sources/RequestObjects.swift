@@ -570,7 +570,6 @@ class SpeedMeasurementResultRequest: BasicRequest {
     }
 }
 
-
 ///
 class QosMeasurementRequest: BasicRequest {
     
@@ -584,5 +583,38 @@ class QosMeasurementRequest: BasicRequest {
         
         clientUuid <- map["clientUuid"]
         measurementUuid <- map["measurementUuid"]
+    }
+}
+
+///
+class QosMeasurementResultRequest: BasicRequest {
+    
+    ///
+    var measurementUuid: String?
+    
+    ///
+    var clientUuid: String?
+    
+    ///
+    var testToken: String?
+    
+    ///
+    var time: Int?
+    
+    ///
+    var qosResultList: [QOSTestResults]?
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map)
+        
+        measurementUuid <- map["uuid"]
+        clientUuid      <- map["client_uuid"]
+        
+        testToken       <- map["test_token"]
+        
+        time            <- map["time"]
+        
+        qosResultList   <- map["qos_result"]
     }
 }

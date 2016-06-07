@@ -55,46 +55,40 @@ public class IpResponse: BasicResponse {
 
 ////////////////////////////////////////////
 
-public class SettingsResponseClient: Mappable, CustomStringConvertible {
+class SettingsResponseClient: Mappable, CustomStringConvertible {
     
     var clientType = ""
     var termsAndConditionsAccepted = false
     var termsAndConditionsAcceptedVersion = 0
-    var uuid = ""
+    var uuid: String?
     
     init() {
         
     }
     
-    required public init?(_ map: Map) {
+    required init?(_ map: Map) {
         
     }
     
-    public func mapping(map: Map) {
+    func mapping(map: Map) {
         clientType <- map["clientType"]
         termsAndConditionsAccepted <- map["termsAndConditionsAccepted"]
         termsAndConditionsAcceptedVersion <- map["termsAndConditionsAcceptedVersion"]
         uuid <- map["uuid"]
     }
     
-    public var description: String {
+    var description: String {
         return "clientType: \(clientType), uuid: \(uuid)"
     }
 }
 
-public class SettingsReponse: Mappable {
+class SettingsReponse: BasicResponse {
     
     var client: SettingsResponseClient?
     
-    init() {
+    override func mapping(map: Map) {
+        super.mapping(map)
         
-    }
-    
-    required public init?(_ map: Map) {
-        
-    }
-    
-    public func mapping(map: Map) {
         client <- map["client"]
     }
     
@@ -107,7 +101,7 @@ public class SpeedMeasurmentResponse: BasicResponse {
     public var testToken: String?
     
     ///
-    var testUuid: String?
+    public var testUuid: String?
     
     ///
     public var clientRemoteIp: String?
@@ -199,7 +193,25 @@ public class SpeedMeasurmentResponse: BasicResponse {
 }
 
 ///
-public class QosMeasurmentResponse: BasicResponse {
+class SpeedMeasurementSubmitResponse: BasicResponse {
+    
+    ///
+    var openTestUuid: String?
+    
+    ///
+    var testUuid: String?
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map)
+        
+        openTestUuid <- map["open_test_uuid"]
+        testUuid <- map["test_uuid"]
+    }
+}
+
+///
+class QosMeasurmentResponse: BasicResponse {
    
     ///
     var testToken: String?
@@ -211,7 +223,7 @@ public class QosMeasurmentResponse: BasicResponse {
     var objectives: [String: [[String: AnyObject]]]?
     
     ///
-    override public func mapping(map: Map) {
+    override func mapping(map: Map) {
         super.mapping(map)
         
         testToken <- map["test_token"]
@@ -221,7 +233,16 @@ public class QosMeasurmentResponse: BasicResponse {
     }
     
     ///
-    override public var description: String {
+    override var description: String {
         return "QosMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), objectives: \n\(objectives)"
+    }
+}
+
+///
+class QosMeasurementSubmitResponse: BasicResponse {
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map)
     }
 }

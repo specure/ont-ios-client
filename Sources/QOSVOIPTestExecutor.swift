@@ -292,8 +292,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         //
 
         var jitterMap = [UInt16: Double]()
-
-        var sequenceNumberArray = [UInt16](rtpControlDataList.keys) // TODO: fatal error?
+        
+        var sequenceNumberArray = [UInt16](rtpControlDataList.keys) // TODO: fatal error? TODO! also occured on 2016-06-07 14:09
         sequenceNumberArray.sortInPlace() { $0 < $1 } // TODO: delete when set datatype is available
 
         var sequenceArray = [RTPSequence]()

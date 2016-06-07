@@ -27,7 +27,7 @@ public class ControlServerNew {
     private let alamofireManager: Alamofire.Manager
     
     ///
-    private var uuid: String?
+    private var uuid: String? // TODO: store on device (load on launch)
 
     ///
     private init() {
@@ -57,44 +57,74 @@ public class ControlServerNew {
     }
 
     ///
-    public func getSettings(success: EmptyCallback, error failure: NEWErrorCallback) {
+    public func getSettings(success successCallback: EmptyCallback, error failure: NEWErrorCallback) {
 
         let settingsRequest = SettingsRequest()
         settingsRequest.client = SettingsResponseClient()
         settingsRequest.client?.clientType = "MOBILE"
         settingsRequest.client?.termsAndConditionsAccepted = true
+        settingsRequest.client?.uuid = uuid
 
-        /*self.request(.POST, path: "/settings", requestObject: settingsRequest) { (response: Response<SettingsReponse, NSError>) in
-            if let settingsResponse = response.result.value {
-                logger.debug("settings: \(settingsResponse.client)")
-                success()
-            }
-        }*/
+        let successFunc: (response: SettingsReponse) -> () = { response in
+            logger.debug("settings: \(response.client)")
+            
+            self.uuid = response.client?.uuid
+            
+            logger.debug("uuid is now: \(self.uuid)")
+            
+            successCallback()
+        }
+        
+        request(.POST, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
+            logger.debug("settings error")
+            
+            // TODO
+            failure(error: error)
+        })
     }
 
+// MARK: Speed measurement
+    
+    ///
     func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurmentResponse) -> (), error failure: NEWErrorCallback) {
+        speedMeasurementRequest.uuid = self.uuid
+        
         request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
     }
     
-    func submitSpeedMeasurementResult(speedMeasurementResult: SpeedMeasurementResultRequest, success: (response: String) -> (), error failure: NEWErrorCallback) {
+    ///
+    func submitSpeedMeasurementResult(speedMeasurementResult: SpeedMeasurementResultRequest, success: (response: SpeedMeasurementSubmitResponse) -> (), error failure: NEWErrorCallback) {
+        
         if let uuid = speedMeasurementResult.uuid {
-
-            let x: Alamofire.Method = .PUT
-            let url = "/measurements/speed/\(uuid)"
+            speedMeasurementResult.clientUuid = self.uuid
             
-            self.request(x, path: url, requestObject: speedMeasurementResult, success: { (response: SpeedMeasurmentResponse) in
-                logger.debug(" !!!!!RESULT SUBMIT SUCCESS!!!!! ")
-            }, error: { error in
-            
-            })
+            request(.PUT, path: "/measurements/speed/\(uuid)", requestObject: speedMeasurementResult, success: success, error: failure)
+        } else {
+            failure(error: NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
         }
-        // TODO: else error
     }
     
-    public func requestQosMeasurement(success: (response: QosMeasurmentResponse) -> (), error failure: NEWErrorCallback) {
+// MARK: Qos measurements
+    
+    ///
+    func requestQosMeasurement(measurementUuid: String?, success: (response: QosMeasurmentResponse) -> (), error failure: NEWErrorCallback) {
         let qosMeasurementRequest = QosMeasurementRequest()
         
+        qosMeasurementRequest.clientUuid = uuid
+        qosMeasurementRequest.measurementUuid = measurementUuid
+        
         request(.POST, path: "/measurements/qos", requestObject: qosMeasurementRequest, success: success, error: failure)
+    }
+    
+    ///
+    func submitQosMeasurementResult(qosMeasurementResult: QosMeasurementResultRequest, success: (response: QosMeasurementSubmitResponse) -> (), error failure: NEWErrorCallback) {
+        if let measurementUuid = qosMeasurementResult.measurementUuid {
+            qosMeasurementResult.clientUuid = self.uuid
+            
+            self.request(.PUT, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
+        } else {
+            failure(error: NSError(domain: "controlServer", code: 134535, userInfo: nil)) // give error if no measurement uuid was provided by caller
+        }
     }
     
 // MARK: Private

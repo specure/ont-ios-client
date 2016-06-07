@@ -171,7 +171,6 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         
         let speedMeasurementRequest = SpeedMeasurementRequest()
         
-        speedMeasurementRequest.uuid = "5418a21d-6b1f-4a1e-b7cb-9a9c9941cd70" // TODO: client uuid?
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
         speedMeasurementRequest.time = Int(currentTimeMillis()) // nanoTime?
         
@@ -489,34 +488,141 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                 return
             }
 
-            let result = self.resultDictionary()
+            //let result = self.resultDictionary()
 
             //self.phase = .SubmittingTestResult
             self.setPhase(.SubmittingTestResult)
             
-            //let controlServer = ControlServerNew.sharedControlServer
-            //controlServer.submitSpeedMeasurementResult(TODO)
-
-            ControlServer.sharedControlServer.submitResult(result, success: { response in
+            let speedMeasurementResultRequest = self.resultObject()
+            
+            let controlServer = ControlServerNew.sharedControlServer
+            
+            /*controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 dispatch_async(self.workerQueue) {
                     //self.phase = .None
                     self.setPhase(.None)
                     self.dead = true
-
+                    
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
-
+                    
                     let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
-
+                    
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.testRunnerDidCompleteWithResult(historyResult)
                     }
                 }
-            }, error: {
+            }, error: { error in
                 dispatch_async(self.workerQueue) {
                     self.cancelWithReason(.ErrorSubmittingTestResult)
                 }
-            })
+            })*/
+            
+            let successFunc: (response: AnyObject) -> () = { response in
+                dispatch_async(self.workerQueue) {
+                    //self.phase = .None
+                    self.setPhase(.None)
+                    self.dead = true
+                    
+                    RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
+                    
+                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.delegate.testRunnerDidCompleteWithResult(historyResult)
+                    }
+                }
+            }
+            
+            // TODO: remove this later and take code above (this lets the app continue with qos even if the speed test result is not working...)
+            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: successFunc, error: { _ in successFunc(response: "todo") })
         }
+    }
+    
+    private func resultObject() -> SpeedMeasurementResultRequest { // TODO: replace test result with SpeedMeasurementResultRequest!
+        let result = NSMutableDictionary(dictionary: testResult.resultDictionary())
+        
+        let speedMeasurementResultRequest = SpeedMeasurementResultRequest()
+        
+        speedMeasurementResultRequest.token = testParams.testToken
+        speedMeasurementResultRequest.uuid = testParams.testUuid
+        
+        // Collect total transfers from all threads
+        var sumBytesDownloaded: UInt64 = 0
+        var sumBytesUploaded: UInt64 = 0
+        
+        for w in workers {
+            sumBytesDownloaded += w.totalBytesDownloaded
+            sumBytesUploaded += w.totalBytesUploaded
+        }
+        
+        assert(sumBytesDownloaded > 0, "Total bytes downloaded <= 0")
+        assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
+        
+        if let firstWorker = workers.first {
+            speedMeasurementResultRequest.bytesDownload = NSNumber(unsignedLongLong: sumBytesDownloaded).integerValue // TODO: ?
+            speedMeasurementResultRequest.bytesUpload = NSNumber(unsignedLongLong: sumBytesUploaded).integerValue // TODO: ?
+                
+            speedMeasurementResultRequest.encryption = firstWorker.negotiatedEncryptionString
+                
+            speedMeasurementResultRequest.ipLocal = firstWorker.localIp
+            speedMeasurementResultRequest.ipServer = firstWorker.serverIp
+        }
+        
+        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl"))
+        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!,   endInfo: uplinkEndInterfaceInfo!,   prefix: "testul"))
+        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!,         endInfo: uplinkEndInterfaceInfo!,   prefix: "test"))
+        
+        // Add relative time_(dl/ul)_ns timestamps
+        let startNanos = testResult.testStartNanos
+        
+        speedMeasurementResultRequest.relativeTimeDlNs = NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos).integerValue
+        speedMeasurementResultRequest.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
+        
+        ////////////////////////////////////////////////////////////////////
+        // TODO: improve this:
+        speedMeasurementResultRequest.clientLanguage = RMBTPreferredLanguage() // TODO?
+        speedMeasurementResultRequest.clientSoftwareVersion = "0.3" // TODO?
+        speedMeasurementResultRequest.clientVersion = "0.3" // TODO?
+        
+        speedMeasurementResultRequest.numThreads = testParams.numThreads
+        speedMeasurementResultRequest.numThreadsUl = testParams.numThreads // TODO?
+        
+        speedMeasurementResultRequest.pings = testResult.pings
+        
+        //speedMeasurementResultRequest.extendedTestStat = // TODO
+        /*speedMeasurementResultRequest.geoLocations =
+        speedMeasurementResultRequest.networkType =
+        
+        speedMeasurementResultRequest.speedDetail =
+        speedMeasurementResultRequest.durationUploadNs =
+        speedMeasurementResultRequest.durationDownloadNs =
+        
+        
+        speedMeasurementResultRequest.pingShortest =
+        speedMeasurementResultRequest.portRemote =
+        speedMeasurementResultRequest.speedDownload =
+        speedMeasurementResultRequest.speedUpload =
+        
+        speedMeasurementResultRequest.totalBytesDownload =
+        speedMeasurementResultRequest.totalBytesUpload =
+        speedMeasurementResultRequest.interfaceTotalBytesDownload =
+        speedMeasurementResultRequest.interfaceTotalBytesUpload =
+        speedMeasurementResultRequest.interfaceDltestBytesDownload =
+        speedMeasurementResultRequest.interfaceDltestBytesUpload =
+        speedMeasurementResultRequest.interfaceUltestBytesDownload =
+        speedMeasurementResultRequest.interfaceUltestBytesUpload =
+        speedMeasurementResultRequest.time =
+        speedMeasurementResultRequest.telephonyInfo =
+        speedMeasurementResultRequest.wifiInfo =*/
+
+        if TEST_USE_PERSONAL_DATA_FUZZING {
+            speedMeasurementResultRequest.publishPublicData = RMBTSettings.sharedSettings().publishPublicData
+            logger.info("test result: publish_public_data: \(speedMeasurementResultRequest.publishPublicData)")
+        }
+        
+        //////
+        
+        return speedMeasurementResultRequest
     }
 
     ///
