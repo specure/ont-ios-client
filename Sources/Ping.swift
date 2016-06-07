@@ -7,35 +7,39 @@
 //
 
 import Foundation
+import ObjectMapper
 
 ///
-public class Ping: CustomStringConvertible {
+public class Ping: Mappable, CustomStringConvertible {
 
     ///
-    let serverNanos: UInt64
+    var serverNanos: Int?
 
     ///
-    let clientNanos: UInt64
+    var clientNanos: Int?
 
     /// relative to test start
-    let relativeTimestampNanos: UInt64
+    var relativeTimestampNanos: Int?
 
     //
 
     ///
     init(serverNanos: UInt64, clientNanos: UInt64, relativeTimestampNanos timestampNanos: UInt64) {
-        self.serverNanos = serverNanos
-        self.clientNanos = clientNanos
-        self.relativeTimestampNanos = timestampNanos
+        self.serverNanos = Int(serverNanos)
+        self.clientNanos = Int(clientNanos)
+        self.relativeTimestampNanos = Int(timestampNanos)
     }
-
+    
     ///
-    func testResultDictionary() -> [String: NSNumber] {
-        return [
-            "value_server": NSNumber(unsignedLongLong: serverNanos),
-            "value":        NSNumber(unsignedLongLong: clientNanos),
-            "time_ns":      NSNumber(unsignedLongLong: relativeTimestampNanos)
-        ]
+    required public init?(_ map: Map) {
+        
+    }
+    
+    ///
+    public func mapping(map: Map) {
+        serverNanos             <- map["value_server"]
+        clientNanos             <- map["value"]
+        relativeTimestampNanos  <- map["relative_time_ns"]
     }
 
     ///

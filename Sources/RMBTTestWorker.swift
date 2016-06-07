@@ -119,7 +119,7 @@ public protocol RMBTTestWorkerDelegate {
 public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     // Test parameters
-    private var params: RMBTTestParams
+    private var params: SpeedMeasurmentResponse//RMBTTestParams
 
     /// Weak reference to the delegate
     private let delegate: RMBTTestWorkerDelegate
@@ -200,7 +200,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     public var serverIp: String!
 
     ///
-    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: RMBTTestParams) {
+    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: SpeedMeasurmentResponse) {
         self.delegate = delegate
         self.index = index
         self.params = testParams
@@ -249,7 +249,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
         state = .DownlinkTestStarted
 
-        writeLine("GETTIME \(Int(params.testDuration))", withTag: .TxGetTime)
+        writeLine("GETTIME \(Int(params.duration))", withTag: .TxGetTime)
     }
 
     ///
@@ -297,12 +297,14 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             // "nodename nor servname provided, or not known" UserInfo={NSLocalizedDescription=nodename nor servname provided, or not known}
 
             // try dns lookup first as a workaround for the ios 9 bug
-            var sAddr = params.serverAddress
-            if let ip = tryDNSLookup(params.serverAddress) {
+            var sAddr = params.measurementServer?.address ?? "" // TODO
+            if let ip = tryDNSLookup(sAddr) {
                 sAddr = ip
             }
+            
+            logger.debug("Connecting to host \(sAddr):\(params.measurementServer!.port!)")
 
-            try socket.connectToHost(/*params.serverAddress*/sAddr, onPort: UInt16(params.serverPort), withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
+            try socket.connectToHost(sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
 
         } catch {
             //fail() // at this point, no error is checked, see https://github.com/appscape/open-rmbt-ios/blob/master/Sources/RMBTTestWorker.m
@@ -351,7 +353,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         localIp = sock.localHost
         serverIp = sock.connectedHost
 
-        if params.serverEncryption {
+        if let ms = params.measurementServer where ms.encrypted { // TODO
             sock.startTLS([
                 GCDAsyncSocketManuallyEvaluateTrust: true
             ])
@@ -426,7 +428,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             readLineWithTag(.RxBannerAccept)
         } else if tag == .RxBannerAccept {
             // <- ACCEPT
-            writeLine("TOKEN \(params.testToken)", withTag: .TxToken)
+            writeLine("TOKEN \(params.testToken!)", withTag: .TxToken) // TODO: optionals!!!
         } else if tag == .TxToken {
             // -> TOKEN ...
             readLineWithTag(.RxTokenOK)
@@ -545,9 +547,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             readLineWithTag(.RxPongAccept)
         } else if tag == .RxPongAccept {
             // <- ACCEPT
-            assert(pingSeq <= params.pingCount, "Invalid ping count")
+            assert(pingSeq <= UInt(params.numPings), "Invalid ping count") // TODO
 
-            if pingSeq == params.pingCount {
+            if pingSeq == UInt(params.numPings) { // TODO
                 state = .LatencyTestFinished
                 delegate.testWorkerDidFinishLatencyTest(self)
             } else {
@@ -569,7 +571,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             testStartNanos = delegate.testWorker(self, didStartDownlinkTestAtNanos: RMBTCurrentNanos())
         } else if tag == .RxDownlinkPart {
             let elapsedNanos = RMBTCurrentNanos() - testStartNanos
-            let finished = (elapsedNanos >= UInt64(params.testDuration * Double(NSEC_PER_SEC)))
+            let finished = (elapsedNanos >= UInt64(params.duration * Double(NSEC_PER_SEC)))
 
             if chunkData == nil {
                 // We still need to fill up one chunk for transmission in upload test
@@ -647,13 +649,13 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             testStartNanos = RMBTCurrentNanos()
             testUploadOffsetNanos = delegate.testWorker(self, didStartUplinkTestAtNanos: testStartNanos)
 
-            var enoughInterval = (params.testDuration - RMBT_TEST_UPLOAD_MAX_DISCARD_S)
+            var enoughInterval = (params.duration - RMBT_TEST_UPLOAD_MAX_DISCARD_S)
             if enoughInterval < 0 {
                 enoughInterval = 0
             }
 
             testUploadEnoughServerNanos = UInt64(enoughInterval * Double(NSEC_PER_SEC))
-            testUploadEnoughClientNanos = testStartNanos + UInt64((params.testDuration + RMBT_TEST_UPLOAD_MIN_WAIT_S) * Double(NSEC_PER_SEC))
+            testUploadEnoughClientNanos = testStartNanos + UInt64((params.duration + RMBT_TEST_UPLOAD_MIN_WAIT_S) * Double(NSEC_PER_SEC))
 
             updateLastChunkFlagToValue(false)
             writeData(chunkData, withTag: .TxPutChunk)
@@ -664,7 +666,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             } else {
                 let nanos = RMBTCurrentNanos() + testUploadOffsetNanos
 
-                if nanos - testStartNanos >= UInt64(params.testDuration * Double(NSEC_PER_SEC)) {
+                if nanos - testStartNanos >= UInt64(params.duration * Double(NSEC_PER_SEC)) {
                     logger.debug("Sending last chunk in thread \(index)")
 
                     testUploadLastChunkSent = true

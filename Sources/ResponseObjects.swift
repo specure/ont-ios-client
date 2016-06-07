@@ -104,28 +104,34 @@ public class SettingsReponse: Mappable {
 public class SpeedMeasurmentResponse: BasicResponse {
     
     ///
-    var testToken: String?
+    public var testToken: String?
     
     ///
     var testUuid: String?
     
     ///
-    var clientRemoteIp: String?
+    public var clientRemoteIp: String?
     
     ///
-    var duration: Int?
+    var duration: Double = 7 // TODO: int instead of double?
     
     ///
-    var numThreads: Int?
+    var pretestDuration: Double = RMBT_TEST_PRETEST_DURATION_S // TODO: int instead of double?
     
     ///
-    var numPings: Int?
+    var pretestMinChunkCountForMultithreading: Int = RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST
     
     ///
-    var testWait: Int?
+    var numThreads: Int = 3
     
     ///
-    var measurementServer: TargetMeasurementServer?
+    var numPings: Int = 10
+    
+    ///
+    var testWait: Double = 0 // TODO: int instead of double?
+    
+    ///
+    public var measurementServer: TargetMeasurementServer?
     
     ///
     override public func mapping(map: Map) {
@@ -136,10 +142,11 @@ public class SpeedMeasurmentResponse: BasicResponse {
         
         clientRemoteIp      <- map["client_remote_ip"]
         duration            <- map["duration"]
+        pretestDuration     <- map["duration_pretest"]
         numThreads          <- map["num_threads"]
         numPings            <- map["num_pings"]
         testWait            <- map["test_wait"]
-        measurementServer <- map["target_measurement_server"]
+        measurementServer   <- map["target_measurement_server"]
         
     }
     
@@ -155,10 +162,10 @@ public class SpeedMeasurmentResponse: BasicResponse {
         var address: String?
         
         ///
-        var encrypted: Bool?
+        var encrypted = false
         
         ///
-        var name: String?
+        public var name: String?
         
         ///
         var port: Int?
@@ -167,7 +174,7 @@ public class SpeedMeasurmentResponse: BasicResponse {
         var uuid: String?
         
         ///
-        var ip: String?
+        var ip: String? // TODO: drop this?
     
         ///
         init() {

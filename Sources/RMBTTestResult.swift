@@ -133,11 +133,11 @@ public class RMBTTestResult {
         if sortedPingsCount % 2 == 1 {
             // Uneven number of pings, median is right in the middle
             let i = (sortedPingsCount - 1) / 2
-            medianPingNanos = sortedPings[i].serverNanos
+            medianPingNanos = UInt64(sortedPings[i].serverNanos!)
         } else {
             // Even number of pings, median is defined as average of two middle elements
             let i = sortedPingsCount / 2
-            medianPingNanos = (sortedPings[i].serverNanos + sortedPings[i - 1].serverNanos) / 2 // TODO: is division correct? should divisor be casted to double?
+            medianPingNanos = (UInt64(sortedPings[i].serverNanos!) + UInt64(sortedPings[i - 1].serverNanos!)) / 2 // TODO: is division correct? should divisor be casted to double?
         }
     }
 
@@ -316,9 +316,9 @@ public class RMBTTestResult {
 
     ///
     func resultDictionary() -> NSDictionary { // -> computed property
-        let pingTestResultArray = pings.map { p in
+        /*let pingTestResultArray = pings.map { p in
             p.testResultDictionary()
-        }
+        }*/
 
         var speedDetails = [[String:AnyObject]]()
 
@@ -327,7 +327,7 @@ public class RMBTTestResult {
 
         var result: [String:AnyObject] = [
             "test_ping_shortest":   NSNumber(unsignedLongLong: bestPingNanos),
-            "pings":                pingTestResultArray,
+            //"pings":                pingTestResultArray,
             "speed_detail":         speedDetails,
             "test_num_threads":     NSNumber(unsignedInteger: UInt(threadCount))
         ]

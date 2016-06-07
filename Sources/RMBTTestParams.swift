@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-public class RMBTTestParams {
+@available(*, deprecated=1.0, message="use SpeedMeasurementResponse instead") public class RMBTTestParams {
 
     ///
     public let clientRemoteIp: String

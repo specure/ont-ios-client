@@ -112,7 +112,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     private var singleThreaded = false
 
     ///
-    public var testParams: RMBTTestParams!
+    public var testParams: SpeedMeasurmentResponse!
 
     ///
     public let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
@@ -165,43 +165,54 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(phase == .None, "Invalid state")
         assert(!dead, "Invalid state")
 
-        var locationJSON: [String:AnyObject]? = nil
-
-        if let l = RMBTLocationTracker.sharedTracker.location {
-            locationJSON = [
-                "long":     NSNumber(double: l.coordinate.longitude),
-                "lat":      NSNumber(double: l.coordinate.latitude),
-                "time":     RMBTTimestampWithNSDate(l.timestamp),
-                "accuracy": NSNumber(double: l.horizontalAccuracy),
-                "altitude": NSNumber(double: l.altitude),
-                "speed":    NSNumber(double: (l.speed > 0.0 ? l.speed : 0.0))
-            ]
-        }
-
-        let params = [
-            "testCounter":          NSNumber(unsignedLong: RMBTSettings.sharedSettings().testCounter),
-            "previousTestStatus":   RMBTValueOrString(RMBTSettings.sharedSettings().previousTestStatus, RMBTTestStatusNone),
-            "location":             RMBTValueOrNull(locationJSON)
-        ]
-
-        // Notice that we post previous counter (the test before this one) when requesting the params
-        RMBTSettings.sharedSettings().testCounter += 1
-
         phase = .FetchingTestParams
-
-        ControlServer.sharedControlServer.getTestParamsWithParams(params, success: { response in
+        
+        ////////////////
+        
+        let speedMeasurementRequest = SpeedMeasurementRequest()
+        
+        speedMeasurementRequest.uuid = "5418a21d-6b1f-4a1e-b7cb-9a9c9941cd70" // TODO: client uuid?
+        speedMeasurementRequest.version = "0.3" // TODO: duplicate?
+        speedMeasurementRequest.time = Int(currentTimeMillis()) // nanoTime?
+        
+        speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings().testCounter
+        speedMeasurementRequest.previousTestStatus = RMBTSettings.sharedSettings().previousTestStatus ?? RMBTTestStatusNone
+        
+        if let l = RMBTLocationTracker.sharedTracker.location {
+            let geoLocation = GeoLocation()
+            
+            geoLocation.latitude = l.coordinate.latitude
+            geoLocation.longitude = l.coordinate.longitude
+            geoLocation.accuracy = l.horizontalAccuracy
+            geoLocation.altitude = l.altitude
+            geoLocation.bearing = 42 // TODO
+            geoLocation.speed = (l.speed > 0.0 ? l.speed : 0.0)
+            geoLocation.provider = "GPS" // TODO?
+            geoLocation.relativeTimeNs = 0 // TODO?
+            geoLocation.time = l.timestamp // TODO?
+            
+            speedMeasurementRequest.geoLocation = geoLocation
+        }
+        
+        let controlServer = ControlServerNew.sharedControlServer
+        controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
             dispatch_async(self.workerQueue) {
-                self.continueWithTestParams(response as! RMBTTestParams)
+                self.continueWithTestParams(response)
             }
-        }) {
+        }) { error in
             dispatch_async(self.workerQueue) {
                 self.cancelWithReason(.ErrorFetchingTestingParams)
             }
         }
+        
+        ////////////////
+
+        // Notice that we post previous counter (the test before this one) when requesting the params
+        RMBTSettings.sharedSettings().testCounter += 1
     }
 
     ///
-    private func continueWithTestParams(testParams: RMBTTestParams) {
+    private func continueWithTestParams(testParams: SpeedMeasurmentResponse/*RMBTTestParams*/) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .FetchingTestParams || phase == .None, "Invalid state")
 
@@ -214,8 +225,8 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         //testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
         testResult.markTestStart()
 
-        for i in 0..<testParams.threadCount {
-            let worker = RMBTTestWorker(delegate: self, delegateQueue: workerQueue, index: i, testParams: testParams)
+        for i in 0..<(testParams.numThreads ?? 0) {
+            let worker = RMBTTestWorker(delegate: self, delegateQueue: workerQueue, index: UInt(i), testParams: testParams)
             workers.append(worker)
         }
 
@@ -235,9 +246,9 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             self.startPhase(.Init, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
         }
 
-        if testParams.waitDuration > 0 {
+        if testParams.testWait > 0 {
             // Let progress timer run, then start init
-            startPhase(.Wait, withAllWorkers: false, performingSelector: nil, expectedDuration: testParams.waitDuration, completion: startInit)
+            startPhase(.Wait, withAllWorkers: false, performingSelector: nil, expectedDuration: testParams.testWait, completion: startInit)
         } else {
             startInit()
         }
@@ -257,7 +268,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         logger.debug("Thread \(worker.index): finished download pretest (chunks = \(chunks))")
 
-        if !singleThreaded && chunks <= testParams.pretestMinChunkCountForMultithreading {
+        if !singleThreaded && chunks <= UInt(testParams.pretestMinChunkCountForMultithreading) {
             singleThreaded = true
         }
 
@@ -265,17 +276,17 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             if singleThreaded {
                 logger.debug("Downloaded <= \(testParams.pretestMinChunkCountForMultithreading) chunks in the pretest, continuing with single thread.")
 
-                activeWorkers = testParams.threadCount - 1
+                activeWorkers = UInt(testParams.numThreads) - 1
                 finishedWorkers = 0
 
-                for i in 1..<testParams.threadCount {
+                for i in 1..<testParams.numThreads {
                     workers[Int(i)].stop()
                 }
 
                 testResult.startDownloadWithThreadCount(1)
 
             } else {
-                testResult.startDownloadWithThreadCount(Int(testParams.threadCount))
+                testResult.startDownloadWithThreadCount(Int(testParams.numThreads))
                 startPhase(.Latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
             }
         }
@@ -307,7 +318,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         testResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
 
-        let p = Double(testResult.pings.count) / Double(testParams.pingCount)
+        let p = Double(testResult.pings.count) / Double(testParams.numPings)
         dispatch_async(dispatch_get_main_queue()) {
             self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
         }
@@ -320,7 +331,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(!dead, "Invalid state")
 
         if markWorkerAsFinished() {
-            startPhase(.Down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.testDuration, completion: nil)
+            startPhase(.Down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
 
@@ -392,7 +403,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if markWorkerAsFinished() {
             logger.debug("Uplink pretest finished")
             testResult.startUpload()
-            startPhase(.Up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.testDuration, completion: nil)
+            startPhase(.Up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
 
@@ -482,6 +493,9 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             //self.phase = .SubmittingTestResult
             self.setPhase(.SubmittingTestResult)
+            
+            //let controlServer = ControlServerNew.sharedControlServer
+            //controlServer.submitSpeedMeasurementResult(TODO)
 
             ControlServer.sharedControlServer.submitResult(result, success: { response in
                 dispatch_async(self.workerQueue) {
@@ -491,7 +505,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
 
-                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUUID])
+                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
 
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.testRunnerDidCompleteWithResult(historyResult)
