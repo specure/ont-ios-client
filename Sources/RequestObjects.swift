@@ -308,6 +308,75 @@ class SpeedRawItem: MeasurementSpeedRawItem {
     }
 }
 
+///
+class Signal: Mappable {
+    
+    ///
+    var relativeTimeNs: Int?
+    
+    ///
+    var networkType: String?
+    
+    ///
+    var networkTypeId: Int?
+
+    ///
+    var catTechnology: String?
+
+    ///
+    var time: NSDate?
+
+    ///
+    var signalStrength: Int?
+
+    ///
+    var wifiLinkSpeed: Int?
+    
+    ///
+    var wifiRssi: Int?
+
+    ///
+    var gsmBitErrorRate: Int?
+
+    ///
+    var lteRsrp: Int?
+
+    ///
+    var lteRsrq: Int?
+    
+    ///
+    var lteRssnr: Int?
+
+    ///
+    var lteCqi: Int?
+    
+    ///
+    init() {
+        
+    }
+    
+    ///
+    required init?(_ map: Map) {
+        
+    }
+    
+    ///
+    func mapping(map: Map) {
+        relativeTimeNs  <- map["relative_time_ns"]
+        networkType     <- map["network_type"]
+        networkTypeId   <- map["network_type_id"]
+        catTechnology   <- map["cat_technology"]
+        time            <- map["time"]
+        signalStrength  <- map["signal_strength"]
+        wifiLinkSpeed   <- map["wifi_link_speed"]
+        wifiRssi        <- map["wifi_rssi"]
+        gsmBitErrorRate <- map["gsm_bit_error_rate"]
+        lteRsrp         <- map["lte_rsrp"]
+        lteRsrq         <- map["lte_rsrq"]
+        lteRssnr        <- map["lte_rssnr"]
+        lteCqi          <- map["lte_cqi"]
+    }
+}
 
 ///
 class TelephonyInfo: Mappable {
@@ -425,7 +494,7 @@ class SpeedMeasurementResultRequest: BasicRequest {
     var pings = [Ping]()
     
     ///
-    //var signals = [Signal]()
+    var signals = [Signal]()
     
     ///
     var speedDetail = [SpeedRawItem]()
@@ -530,7 +599,7 @@ class SpeedMeasurementResultRequest: BasicRequest {
         geoLocations            <- map["geo_locations"]
         networkType             <- map["network_type"]
         pings                   <- map["pings"]
-        //signals                 <- map["signals"]
+        signals                 <- map["signals"]
         
         speedDetail             <- map["speed_detail"]
         bytesDownload           <- map["bytes_download"]

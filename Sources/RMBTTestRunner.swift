@@ -603,15 +603,22 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementResultRequest.geoLocations.append(geoLocation)
         }
         
-        //speedMeasurementResultRequest.geoLocations =
+        for s in (result["speed_detail"] as? [[String: AnyObject]])! {
+            let speedRawItem = SpeedRawItem()
+            
+            speedRawItem.direction = SpeedRawItem.SpeedRawItemDirection(rawValue: (s["direction"] as? String) ?? "download")
+            speedRawItem.thread = (s["thread"] as? NSNumber)?.integerValue ?? 0
+            speedRawItem.time = (s["time"] as? NSNumber)?.integerValue ?? 0
+            speedRawItem.bytes = (s["bytes"] as? NSNumber)?.integerValue ?? 0
+            
+            speedMeasurementResultRequest.speedDetail.append(speedRawItem)
+        }
+        
+        speedMeasurementResultRequest.networkType = (result["network_type"] as? NSNumber)?.integerValue ?? -1
         
         /*
-        speedMeasurementResultRequest.networkType =
-        
-        speedMeasurementResultRequest.speedDetail =
         speedMeasurementResultRequest.durationUploadNs =
         speedMeasurementResultRequest.durationDownloadNs =
-        
         
         speedMeasurementResultRequest.pingShortest =
         speedMeasurementResultRequest.portRemote =
