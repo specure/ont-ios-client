@@ -42,12 +42,12 @@ public class ControlServerNew {
 
     ///
     public func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        self.getIpVersion("http://localhost:8080/api/v1/ip", success: successCallback, error: failure) // TODO: ipv4 url
+        self.getIpVersion(/*"http://localhost:8080*/"https://netcouch.specure.com/api/v1/ip", success: successCallback, error: failure) // TODO: ipv4 url
     }
 
     ///
     public func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        self.getIpVersion("http://localhost:8080/api/v1/ip", success: successCallback, error: failure) // TODO: ipv6 url
+        self.getIpVersion(/*"http://localhost:8080*/"https://netcouch.specure.com/api/v1/ip", success: successCallback, error: failure) // TODO: ipv6 url
     }
 
     ///
@@ -145,7 +145,7 @@ public class ControlServerNew {
         }
         
         alamofireManager
-            .request(method, "http://localhost:8080/api/v1\(path)", parameters: parameters, encoding: .JSON)
+            .request(method, /*"http://localhost:8080*/"https://netcouch.specure.com/api/v1\(path)", parameters: parameters, encoding: .JSON)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             .responseObject { (response: Response<T, NSError>) in
             switch response.result {
