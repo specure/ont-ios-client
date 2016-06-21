@@ -21,7 +21,7 @@ public protocol QualityOfServiceTestDelegate {
     func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult])
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!)
+    func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
 
     ///
     func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSTestType])
