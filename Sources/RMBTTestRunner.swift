@@ -534,7 +534,11 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             }
             
             // TODO: remove this later and take code above (this lets the app continue with qos even if the speed test result is not working...)
-            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: successFunc, error: { _ in successFunc(response: "todo") })
+            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: successFunc, error: { _ in
+                dispatch_async(self.workerQueue) {
+                    self.cancelWithReason(.ErrorSubmittingTestResult)
+                }
+            })
         }
     }
     

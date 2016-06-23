@@ -89,6 +89,6 @@ public class RMBTThroughput: CustomStringConvertible {
                         RMBTSecondsStringWithNanos(_startNanos),
                         RMBTSecondsStringWithNanos(_endNanos),
                         length,
-                        RMBTSpeedMbpsString(kilobitsPerSecond()))
+                        RMBTSpeedMbpsString(Int(kilobitsPerSecond())))
     }
 }
