@@ -87,15 +87,13 @@ public protocol RMBTClientDelegate {
 // MARK: Qos
     
     ///
-    //func qosMeasurementDidStart(client: RMBTClient)
+    func qosMeasurementDidStart(client: RMBTClient)
     
     ///
-    //func qosMeasurementDidStop(client: RMBTClient)
+    func qosMeasurementDidUpdateProgress(client: RMBTClient, progress: Float)
 }
 
-
 /////////////
-
 
 ///
 public class RMBTClient {
@@ -108,6 +106,15 @@ public class RMBTClient {
     
     ///
     public var delegate: RMBTClientDelegate?
+    
+    /// used for updating cpu and memory usage
+    private var hardwareUsageTimer: NSTimer?
+    
+    ///
+    private let cpuMonitor = RMBTCPUMonitor()
+    
+    ///
+    private let ramMonitor = RMBTRAMMonitor()
     
     ///
     public init() {
@@ -123,13 +130,16 @@ public class RMBTClient {
 
     ///
     public func stopMeasurement() {
-    
+        testRunner?.cancel()
+        qualityOfServiceTestRunner?.stop()
     }
     
     ///
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.start()
+        
+        startHardwareUsageTimer() // start cpu and memory usage timer
     }
     
     ///
@@ -140,6 +150,46 @@ public class RMBTClient {
         
         qualityOfServiceTestRunner?.start()
     }
+    
+// MARK: Hardware usage timer
+    
+    ///
+    func startHardwareUsageTimer() {
+        hardwareUsageTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(hardwareUsageTimerFired), userInfo: nil, repeats: true)
+    }
+    
+    ///
+    func stopHardwareUsageTimer() {
+        hardwareUsageTimer?.invalidate()
+        hardwareUsageTimer = nil
+    }
+    
+    ///
+    @objc func hardwareUsageTimerFired() {
+        if let testStartNanos = testRunner?.testResult.testStartNanos {
+        
+            let relativeNanos = nanoTime() - testStartNanos
+        
+            //////////////////
+            // CPU
+
+            if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber] where cpuUsage.count > 0 {
+                testRunner?.testResult.addCpuUsage(cpuUsage[0].floatValue, atNanos: relativeNanos)
+                
+                logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
+            } else {
+                // TODO: else write implausible error, or use previous value
+            }
+            
+            //////////////////
+            // RAM
+            
+            let ramUsagePercentFree = ramMonitor.getRAMUsagePercentFree()
+            
+            testRunner?.testResult.addMemoryUsage(ramUsagePercentFree, atNanos: relativeNanos)
+            logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
+        }
+    }
 }
 
 ///
@@ -147,7 +197,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     
     ///
     public func testRunnerDidDetectConnectivity(connectivity: RMBTConnectivity) {
-        //logger.debug("TESTRUNNER: CONNECTIVITY")
+        logger.debug("TESTRUNNER: CONNECTIVITY")
     }
     
     ///
@@ -198,28 +248,24 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     
     ///
     public func testRunnerDidMeasureThroughputs(throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase) {
-        
         // TODO: use same logic as in android app? (RMBTClient.java:646)
         
-        if let throughputs = throughputs as? [RMBTThroughput] {
-            if let throughput = throughputs.last { // last?
-                let kbps = throughput.kilobitsPerSecond()
-                delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
-            }
+        if let throughputs = throughputs as? [RMBTThroughput], throughput = throughputs.last { // last?
+            let kbps = throughput.kilobitsPerSecond()
+            delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
         }
     }
     
     ///
     public func testRunnerDidCompleteWithResult(result: RMBTHistoryResult) {
-        // TODO: stop hardware timer
+        stopHardwareUsageTimer() // stop cpu and memory usage timer
         
-        //startQosMeasurement() // TODO
-        delegate?.measurementDidComplete(self)
+        startQosMeasurement() // continue with qos measurement
     }
     
     ///
     public func testRunnerDidCancelTestWithReason(cancelReason: RMBTTestRunnerCancelReason) {
-        // TODO: stop hardware timer
+        stopHardwareUsageTimer() // stop cpu and memory usage timer
         
         let reason = RMBTClientCancelReason.mapFromSpeedMesurementCancelReason(cancelReason)
         
@@ -233,7 +279,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     
     ///
     public func qualityOfServiceTestDidStart(test: QualityOfServiceTest) {
-
+        delegate?.qosMeasurementDidStart(self)
     }
     
     ///
@@ -253,17 +299,17 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     
     ///
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSTestType]) {
-
+        //logger.debug("QOS: DID FETCH TYPES: \(time)")
     }
     
     ///
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSTestType) {
-
+        //logger.debug("QOS: DID FINISH TYPE: \(time)")
     }
     
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didProgressToValue: Float) {
-
+    public func qualityOfServiceTest(test: QualityOfServiceTest, didProgressToValue progress: Float) {
+        delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
     }
     
 }
