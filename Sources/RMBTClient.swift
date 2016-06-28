@@ -107,6 +107,16 @@ public class RMBTClient {
     ///
     public var delegate: RMBTClientDelegate?
     
+    ///
+    public var running: Bool {
+        get {
+            return _running
+        }
+    }
+    
+    ///
+    private var _running = false
+    
     /// used for updating cpu and memory usage
     private var hardwareUsageTimer: NSTimer?
     
@@ -132,6 +142,8 @@ public class RMBTClient {
     public func stopMeasurement() {
         testRunner?.cancel()
         qualityOfServiceTestRunner?.stop()
+        
+        _running = false
     }
     
     ///
@@ -139,16 +151,23 @@ public class RMBTClient {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.start()
         
+        _running = true
+        
         startHardwareUsageTimer() // start cpu and memory usage timer
     }
     
     ///
     private func startQosMeasurement() {
-        qualityOfServiceTestRunner = QualityOfServiceTest(testToken: "", measurementUuid: "", speedtestStartTime: 1000) // TODO
+        if let testToken = testRunner?.testParams.testToken,
+               measurementUuid = testRunner?.testParams.testUuid,
+               testStartNanos = testRunner?.testResult.testStartNanos {
         
-        qualityOfServiceTestRunner?.delegate = self
+            qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos)
         
-        qualityOfServiceTestRunner?.start()
+            qualityOfServiceTestRunner?.delegate = self
+        
+            qualityOfServiceTestRunner?.start()
+        }
     }
     
 // MARK: Hardware usage timer
@@ -267,6 +286,8 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     public func testRunnerDidCancelTestWithReason(cancelReason: RMBTTestRunnerCancelReason) {
         stopHardwareUsageTimer() // stop cpu and memory usage timer
         
+        _running = false
+        
         let reason = RMBTClientCancelReason.mapFromSpeedMesurementCancelReason(cancelReason)
         
         delegate?.measurementDidFail(self, withReason: reason)
@@ -289,11 +310,15 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     
     ///
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
+        _running = false
+        
         delegate?.measurementDidComplete(self)
     }
     
     ///
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!) {
+        _running = false
+        
         delegate?.measurementDidFail(self, withReason: .UnknownError) // TODO: better errors
     }
     

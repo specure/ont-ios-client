@@ -225,7 +225,7 @@ public class QualityOfServiceTest {
         }
 
         // get test types and sort them according to their first execution
-        var testTypeArray = Array<QOSTestType>(self.testTypeCountMap.keys)
+        var testTypeArray = [QOSTestType](self.testTypeCountMap.keys)
         testTypeArray.sortInPlace() { lhs, rhs in
             testTypeSortDictionary[lhs] < testTypeSortDictionary[rhs]
         }
@@ -241,6 +241,8 @@ public class QualityOfServiceTest {
 
     ///
     private func runQOSTests() {
+        logger.debug("RUN QOS TESTS (stopped: \(stopped))")
+        
         if stopped {
             return
         }
