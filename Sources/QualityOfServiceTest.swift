@@ -256,10 +256,12 @@ public class QualityOfServiceTest {
         if stopped {
             return
         }
-
+        
         if sortedConcurrencyGroups.count > 0 {
             let concurrencyGroup = sortedConcurrencyGroups.removeAtIndex(0) // what happens if empty?
 
+            logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(sortedConcurrencyGroups.count))")
+            
             if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
 
                 // set count of tests
