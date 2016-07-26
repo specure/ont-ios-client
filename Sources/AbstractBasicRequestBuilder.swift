@@ -19,7 +19,10 @@ class AbstractBasicRequestBuilder {
         basicRequest.clientName = "RMBT"
         basicRequest.language = RMBTPreferredLanguage()
         basicRequest.product = nil // always null on iOS...
-        basicRequest.previousTestStatus = "TODO" // TODO: from settings
+        
+        logger.debug("ADDING PREVIOUS TEST STATUS: \(RMBTSettings.sharedSettings().previousTestStatus)")
+        
+        basicRequest.previousTestStatus = RMBTSettings.sharedSettings().previousTestStatus ?? RMBTTestStatusNone
         basicRequest.softwareRevision = RMBTBuildInfoString()
         basicRequest.softwareVersion = infoDictionary["CFBundleShortVersionString"] as? String
         basicRequest.softwareVersionCode = infoDictionary["CFBundleVersion"] as? Int

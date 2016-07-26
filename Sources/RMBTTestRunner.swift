@@ -178,7 +178,6 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         speedMeasurementRequest.time = Int(currentTimeMillis()) // nanoTime?
 
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings().testCounter
-        speedMeasurementRequest.previousTestStatus = RMBTSettings.sharedSettings().previousTestStatus ?? RMBTTestStatusNone
 
         if let l = RMBTLocationTracker.sharedTracker.location {
             let geoLocation = GeoLocation(location: l)
@@ -485,16 +484,13 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                 return
             }
 
-            //let result = self.resultDictionary()
-
-            //self.phase = .SubmittingTestResult
             self.setPhase(.SubmittingTestResult)
 
             let speedMeasurementResultRequest = self.resultObject()
 
             let controlServer = ControlServerNew.sharedControlServer
 
-            /*controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
+            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 dispatch_async(self.workerQueue) {
                     //self.phase = .None
                     self.setPhase(.None)
@@ -512,26 +508,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                 dispatch_async(self.workerQueue) {
                     self.cancelWithReason(.ErrorSubmittingTestResult)
                 }
-            })*/
-
-            let successFunc: (response: AnyObject) -> () = { response in
-                dispatch_async(self.workerQueue) {
-                    //self.phase = .None
-                    self.setPhase(.None)
-                    self.dead = true
-
-                    RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
-
-                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.delegate.testRunnerDidCompleteWithResult(historyResult)
-                    }
-                }
-            }
-
-            // TODO: remove this later and take code above (this lets the app continue with qos even if the speed test result is not working...)
-            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: successFunc, error: { _ in successFunc(response: "todo") })
+            })
         }
     }
 

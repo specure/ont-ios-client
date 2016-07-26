@@ -43,19 +43,19 @@ public class RMBTConnectivity {
     public var networkName: String!
 
     ///
-    private var bssid: String!
+    var bssid: String!
 
     ///
-    private var cellularCode: NSNumber!
+    var cellularCode: NSNumber!
 
     ///
-    private var cellularCodeDescription: String!
+    var cellularCodeDescription: String!
 
     ///
-    private var telephonyNetworkSimOperator: String!
+    var telephonyNetworkSimOperator: String!
 
     ///
-    private var telephonyNetworkSimCountry: String!
+    var telephonyNetworkSimCountry: String!
 
     ///
     private let cellularCodeTable = [

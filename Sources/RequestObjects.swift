@@ -371,20 +371,16 @@ class Signal: Mappable {
 
     ///
     init(connectivity: RMBTConnectivity) {
-        /*let code = connectivity.networkType.rawValue
-        if code > 0 {
-            networkType = "\(code)" // TODO: why is this a string?
-        }
-
-        if connectivity.networkType == .WiFi {
-            if connectivity.networkName != nil {
-                //wifiRssi =
-            }
-        }*/
-
+        // TODO: additional fields?
+        
         relativeTimeNs = RMBTTimestampWithNSDate(connectivity.timestamp).integerValue
         time = connectivity.timestamp
-        networkTypeId = connectivity.networkType.rawValue
+
+        if connectivity.networkType == .Cellular {
+            networkTypeId = connectivity.cellularCode.integerValue
+        } else {
+            networkTypeId = connectivity.networkType.rawValue
+        }
     }
 
     ///
@@ -446,6 +442,13 @@ class TelephonyInfo: Mappable {
     }
 
     ///
+    init(connectivity: RMBTConnectivity) {
+        networkOperatorName = connectivity.networkName ?? "Unknown"
+        networkSimOperator = connectivity.telephonyNetworkSimOperator
+        networkSimCountry = connectivity.telephonyNetworkSimCountry
+    }
+    
+    ///
     required init?(_ map: Map) {
 
     }
@@ -487,6 +490,13 @@ class WifiInfo: Mappable {
     ///
     init() {
 
+    }
+    
+    ///
+    init(connectivity: RMBTConnectivity) {
+        ssid = connectivity.networkName ?? "Unknown"
+        bssid = connectivity.bssid
+        networkId = "\(connectivity.networkType.rawValue)" // TODO: why is this a string?
     }
 
     ///
@@ -960,6 +970,15 @@ class SpeedMeasurementResult: BasicRequest {
             signals.append(s)
 
             networkType = max(networkType ?? -1, s.networkTypeId)
+        }
+
+        // TODO: is it correct to get telephony/wifi info from lastConnectivity?
+        if let lastConnectivity = lastConnectivity() {
+            if lastConnectivity.networkType == .Cellular {
+                telephonyInfo = TelephonyInfo(connectivity: lastConnectivity)
+            } else if lastConnectivity.networkType == .WiFi {
+                wifiInfo = WifiInfo(connectivity: lastConnectivity)
+            }
         }
     }
 
