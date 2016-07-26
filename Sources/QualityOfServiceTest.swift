@@ -33,7 +33,7 @@ public class QualityOfServiceTest {
 
     ///
     private let testToken: String
-    
+
     ///
     private let measurementUuid: String
 
@@ -68,7 +68,7 @@ public class QualityOfServiceTest {
     private var stopped = false
 
     //
-    
+
     ///
     public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64) {
         self.testToken = testToken
@@ -112,16 +112,16 @@ public class QualityOfServiceTest {
         if stopped {
             return
         }
-        
+
         let controlServer = ControlServerNew.sharedControlServer
-        
+
         controlServer.requestQosMeasurement(measurementUuid, success: { response in
             dispatch_async(self.qosQueue) {
                 self.continueWithQOSParameters(response)
             }
         }) { error in
             logger.debug("ERROR fetching qosTestRequest")
-            
+
             self.fail(nil) // TODO: error message...
         }
     }
@@ -149,7 +149,7 @@ public class QualityOfServiceTest {
         if stopped {
             return
         }
-        
+
         // loop through objectives
         if let objectives = responseObject.objectives {
 
@@ -242,7 +242,7 @@ public class QualityOfServiceTest {
     ///
     private func runQOSTests() {
         logger.debug("RUN QOS TESTS (stopped: \(stopped))")
-        
+
         if stopped {
             return
         }
@@ -256,12 +256,12 @@ public class QualityOfServiceTest {
         if stopped {
             return
         }
-        
+
         if sortedConcurrencyGroups.count > 0 {
             let concurrencyGroup = sortedConcurrencyGroups.removeAtIndex(0) // what happens if empty?
 
             logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(sortedConcurrencyGroups.count))")
-            
+
             if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
 
                 // set count of tests
@@ -550,7 +550,7 @@ public class QualityOfServiceTest {
 
             return
         }
-        
+
         //
 
         let qosMeasurementResult = QosMeasurementResultRequest()
@@ -558,17 +558,17 @@ public class QualityOfServiceTest {
         qosMeasurementResult.testToken = testToken
         qosMeasurementResult.time = NSNumber(unsignedLongLong: currentTimeMillis()).integerValue // currently unused on server!
         qosMeasurementResult.qosResultList = _testResultArray
-        
+
         let controlServer = ControlServerNew.sharedControlServer
-        
+
         controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { response in
             logger.debug("QOS TEST RESULT SUBMIT SUCCESS")
-            
+
             // now the test has finished...succeeding methods should go here
             self.success()
         }) { error in
             logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
-            
+
             // here the test failed...
             self.fail(error)
         }

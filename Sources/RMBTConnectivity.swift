@@ -9,6 +9,7 @@
 import Foundation
 import CoreTelephony
 import SystemConfiguration.CaptiveNetwork
+import NetworkExtension
 
 ///
 public class RMBTConnectivity {
@@ -135,41 +136,26 @@ public class RMBTConnectivity {
 
     ///
     private func getWiFiParameters() -> (ssid: String, bssid: String)? {
-        if let interfaces = CNCopySupportedInterfaces() {
-            for i in 0..<CFArrayGetCount(interfaces) {
-                let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
-                let rec = unsafeBitCast(interfaceName, AnyObject.self)
-                if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)") {
-                    let interfaceData = unsafeInterfaceData as [NSObject: AnyObject]
+        //if #available(iOS 9, *) {
 
-                    if let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
-                        currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
-                            return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
-                    }
-                }
-            }
-        }
+            // http://stackoverflow.com/questions/32970711/is-it-possible-to-get-wifi-signal-strength-in-ios-9
 
-        /* if let interfaces = CNCopySupportedInterfaces() { // TODO: deprecated in iOS 9
-
-            if let interfacesArray = interfaces as? [String] {
-                logger.debug("\(interfacesArray)")
-            }
-
-            if let interfacesArray = interfaces as? [String] where interfacesArray.count > 0 { // TODO: DOESN'T WORK!
-                for interface in interfacesArray {
-                    //let interfaceName = interfacesArray[0] as String
-                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo(interface) {
-                        let interfaceData = unsafeInterfaceData as [NSObject:AnyObject]
+        //} else { // pre iOS 9 way
+            if let interfaces = CNCopySupportedInterfaces() {
+                for i in 0..<CFArrayGetCount(interfaces) {
+                    let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
+                    let rec = unsafeBitCast(interfaceName, AnyObject.self)
+                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)") {
+                        let interfaceData = unsafeInterfaceData as [NSObject: AnyObject]
 
                         if let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
-                               currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
-                            return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
+                            currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
+                                return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
                         }
                     }
                 }
             }
-        } */
+        //}
 
         return nil
     }
@@ -193,7 +179,7 @@ public class RMBTConnectivity {
     }
 
     ///
-    public func testResultDictionary() -> NSDictionary {
+    public func testResultDictionary() -> NSDictionary { // TODO: remove after control server rewrite
         var result = [String: AnyObject]()
 
         let code = networkType.rawValue

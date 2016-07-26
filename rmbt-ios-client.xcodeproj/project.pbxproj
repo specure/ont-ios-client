@@ -170,7 +170,6 @@
 		E02D19A81CF5AAD7002A02FE /* RMBTConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18151CF59262002A02FE /* RMBTConnectivity.swift */; };
 		E02D19A91CF5AAD9002A02FE /* RMBTConnectivityTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18161CF59262002A02FE /* RMBTConnectivityTracker.swift */; };
 		E02D19AA1CF5AAE1002A02FE /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
-		E02D19AB1CF5AAF4002A02FE /* RMBTTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184C1CF59262002A02FE /* RMBTTestResult.swift */; };
 		E02D1A081CFC8E90002A02FE /* DNSClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17DD1CF59262002A02FE /* DNSClient.swift */; };
 		E02D1A091CFC8E97002A02FE /* ServiceTypeMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18611CF59262002A02FE /* ServiceTypeMapping.swift */; };
 		E02D1A0A1CFC8E9C002A02FE /* StringMD5Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18661CF59262002A02FE /* StringMD5Extension.swift */; };
@@ -217,11 +216,7 @@
 		E02D1A391CFC9D58002A02FE /* RMBTMapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D182D1CF59262002A02FE /* RMBTMapServer.swift */; };
 		E02D1A3A1CFC9D5C002A02FE /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E02D1A3C1CFC9D6E002A02FE /* RMBTHistoryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */; };
-		E02D1A3D1CFC9D73002A02FE /* RMBTTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184C1CF59262002A02FE /* RMBTTestResult.swift */; };
 		E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */; };
-		E02D1A531CFD7E42002A02FE /* RMBTClient_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A501CFD7E42002A02FE /* RMBTClient_Beta.xcconfig */; };
-		E02D1A541CFD7E42002A02FE /* RMBTClient_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */; };
-		E02D1A551CFD7E42002A02FE /* RMBTClient_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */; };
 		E02D1A571CFD882D002A02FE /* ControlServerNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServerNew.swift */; };
 		E02D1A5B1CFD9937002A02FE /* ControlServerNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServerNew.swift */; };
 		E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */; };
@@ -326,7 +321,6 @@
 		E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBTRAMMonitor.m; sourceTree = "<group>"; };
 		E02D18431CF59262002A02FE /* RMBTSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTSettings.swift; sourceTree = "<group>"; };
 		E02D18481CF59262002A02FE /* RMBTSSLHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTSSLHelper.swift; sourceTree = "<group>"; };
-		E02D184C1CF59262002A02FE /* RMBTTestResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestResult.swift; sourceTree = "<group>"; };
 		E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestRunner.swift; sourceTree = "<group>"; };
 		E02D18511CF59262002A02FE /* RMBTTestWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTTestWorker.swift; sourceTree = "<group>"; };
 		E02D18521CF59262002A02FE /* RMBTThroughput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTThroughput.swift; sourceTree = "<group>"; };
@@ -557,7 +551,6 @@
 			children = (
 				E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */,
 				E02D18301CF59262002A02FE /* RMBTNetworkType.swift */,
-				E02D184C1CF59262002A02FE /* RMBTTestResult.swift */,
 				E02D18521CF59262002A02FE /* RMBTThroughput.swift */,
 				E02D18531CF59262002A02FE /* RMBTThroughputHistory.swift */,
 				E0B1C82E1CF4B63700F19282 /* Ping.swift */,
@@ -931,9 +924,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E02D1A541CFD7E42002A02FE /* RMBTClient_Debug.xcconfig in Resources */,
-				E02D1A531CFD7E42002A02FE /* RMBTClient_Beta.xcconfig in Resources */,
-				E02D1A551CFD7E42002A02FE /* RMBTClient_Release.xcconfig in Resources */,
 				E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1057,7 +1047,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#if which swiftlint >/dev/null; then\n#    swiftlint\n#else\n#    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\n#fi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1138,7 +1128,6 @@
 				E02D19A41CF5AACA002A02FE /* QOSTracerouteTestExecutor.swift in Sources */,
 				E02D187C1CF59262002A02FE /* DNSResourceRecord.swift in Sources */,
 				E02D18971CF59262002A02FE /* QOSHTTPProxyTest.swift in Sources */,
-				E02D19AB1CF5AAF4002A02FE /* RMBTTestResult.swift in Sources */,
 				E02D18EC1CF59262002A02FE /* RMBTTestWorker.swift in Sources */,
 				E02D18891CF59262002A02FE /* NSData+Extensions.swift in Sources */,
 				E02D18C41CF59262002A02FE /* RMBTMapMeasurement.swift in Sources */,
@@ -1251,7 +1240,6 @@
 				E02D19901CF5A531002A02FE /* String+Extensions.swift in Sources */,
 				E02D19831CF5A509002A02FE /* QOSControlConnectionTaskDelegate.swift in Sources */,
 				E02D1A321CFC9D44002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
-				E02D1A3D1CFC9D73002A02FE /* RMBTTestResult.swift in Sources */,
 				E02D1A3C1CFC9D6E002A02FE /* RMBTHistoryResult.swift in Sources */,
 				E02D1A231CFC9D06002A02FE /* ServiceTypeMapping.swift in Sources */,
 				E02D19881CF5A51B002A02FE /* OrderedDictionary.swift in Sources */,

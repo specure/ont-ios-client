@@ -29,12 +29,12 @@ public class Ping: Mappable, CustomStringConvertible {
         self.clientNanos = Int(clientNanos)
         self.relativeTimestampNanos = Int(timestampNanos)
     }
-    
+
     ///
     required public init?(_ map: Map) {
-        
+
     }
-    
+
     ///
     public func mapping(map: Map) {
         serverNanos             <- map["value_server"]

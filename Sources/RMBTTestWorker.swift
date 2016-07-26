@@ -301,7 +301,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             if let ip = tryDNSLookup(sAddr) {
                 sAddr = ip
             }
-            
+
             logger.debug("Connecting to host \(sAddr):\(params.measurementServer!.port!)")
 
             try socket.connectToHost(sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)

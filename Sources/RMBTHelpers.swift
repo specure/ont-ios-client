@@ -17,7 +17,7 @@ import Foundation
 //
 //    return left
 // }
-public func +=<K, V>(inout left: [K: V], right: [K: V]) {
+func +=<K, V>(inout left: [K: V], right: [K: V]) {
     for (k, v) in right {
         left[k] = v
     }
@@ -42,6 +42,7 @@ public func RMBTBuildDateString() -> String {
     return info["BuildDate"] as! String
 }
 
+///
 public func RMBTVersionString() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 
@@ -94,6 +95,7 @@ public func RMBTAppTitle() -> String {
     return info["CFBundleDisplayName"] as! String
 }
 
+///
 public func RMBTAppCustomerName() -> String {
     let info = NSBundle.mainBundle().infoDictionary!
 

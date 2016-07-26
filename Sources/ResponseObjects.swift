@@ -11,43 +11,43 @@ import ObjectMapper
 
 ///
 public class BasicResponse: Mappable, CustomStringConvertible {
-    
+
     ///
     public var description: String {
         return "<empty BasicResponse>"
     }
-    
+
     ///
     public init() {
-        
+
     }
-    
+
     ///
     required public init?(_ map: Map) {
-        
+
     }
-    
+
     ///
     public func mapping(map: Map) {
-    
+
     }
 }
 
 ///
 public class IpResponse: BasicResponse {
-    
+
     ///
     var ip: String = ""
-    
+
     ///
     var version: String = ""
-    
+
     ///
     override public func mapping(map: Map) {
         ip <- map["ip"]
         version <- map["version"]
     }
-    
+
     override public var description: String {
         return "ip: \(ip), version: \(version)"
     }
@@ -56,84 +56,84 @@ public class IpResponse: BasicResponse {
 ////////////////////////////////////////////
 
 class SettingsResponseClient: Mappable, CustomStringConvertible {
-    
+
     var clientType = ""
     var termsAndConditionsAccepted = false
     var termsAndConditionsAcceptedVersion = 0
     var uuid: String?
-    
+
     init() {
-        
+
     }
-    
+
     required init?(_ map: Map) {
-        
+
     }
-    
+
     func mapping(map: Map) {
         clientType <- map["clientType"]
         termsAndConditionsAccepted <- map["termsAndConditionsAccepted"]
         termsAndConditionsAcceptedVersion <- map["termsAndConditionsAcceptedVersion"]
         uuid <- map["uuid"]
     }
-    
+
     var description: String {
         return "clientType: \(clientType), uuid: \(uuid)"
     }
 }
 
 class SettingsReponse: BasicResponse {
-    
+
     var client: SettingsResponseClient?
-    
+
     override func mapping(map: Map) {
         super.mapping(map)
-        
+
         client <- map["client"]
     }
-    
+
 }
 
 ///
 public class SpeedMeasurmentResponse: BasicResponse {
-    
+
     ///
     public var testToken: String?
-    
+
     ///
     public var testUuid: String?
-    
+
     ///
     public var clientRemoteIp: String?
-    
+
     ///
     var duration: Double = 7 // TODO: int instead of double?
-    
+
     ///
     var pretestDuration: Double = RMBT_TEST_PRETEST_DURATION_S // TODO: int instead of double?
-    
+
     ///
     var pretestMinChunkCountForMultithreading: Int = RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST
-    
+
     ///
     var numThreads: Int = 3
-    
+
     ///
     var numPings: Int = 10
-    
+
     ///
     var testWait: Double = 0 // TODO: int instead of double?
-    
+
     ///
     public var measurementServer: TargetMeasurementServer?
-    
+
     ///
     override public func mapping(map: Map) {
         super.mapping(map)
-        
+
         testToken           <- map["test_token"]
         testUuid            <- map["test_uuid"]
-        
+
         clientRemoteIp      <- map["client_remote_ip"]
         duration            <- map["duration"]
         pretestDuration     <- map["duration_pretest"]
@@ -141,45 +141,45 @@ public class SpeedMeasurmentResponse: BasicResponse {
         numPings            <- map["num_pings"]
         testWait            <- map["test_wait"]
         measurementServer   <- map["target_measurement_server"]
-        
+
     }
-    
+
     ///
     override public var description: String {
         return "SpeedMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), clientRemoteIp: \n\(clientRemoteIp)"
     }
-    
+
     ///
     public class TargetMeasurementServer: Mappable {
 
         ///
         var address: String?
-        
+
         ///
         var encrypted = false
-        
+
         ///
         public var name: String?
-        
+
         ///
         var port: Int?
-        
+
         ///
         var uuid: String?
-        
+
         ///
         var ip: String? // TODO: drop this?
-    
+
         ///
         init() {
-            
+
         }
-        
+
         ///
         required public init?(_ map: Map) {
-            
+
         }
-        
+
         ///
         public func mapping(map: Map) {
             address     <- map["address"]
@@ -194,17 +194,17 @@ public class SpeedMeasurmentResponse: BasicResponse {
 
 ///
 class SpeedMeasurementSubmitResponse: BasicResponse {
-    
+
     ///
     var openTestUuid: String?
-    
+
     ///
     var testUuid: String?
-    
+
     ///
     override func mapping(map: Map) {
         super.mapping(map)
-        
+
         openTestUuid <- map["open_test_uuid"]
         testUuid <- map["test_uuid"]
     }
@@ -212,26 +212,26 @@ class SpeedMeasurementSubmitResponse: BasicResponse {
 
 ///
 class QosMeasurmentResponse: BasicResponse {
-   
+
     ///
     var testToken: String?
-    
+
     ///
     var testUuid: String?
-    
+
     ///
     var objectives: [String: [[String: AnyObject]]]?
-    
+
     ///
     override func mapping(map: Map) {
         super.mapping(map)
-        
+
         testToken <- map["test_token"]
         testUuid <- map["test_uuid"]
-        
+
         objectives <- map["objectives"]
     }
-    
+
     ///
     override var description: String {
         return "QosMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), objectives: \n\(objectives)"
@@ -240,7 +240,7 @@ class QosMeasurmentResponse: BasicResponse {
 
 ///
 class QosMeasurementSubmitResponse: BasicResponse {
-    
+
     ///
     override func mapping(map: Map) {
         super.mapping(map)

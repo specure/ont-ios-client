@@ -12,7 +12,7 @@ import CoreLocation
 #if os(iOS)
     import UIKit
 #endif
-    
+
 ///
 public let RMBTTestStatusNone              = "NONE"
 public let RMBTTestStatusAborted           = "ABORTED"
@@ -115,7 +115,10 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     public var testParams: SpeedMeasurmentResponse!
 
     ///
-    public let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
+    //public let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
+
+    ///
+    private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
     private var connectivityTracker: RMBTConnectivityTracker!
@@ -166,33 +169,23 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(!dead, "Invalid state")
 
         phase = .FetchingTestParams
-        
+
         ////////////////
-        
+
         let speedMeasurementRequest = SpeedMeasurementRequest()
-        
+
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
         speedMeasurementRequest.time = Int(currentTimeMillis()) // nanoTime?
-        
+
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings().testCounter
         speedMeasurementRequest.previousTestStatus = RMBTSettings.sharedSettings().previousTestStatus ?? RMBTTestStatusNone
-        
+
         if let l = RMBTLocationTracker.sharedTracker.location {
-            let geoLocation = GeoLocation()
-            
-            geoLocation.latitude = l.coordinate.latitude
-            geoLocation.longitude = l.coordinate.longitude
-            geoLocation.accuracy = l.horizontalAccuracy
-            geoLocation.altitude = l.altitude
-            geoLocation.bearing = 42 // TODO
-            geoLocation.speed = (l.speed > 0.0 ? l.speed : 0.0)
-            geoLocation.provider = "GPS" // TODO?
-            geoLocation.relativeTimeNs = 0 // TODO?
-            geoLocation.time = l.timestamp // TODO?
-            
+            let geoLocation = GeoLocation(location: l)
+
             speedMeasurementRequest.geoLocation = geoLocation
         }
-        
+
         let controlServer = ControlServerNew.sharedControlServer
         controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
             dispatch_async(self.workerQueue) {
@@ -203,7 +196,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                 self.cancelWithReason(.ErrorFetchingTestingParams)
             }
         }
-        
+
         ////////////////
 
         // Notice that we post previous counter (the test before this one) when requesting the params
@@ -221,8 +214,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         self.testParams = testParams
 
-        //testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
-        testResult.markTestStart()
+        speedMeasurementResult.markTestStart()
 
         for i in 0..<(testParams.numThreads ?? 0) {
             let worker = RMBTTestWorker(delegate: self, delegateQueue: workerQueue, index: UInt(i), testParams: testParams)
@@ -231,7 +223,12 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         #if os(iOS)
             // Start observing app going to background notifications
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)),
+                name: UIApplicationDidEnterBackgroundNotification,
+                object: nil
+            )
         #endif
 
         // Register as observer for location tracker updates
@@ -282,10 +279,10 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                     workers[Int(i)].stop()
                 }
 
-                testResult.startDownloadWithThreadCount(1)
+                speedMeasurementResult.startDownloadWithThreadCount(1)
 
             } else {
-                testResult.startDownloadWithThreadCount(Int(testParams.numThreads))
+                speedMeasurementResult.startDownloadWithThreadCount(Int(testParams.numThreads))
                 startPhase(.Latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
             }
         }
@@ -315,9 +312,9 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         logger.debug("Thread \(worker.index): pong (server = \(serverNanos), client = \(clientNanos))")
 
-        testResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
+        speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
 
-        let p = Double(testResult.pings.count) / Double(testParams.numPings)
+        let p = Double(speedMeasurementResult.pings.count) / Double(testParams.numPings)
         dispatch_async(dispatch_get_main_queue()) {
             self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
         }
@@ -341,7 +338,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(!dead, "Invalid state")
 
         if downlinkTestStartedAtNanos == 0 {
-            downlinkStartInterfaceInfo = testResult.lastConnectivity().getInterfaceInfo()
+            downlinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
             downlinkTestStartedAtNanos = nanos
         }
 
@@ -356,7 +353,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(phase == .Down, "Invalid state")
         assert(!dead, "Invalid state")
 
-        let measuredThroughputs = testResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index))
+        let measuredThroughputs = speedMeasurementResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index))
 
         if measuredThroughputs != nil {
         //if let measuredThroughputs = testResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
@@ -375,11 +372,11 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if markWorkerAsFinished() {
             logger.debug("Downlink test finished")
 
-            downlinkEndInterfaceInfo = testResult.lastConnectivity().getInterfaceInfo()
+            downlinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
 
-            let measuredThroughputs = testResult.flush()
+            let measuredThroughputs = speedMeasurementResult.flush()
 
-            testResult.totalDownloadHistory.log()
+            speedMeasurementResult.totalDownloadHistory.log()
 
             if let _ = measuredThroughputs {
                 dispatch_async(dispatch_get_main_queue()) {
@@ -401,7 +398,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         if markWorkerAsFinished() {
             logger.debug("Uplink pretest finished")
-            testResult.startUpload()
+            speedMeasurementResult.startUpload()
             startPhase(.Up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
@@ -417,7 +414,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if uplinkTestStartedAtNanos == 0 {
             uplinkTestStartedAtNanos = nanos
             delay = 0
-            uplinkStartInterfaceInfo = testResult.lastConnectivity().getInterfaceInfo()
+            uplinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
         } else {
             delay = nanos - uplinkTestStartedAtNanos
         }
@@ -433,7 +430,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(phase == .Up, "Invalid state")
         assert(!dead, "Invalid state")
 
-        if let measuredThroughputs = testResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
+        if let measuredThroughputs = speedMeasurementResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
             dispatch_async(dispatch_get_main_queue()) {
                 self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs, inPhase: .Up)
             }
@@ -451,12 +448,12 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             finalize()
 
-            uplinkEndInterfaceInfo = testResult.lastConnectivity().getInterfaceInfo()
+            uplinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
 
-            let measuredThroughputs = testResult.flush()
+            let measuredThroughputs = speedMeasurementResult.flush()
             logger.debug("Uplink test finished.")
 
-            testResult.totalUploadHistory.log()
+            speedMeasurementResult.totalUploadHistory.log()
 
             if let _ = measuredThroughputs {
                 dispatch_async(dispatch_get_main_queue()) {
@@ -492,21 +489,21 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             //self.phase = .SubmittingTestResult
             self.setPhase(.SubmittingTestResult)
-            
+
             let speedMeasurementResultRequest = self.resultObject()
-            
+
             let controlServer = ControlServerNew.sharedControlServer
-            
+
             /*controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 dispatch_async(self.workerQueue) {
                     //self.phase = .None
                     self.setPhase(.None)
                     self.dead = true
-                    
+
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
-                    
+
                     let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
-                    
+
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.testRunnerDidCompleteWithResult(historyResult)
                     }
@@ -516,190 +513,99 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                     self.cancelWithReason(.ErrorSubmittingTestResult)
                 }
             })*/
-            
+
             let successFunc: (response: AnyObject) -> () = { response in
                 dispatch_async(self.workerQueue) {
                     //self.phase = .None
                     self.setPhase(.None)
                     self.dead = true
-                    
+
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
-                    
+
                     let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
-                    
+
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.testRunnerDidCompleteWithResult(historyResult)
                     }
                 }
             }
-            
+
             // TODO: remove this later and take code above (this lets the app continue with qos even if the speed test result is not working...)
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: successFunc, error: { _ in successFunc(response: "todo") })
         }
     }
-    
-    private func resultObject() -> SpeedMeasurementResultRequest { // TODO: replace test result with SpeedMeasurementResultRequest!
-        let result = NSMutableDictionary(dictionary: testResult.resultDictionary())
-        
-        let speedMeasurementResultRequest = SpeedMeasurementResultRequest()
-        
-        speedMeasurementResultRequest.token = testParams.testToken
-        speedMeasurementResultRequest.uuid = testParams.testUuid
-        
+
+    ///
+    private func resultObject() -> SpeedMeasurementResult {
+        speedMeasurementResult.token = testParams.testToken
+        speedMeasurementResult.uuid = testParams.testUuid
+
         // Collect total transfers from all threads
         var sumBytesDownloaded: UInt64 = 0
         var sumBytesUploaded: UInt64 = 0
-        
+
         for w in workers {
             sumBytesDownloaded += w.totalBytesDownloaded
             sumBytesUploaded += w.totalBytesUploaded
         }
-        
+
         assert(sumBytesDownloaded > 0, "Total bytes downloaded <= 0")
         assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
-        
+
         if let firstWorker = workers.first {
-            speedMeasurementResultRequest.bytesDownload = NSNumber(unsignedLongLong: sumBytesDownloaded).integerValue // TODO: ?
-            speedMeasurementResultRequest.bytesUpload = NSNumber(unsignedLongLong: sumBytesUploaded).integerValue // TODO: ?
-                
-            speedMeasurementResultRequest.encryption = firstWorker.negotiatedEncryptionString
-                
-            speedMeasurementResultRequest.ipLocal = firstWorker.localIp
-            speedMeasurementResultRequest.ipServer = firstWorker.serverIp
+            speedMeasurementResult.totalBytesDownload = NSNumber(unsignedLongLong: sumBytesDownloaded).integerValue // TODO: ?
+            speedMeasurementResult.totalBytesUpload = NSNumber(unsignedLongLong: sumBytesUploaded).integerValue // TODO: ?
+
+            speedMeasurementResult.encryption = firstWorker.negotiatedEncryptionString
+
+            speedMeasurementResult.ipLocal = firstWorker.localIp
+            speedMeasurementResult.ipServer = firstWorker.serverIp
         }
-        
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl"))
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!,   endInfo: uplinkEndInterfaceInfo!,   prefix: "testul"))
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!,         endInfo: uplinkEndInterfaceInfo!,   prefix: "test"))
-        
+
+        //let interfaceUpDownTotal = interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "test")
+        if startInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && startInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
+            speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - startInterfaceInfo!.bytesReceived)
+            speedMeasurementResult.interfaceTotalBytesUpload = Int(uplinkEndInterfaceInfo!.bytesSent - startInterfaceInfo!.bytesSent)
+        }
+
+        //let interfaceUpDownDownload = interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl")
+        if downlinkStartInterfaceInfo!.bytesReceived <= downlinkEndInterfaceInfo!.bytesReceived && downlinkStartInterfaceInfo!.bytesSent < downlinkEndInterfaceInfo!.bytesSent {
+            speedMeasurementResult.interfaceDltestBytesDownload = Int(downlinkEndInterfaceInfo!.bytesReceived - downlinkStartInterfaceInfo!.bytesReceived)
+            speedMeasurementResult.interfaceDltestBytesUpload = Int(downlinkEndInterfaceInfo!.bytesSent - downlinkStartInterfaceInfo!.bytesSent)
+        }
+
+        //let interfaceUpDownUpload = interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "testul")
+        if uplinkStartInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && uplinkStartInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
+            speedMeasurementResult.interfaceUltestBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - uplinkStartInterfaceInfo!.bytesReceived)
+            speedMeasurementResult.interfaceUltestBytesUpload = Int(uplinkEndInterfaceInfo!.bytesSent - uplinkStartInterfaceInfo!.bytesSent)
+        }
+
         // Add relative time_(dl/ul)_ns timestamps
-        let startNanos = testResult.testStartNanos
-        
-        speedMeasurementResultRequest.relativeTimeDlNs = NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos).integerValue
-        speedMeasurementResultRequest.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
-        
+        let startNanos = speedMeasurementResult.testStartNanos
+
+        speedMeasurementResult.relativeTimeDlNs = NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos).integerValue
+        speedMeasurementResult.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
+
         ////////////////////////////////////////////////////////////////////
         // TODO: improve this (needs cleanup afterwards)
-        speedMeasurementResultRequest.numThreads = testParams.numThreads
-        speedMeasurementResultRequest.numThreadsUl = testParams.numThreads // TODO?
-        
-        speedMeasurementResultRequest.pings = testResult.pings
-        
-        //speedMeasurementResultRequest.extendedTestStat = // TODO
-        
-        for l in (result["geoLocations"] as? [[String: NSNumber]])! {
-            let geoLocation = GeoLocation()
-            
-            geoLocation.latitude = l["geo_lat"]?.doubleValue
-            geoLocation.longitude = l["geo_long"]?.doubleValue
-            geoLocation.accuracy = l["accuracy"]?.doubleValue
-            geoLocation.altitude = l["altitude"]?.doubleValue
-            //geoLocation.bearing =
-            geoLocation.speed = l["speed"]?.doubleValue
-            //geoLocation.provider =
-            geoLocation.relativeTimeNs = l["time_ns"]?.integerValue
-            //geoLocation.time =
-            
-            speedMeasurementResultRequest.geoLocations.append(geoLocation)
-        }
-        
-        for s in (result["speed_detail"] as? [[String: AnyObject]])! {
-            let speedRawItem = SpeedRawItem()
-            
-            speedRawItem.direction = SpeedRawItem.SpeedRawItemDirection(rawValue: (s["direction"] as? String) ?? "download")
-            speedRawItem.thread = (s["thread"] as? NSNumber)?.integerValue ?? 0
-            speedRawItem.time = (s["time"] as? NSNumber)?.integerValue ?? 0
-            speedRawItem.bytes = (s["bytes"] as? NSNumber)?.integerValue ?? 0
-            
-            speedMeasurementResultRequest.speedDetail.append(speedRawItem)
-        }
-        
-        speedMeasurementResultRequest.networkType = (result["network_type"] as? NSNumber)?.integerValue ?? -1
-        
+
         /*
-        speedMeasurementResultRequest.durationUploadNs =
-        speedMeasurementResultRequest.durationDownloadNs =
-        
-        speedMeasurementResultRequest.pingShortest =
         speedMeasurementResultRequest.portRemote =
-        speedMeasurementResultRequest.speedDownload =
-        speedMeasurementResultRequest.speedUpload =
-        
-        speedMeasurementResultRequest.totalBytesDownload =
-        speedMeasurementResultRequest.totalBytesUpload =
-        speedMeasurementResultRequest.interfaceTotalBytesDownload =
-        speedMeasurementResultRequest.interfaceTotalBytesUpload =
-        speedMeasurementResultRequest.interfaceDltestBytesDownload =
-        speedMeasurementResultRequest.interfaceDltestBytesUpload =
-        speedMeasurementResultRequest.interfaceUltestBytesDownload =
-        speedMeasurementResultRequest.interfaceUltestBytesUpload =
         speedMeasurementResultRequest.time =
         speedMeasurementResultRequest.telephonyInfo =
-        speedMeasurementResultRequest.wifiInfo =*/
+        speedMeasurementResultRequest.wifiInfo =
+        */
 
         if TEST_USE_PERSONAL_DATA_FUZZING {
-            speedMeasurementResultRequest.publishPublicData = RMBTSettings.sharedSettings().publishPublicData
-            logger.info("test result: publish_public_data: \(speedMeasurementResultRequest.publishPublicData)")
+            speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings().publishPublicData
+            logger.info("test result: publish_public_data: \(speedMeasurementResult.publishPublicData)")
         }
-        
+
         //////
-        
-        return speedMeasurementResultRequest
-    }
 
-    ///
-    private func resultDictionary() -> /*[NSObject:AnyObject]*/NSDictionary {
-        let result = NSMutableDictionary(dictionary: testResult.resultDictionary())
+        speedMeasurementResult.calculate()
 
-        result["test_token"] = testParams.testToken
-
-        // Collect total transfers from all threads
-        var sumBytesDownloaded: UInt64 = 0
-        var sumBytesUploaded: UInt64 = 0
-
-        for w in workers {
-            sumBytesDownloaded += w.totalBytesDownloaded
-            sumBytesUploaded += w.totalBytesUploaded
-        }
-
-        assert(sumBytesDownloaded > 0, "Total bytes downloaded <= 0")
-        assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
-
-        if let firstWorker = workers.first {
-            result.addEntriesFromDictionary([
-                "test_total_bytes_download": NSNumber(unsignedLongLong: sumBytesDownloaded),
-                "test_total_bytes_upload":   NSNumber(unsignedLongLong: sumBytesUploaded),
-                "test_encryption":           firstWorker.negotiatedEncryptionString,
-                "test_ip_local":             RMBTValueOrNull(firstWorker.localIp),
-                "test_ip_server":            RMBTValueOrNull(firstWorker.serverIp),
-            ])
-        }
-
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl"))
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!,   endInfo: uplinkEndInterfaceInfo!,   prefix: "testul"))
-        result.addEntriesFromDictionary(interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!,         endInfo: uplinkEndInterfaceInfo!,   prefix: "test"))
-
-        // Add relative time_(dl/ul)_ns timestamps
-        let startNanos = testResult.testStartNanos
-
-        result.addEntriesFromDictionary([
-            "time_dl_ns": NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos),
-            "time_ul_ns": NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos)
-        ])
-
-        return result
-    }
-
-    ///
-    private func interfaceBytesResultDictionaryWithStartInfo(startInfo: RMBTConnectivityInterfaceInfo, endInfo: RMBTConnectivityInterfaceInfo, prefix: String) -> [NSObject:AnyObject] {
-        if startInfo.bytesReceived <= endInfo.bytesReceived && startInfo.bytesSent < endInfo.bytesSent {
-            return [
-                "\(prefix)_if_bytes_download":  NSNumber(unsignedLongLong: UInt64(endInfo.bytesReceived - startInfo.bytesReceived)),
-                "\(prefix)_if_bytes_upload":    NSNumber(unsignedLongLong: UInt64(endInfo.bytesSent - startInfo.bytesSent))
-            ]
-        } else {
-            return [:]
-        }
+        return speedMeasurementResult
     }
 
 // MARK: Utility methods
@@ -812,12 +718,12 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     ///
     public func connectivityTracker(tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
         dispatch_async(workerQueue) {
-            if self.testResult.lastConnectivity() == nil { // TODO: error here?
+            if self.speedMeasurementResult.lastConnectivity() == nil { // TODO: error here?
                 self.startInterfaceInfo = connectivity.getInterfaceInfo()
             }
 
             if self.phase != .None {
-                self.testResult.addConnectivity(connectivity)
+                self.speedMeasurementResult.addConnectivity(connectivity)
             }
         }
 
@@ -858,7 +764,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         for l in (notification.userInfo as! [String: AnyObject])["locations"] as! [CLLocation] { // !
             if CLLocationCoordinate2DIsValid(l.coordinate) {
                 lastLocation = l
-                testResult.addLocation(l)
+                speedMeasurementResult.addLocation(l)
 
                 //NSLog(@"Location updated to (%f,%f,+/- %fm, %@)", l.coordinate.longitude, l.coordinate.latitude, l.horizontalAccuracy, l.timestamp);
                 logger.debug("Location updated to (\(l.coordinate.longitude), \(l.coordinate.latitude), \(l.horizontalAccuracy), \(l.timestamp))")
@@ -931,4 +837,37 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             self.cancelWithReason(.UserRequested)
         }
     }
+
+// MARK: Public API
+
+    ///
+    public func testStartNanos() -> UInt64 {
+        return speedMeasurementResult.testStartNanos
+    }
+
+    ///
+    public func medianPingNanos() -> UInt64 { // maybe better as computed property?
+        return speedMeasurementResult.medianPingNanos
+    }
+
+    ///
+    public func downloadKilobitsPerSecond() -> Int {
+        return Int(speedMeasurementResult.totalDownloadHistory.totalThroughput.kilobitsPerSecond())
+    }
+
+    ///
+    public func uploadKilobitsPerSecond() -> Int {
+        return Int(speedMeasurementResult.totalUploadHistory.totalThroughput.kilobitsPerSecond())
+    }
+
+    ///
+    public func addCpuUsage(cpuUsage: Double, atNanos ns: Int) {
+        speedMeasurementResult.addCpuUsage(cpuUsage, atNanos: ns)
+    }
+
+    ///
+    public func addMemoryUsage(ramUsage: Double, atNanos ns: Int) {
+        speedMeasurementResult.addMemoryUsage(ramUsage, atNanos: ns)
+    }
+
 }
