@@ -10,20 +10,26 @@ import Foundation
 
 // TODO: rewrite to seperate files
 
+///
 public enum RMBTMapOptionsMapViewType: Int {
     case Standard = 0
     case Satellite = 1
     case Hybrid = 2
 }
 
+///
 public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay(
     identifier: "auto",
     localizedDescription: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description")
 )
+
+///
 public let RMBTMapOptionsOverlayHeatmap = RMBTMapOptionsOverlay(
     identifier: "heatmap",
     localizedDescription: NSLocalizedString("map.options.overlay.heatmap", value: "Heatmap", comment: "Map overlay description")
 )
+
+///
 public let RMBTMapOptionsOverlayPoints = RMBTMapOptionsOverlay(
     identifier: "points",
     localizedDescription: NSLocalizedString("map.options.overlay.points", value: "Points", comment: "Map overlay description")
@@ -50,8 +56,13 @@ let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
     localizedDescription: NSLocalizedString("map.options.overlay.whitespots", value: "White spots", comment: "Map overlay description")
 ) */
 
+///
 public let RMBTMapOptionsToastInfoTitle = "title"
+
+///
 public let RMBTMapOptionsToastInfoKeys = "keys"
+
+///
 public let RMBTMapOptionsToastInfoValues = "values"
 
 ///

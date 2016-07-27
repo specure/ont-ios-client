@@ -112,10 +112,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     private var singleThreaded = false
 
     ///
-    public var testParams: SpeedMeasurmentResponse!
-
-    ///
-    //public let testResult = RMBTTestResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
+    public var testParams: SpeedMeasurementResponse!
 
     ///
     private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
@@ -175,7 +172,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         let speedMeasurementRequest = SpeedMeasurementRequest()
 
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
-        speedMeasurementRequest.time = Int(currentTimeMillis()) // nanoTime?
+        speedMeasurementRequest.time = Int(currentTimeMillis())
 
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings().testCounter
 
@@ -203,7 +200,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    private func continueWithTestParams(testParams: SpeedMeasurmentResponse/*RMBTTestParams*/) {
+    private func continueWithTestParams(testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .FetchingTestParams || phase == .None, "Invalid state")
 
@@ -498,7 +495,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
 
-                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""]) // TODO
+                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""])
 
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.testRunnerDidCompleteWithResult(historyResult)
@@ -516,6 +513,10 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     private func resultObject() -> SpeedMeasurementResult {
         speedMeasurementResult.token = testParams.testToken
         speedMeasurementResult.uuid = testParams.testUuid
+
+        //speedMeasurementResultRequest.portRemote =
+
+        speedMeasurementResult.time = NSDate()
 
         // Collect total transfers from all threads
         var sumBytesDownloaded: UInt64 = 0
@@ -539,6 +540,8 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementResult.ipServer = firstWorker.serverIp
         }
 
+        /////////////////////////// SOMETIMES SOME OF THESE VALUES ARE NOT SENT TO THE SERVER?
+        
         //let interfaceUpDownTotal = interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "test")
         if startInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && startInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
             speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - startInterfaceInfo!.bytesReceived)
@@ -557,21 +560,15 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementResult.interfaceUltestBytesUpload = Int(uplinkEndInterfaceInfo!.bytesSent - uplinkStartInterfaceInfo!.bytesSent)
         }
 
+        ///////////////////////////
+        
         // Add relative time_(dl/ul)_ns timestamps
         let startNanos = speedMeasurementResult.testStartNanos
 
         speedMeasurementResult.relativeTimeDlNs = NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos).integerValue
         speedMeasurementResult.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
 
-        ////////////////////////////////////////////////////////////////////
-        // TODO: improve this (needs cleanup afterwards)
-
-        /*
-        speedMeasurementResultRequest.portRemote =
-        speedMeasurementResultRequest.time =
-        speedMeasurementResultRequest.telephonyInfo =
-        speedMeasurementResultRequest.wifiInfo =
-        */
+        //
 
         if TEST_USE_PERSONAL_DATA_FUZZING {
             speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings().publishPublicData

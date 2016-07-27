@@ -170,7 +170,7 @@ public class RMBTConnectivityTracker: NSObject {
             return
         }
 
-        logger.debug("New connectivity =  \(connectivity.testResultDictionary())")
+        logger.debug("New connectivity = \(connectivity)")
 
         if stopOnMixed {
             // Detect compatilibity

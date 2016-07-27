@@ -10,7 +10,7 @@ import Foundation
 
 ///
 public func currentTimeMillis() -> UInt64 {
-    return nanoTime() / NSEC_PER_MSEC
+    return UInt64(NSDate().timeIntervalSince1970 * 1000)
 }
 
 ///

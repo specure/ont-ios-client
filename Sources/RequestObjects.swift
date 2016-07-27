@@ -138,7 +138,7 @@ class GeoLocation: Mappable {
         longitude       = location.coordinate.longitude
         accuracy        = location.horizontalAccuracy
         altitude        = location.altitude
-        bearing         = 42 // TODO
+        bearing         = location.course
         speed           = (location.speed > 0.0 ? location.speed : 0.0)
         provider        = "GPS" // TODO?
         relativeTimeNs  = 0 // TODO?
@@ -372,7 +372,7 @@ class Signal: Mappable {
     ///
     init(connectivity: RMBTConnectivity) {
         // TODO: additional fields?
-        
+
         relativeTimeNs = RMBTTimestampWithNSDate(connectivity.timestamp).integerValue
         time = connectivity.timestamp
 
@@ -447,7 +447,7 @@ class TelephonyInfo: Mappable {
         networkSimOperator = connectivity.telephonyNetworkSimOperator
         networkSimCountry = connectivity.telephonyNetworkSimCountry
     }
-    
+
     ///
     required init?(_ map: Map) {
 
@@ -491,7 +491,7 @@ class WifiInfo: Mappable {
     init() {
 
     }
-    
+
     ///
     init(connectivity: RMBTConnectivity) {
         ssid = connectivity.networkName ?? "Unknown"
@@ -902,6 +902,7 @@ class SpeedMeasurementResult: BasicRequest {
     ///
     func addLocation(location: CLLocation) {
         let geoLocation = GeoLocation(location: location)
+        //geoLocation.relativeTimeNs =
         geoLocations.append(geoLocation)
     }
 

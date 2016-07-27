@@ -119,7 +119,7 @@ public protocol RMBTTestWorkerDelegate {
 public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     // Test parameters
-    private var params: SpeedMeasurmentResponse//RMBTTestParams
+    private var params: SpeedMeasurementResponse
 
     /// Weak reference to the delegate
     private let delegate: RMBTTestWorkerDelegate
@@ -200,7 +200,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     public var serverIp: String!
 
     ///
-    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: SpeedMeasurmentResponse) {
+    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: SpeedMeasurementResponse) {
         self.delegate = delegate
         self.index = index
         self.params = testParams

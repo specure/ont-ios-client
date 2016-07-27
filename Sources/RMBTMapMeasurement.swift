@@ -37,7 +37,8 @@ public class RMBTMapMeasurement {
         timeString = response["time_string"] as! String
         openTestUUID = response["open_test_uuid"] as! String
 
-        let responseMeasurement = response["measurement"] as! [[String: AnyObject]]
+        // TODO: new control server rewrite!
+        /*let responseMeasurement = response["measurement"] as! [[String: AnyObject]]
         for subresponse in responseMeasurement {
             measurementItems.append(RMBTHistoryResultItem(response: subresponse))
         }
@@ -45,20 +46,20 @@ public class RMBTMapMeasurement {
         let responseNet = response["net"] as! [[String: AnyObject]]
         for subresponse in responseNet {
             netItems.append(RMBTHistoryResultItem(response: subresponse))
-        }
+        }*/
     }
 
     ///
     public func snippetText() -> String {
         let result: NSMutableString = ""
 
-        for i in measurementItems {
-            result.appendFormat("%@: %@\n", i.title, i.value)
+        /*for i in measurementItems {
+            //result.appendFormat("%@: %@\n", i.title, i.value) // TODO: new control server rewrite!
         }
 
         for i in netItems {
-            result.appendFormat("%@: %@\n", i.title, i.value)
-        }
+            //result.appendFormat("%@: %@\n", i.title, i.value) // TODO: new control server rewrite!
+        }*/
 
         return result as String
     }

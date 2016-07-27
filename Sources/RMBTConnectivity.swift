@@ -43,7 +43,7 @@ public class RMBTConnectivity {
     public var networkName: String!
 
     ///
-    var bssid: String!
+    public var bssid: String!
 
     ///
     var cellularCode: NSNumber!
@@ -52,10 +52,10 @@ public class RMBTConnectivity {
     var cellularCodeDescription: String!
 
     ///
-    var telephonyNetworkSimOperator: String!
+    public var telephonyNetworkSimOperator: String!
 
     ///
-    var telephonyNetworkSimCountry: String!
+    public var telephonyNetworkSimCountry: String!
 
     ///
     private let cellularCodeTable = [
@@ -90,7 +90,8 @@ public class RMBTConnectivity {
     ///
     public init(networkType: RMBTNetworkType) {
         self.networkType = networkType
-        self.timestamp = NSDate()
+        timestamp = NSDate()
+
         getNetworkDetails()
     }
 
@@ -176,36 +177,6 @@ public class RMBTConnectivity {
         }
 
         return cellularCodeDescriptionTable[value] ?? nil
-    }
-
-    ///
-    public func testResultDictionary() -> NSDictionary { // TODO: remove after control server rewrite
-        var result = [String: AnyObject]()
-
-        let code = networkType.rawValue
-        if code > 0 {
-            result["network_type"] = NSNumber(long: code)
-        }
-
-        if networkType == .WiFi {
-            if networkName != nil {
-                result["wifi_ssid"] = networkName
-            }
-
-            if bssid != nil {
-                result["wifi_bssid"] = bssid
-            }
-        } else if networkType == .Cellular {
-            if cellularCode != nil {
-                result["network_type"] = cellularCode
-            }
-
-            result["telephony_network_sim_operator_name"]   = RMBTValueOrNull(networkName)
-            result["telephony_network_sim_country"]         = RMBTValueOrNull(telephonyNetworkSimCountry)
-            result["telephony_network_sim_operator"]        = RMBTValueOrNull(telephonyNetworkSimOperator)
-        }
-
-        return result
     }
 
     ///

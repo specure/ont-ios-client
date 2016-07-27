@@ -123,17 +123,17 @@ public class ControlServerNew {
 
     ///
     public func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        self.getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
+        getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
     }
 
     ///
     public func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        self.getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
+        getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
     }
 
     ///
     public func getIpVersion(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        self.request(.POST, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
+        request(.POST, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
     }
 
 // MARK: Settings
@@ -182,7 +182,7 @@ public class ControlServerNew {
 // MARK: Speed measurement
 
     ///
-    func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurmentResponse) -> (), error failure: NEWErrorCallback) {
+    func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurementResponse) -> (), error failure: NEWErrorCallback) {
         speedMeasurementRequest.uuid = self.uuid
 
         request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
@@ -198,6 +198,16 @@ public class ControlServerNew {
         } else {
             failure(error: NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
         }
+    }
+
+    ///
+    func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: NEWErrorCallback) {
+        request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
+    }
+
+    ///
+    func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: NEWErrorCallback) {
+        request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
     }
 
 // MARK: Qos measurements
@@ -217,35 +227,41 @@ public class ControlServerNew {
         if let measurementUuid = qosMeasurementResult.measurementUuid {
             qosMeasurementResult.clientUuid = self.uuid
 
-            self.request(.PUT, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
+            request(.PUT, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
         } else {
             failure(error: NSError(domain: "controlServer", code: 134535, userInfo: nil)) // give error if no measurement uuid was provided by caller
         }
     }
 
-// MARK: History
-
-
-
 // MARK: Private
 
     ///
-    private func request<T: Mappable>(method: Alamofire.Method, path: String, requestObject: BasicRequest, success: (response: T) -> (), error failure: NEWErrorCallback) {
+    private func request<T: Mappable>(method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: T) -> (), error failure: NEWErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
-        BasicRequestBuilder.addBasicRequestValues(requestObject)
 
-        let parameters = Mapper().toJSON(requestObject)
+        var parameters: [String : AnyObject]?
 
-        logger.debug {
-            if let jsonString = Mapper().toJSONString(requestObject, prettyPrint: true) {
-                return "Requesting \(path) with object: \n\(jsonString)"
+        if let reqObj = requestObject {
+            BasicRequestBuilder.addBasicRequestValues(reqObj)
+
+            parameters = Mapper().toJSON(reqObj)
+
+            logger.debug {
+                if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
+                    return "Requesting \(path) with object: \n\(jsonString)"
+                }
+
+                return "Requesting \(path) with object: <json serialization failed>"
             }
+        }
 
-            return "Requesting \(path) with object: <json serialization failed>"
+        var encoding: ParameterEncoding = .JSON
+        if method == .GET { // GET request don't support JSON bodies...
+            encoding = .URL
         }
 
         alamofireManager
-            .request(method, baseUrl + path, parameters: parameters, encoding: .JSON) // maybe use alamofire router later? (https://grokswift.com/router/)
+            .request(method, baseUrl + path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             .responseObject { (response: Response<T, NSError>) in
             switch response.result {

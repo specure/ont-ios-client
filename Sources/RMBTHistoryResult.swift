@@ -10,31 +10,46 @@ import Foundation
 import CoreLocation
 
 ///
-public class RMBTHistoryResultItem {
+/*@available(*, deprecated=1.0) */public class RMBTHistoryResultItem {
 
     ///
-    public let title: String
+    public var title: String?
 
     ///
-    public let value: String
+    public var value: String?
 
     ///
-    public let classification: Int
-
-    //
+    public var classification: Int?
 
     ///
-    public init(response: [String: AnyObject]) {
-        self.title = response["title"] as! String
-        self.value = response["value"]!.description
-
-        if let responseClassification = response["classification"] as? NSNumber {
-            self.classification = responseClassification.integerValue
-        } else {
-            self.classification = -1
-        }
+    public init() {
+    
+    }
+    
+    ///
+    init(withResultItem item: SpeedMeasurementResultResponse.ResultItem) {
+        self.title = item.title
+        self.value = item.value
+    }
+    
+    ///
+    init(withClassifiedResultItem item: SpeedMeasurementResultResponse.ClassifiedResultItem) {
+        self.title = item.title
+        self.value = item.value
+        self.classification = item.classification
+    }
+    
+    ///
+    init(withSpeedMeasurementDetailItem item: SpeedMeasurementDetailResultResponse.SpeedMeasurementDetailItem) {
+        self.title = item.title
+        self.value = item.value
+        //item.key
     }
 }
+
+//public typealias ResultItem = SpeedMeasurementResultResponse.ResultItem
+//public typealias ClassifiedResultItem = SpeedMeasurementResultResponse.ClassifiedResultItem
+//public typealias SpeedMeasurementDetailItem = SpeedMeasurementDetailResultResponse.SpeedMeasurementDetailItem
 
 ///
 public enum RMBTHistoryResultDataState {
@@ -49,14 +64,31 @@ public class RMBTHistoryResult {
     ///
     public var dataState: RMBTHistoryResultDataState = .Index
 
+    ///
     public var uuid: String!
+
+    ///
     public var timestamp: NSDate!
+
+    ///
     public var timeString: String = ""
+
+    ///
     public var downloadSpeedMbpsString: String!
+
+    ///
     public var uploadSpeedMbpsString: String!
+
+    ///
     public var shortestPingMillisString: String!
+
+    ///
     public var deviceModel: String!
+
+    ///
     public var coordinate: CLLocationCoordinate2D!
+
+    ///
     public var locationString: String!
 
     /// "WLAN", "2G/3G" etc.
@@ -64,13 +96,21 @@ public class RMBTHistoryResult {
 
     /// Available in basic details
     public var networkType: RMBTNetworkType!
+
+    ///
     public var shareText: String!
+
+    ///
     public var shareURL: NSURL!
-    public var netItems = [RMBTHistoryResultItem]()
-    public var measurementItems = [RMBTHistoryResultItem]()
+
+    ///
+    public var netItems = [RMBTHistoryResultItem]() //[ResultItem]()
+
+    ///
+    public var measurementItems = [RMBTHistoryResultItem]() //[ClassifiedResultItem]()
 
     /// Full details
-    public var fullDetailsItems = [RMBTHistoryResultItem]()
+    public var fullDetailsItems = [RMBTHistoryResultItem]() //[SpeedMeasurementDetailItem]()
 
     //
 
@@ -133,14 +173,15 @@ public class RMBTHistoryResult {
         if dataState != .Index {
             success()
         } else {
-            ControlServer.sharedControlServer.getHistoryResultWithUUID(uuid, fullDetails: false, success: { response in
 
-                if let networkType = response["network_type"] as? NSNumber {
-                    self.networkType = RMBTNetworkTypeMake(networkType.integerValue) // RMBTNetworkType(rawValue: networkType.integerValue)!
+            ControlServerNew.sharedControlServer.getSpeedMeasurement(uuid, success: { response in
+
+                if let nt = response.networkType {
+                    self.networkType = RMBTNetworkTypeMake(nt) // RMBTNetworkType(rawValue: networkType.integerValue)!
                 }
 
                 self.shareURL = nil
-                if let shareText = response["share_text"] as? String {
+                if let shareText = response.shareText {
                     // http://stackoverflow.com/questions/14226300/i-am-getting-an-implicit-conversion-from-enumeration-type-warning-in-xcode-for
                     // TODO: verify if fixed on iOS7
 
@@ -159,36 +200,38 @@ public class RMBTHistoryResult {
                         }
 
                     } catch {
-
+                        // ignore
                     }
                 }
 
-                for r in (response["net"] as! [[String: AnyObject]]) {
-                    self.netItems.append(RMBTHistoryResultItem(response: r))
+                if let networkDetailList = response.networkDetailList {
+                    let resultItems = networkDetailList.map({ item -> RMBTHistoryResultItem in
+                        return RMBTHistoryResultItem(withResultItem: item)
+                    })
+                    
+                    self.netItems.appendContentsOf(resultItems)
                 }
 
-                for r in (response["measurement"] as! [[String: AnyObject]]) {
-                    self.measurementItems.append(RMBTHistoryResultItem(response: r))
+                if let classifiedMeasurementDataList = response.classifiedMeasurementDataList {
+                    let resultItems = classifiedMeasurementDataList.map({ item -> RMBTHistoryResultItem in
+                        return RMBTHistoryResultItem(withClassifiedResultItem: item)
+                    })
+                    
+                    self.measurementItems.appendContentsOf(resultItems)
                 }
 
-                // TODO: rewrite with double if-let statement when using swift 1.2
-                if let geoLat = response["geo_lat"] as? NSNumber {
-                    if let geoLon = response["geo_long"] as? NSNumber {
-                        self.coordinate = CLLocationCoordinate2DMake(geoLat.doubleValue, geoLon.doubleValue)
-                    }
+                if let geoLat = response.latitude, geoLon = response.longitude {
+                    self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
                 }
 
-                if let timeString = response["time_string"] as? String {
-                    self.timeString = timeString
-                }
-
-                self.locationString = response["location"] as? String
+                self.timeString = response.timeString ?? ""
+                self.locationString = response.location
 
                 self.dataState = .Basic
 
                 success()
 
-            }, error: { error, info in
+            }, error: { error in
                 // TODO: handle error
             })
         }
@@ -199,37 +242,24 @@ public class RMBTHistoryResult {
         if dataState == .Full {
             success()
         } else {
-            ControlServer.sharedControlServer.getHistoryResultWithUUID(uuid, fullDetails: true, success: { response in
 
-                for r in (response as! [[String: AnyObject]]) {
+            ControlServerNew.sharedControlServer.getSpeedMeasurementDetails(uuid, success: { response in
 
-                    if let additionalTitleFields = r["title"] as? [String: AnyObject],
-                           additionalValueFields = r["value"] as? [String: AnyObject] { // additional fields
+                // TODO:
 
-                        let keyArray = [String](additionalTitleFields.keys)
-
-                        for a in 0 ..< keyArray.count {
-                            if let titleField = additionalTitleFields[keyArray[a]],
-                                   valueField = additionalValueFields[keyArray[a]] {
-
-                                let aResponse = [
-                                    "title": titleField,
-                                    "value": valueField,
-                                ]
-
-                                self.fullDetailsItems.append(RMBTHistoryResultItem(response: aResponse))
-                            }
-                        }
-                    } else { // simple fields
-                        self.fullDetailsItems.append(RMBTHistoryResultItem(response: r))
-                    }
+                if let speedMeasurementResultDetailList = response.speedMeasurementResultDetailList {
+                    let resultItems = speedMeasurementResultDetailList.map({ item -> RMBTHistoryResultItem in
+                        return RMBTHistoryResultItem(withSpeedMeasurementDetailItem: item)
+                    })
+                    
+                    self.fullDetailsItems.appendContentsOf(resultItems)
                 }
 
                 self.dataState = .Full
 
                 success()
 
-            }, error: { error, info in
+            }, error: { error in
                 // TODO: handle error
             })
         }
