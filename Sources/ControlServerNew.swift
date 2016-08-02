@@ -201,12 +201,12 @@ public class ControlServerNew {
     }
 
     ///
-    func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: NEWErrorCallback) {
+    public func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: NEWErrorCallback) {
         request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
     }
 
     ///
-    func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: NEWErrorCallback) {
+    public func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: NEWErrorCallback) {
         request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
     }
 

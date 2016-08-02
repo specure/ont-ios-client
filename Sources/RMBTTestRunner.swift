@@ -77,7 +77,7 @@ public protocol RMBTTestRunnerDelegate {
     func testRunnerDidDetectLocation(location: CLLocation)
 
     ///
-    func testRunnerDidCompleteWithResult(result: RMBTHistoryResult)
+    func testRunnerDidCompleteWithResult(uuid: String)
 
     ///
     func testRunnerDidCancelTestWithReason(cancelReason: RMBTTestRunnerCancelReason)
@@ -495,10 +495,14 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
 
-                    let historyResult = RMBTHistoryResult(response: ["test_uuid": self.testParams.testUuid ?? ""])
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.delegate.testRunnerDidCompleteWithResult(historyResult)
+                    if let uuid = self.testParams.testUuid {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.delegate.testRunnerDidCompleteWithResult(uuid)
+                        }
+                    } else {
+                        dispatch_async(self.workerQueue) {
+                            self.cancelWithReason(.ErrorSubmittingTestResult) // TODO
+                        }
                     }
                 }
             }, error: { error in

@@ -68,7 +68,7 @@ public protocol RMBTClientDelegate {
     //func measurementDidStart(client: RMBTClient)
 
     ///
-    func measurementDidComplete(client: RMBTClient, withResult result: RMBTHistoryResult)
+    func measurementDidComplete(client: RMBTClient, withResult result: String)
 
     ///
     func measurementDidFail(client: RMBTClient, withReason reason: RMBTClientCancelReason)
@@ -108,7 +108,7 @@ public class RMBTClient {
     public var delegate: RMBTClientDelegate?
 
     ///
-    private var result: RMBTHistoryResult?
+    private var resultUuid: String?
 
     ///
     public var running: Bool {
@@ -279,10 +279,10 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     }
 
     ///
-    public func testRunnerDidCompleteWithResult(result: RMBTHistoryResult) {
+    public func testRunnerDidCompleteWithResult(uuid: String) {
         stopHardwareUsageTimer() // stop cpu and memory usage timer
 
-        self.result = result
+        self.resultUuid = uuid
 
         startQosMeasurement() // continue with qos measurement // TODO: check if qos is enabled/disabled
     }
@@ -317,8 +317,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
         _running = false
 
-        if let result = self.result {
-            delegate?.measurementDidComplete(self, withResult: result)
+        // TODO: stop location tracker!
+
+        if let uuid = self.resultUuid {
+            delegate?.measurementDidComplete(self, withResult: uuid)
         } else {
             delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.UnknownError) // TODO better error handling (but this error should never happen...)
         }
