@@ -208,8 +208,8 @@ public class ControlServer {
             // get names for QOSTestType
             if let qostesttypeDesc = s["qostesttype_desc"] as? [[String: String]] {
                 for testType in qostesttypeDesc {
-                    if let t = QOSTestType(rawValue: testType["test_type"]!.lowercaseString) {
-                        QOSTestType.localizedNameDict[t] = testType["name"]!
+                    if let t = QOSMeasurementType(rawValue: testType["test_type"]!.lowercaseString) {
+                        QOSMeasurementType.localizedNameDict[t] = testType["name"]!
                     }
                 }
 

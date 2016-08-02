@@ -36,7 +36,7 @@ let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
 ///
 #if DEBUG
 
-let QOS_ENABLED_TESTS: [QOSTestType] = [
+let QOS_ENABLED_TESTS: [QOSMeasurementType] = [
     .HttpProxy,
     .NonTransparentProxy,
     //.WEBSITE,
@@ -48,7 +48,7 @@ let QOS_ENABLED_TESTS: [QOSTestType] = [
 ]
 
 /// determine the tests which should show log messages
-let QOS_ENABLED_TESTS_LOG: [QOSTestType] = [
+let QOS_ENABLED_TESTS_LOG: [QOSMeasurementType] = [
 //    .HttpProxy,
 //    .NonTransparentProxy,
 //    .WEBSITE,
@@ -63,7 +63,7 @@ let QOS_ENABLED_TESTS_LOG: [QOSTestType] = [
 
 // BETA / PRODUCTION
 
-let QOS_ENABLED_TESTS: [QOSTestType] = [
+let QOS_ENABLED_TESTS: [QOSMeasurementType] = [
     .HttpProxy,
     .NonTransparentProxy,
     //.WEBSITE,
@@ -75,7 +75,7 @@ let QOS_ENABLED_TESTS: [QOSTestType] = [
 ]
 
 /// determine the tests which should show log messages
-let QOS_ENABLED_TESTS_LOG: [QOSTestType] = [
+let QOS_ENABLED_TESTS_LOG: [QOSMeasurementType] = [
     .HttpProxy,
     .NonTransparentProxy,
     //    .WEBSITE,

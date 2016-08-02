@@ -18,7 +18,7 @@ class QOSFactory {
 
     ///
     class func createQOSTest(typeString: String, params: QOSTestParameters) -> QOSTest? {
-        if let type = getTypeIfEnabled(QOSTestType(rawValue: typeString)) {
+        if let type = getTypeIfEnabled(QOSMeasurementType(rawValue: typeString)) {
 
             switch type {
                 case .TCP:
@@ -125,7 +125,7 @@ class QOSFactory {
     }
 
     ///
-    private class func getTypeIfEnabled(type: QOSTestType?) -> QOSTestType? {
+    private class func getTypeIfEnabled(type: QOSMeasurementType?) -> QOSMeasurementType? {
         if type != nil && !isEnabled(type!) {
             return nil
         }
@@ -134,7 +134,7 @@ class QOSFactory {
     }
 
     ///
-    private class func isEnabled(type: QOSTestType) -> Bool {
+    private class func isEnabled(type: QOSMeasurementType) -> Bool {
         return QOS_ENABLED_TESTS.contains(type)
     }
 }

@@ -40,7 +40,7 @@
 		E02D189F1CF59262002A02FE /* QOSTestExecutorClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18041CF59262002A02FE /* QOSTestExecutorClass.swift */; };
 		E02D18A01CF59262002A02FE /* QOSTestExecutorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18051CF59262002A02FE /* QOSTestExecutorProtocol.swift */; };
 		E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18061CF59262002A02FE /* QOSTestResult.swift */; };
-		E02D18A21CF59262002A02FE /* QOSTestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18071CF59262002A02FE /* QOSTestType.swift */; };
+		E02D18A21CF59262002A02FE /* QOSMeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18071CF59262002A02FE /* QOSMeasurementType.swift */; };
 		E02D18A31CF59262002A02FE /* QOSTracerouteTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18081CF59262002A02FE /* QOSTracerouteTest.swift */; };
 		E02D18A51CF59262002A02FE /* QOSTypeDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180A1CF59262002A02FE /* QOSTypeDefinition.swift */; };
 		E02D18A61CF59262002A02FE /* QOSUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180B1CF59262002A02FE /* QOSUDPTest.swift */; };
@@ -107,7 +107,7 @@
 		E02D19551CF5A43D002A02FE /* QOSWebsiteTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180F1CF59262002A02FE /* QOSWebsiteTest.swift */; };
 		E02D19561CF5A43F002A02FE /* QOSVOIPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180D1CF59262002A02FE /* QOSVOIPTest.swift */; };
 		E02D19571CF5A441002A02FE /* QOSUDPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180B1CF59262002A02FE /* QOSUDPTest.swift */; };
-		E02D19581CF5A443002A02FE /* QOSTestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18071CF59262002A02FE /* QOSTestType.swift */; };
+		E02D19581CF5A443002A02FE /* QOSMeasurementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18071CF59262002A02FE /* QOSMeasurementType.swift */; };
 		E02D19591CF5A445002A02FE /* QOSTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18061CF59262002A02FE /* QOSTestResult.swift */; };
 		E02D195A1CF5A447002A02FE /* QOSTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18031CF59262002A02FE /* QOSTest.swift */; };
 		E02D195B1CF5A449002A02FE /* QOSTCPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18011CF59262002A02FE /* QOSTCPTest.swift */; };
@@ -293,7 +293,7 @@
 		E02D18041CF59262002A02FE /* QOSTestExecutorClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTestExecutorClass.swift; sourceTree = "<group>"; };
 		E02D18051CF59262002A02FE /* QOSTestExecutorProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTestExecutorProtocol.swift; sourceTree = "<group>"; };
 		E02D18061CF59262002A02FE /* QOSTestResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTestResult.swift; sourceTree = "<group>"; };
-		E02D18071CF59262002A02FE /* QOSTestType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTestType.swift; sourceTree = "<group>"; };
+		E02D18071CF59262002A02FE /* QOSMeasurementType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSMeasurementType.swift; sourceTree = "<group>"; };
 		E02D18081CF59262002A02FE /* QOSTracerouteTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTracerouteTest.swift; sourceTree = "<group>"; };
 		E02D18091CF59262002A02FE /* QOSTracerouteTestExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTracerouteTestExecutor.swift; sourceTree = "<group>"; };
 		E02D180A1CF59262002A02FE /* QOSTypeDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSTypeDefinition.swift; sourceTree = "<group>"; };
@@ -478,7 +478,7 @@
 				E02D18011CF59262002A02FE /* QOSTCPTest.swift */,
 				E02D18031CF59262002A02FE /* QOSTest.swift */,
 				E02D18061CF59262002A02FE /* QOSTestResult.swift */,
-				E02D18071CF59262002A02FE /* QOSTestType.swift */,
+				E02D18071CF59262002A02FE /* QOSMeasurementType.swift */,
 				E02D180B1CF59262002A02FE /* QOSUDPTest.swift */,
 				E02D180D1CF59262002A02FE /* QOSVOIPTest.swift */,
 				E02D180F1CF59262002A02FE /* QOSWebsiteTest.swift */,
@@ -1095,7 +1095,7 @@
 				E02D18FB1CF59262002A02FE /* RTPSequence.swift in Sources */,
 				E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */,
 				E02D18E31CF59262002A02FE /* RMBTSSLHelper.swift in Sources */,
-				E02D18A21CF59262002A02FE /* QOSTestType.swift in Sources */,
+				E02D18A21CF59262002A02FE /* QOSMeasurementType.swift in Sources */,
 				E02D18C11CF59262002A02FE /* RMBTJSONHelper.swift in Sources */,
 				E02D188C1CF59262002A02FE /* OrderedDictionary.swift in Sources */,
 				E02D190A1CF59262002A02FE /* WalledGardenTest.swift in Sources */,
@@ -1187,7 +1187,7 @@
 				E02D1A741CFDE375002A02FE /* ResponseObjects.swift in Sources */,
 				E02D19501CF5A422002A02FE /* DNSHeader.swift in Sources */,
 				E02D1A191CFC95D1002A02FE /* RMBTCPUMonitor.m in Sources */,
-				E02D19581CF5A443002A02FE /* QOSTestType.swift in Sources */,
+				E02D19581CF5A443002A02FE /* QOSMeasurementType.swift in Sources */,
 				E02D19661CF5A46A002A02FE /* RMBTThroughput.swift in Sources */,
 				E02D198A1CF5A520002A02FE /* ConversionUtility.swift in Sources */,
 				E02D19531CF5A42A002A02FE /* DNSResourceRecord.swift in Sources */,

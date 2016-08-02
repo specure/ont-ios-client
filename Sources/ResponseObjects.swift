@@ -394,3 +394,151 @@ class QosMeasurementSubmitResponse: BasicResponse {
         super.mapping(map)
     }
 }
+
+///
+public class QosMeasurementResultResponse: BasicResponse {
+
+    ///
+    public var evaluation: String?
+
+    ///
+    public var evalTimes: [String: AnyObject]?
+
+    ///
+    public var testResultDetail: [MeasurementQosResult]?
+
+    ///
+    public var testResultDetailDescription: [String: AnyObject]?
+
+    ///
+    public var testResultDetailTestDescription: [String: AnyObject]?
+
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+
+        evaluation <- map["evaluation"]
+        evalTimes <- map["eval_times"]
+        testResultDetail <- map["testresultdetail"]
+        testResultDetailDescription <- map["testresultdetail_desc"]
+        testResultDetailTestDescription <- map["testresultdetail_testdesc"]
+    }
+
+    ///
+    public class MeasurementQosResult: Mappable {
+
+        ///
+        public var objectiveId: Int?
+
+        ///
+        public var type: QOSMeasurementType?
+
+        ///
+        public var successCount: Int?
+
+        ///
+        public var failureCount: Int?
+
+        ///
+        public var result: AnyObject?
+
+        ///
+        public var testDesc: String?
+
+        ///
+        public var summary: String?
+
+        ///
+        public var oldUid: Int?
+
+        ///
+        public init() {
+
+        }
+
+        ///
+        required public init?(_ map: Map) {
+
+        }
+
+        ///
+        public func mapping(map: Map) {
+            objectiveId <- map["objectiveId"]
+            type <- map["test_type"]
+            successCount <- map["success_count"]
+
+            failureCount <- map["failure_count"]
+            result <- map["result"]
+            testDesc <- map["test_desc"]
+            summary <- map["test_summary"]
+            oldUid <- map["uid"]
+
+        }
+    }
+}
+
+///
+public class HistoryItem: BasicResponse {
+
+    ///
+    public var testUuid: String?
+
+    ///
+    public var time: Int?
+
+    ///
+    public var timeZone: String?
+
+    ///
+    public var timeString: String?
+
+    ///
+    public var speedDownload: String?
+
+    ///
+    public var speedUpload: String?
+
+    ///
+    public var ping: String?
+
+    ///
+    public var pingShortest: String?
+
+    ///
+    public var model: String?
+
+    ///
+    public var networkType: String?
+
+    ///
+    public var speedDownloadClassification: Int?
+
+    ///
+    public var speedUploadClassification: Int?
+
+    ///
+    public var pingClassification: Int?
+
+    ///
+    public var pingShortClassification: Int?
+
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+
+        testUuid        <- map["test_uuid"]
+        time            <- map["time"]
+        timeZone        <- map["time_zone"]
+        timeString      <- map["time_string"]
+        speedDownload   <- map["speed_download"]
+        speedUpload     <- map["speed_upload"]
+        ping            <- map["ping"]
+        pingShortest    <- map["ping_shortest"]
+        model           <- map["model"]
+        networkType     <- map["network_type"]
+        speedDownloadClassification <- map["speed_download_classification"]
+        speedUploadClassification   <- map["speed_upload_classification"]
+        pingClassification          <- map["ping_classification"]
+        pingShortClassification     <- map["ping_short_classification"]
+    }
+}

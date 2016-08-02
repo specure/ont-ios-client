@@ -15,7 +15,7 @@ public class QOSTestResult {
     public var resultDictionary = QOSTestResults()
 
     ///
-    public var testType: QOSTestType
+    public var testType: QOSMeasurementType
 
     ///
     public var fatalError = false
@@ -26,7 +26,7 @@ public class QOSTestResult {
     //
 
     ///
-    public init(type: QOSTestType) {
+    public init(type: QOSMeasurementType) {
         self.testType = type
 
         resultDictionary["test_type"] = type.rawValue

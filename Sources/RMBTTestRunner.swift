@@ -13,7 +13,7 @@ import CoreLocation
     import UIKit
 #endif
 
-///
+/// // TODO: -> enum
 public let RMBTTestStatusNone              = "NONE"
 public let RMBTTestStatusAborted           = "ABORTED"
 public let RMBTTestStatusError             = "ERROR"
@@ -541,7 +541,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         }
 
         /////////////////////////// SOMETIMES SOME OF THESE VALUES ARE NOT SENT TO THE SERVER?
-        
+
         //let interfaceUpDownTotal = interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "test")
         if startInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && startInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
             speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - startInterfaceInfo!.bytesReceived)
@@ -561,7 +561,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         }
 
         ///////////////////////////
-        
+
         // Add relative time_(dl/ul)_ns timestamps
         let startNanos = speedMeasurementResult.testStartNanos
 

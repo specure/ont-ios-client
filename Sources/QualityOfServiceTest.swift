@@ -56,7 +56,7 @@ public class QualityOfServiceTest {
     private var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
 
     ///
-    private var testTypeCountMap = [QOSTestType: UInt16]()
+    private var testTypeCountMap = [QOSMeasurementType: UInt16]()
 
     ///
     private var sortedConcurrencyGroups = [ConcurrencyGroup]()
@@ -200,7 +200,7 @@ public class QualityOfServiceTest {
             return
         }
 
-        var testTypeSortDictionary = [QOSTestType: ConcurrencyGroup]()
+        var testTypeSortDictionary = [QOSMeasurementType: ConcurrencyGroup]()
 
         // fill testTypeCount map (used for displaying the finished test types in ui)
         for (cg, testArray) in qosTestConcurrencyGroupMap { // loop each concurrency group
@@ -225,7 +225,7 @@ public class QualityOfServiceTest {
         }
 
         // get test types and sort them according to their first execution
-        var testTypeArray = [QOSTestType](self.testTypeCountMap.keys)
+        var testTypeArray = [QOSMeasurementType](self.testTypeCountMap.keys)
         testTypeArray.sortInPlace() { lhs, rhs in
             testTypeSortDictionary[lhs] < testTypeSortDictionary[rhs]
         }
@@ -327,7 +327,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func qosTestFinishedWithResult(testType: QOSTestType, withTestResult testResult: QOSTestResult?) {
+    private func qosTestFinishedWithResult(testType: QOSMeasurementType, withTestResult testResult: QOSTestResult?) {
         if stopped {
             return
         }
@@ -375,7 +375,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func checkTypeCount(testType: QOSTestType) {
+    private func checkTypeCount(testType: QOSMeasurementType) {
         if stopped {
             return
         }

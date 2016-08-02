@@ -23,22 +23,22 @@ import CoreLocation
 
     ///
     public init() {
-    
+
     }
-    
+
     ///
     init(withResultItem item: SpeedMeasurementResultResponse.ResultItem) {
         self.title = item.title
         self.value = item.value
     }
-    
+
     ///
     init(withClassifiedResultItem item: SpeedMeasurementResultResponse.ClassifiedResultItem) {
         self.title = item.title
         self.value = item.value
         self.classification = item.classification
     }
-    
+
     ///
     init(withSpeedMeasurementDetailItem item: SpeedMeasurementDetailResultResponse.SpeedMeasurementDetailItem) {
         self.title = item.title
@@ -208,7 +208,7 @@ public class RMBTHistoryResult {
                     let resultItems = networkDetailList.map({ item -> RMBTHistoryResultItem in
                         return RMBTHistoryResultItem(withResultItem: item)
                     })
-                    
+
                     self.netItems.appendContentsOf(resultItems)
                 }
 
@@ -216,7 +216,7 @@ public class RMBTHistoryResult {
                     let resultItems = classifiedMeasurementDataList.map({ item -> RMBTHistoryResultItem in
                         return RMBTHistoryResultItem(withClassifiedResultItem: item)
                     })
-                    
+
                     self.measurementItems.appendContentsOf(resultItems)
                 }
 
@@ -251,7 +251,7 @@ public class RMBTHistoryResult {
                     let resultItems = speedMeasurementResultDetailList.map({ item -> RMBTHistoryResultItem in
                         return RMBTHistoryResultItem(withSpeedMeasurementDetailItem: item)
                     })
-                    
+
                     self.fullDetailsItems.appendContentsOf(resultItems)
                 }
 

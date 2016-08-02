@@ -109,7 +109,7 @@ public class RMBTClient {
 
     ///
     private var result: RMBTHistoryResult?
-    
+
     ///
     public var running: Bool {
         get {
@@ -283,7 +283,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         stopHardwareUsageTimer() // stop cpu and memory usage timer
 
         self.result = result
-        
+
         startQosMeasurement() // continue with qos measurement // TODO: check if qos is enabled/disabled
     }
 
@@ -332,12 +332,12 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSTestType]) {
+    public func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSTestType) {
+    public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
     }
 

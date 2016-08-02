@@ -24,10 +24,10 @@ public protocol QualityOfServiceTestDelegate {
     func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSTestType])
+    func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType])
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSTestType)
+    func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType)
 
     ///
     func qualityOfServiceTest(test: QualityOfServiceTest, didProgressToValue progress: Float)

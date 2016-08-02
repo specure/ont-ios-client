@@ -293,13 +293,13 @@ class QOSTestExecutorClass<T: QOSTest>: QOSTestExecutorProtocol, QOSControlConne
 class QOSLog {
 
     ///
-    let testType: QOSTestType
+    let testType: QOSMeasurementType
 
     ///
     let testUid: UInt
 
     ///
-    init(testType: QOSTestType, testUid: UInt) {
+    init(testType: QOSMeasurementType, testUid: UInt) {
         self.testType = testType
         self.testUid = testUid
     }

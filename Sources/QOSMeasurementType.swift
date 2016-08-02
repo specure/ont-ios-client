@@ -1,5 +1,5 @@
 //
-//  QOSTestType.swift
+//  QOSMeasurementType.swift
 //  RMBT
 //
 //  Created by Benjamin Pucher on 05.12.14.
@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-public enum QOSTestType: String {
+public enum QOSMeasurementType: String {
     case HttpProxy              = "http_proxy"
     case NonTransparentProxy    = "non_transparent_proxy"
     case WEBSITE                = "website"
@@ -20,14 +20,14 @@ public enum QOSTestType: String {
     case TRACEROUTE             = "traceroute"
 
     ///
-    static var localizedNameDict = [QOSTestType: String]()
+    static var localizedNameDict = [QOSMeasurementType: String]()
 }
 
 ///
-extension QOSTestType: CustomStringConvertible {
+extension QOSMeasurementType: CustomStringConvertible {
 
     ///
     public var description: String {
-        return QOSTestType.localizedNameDict[self] ?? self.rawValue
+        return QOSMeasurementType.localizedNameDict[self] ?? self.rawValue
     }
 }
