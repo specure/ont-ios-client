@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-public enum QOSMeasurementType: String {
+public enum QOSMeasurementType: String { // TODO: rename to QosMeasurementType
     case HttpProxy              = "http_proxy"
     case NonTransparentProxy    = "non_transparent_proxy"
     case WEBSITE                = "website"
