@@ -12,46 +12,41 @@ import Foundation
 public class RMBTTOS: NSObject {
 
     ///
-    private let TOS_VERSION_KEY: String = "tos_version"
+    private let TOS_VERSION_KEY = "tos_version"
 
     ///
-    public dynamic var lastAcceptedVersion: UInt // UInt correct? // dynamic?
+    public dynamic var lastAcceptedVersion: Int
 
     ///
-    public var currentVersion: UInt // UInt correct?
+    public var currentVersion: Int
 
     ///
     public static let sharedTOS = RMBTTOS()
 
     ///
     override public init() {
-        if let tosVersionNumber = NSUserDefaults.standardUserDefaults().objectForKey(TOS_VERSION_KEY) as? UInt {
-            self.lastAcceptedVersion = tosVersionNumber
-        } else {
-            self.lastAcceptedVersion = 0
-        }
-
-        self.currentVersion = UInt(RMBT_TOS_VERSION)
+        lastAcceptedVersion = NSUserDefaults.standardUserDefaults().integerForKey(TOS_VERSION_KEY) ?? 0
+        currentVersion = RMBT_TOS_VERSION
     }
 
     ///
     public func isCurrentVersionAccepted() -> Bool {
-        return self.lastAcceptedVersion >= UInt(currentVersion) // is this correct?
+        return lastAcceptedVersion >= currentVersion // is this correct?
     }
 
     ///
     public func acceptCurrentVersion() {
-        lastAcceptedVersion = UInt(currentVersion)
+        lastAcceptedVersion = currentVersion
 
-        NSUserDefaults.standardUserDefaults().setObject(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
+        NSUserDefaults.standardUserDefaults().setInteger(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
         NSUserDefaults.standardUserDefaults().synchronize()
     }
 
     ///
     public func declineCurrentVersion() {
-        lastAcceptedVersion = UInt(currentVersion) > 0 ? UInt(currentVersion) - 1 : 0 // go to previous version or 0 if not accepted
+        lastAcceptedVersion = currentVersion > 0 ? currentVersion - 1 : 0 // go to previous version or 0 if not accepted
 
-        NSUserDefaults.standardUserDefaults().setObject(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
+        NSUserDefaults.standardUserDefaults().setInteger(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
         NSUserDefaults.standardUserDefaults().synchronize()
     }
 }

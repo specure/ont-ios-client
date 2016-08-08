@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import AFNetworking
+import Alamofire
 
 ///
 typealias HTTPProxyTestExecutor = QOSHTTPProxyTestExecutor<QOSHTTPProxyTest>
@@ -28,6 +28,9 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
     ///
     private var requestStartTimeTicks: UInt64 = 0
 
+    ///
+    private var alamofireManager: Alamofire.Manager! // !
+    
     //
 
     ///
@@ -52,94 +55,97 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
 
             qosLog.debug("EXECUTING HTTP PROXY TEST")
 
-            let manager: AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+            /////////
+            let configuration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+
+            let timeout = nsToSec(testObject.downloadTimeout)
+            qosLog.debug("TIMEOUT sec: \(timeout)")
+
+            configuration.timeoutIntervalForRequest = timeout
+            configuration.timeoutIntervalForResource = timeout
+
+            configuration.allowsCellularAccess = true
+            //configuration.HTTPShouldUsePipelining = true
+
+            var additonalHeaderFields = [String: AnyObject]()
+
+            // Set user agent
+            if let userAgent = NSUserDefaults.standardUserDefaults().stringForKey("UserAgent") {
+                additonalHeaderFields["User-Agent"] = userAgent
+            }
 
             // add range header if it exists
             if let range = testObject.range {
-                manager.requestSerializer.setValue(range, forHTTPHeaderField: "Range")
+                additonalHeaderFields["Range"] = range
             }
 
-            // set timeout (timeoutInterval is in seconds)
-            manager.requestSerializer.timeoutInterval = nsToSec(testObject.downloadTimeout) // TODO: is this the correct timeout?
+            configuration.HTTPAdditionalHeaders = additonalHeaderFields
 
-            // add text/html to the accepted content types
-            // manager.responseSerializer.acceptableContentTypes = manager.responseSerializer.acceptableContentTypes.setByAddingObject("text/html")
-            manager.responseSerializer = AFHTTPResponseSerializer()
-
-            // generate url request
-
-            let request: NSMutableURLRequest
-            do {
-                request = try manager.requestSerializer.requestWithMethod("GET", URLString: url, parameters: [:], error: ())
-            } catch {
-                // check error (TODO: check more...)
-                return testDidFail()
-            }
-
-            // set request timeout
-            request.timeoutInterval = nsToSec(testObject.connectionTimeout) // TODO: is this the correct timeout?
-
-            // create request operation
-            let requestOperation = manager.HTTPRequestOperationWithRequest(request, success: { (operation: AFHTTPRequestOperation!, responseObject: AnyObject!) -> Void in
-
-                self.qosLog.debug("GET SUCCESS")
-
-                // compute duration
-                let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
-                self.testResult.set(self.RESULT_HTTP_PROXY_DURATION, number: durationInNanoseconds)
-
-                // set other result values
-                self.testResult.set(self.RESULT_HTTP_PROXY_STATUS, value: operation.response.statusCode)
-                self.testResult.set(self.RESULT_HTTP_PROXY_LENGTH, number: operation.response.expectedContentLength)
-
-                // compute md5
-                if let r = responseObject as? NSData {
-                    self.qosLog.debug("ITS NSDATA!")
-
-                    self.testResult.set(self.RESULT_HTTP_PROXY_HASH, value: r.MD5().hexString()) // TODO: improve
-                }
-
-                // loop through headers
-                var headerString: String = ""
-                for (headerName, headerValue) in operation.response.allHeaderFields {
-                    headerString += "\(headerName): \(headerValue)\n"
-                }
-
-                self.testResult.set(self.RESULT_HTTP_PROXY_HEADER, value: headerString)
-
-                ///
-                self.testDidSucceed()
-                ///
-
-            }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
-
-                self.qosLog.debug("GET FAILURE")
-                self.qosLog.debug("\(error.description)")
-
-                if error != nil && error.code == NSURLErrorTimedOut {
-                    // timeout
-                    self.testDidTimeout()
-                } else {
-                    self.testDidFail()
-                }
-            })
+            alamofireManager = Alamofire.Manager(configuration: configuration)
 
             // prevent redirect
-            requestOperation.setRedirectResponseBlock { (connection: NSURLConnection!, request: NSURLRequest!, redirectResponse: NSURLResponse!) -> NSURLRequest! in
-                if redirectResponse == nil {
-                    return request
-                } else {
-                    requestOperation.cancel()
-                    self.qosLog.debug("prevented redirect from \(request.URL!.absoluteString) to \(redirectResponse.URL!.absoluteString)")
-                    return nil
-                }
+            let delegate = alamofireManager.delegate
+
+            delegate.taskWillPerformHTTPRedirection = { session, task, response, request in
+                return NSURLRequest(URL: NSURL(string: url)!) // see https://github.com/Alamofire/Alamofire/pull/424/files
             }
+
+            ////
 
             // set start time
             requestStartTimeTicks = getCurrentTimeTicks()
 
-            // execute get
-            manager.operationQueue.addOperation(requestOperation)
+            ////
+
+            alamofireManager.request(.GET, url, parameters: [:], encoding: .URL, headers: nil)
+                .validate()
+                .responseData { (response: Response<NSData, NSError>) in
+                    switch response.result {
+                    case .Success:
+
+                        self.qosLog.debug("GET SUCCESS")
+
+                        // compute duration
+                        let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
+                        self.testResult.set(self.RESULT_HTTP_PROXY_DURATION, number: durationInNanoseconds)
+
+                        // set other result values
+                        self.testResult.set(self.RESULT_HTTP_PROXY_STATUS, value: response.response?.statusCode)
+                        self.testResult.set(self.RESULT_HTTP_PROXY_LENGTH, number: response.response?.expectedContentLength)
+
+                        // compute md5
+                        if let r = response.result.value {
+                            self.qosLog.debug("ITS NSDATA!")
+
+                            self.testResult.set(self.RESULT_HTTP_PROXY_HASH, value: r.MD5().hexString()) // TODO: improve
+                        }
+
+                        // loop through headers
+                        var headerString: String = ""
+                        if let allHeaderFields = response.response?.allHeaderFields {
+                            for (headerName, headerValue) in allHeaderFields {
+                                headerString += "\(headerName): \(headerValue)\n"
+                            }
+                        }
+
+                        self.testResult.set(self.RESULT_HTTP_PROXY_HEADER, value: headerString)
+
+                        ///
+                        self.testDidSucceed()
+                        ///
+
+                    case .Failure(let error):
+                        self.qosLog.debug("GET FAILURE")
+                        self.qosLog.debug("\(error.description)")
+
+                        if error.code == NSURLErrorTimedOut {
+                            // timeout
+                            self.testDidTimeout()
+                        } else {
+                            self.testDidFail()
+                        }
+                    }
+                }
         }
     }
 

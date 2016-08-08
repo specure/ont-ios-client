@@ -5,12 +5,10 @@ inhibit_all_warnings!
 
 abstract_target 'All' do
 
-  # use latest version of CocoaAsyncSocket because of manual trusting
-  #pod 'CocoaAsyncSocket', '~> 7.4.2'
-  pod 'CocoaAsyncSocket', :git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git'
+  pod 'CocoaAsyncSocket', '~> 7.5.0' #:git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git'
 
-  pod 'Alamofire', '~> 3.4'
-  pod 'AlamofireObjectMapper', '~> 3.0'
+  pod 'Alamofire', '~> 3.4.1'
+  pod 'AlamofireObjectMapper', '~> 3.0.2'
 
   # swift pods
   pod 'XCGLogger', '~> 3.3'
@@ -20,7 +18,6 @@ abstract_target 'All' do
     platform :ios, '8.4'
 
     # Pods for RMBTClient_iOS
-    pod 'AFNetworking', '~> 2.5.4' #'~> 2.6.3' # '~> 3.0.4' # maybe later replace with Alomofire
     pod 'BlocksKit', '~> 2.2.5'
     pod 'GCNetworkReachability', '~> 1.3.2'
   end
@@ -29,7 +26,6 @@ abstract_target 'All' do
     platform :osx, '10.9'
 
     # Pods for RMBTClient_OSX
-    pod 'AFNetworking', '~> 2.5.4' #'~> 2.6.3' # '~> 3.0.4' # maybe later replace with Alomofire
     pod 'BlocksKit', '~> 2.2.5'
     pod 'GCNetworkReachability', '~> 1.3.2'
   end
@@ -38,8 +34,7 @@ abstract_target 'All' do
     platform :tvos, '9.2'
 
     # Pods for RMBTClient_tvOS
-    # TODO: afnetworking doesn't support tvos (in the version we us...) -> have to update or use alamofire?
-    # TODO: same for blockskit and GCNetworkReachability
+    # TODO: blockskit and GCNetworkReachability
   end
 end
 

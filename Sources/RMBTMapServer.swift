@@ -7,25 +7,25 @@
 //
 
 import Foundation
-import AFNetworking
 import CoreLocation
 
 ///
 public class RMBTMapServer {
 
     ///
-    private var manager: AFHTTPRequestOperationManager!
+    //private var manager: AFHTTPRequestOperationManager!
 
     //
 
     ///
     public init() {
-        let mapServerURL = ControlServer.sharedControlServer.mapServerURL
+        // TODO: rewrite with ControlServerNew
+        /*let mapServerURL = ControlServer.sharedControlServer.mapServerURL
 
         manager = AFHTTPRequestOperationManager(baseURL: mapServerURL)
 
         manager.requestSerializer = AFJSONRequestSerializer()
-        manager.responseSerializer = AFJSONResponseSerializer()
+        manager.responseSerializer = AFJSONResponseSerializer()*/
     }
 
     ///
@@ -78,12 +78,12 @@ public class RMBTMapServer {
 
     ///
     public func tileURLForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: NSDictionary) -> NSURL {
-        let urlString: NSMutableString = NSMutableString(string: manager.baseURL.absoluteString)
+        let urlString: NSMutableString = NSMutableString(string: /*manager.baseURL.absoluteString*/"") // TODO: use alamofire/control server
 
         urlString.appendFormat("tiles/%@?path=%lu/%lu/%lu&", overlayType, zoom, x, y)
         urlString.appendString(RMBTQueryStringFromDictionary(params as [NSObject : AnyObject]))
 
-        if let uuid = ControlServer.sharedControlServer.uuid {
+        if let uuid = ControlServerNew.sharedControlServer.uuid {
             urlString.appendFormat("&%@", RMBTQueryStringFromDictionary(["highlight": uuid]))
         }
 
@@ -92,7 +92,8 @@ public class RMBTMapServer {
 
     ///
     public func getURLStringForOpenTestUUID(openTestUUID: String, success: SuccessCallback) {
-        let sharedControlServer = ControlServer.sharedControlServer
+        // TODO: rewrite with ControlServerNew
+        /*let sharedControlServer = ControlServer.sharedControlServer
 
         if let openTestBaseURL = sharedControlServer.openTestBaseURL {
             success(response: /*opentestURLForApp(*/openTestBaseURL/*)*/.stringByAppendingString(openTestUUID))
@@ -106,7 +107,7 @@ public class RMBTMapServer {
             }, error: { error, info in
                 // TODO: handle error
             })
-        }
+        }*/
     }
 
     ///
@@ -131,7 +132,8 @@ public class RMBTMapServer {
 
         ////
 
-        let urlString: String = manager.baseURL.absoluteString.stringByAppendingString(path)
+        // TODO: use alamofire/control server
+        /*let urlString: String = manager.baseURL.absoluteString.stringByAppendingString(path)
 
         let request: NSMutableURLRequest? = try? self.manager.requestSerializer.requestWithMethod(method, URLString: urlString, parameters: mergedParams, error: ())
 
@@ -154,7 +156,7 @@ public class RMBTMapServer {
             failure(error: error, info: nil/*operation.responseString*/) // TODO: no response object?
         })
 
-        operation.start()
+        operation.start()*/
     }
 
     ///

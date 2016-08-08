@@ -87,7 +87,7 @@ class BasicRequest: Mappable {
 class SettingsRequest: BasicRequest {
 
     ///
-    var client: SettingsResponseClient?
+    var client: ClientSettings?
 
     ///
     override func mapping(map: Map) {

@@ -30,13 +30,19 @@ public class ControlServerNew {
     private let settings = RMBTSettings.sharedSettings()
 
     ///
-    private var uuid: String? // TODO: store on device (load on launch)
+    private var uuidQueue = dispatch_queue_create("com.specure.nettest.uuid_queue", DISPATCH_QUEUE_SERIAL)
+
+    ///
+    public var version: String?
+
+    ///
+    public var uuid: String?
 
     ///
     private var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    private var baseUrl = "https://netcouch.specure.com/api/v1"
+    var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
     private let defaultBaseUrl = /*"http://10.9.8.160:8080/api/v1"*/ "http://localhost:8080/api/v1"
@@ -54,17 +60,23 @@ public class ControlServerNew {
 
         configuration.HTTPShouldUsePipelining = true
 
-        // Set user agent?
+        // Set user agent
+        if let userAgent = NSUserDefaults.standardUserDefaults().stringForKey("UserAgent") {
+            configuration.HTTPAdditionalHeaders = [
+                "User-Agent": userAgent
+            ]
+        }
 
         alamofireManager = Alamofire.Manager(configuration: configuration)
-
-        //
-
-        updateWithCurrentSettings() // TODO: how does app set the control server url? need constructor param?
     }
 
     ///
-    public func updateWithCurrentSettings() {
+    deinit {
+        alamofireManager.session.invalidateAndCancel()
+    }
+
+    ///
+    public func updateWithCurrentSettings() { // TODO: how does app set the control server url? need param?
         // configure control server url
 
         baseUrl = defaultBaseUrl
@@ -122,30 +134,13 @@ public class ControlServerNew {
         }
     }
 
-// MARK: IP
-
-    ///
-    public func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
-    }
-
-    ///
-    public func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
-    }
-
-    ///
-    public func getIpVersion(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
-        request(.POST, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
-    }
-
 // MARK: Settings
 
     ///
     public func getSettings(success successCallback: EmptyCallback, error failure: NEWErrorCallback) {
-
         let settingsRequest = SettingsRequest()
-        settingsRequest.client = SettingsResponseClient()
+
+        settingsRequest.client = ClientSettings()
         settingsRequest.client?.clientType = "MOBILE"
         settingsRequest.client?.termsAndConditionsAccepted = true
         settingsRequest.client?.uuid = uuid
@@ -164,12 +159,19 @@ public class ControlServerNew {
 
             logger.debug("UUID: uuid is now: \(self.uuid)")
 
-            //
+            // set control server version
+            self.version = response.settings?.versions?.controlServerVersion
+
+            // set qos test type desc
+            response.qosMeasurementTypes?.forEach({ measurementType in
+                if let type = measurementType.type {
+                    QOSMeasurementType.localizedNameDict[type] = measurementType.name
+                }
+            })
 
             // TODO: set history filters
             // TODO: set ip request urls, set openTestBaseUrl
             // TODO: set map server url
-            // TODO: set qos test type desc
 
             successCallback()
         }
@@ -182,77 +184,129 @@ public class ControlServerNew {
         })
     }
 
+// MARK: IP
+
+    ///
+    public func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
+        getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
+    }
+
+    ///
+    public func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
+        getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
+    }
+
+    ///
+    public func getIpVersion(success successCallback: IpResponseSuccessCallback, error failure: NEWErrorCallback) {
+        request(.POST, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
+    }
+
 // MARK: Speed measurement
 
     ///
     func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurementResponse) -> (), error failure: NEWErrorCallback) {
-        speedMeasurementRequest.uuid = self.uuid
+        ensureUuid(success: { uuid in
+            speedMeasurementRequest.uuid = uuid
 
-        request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
+            self.request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
+        }, error: failure)
     }
 
     ///
     func submitSpeedMeasurementResult(speedMeasurementResult: SpeedMeasurementResult, success: (response: SpeedMeasurementSubmitResponse) -> (), error failure: NEWErrorCallback) {
+        ensureUuid(success: { uuid in
+            if let measurementUuid = speedMeasurementResult.uuid {
+                speedMeasurementResult.clientUuid = uuid
 
-        if let uuid = speedMeasurementResult.uuid {
-            speedMeasurementResult.clientUuid = self.uuid
-
-            request(.PUT, path: "/measurements/speed/\(uuid)", requestObject: speedMeasurementResult, success: success, error: failure)
-        } else {
-            failure(error: NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
-        }
+                self.request(.PUT, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
+            } else {
+                failure(error: NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
+            }
+        }, error: failure)
     }
 
     ///
     public func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: NEWErrorCallback) {
-        request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
+        ensureUuid(success: { _ in
+            self.request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
+        }, error: failure)
     }
 
     ///
     public func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: NEWErrorCallback) {
-        request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
+        ensureUuid(success: { _ in
+            self.request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
+        }, error: failure)
     }
 
 // MARK: Qos measurements
 
     ///
     func requestQosMeasurement(measurementUuid: String?, success: (response: QosMeasurmentResponse) -> (), error failure: NEWErrorCallback) {
-        let qosMeasurementRequest = QosMeasurementRequest()
+        ensureUuid(success: { uuid in
+            let qosMeasurementRequest = QosMeasurementRequest()
 
-        qosMeasurementRequest.clientUuid = uuid
-        qosMeasurementRequest.measurementUuid = measurementUuid
+            qosMeasurementRequest.clientUuid = uuid
+            qosMeasurementRequest.measurementUuid = measurementUuid
 
-        request(.POST, path: "/measurements/qos", requestObject: qosMeasurementRequest, success: success, error: failure)
+            self.request(.POST, path: "/measurements/qos", requestObject: qosMeasurementRequest, success: success, error: failure)
+        }, error: failure)
     }
 
     ///
     func submitQosMeasurementResult(qosMeasurementResult: QosMeasurementResultRequest, success: (response: QosMeasurementSubmitResponse) -> (), error failure: NEWErrorCallback) {
-        if let measurementUuid = qosMeasurementResult.measurementUuid {
-            qosMeasurementResult.clientUuid = self.uuid
+        ensureUuid(success: { uuid in
+            if let measurementUuid = qosMeasurementResult.measurementUuid {
+                qosMeasurementResult.clientUuid = uuid
 
-            request(.PUT, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
-        } else {
-            failure(error: NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
-        }
+                self.request(.PUT, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
+            } else {
+                failure(error: NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
+            }
+        }, error: failure)
     }
 
     ///
     public func getQosMeasurement(uuid: String, success: (response: QosMeasurementResultResponse) -> (), error failure: NEWErrorCallback) {
-        request(.GET, path: "/measurements/qos/\(uuid)", requestObject: nil, success: success, error: failure)
+        ensureUuid(success: { _ in
+            self.request(.GET, path: "/measurements/qos/\(uuid)", requestObject: nil, success: success, error: failure)
+        }, error: failure)
     }
 
 // MARK: History
 
     ///
     public func getMeasurementHistory(success: (response: [HistoryItem]) -> (), error failure: NEWErrorCallback) {
-        if let uuid = self.uuid {
-            requestArray(.GET, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
-        } else {
-            failure(error: NSError(domain: "nettest - no uuid present", code: -1234, userInfo: nil)) // TODO
-        }
+        ensureUuid(success: { uuid in
+            self.requestArray(.GET, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
+        }, error: failure)
     }
 
 // MARK: Private
+
+    ///
+    private func ensureUuid(success successCallback: (uuid: String) -> (), error errorCallback: NEWErrorCallback) {
+        dispatch_async(uuidQueue) {
+            if let uuid = self.uuid {
+                successCallback(uuid: uuid)
+            } else {
+                dispatch_suspend(self.uuidQueue)
+
+                self.getSettings(success: {
+                    dispatch_resume(self.uuidQueue)
+
+                    if let uuid = self.uuid {
+                        successCallback(uuid: uuid)
+                    } else {
+                        errorCallback(error: NSError(domain: "strange error, should never happen, should have uuid by now", code: -1234345, userInfo: nil))
+                    }
+                }, error: { error in
+                    dispatch_resume(self.uuidQueue)
+                    errorCallback(error: error)
+                })
+            }
+        }
+    }
 
     ///
     private func requestArray<T: BasicResponse>(method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: [T]) -> (), error failure: NEWErrorCallback) {

@@ -342,7 +342,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: Socket delegate methods
 
     ///
-    public func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    public func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         if state == .Aborted {
             sock.disconnect()
             return
@@ -363,12 +363,12 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket!, didReceiveTrust trust: SecTrust!, completionHandler: ((Bool) -> Void)!) {
+    public func socket(sock: GCDAsyncSocket, didReceiveTrust trust: SecTrust, completionHandler: ((Bool) -> Void)) {
         completionHandler(true)
     }
 
     ///
-    public func socketDidSecure(sock: GCDAsyncSocket!) {
+    public func socketDidSecure(sock: GCDAsyncSocket) {
         assert(state == .DownlinkPretestStarted || state == .UplinkPretestStarted, "Invalid state")
 
         socket.performBlock {
@@ -379,7 +379,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
+    public func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
         if err != nil {
             logger.debug("Socket disconnected with error \(err)")
             fail()
@@ -399,7 +399,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
+    public func socket(sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
         if state == .Aborted {
             return
         }
@@ -408,7 +408,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    public func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
         if state == .Aborted {
             return
         }
@@ -760,7 +760,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     private func readLineWithTag(tag: RMBTTestTag) {
-        socket.readDataToData("\n".dataUsingEncoding(NSASCIIStringEncoding), withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
+        if let data = "\n".dataUsingEncoding(NSASCIIStringEncoding) {
+            socket.readDataToData(data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
+        }
     }
 
     ///

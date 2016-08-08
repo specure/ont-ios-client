@@ -23,8 +23,8 @@ let QOS_CONTROL_CONNECTION_TIMEOUT_SEC = NSTimeInterval(QOS_CONTROL_CONNECTION_T
 let QOS_DEFAULT_TIMEOUT_NS: UInt64 = 10_000_000_000 // default timeout value in nano seconds
 
 ///
-let QOS_TLS_SETTINGS: [String:AnyObject] = [
-    GCDAsyncSocketManuallyEvaluateTrust: true
+let QOS_TLS_SETTINGS: [String: NSNumber] = [
+    GCDAsyncSocketManuallyEvaluateTrust: NSNumber(bool: true)
 ]
 
 ///
@@ -38,24 +38,24 @@ let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
 
 let QOS_ENABLED_TESTS: [QOSMeasurementType] = [
     .HttpProxy,
-    .NonTransparentProxy,
+//    .NonTransparentProxy,
     //.WEBSITE,
-    .DNS,
-    .TCP,
-    .UDP,
-    .VOIP,
-    .TRACEROUTE
+//    .DNS,
+//    .TCP,
+//    .UDP,
+//    .VOIP,
+//    .TRACEROUTE
 ]
 
 /// determine the tests which should show log messages
 let QOS_ENABLED_TESTS_LOG: [QOSMeasurementType] = [
-//    .HttpProxy,
+    .HttpProxy,
 //    .NonTransparentProxy,
 //    .WEBSITE,
 //    .DNS,
 //    .TCP,
 //    .UDP,
-    .VOIP,
+//    .VOIP,
 //    .TRACEROUTE
 ]
 

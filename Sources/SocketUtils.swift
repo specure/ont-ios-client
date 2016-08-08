@@ -23,14 +23,18 @@ class SocketUtils {
 
         logger.verbose("-- writing line '\(line)'")
 
-        let lineData = line.dataUsingEncoding(NSUTF8StringEncoding)
-
-        sock.writeData(lineData, withTimeout: timeout, tag: tag)
+        if let lineData = line.dataUsingEncoding(NSUTF8StringEncoding) {
+            sock.writeData(lineData, withTimeout: timeout, tag: tag)
+        } else {
+            // TODO: return false or error?
+        }
     }
 
     ///
     class func readLine(sock: GCDAsyncSocket, tag: Int, withTimeout timeout: NSTimeInterval) {
-        sock.readDataToData("\n".dataUsingEncoding(QOS_SOCKET_DEFAULT_CHARACTER_ENCODING), withTimeout: timeout, tag: tag)
+        if let data = "\n".dataUsingEncoding(QOS_SOCKET_DEFAULT_CHARACTER_ENCODING) {
+            sock.readDataToData(data, withTimeout: timeout, tag: tag)
+        }
     }
 
     /// parses NSData object to String using default encoding

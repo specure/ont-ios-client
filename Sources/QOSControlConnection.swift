@@ -248,20 +248,20 @@ class QOSControlConnection {
 extension QOSControlConnection: GCDAsyncSocketDelegate {
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    @objc func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         logger.verbose("connected to host \(host) on port \(port)")
 
         // control connection to qos server uses tls
         sock.startTLS(QOS_TLS_SETTINGS)
     }
 
-    @objc func socket(sock: GCDAsyncSocket!, didReceiveTrust trust: SecTrust!, completionHandler: ((Bool) -> Void)!) {
+    @objc func socket(sock: GCDAsyncSocket, didReceiveTrust trust: SecTrust, completionHandler: ((Bool) -> Void)) {
         logger.verbose("DID RECEIVE TRUST")
         completionHandler(true)
     }
 
     ///
-    @objc func socketDidSecure(sock: GCDAsyncSocket!) {
+    @objc func socketDidSecure(sock: GCDAsyncSocket) {
         logger.verbose("socketDidSecure")
 
         // tls connection has been established, start with QTP handshake
@@ -269,7 +269,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
         logger.verbose("didReadData \(data) with tag \(tag)")
 
         let str: String = SocketUtils.parseResponseToString(data)!
@@ -364,22 +364,22 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
         logger.verbose("didReadPartialDataOfLength \(partialLength), tag: \(tag)")
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
         logger.verbose("didWriteDataWithTag \(tag)")
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
         logger.verbose("didWritePartialDataOfLength \(partialLength), tag: \(tag)")
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, shouldTimeoutReadWithTag tag: Int, elapsed: NSTimeInterval, bytesDone length: UInt) -> NSTimeInterval {
+    @objc func socket(sock: GCDAsyncSocket, shouldTimeoutReadWithTag tag: Int, elapsed: NSTimeInterval, bytesDone length: UInt) -> NSTimeInterval {
         logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
 
         // if (tag < TAG_TASK_COMMAND) {
@@ -404,7 +404,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, shouldTimeoutWriteWithTag tag: Int, elapsed: NSTimeInterval, bytesDone length: UInt) -> NSTimeInterval {
+    @objc func socket(sock: GCDAsyncSocket, shouldTimeoutWriteWithTag tag: Int, elapsed: NSTimeInterval, bytesDone length: UInt) -> NSTimeInterval {
         logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
 
         // if (tag < TAG_TASK_COMMAND) {
@@ -428,7 +428,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
     }
 
     ///
-    @objc func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
+    @objc func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
         connected = false
 
         if err == nil {

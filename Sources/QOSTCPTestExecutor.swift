@@ -167,7 +167,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 // MARK: GCDAsyncSocketDelegate methods
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didAcceptNewSocket newSocket: GCDAsyncSocket!) {
+    @objc func socket(sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
         if sock == tcpTestInSocket {
             // read line
             SocketUtils.readLine(newSocket, tag: TAG_TCPTEST_IN_PING, withTimeout: timeoutInSec)
@@ -175,7 +175,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    @objc func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         qosLog.debug("DID CONNECT TO HOST \(host) on port \(port)")
         if sock == tcpTestOutSocket {
             // write "PING" and read response
@@ -185,7 +185,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
 
         let response: String = SocketUtils.parseResponseToString(data)! // !?
         let responseWithoutLastNewline = response.stringByRemovingLastNewline()

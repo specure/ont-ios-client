@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import AFNetworking
 import CocoaAsyncSocket
 import RMBTClientPrivate
 
@@ -50,14 +49,14 @@ public struct ConnectivityInfo: CustomStringConvertible {
 }
 
 ///
-public class ConnectivityService: NSObject {
+public class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNew
 
     public typealias ConnectivityInfoCallback = (connectivityInfo: ConnectivityInfo) -> ()
 
     //
 
     ///
-    let manager: AFHTTPRequestOperationManager
+    //let manager: AFHTTPRequestOperationManager
 
     ///
     var callback: ConnectivityInfoCallback?
@@ -72,14 +71,14 @@ public class ConnectivityService: NSObject {
     var ipv6Finished = false
 
     ///
-    public override init() {
-        manager = AFHTTPRequestOperationManager(baseURL: NSURL(string: ControlServer.sharedControlServer.baseURLString()))
+    public override init() { // TODO: USE ALAMOFIRE -> use control server class for this!!
+        /*manager = AFHTTPRequestOperationManager(baseURL: NSURL(string: ControlServerNew.sharedControlServer.baseUrl))
 
         manager.requestSerializer = AFJSONRequestSerializer()
         manager.responseSerializer = AFJSONResponseSerializer()
 
         manager.requestSerializer.timeoutInterval = 5 // 5 sec
-        manager.requestSerializer.cachePolicy = .ReloadIgnoringLocalAndRemoteCacheData
+        manager.requestSerializer.cachePolicy = .ReloadIgnoringLocalAndRemoteCacheData*/
     }
 
     ///
@@ -101,8 +100,8 @@ public class ConnectivityService: NSObject {
     }
 
     ///
-    private func checkIPV4() {
-        let ipv4Url = ControlServer.sharedControlServer.ipv4RequestUrl
+    private func checkIPV4() { // TODO: rewrite with ControlServerNew
+        /*let ipv4Url = ControlServer.sharedControlServer.ipv4RequestUrl
 
         var infoParams = ControlServer.sharedControlServer.systemInfoParams()
         infoParams["uuid"] = ControlServer.sharedControlServer.uuid
@@ -136,12 +135,12 @@ public class ConnectivityService: NSObject {
 
             self.ipv4Finished = true
             self.callCallback()
-        }
+        }*/
     }
 
     ///
-    private func checkIPV6() {
-        let ipv6Url = ControlServer.sharedControlServer.ipv6RequestUrl
+    private func checkIPV6() { // TODO: rewrite with ControlServerNew
+        /*let ipv6Url = ControlServer.sharedControlServer.ipv6RequestUrl
 
         var infoParams = ControlServer.sharedControlServer.systemInfoParams()
         infoParams["uuid"] = ControlServer.sharedControlServer.uuid
@@ -177,7 +176,7 @@ public class ConnectivityService: NSObject {
 
             self.ipv6Finished = true
             self.callCallback()
-        }
+        }*/
     }
 
     ///

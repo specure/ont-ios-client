@@ -126,7 +126,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 // MARK: GCDAsyncSocketDelegate methods
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
+    @objc func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         if sock == ntpTestSocket {
             qosLog.debug("will send \(testObject.request) to the server")
 
@@ -137,7 +137,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    @objc func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
         if sock == ntpTestSocket {
             switch tag {
             case TAG_NTPTEST_REQUEST:
@@ -165,7 +165,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     }
 
     ///
-    @objc func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
+    @objc func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
         // if (err != nil && err.code == GCDAsyncSocketConnectTimeoutError) { //check for timeout
         //    return testDidTimeout()
         // }
