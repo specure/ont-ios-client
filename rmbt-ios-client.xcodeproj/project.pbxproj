@@ -47,14 +47,12 @@
 		E02D18A81CF59262002A02FE /* QOSVOIPTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180D1CF59262002A02FE /* QOSVOIPTest.swift */; };
 		E02D18A91CF59262002A02FE /* QOSVOIPTestExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180E1CF59262002A02FE /* QOSVOIPTestExecutor.swift */; };
 		E02D18AA1CF59262002A02FE /* QOSWebsiteTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D180F1CF59262002A02FE /* QOSWebsiteTest.swift */; };
-		E02D18AF1CF59262002A02FE /* RMBTBlockTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18141CF59262002A02FE /* RMBTBlockTypes.swift */; };
 		E02D18B31CF59262002A02FE /* RMBTCPUMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E02D18181CF59262002A02FE /* RMBTCPUMonitor.m */; };
 		E02D18BA1CF59262002A02FE /* RMBTHistoryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */; };
 		E02D18C11CF59262002A02FE /* RMBTJSONHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18261CF59262002A02FE /* RMBTJSONHelper.swift */; };
 		E02D18C21CF59262002A02FE /* RMBTLocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */; };
 		E02D18C41CF59262002A02FE /* RMBTMapMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */; };
 		E02D18C51CF59262002A02FE /* RMBTMapOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D182A1CF59262002A02FE /* RMBTMapOptions.swift */; };
-		E02D18C81CF59262002A02FE /* RMBTMapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D182D1CF59262002A02FE /* RMBTMapServer.swift */; };
 		E02D18CB1CF59262002A02FE /* RMBTNetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18301CF59262002A02FE /* RMBTNetworkType.swift */; };
 		E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */; };
 		E02D18DE1CF59262002A02FE /* RMBTSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18431CF59262002A02FE /* RMBTSettings.swift */; };
@@ -142,7 +140,6 @@
 		E02D19831CF5A509002A02FE /* QOSControlConnectionTaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17F81CF59262002A02FE /* QOSControlConnectionTaskDelegate.swift */; };
 		E02D19841CF5A50C002A02FE /* QOSControlConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17F71CF59262002A02FE /* QOSControlConnectionDelegate.swift */; };
 		E02D19851CF5A50E002A02FE /* QOSControlConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17F61CF59262002A02FE /* QOSControlConnection.swift */; };
-		E02D19871CF5A519002A02FE /* RMBTBlockTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18141CF59262002A02FE /* RMBTBlockTypes.swift */; };
 		E02D19881CF5A51B002A02FE /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17F11CF59262002A02FE /* OrderedDictionary.swift */; };
 		E02D19891CF5A51E002A02FE /* CountDownLatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17DB1CF59262002A02FE /* CountDownLatch.swift */; };
 		E02D198A1CF5A520002A02FE /* ConversionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17DA1CF59262002A02FE /* ConversionUtility.swift */; };
@@ -211,12 +208,11 @@
 		E02D1A331CFC9D47002A02FE /* QualityOfServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18111CF59262002A02FE /* QualityOfServiceTest.swift */; };
 		E02D1A341CFC9D4A002A02FE /* QualityOfServiceTestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18121CF59262002A02FE /* QualityOfServiceTestDelegate.swift */; };
 		E02D1A381CFC9D54002A02FE /* RMBTMapMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */; };
-		E02D1A391CFC9D58002A02FE /* RMBTMapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D182D1CF59262002A02FE /* RMBTMapServer.swift */; };
 		E02D1A3A1CFC9D5C002A02FE /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E02D1A3C1CFC9D6E002A02FE /* RMBTHistoryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */; };
 		E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */; };
-		E02D1A571CFD882D002A02FE /* ControlServerNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServerNew.swift */; };
-		E02D1A5B1CFD9937002A02FE /* ControlServerNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServerNew.swift */; };
+		E02D1A571CFD882D002A02FE /* ControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServer.swift */; };
+		E02D1A5B1CFD9937002A02FE /* ControlServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A561CFD882D002A02FE /* ControlServer.swift */; };
 		E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */; };
 		E02D1A631CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */; };
 		E02D1A641CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */; };
@@ -227,6 +223,11 @@
 		E02D1A751CFDE375002A02FE /* ResponseObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A721CFDE372002A02FE /* ResponseObjects.swift */; };
 		E02D1A761CFDE3E7002A02FE /* RequestObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A6F1CFDE337002A02FE /* RequestObjects.swift */; };
 		E02D1A771CFDE3E8002A02FE /* RequestObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A6F1CFDE337002A02FE /* RequestObjects.swift */; };
+		E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B78871D5B13BC00CC1129 /* MapServer.swift */; };
+		E09B788A1D5B163900CC1129 /* MapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B78871D5B13BC00CC1129 /* MapServer.swift */; };
+		E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
+		E09B788E1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
+		E09B788F1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
 		E0B1C8141CF4AFFD00F19282 /* RMBTClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0B1C8251CF4B5A200F19282 /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8231CF4B5A200F19282 /* News.swift */; };
 		E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C8241CF4B5A200F19282 /* Speed.swift */; };
@@ -302,7 +303,6 @@
 		E02D18101CF59262002A02FE /* QOSWebsiteTestExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSWebsiteTestExecutor.swift; sourceTree = "<group>"; };
 		E02D18111CF59262002A02FE /* QualityOfServiceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QualityOfServiceTest.swift; sourceTree = "<group>"; };
 		E02D18121CF59262002A02FE /* QualityOfServiceTestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QualityOfServiceTestDelegate.swift; sourceTree = "<group>"; };
-		E02D18141CF59262002A02FE /* RMBTBlockTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTBlockTypes.swift; sourceTree = "<group>"; };
 		E02D18151CF59262002A02FE /* RMBTConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTConnectivity.swift; sourceTree = "<group>"; };
 		E02D18161CF59262002A02FE /* RMBTConnectivityTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTConnectivityTracker.swift; sourceTree = "<group>"; };
 		E02D18171CF59262002A02FE /* RMBTCPUMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBTCPUMonitor.h; sourceTree = "<group>"; };
@@ -366,13 +366,15 @@
 		E02D1A501CFD7E42002A02FE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
 		E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
-		E02D1A561CFD882D002A02FE /* ControlServerNew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlServerNew.swift; sourceTree = "<group>"; };
+		E02D1A561CFD882D002A02FE /* ControlServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlServer.swift; sourceTree = "<group>"; };
 		E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_iOS.swift; sourceTree = "<group>"; };
 		E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractBasicRequestBuilder.swift; sourceTree = "<group>"; };
 		E02D1A661CFDD7EB002A02FE /* BasicRequestBuilder_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_OSX.swift; sourceTree = "<group>"; };
 		E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_tvOS.swift; sourceTree = "<group>"; };
 		E02D1A6F1CFDE337002A02FE /* RequestObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestObjects.swift; sourceTree = "<group>"; };
 		E02D1A721CFDE372002A02FE /* ResponseObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseObjects.swift; sourceTree = "<group>"; };
+		E09B78871D5B13BC00CC1129 /* MapServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapServer.swift; sourceTree = "<group>"; };
+		E09B788C1D5B16E900CC1129 /* ServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerHelper.swift; sourceTree = "<group>"; };
 		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -505,7 +507,6 @@
 				E02D17DA1CF59262002A02FE /* ConversionUtility.swift */,
 				E02D17DB1CF59262002A02FE /* CountDownLatch.swift */,
 				E02D17F11CF59262002A02FE /* OrderedDictionary.swift */,
-				E02D18141CF59262002A02FE /* RMBTBlockTypes.swift */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -668,7 +669,7 @@
 		E02D1A5A1CFD94E1002A02FE /* ControlServer */ = {
 			isa = PBXGroup;
 			children = (
-				E02D1A561CFD882D002A02FE /* ControlServerNew.swift */,
+				E02D1A561CFD882D002A02FE /* ControlServer.swift */,
 				E02D1A6F1CFDE337002A02FE /* RequestObjects.swift */,
 				E02D1A721CFDE372002A02FE /* ResponseObjects.swift */,
 				E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */,
@@ -677,6 +678,24 @@
 				E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */,
 			);
 			name = ControlServer;
+			sourceTree = "<group>";
+		};
+		E09B78861D5B13AA00CC1129 /* MapServer */ = {
+			isa = PBXGroup;
+			children = (
+				E09B78871D5B13BC00CC1129 /* MapServer.swift */,
+			);
+			name = MapServer;
+			sourceTree = "<group>";
+		};
+		E09B788B1D5B16D200CC1129 /* Servers */ = {
+			isa = PBXGroup;
+			children = (
+				E09B788C1D5B16E900CC1129 /* ServerHelper.swift */,
+				E02D1A5A1CFD94E1002A02FE /* ControlServer */,
+				E09B78861D5B13AA00CC1129 /* MapServer */,
+			);
+			name = Servers;
 			sourceTree = "<group>";
 		};
 		E0B1C7D21CF4AC8800F19282 = {
@@ -708,7 +727,7 @@
 		E0B1C8061CF4AEFC00F19282 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				E02D1A5A1CFD94E1002A02FE /* ControlServer */,
+				E09B788B1D5B16D200CC1129 /* Servers */,
 				E02D19271CF59F27002A02FE /* Config */,
 				E02D19181CF597B6002A02FE /* Objc */,
 				E02D190F1CF5941E002A02FE /* Workarounds */,
@@ -1111,6 +1130,7 @@
 				E02D1A631CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */,
 				E02D189F1CF59262002A02FE /* QOSTestExecutorClass.swift in Sources */,
 				E02D19031CF59262002A02FE /* TrafficClassification.swift in Sources */,
+				E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */,
 				E02D19021CF59262002A02FE /* SwiftExactTime.swift in Sources */,
 				E02D18831CF59262002A02FE /* HopDetail.swift in Sources */,
 				E02D18FF1CF59262002A02FE /* SocketUtils.swift in Sources */,
@@ -1128,6 +1148,7 @@
 				E02D18891CF59262002A02FE /* NSData+Extensions.swift in Sources */,
 				E02D18C41CF59262002A02FE /* RMBTMapMeasurement.swift in Sources */,
 				E02D18C21CF59262002A02FE /* RMBTLocationTracker.swift in Sources */,
+				E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */,
 				E02D192B1CF59F6F002A02FE /* QOSConfig.swift in Sources */,
 				E02D18DE1CF59262002A02FE /* RMBTSettings.swift in Sources */,
 				E02D18911CF59262002A02FE /* QOSControlConnection.swift in Sources */,
@@ -1135,9 +1156,7 @@
 				E02D18791CF59262002A02FE /* DNSHeader.swift in Sources */,
 				E02D19A91CF5AAD9002A02FE /* RMBTConnectivityTracker.swift in Sources */,
 				E02D1A751CFDE375002A02FE /* ResponseObjects.swift in Sources */,
-				E02D18AF1CF59262002A02FE /* RMBTBlockTypes.swift in Sources */,
 				E02D19061CF59262002A02FE /* UDPStreamSender.swift in Sources */,
-				E02D18C81CF59262002A02FE /* RMBTMapServer.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
 				E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */,
 				E02D18941CF59262002A02FE /* QOSDNSTest.swift in Sources */,
@@ -1146,7 +1165,7 @@
 				E02D187D1CF59262002A02FE /* GCDTimer.swift in Sources */,
 				E02D199C1CF5AA93002A02FE /* PingUtilDelegateBridge.swift in Sources */,
 				E02D19251CF59D1A002A02FE /* GetDNSIP.m in Sources */,
-				E02D1A571CFD882D002A02FE /* ControlServerNew.swift in Sources */,
+				E02D1A571CFD882D002A02FE /* ControlServer.swift in Sources */,
 				E02D19051CF59262002A02FE /* UDPStreamReceiverDelegate.swift in Sources */,
 				E0B1C82F1CF4B63700F19282 /* Ping.swift in Sources */,
 				E02D1A0B1CFC8EA4002A02FE /* QOSDNSTestExecutor.swift in Sources */,
@@ -1160,6 +1179,7 @@
 			files = (
 				E02D1A651CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0B1C8311CF4B65A00F19282 /* Ping.swift in Sources */,
+				E09B788F1D5B16E900CC1129 /* ServerHelper.swift in Sources */,
 				E02D1A6A1CFDDA28002A02FE /* BasicRequestBuilder_tvOS.swift in Sources */,
 				E00C20B51D1967B300720394 /* RMBTClient.swift in Sources */,
 				E0B1C82B1CF4B5D900F19282 /* News.swift in Sources */,
@@ -1176,6 +1196,7 @@
 				E02D19511CF5A425002A02FE /* DNSQuestion.swift in Sources */,
 				E02D197E1CF5A4F9002A02FE /* QOSTracerouteTest.swift in Sources */,
 				E02D19521CF5A427002A02FE /* DNSRecordClass.swift in Sources */,
+				E09B788E1D5B16E900CC1129 /* ServerHelper.swift in Sources */,
 				E02D1A2E1CFC9D36002A02FE /* QOSTestExecutorClass.swift in Sources */,
 				E02D19851CF5A50E002A02FE /* QOSControlConnection.swift in Sources */,
 				E02D19631CF5A45C002A02FE /* RTPControlData.swift in Sources */,
@@ -1204,6 +1225,7 @@
 				E02D195C1CF5A44B002A02FE /* QOSNonTransparentProxyTest.swift in Sources */,
 				E02D1A761CFDE3E7002A02FE /* RequestObjects.swift in Sources */,
 				E02D1A1C1CFC95D7002A02FE /* GetDNSIP.m in Sources */,
+				E09B788A1D5B163900CC1129 /* MapServer.swift in Sources */,
 				E02D1A241CFC9D0B002A02FE /* StringMD5Extension.swift in Sources */,
 				E02D19611CF5A457002A02FE /* RTPResult.swift in Sources */,
 				E02D19681CF5A471002A02FE /* RMBTNetworkType.swift in Sources */,
@@ -1216,7 +1238,6 @@
 				E02D197D1CF5A4F4002A02FE /* QOSTypeDefinition.swift in Sources */,
 				E02D19911CF5A550002A02FE /* RMBTHelpers.swift in Sources */,
 				E02D1A171CFC95CC002A02FE /* RMBTRAMMonitor.m in Sources */,
-				E02D19871CF5A519002A02FE /* RMBTBlockTypes.swift in Sources */,
 				E02D19941CF5A5FB002A02FE /* LogConfig.swift in Sources */,
 				E02D1A341CFC9D4A002A02FE /* QualityOfServiceTestDelegate.swift in Sources */,
 				E02D19721CF5A4CB002A02FE /* UDPStreamReceiverDelegate.swift in Sources */,
@@ -1240,13 +1261,12 @@
 				E02D19881CF5A51B002A02FE /* OrderedDictionary.swift in Sources */,
 				E02D1A2A1CFC9D21002A02FE /* QOSFactory.swift in Sources */,
 				E02D1A2C1CFC9D31002A02FE /* QOSNonTransparentProxyTestExecutor.swift in Sources */,
-				E02D1A391CFC9D58002A02FE /* RMBTMapServer.swift in Sources */,
 				E02D195D1CF5A44E002A02FE /* QOSHTTPProxyTest.swift in Sources */,
 				E02D1A181CFC95CE002A02FE /* RMBTTrafficCounter.m in Sources */,
 				E02D1A301CFC9D3F002A02FE /* QOSUDPTestExecutor.swift in Sources */,
 				E02D195F1CF5A453002A02FE /* HopDetail.swift in Sources */,
 				E02D195A1CF5A447002A02FE /* QOSTest.swift in Sources */,
-				E02D1A5B1CFD9937002A02FE /* ControlServerNew.swift in Sources */,
+				E02D1A5B1CFD9937002A02FE /* ControlServer.swift in Sources */,
 				E00C20B41D1967B300720394 /* RMBTClient.swift in Sources */,
 				E02D19571CF5A441002A02FE /* QOSUDPTest.swift in Sources */,
 				E02D19551CF5A43D002A02FE /* QOSWebsiteTest.swift in Sources */,

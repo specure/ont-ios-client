@@ -269,7 +269,7 @@ extension ConnectivityService {
 extension ConnectivityService: GCDAsyncUdpSocketDelegate {
 
     ///
-    public func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
+    public func udpSocket(sock: GCDAsyncUdpSocket, didConnectToAddress address: NSData) {
         connectivityInfo.ipv4.internalIp = sock.localHost_IPv4()
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
 
@@ -280,14 +280,14 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    public func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
+    public func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
         logger.debug("didNotConnect: \(error)")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
-    public func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
+    public func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError) {
         logger.debug("udpSocketDidClose: \(error)")
 
         getLocalIpAddresses() // fallback

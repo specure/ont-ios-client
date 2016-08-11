@@ -174,7 +174,7 @@ public class RMBTHistoryResult {
             success()
         } else {
 
-            ControlServerNew.sharedControlServer.getSpeedMeasurement(uuid, success: { response in
+            ControlServer.sharedControlServer.getSpeedMeasurement(uuid, success: { response in
 
                 if let nt = response.networkType {
                     self.networkType = RMBTNetworkTypeMake(nt) // RMBTNetworkType(rawValue: networkType.integerValue)!
@@ -243,7 +243,7 @@ public class RMBTHistoryResult {
             success()
         } else {
 
-            ControlServerNew.sharedControlServer.getSpeedMeasurementDetails(uuid, success: { response in
+            ControlServer.sharedControlServer.getSpeedMeasurementDetails(uuid, success: { response in
 
                 // TODO:
 

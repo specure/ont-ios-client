@@ -29,19 +29,19 @@ public class RMBTMapServer {
     }
 
     ///
-    public func getMapOptionsWithSuccess(success: SuccessCallback) {
-        self.requestWithMethod("POST", path: "tiles/info", params: nil, success: { response in
+    public func getMapOptionsWithSuccess(success: EmptyCallback) {
+        /*self.requestWithMethod("POST", path: "tiles/info", params: nil, success: { response in
 
             let mapOptions = RMBTMapOptions(response: response as! [String:AnyObject])
             success(response: mapOptions)
 
-        }, error: { error, info in
-            logger.debug("Error \(error) \(info)")
-        })
+        }, error: { error in
+            logger.debug("Error \(error)")
+        })*/
     }
 
     ///
-    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Float, params: NSDictionary, success: SuccessCallback) {
+    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Float, params: NSDictionary, success: EmptyCallback) {
         //logger.debug(String(format: "Getting measurements at coordinate %f, %f, zoom: %f", coordinate.latitude, coordinate.longitude, zoom))
 
         let finalParams = NSMutableDictionary(dictionary: params)
@@ -58,7 +58,7 @@ public class RMBTMapServer {
 
         //
 
-        self.requestWithMethod("POST", path: "tiles/markers", params: finalParams, success: { response in
+        /*self.requestWithMethod("POST", path: "tiles/markers", params: finalParams, success: { response in
 
             var measurements = [RMBTMapMeasurement]()
 
@@ -71,9 +71,9 @@ public class RMBTMapServer {
 
             success(response: measurements)
 
-        }, error: { error, info in
-            logger.debug("Error \(error) \(info)")
-        })
+        }, error: { error in
+            logger.debug("Error \(error)")
+        })*/
     }
 
     ///
@@ -83,7 +83,7 @@ public class RMBTMapServer {
         urlString.appendFormat("tiles/%@?path=%lu/%lu/%lu&", overlayType, zoom, x, y)
         urlString.appendString(RMBTQueryStringFromDictionary(params as [NSObject : AnyObject]))
 
-        if let uuid = ControlServerNew.sharedControlServer.uuid {
+        if let uuid = ControlServer.sharedControlServer.uuid {
             urlString.appendFormat("&%@", RMBTQueryStringFromDictionary(["highlight": uuid]))
         }
 
@@ -91,7 +91,7 @@ public class RMBTMapServer {
     }
 
     ///
-    public func getURLStringForOpenTestUUID(openTestUUID: String, success: SuccessCallback) {
+    public func getURLStringForOpenTestUUID(openTestUUID: String, success: EmptyCallback) {
         // TODO: rewrite with ControlServerNew
         /*let sharedControlServer = ControlServer.sharedControlServer
 
@@ -121,7 +121,7 @@ public class RMBTMapServer {
 //    }
 
     /// TODO: this method has a lot code in common with ControlServer
-    private func requestWithMethod(method: String, path: String, params: NSDictionary?, success: SuccessCallback, error failure: ErrorCallback) {
+    private func requestWithMethod(method: String, path: String, params: NSDictionary?, success: EmptyCallback, error failure: ErrorCallback) {
         let mergedParams = NSMutableDictionary()
 
         mergedParams["language"] = RMBTValueOrNull(RMBTPreferredLanguage()) // TODO: change

@@ -243,7 +243,7 @@ class UDPStreamSender: NSObject {
 extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didConnectToAddress address: NSData) {
         logger.debug("didConnectToAddress: address: \(address)")
         logger.debug("didConnectToAddress: local port: \(udpSocket.localPort())")
 
@@ -256,22 +256,22 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
         logger.debug("didNotConnect: \(error)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didSendDataWithTag tag: Int) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
         // logger.debug("didSendDataWithTag: \(tag)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didNotSendDataWithTag tag: Int, dueToError error: NSError!) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError) {
         logger.debug("didNotSendDataWithTag: \(error)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
         // logger.debug("didReceiveData: \(data)")
 
         // dispatch_async(streamSenderQueue) {
@@ -282,7 +282,7 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
+    func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError?) { // crashes if NSError is used without questionmark
         logger.debug("udpSocketDidClose: \(error)")
     }
 

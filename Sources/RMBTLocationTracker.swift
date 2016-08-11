@@ -22,7 +22,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     public let locationManager: CLLocationManager
 
     ///
-    public var authorizationCallback: RMBTBlock?
+    public var authorizationCallback: EmptyCallback?
 
     ///
     public var location: CLLocation? {
@@ -67,7 +67,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    public func startAfterDeterminingAuthorizationStatus(callback: RMBTBlock) {
+    public func startAfterDeterminingAuthorizationStatus(callback: EmptyCallback) {
         if startIfAuthorized() {
             callback()
         } else if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.NotDetermined {

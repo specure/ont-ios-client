@@ -113,7 +113,7 @@ public class QualityOfServiceTest {
             return
         }
 
-        let controlServer = ControlServerNew.sharedControlServer
+        let controlServer = ControlServer.sharedControlServer
 
         controlServer.requestQosMeasurement(measurementUuid, success: { response in
             dispatch_async(self.qosQueue) {
@@ -559,7 +559,7 @@ public class QualityOfServiceTest {
         qosMeasurementResult.time = NSNumber(unsignedLongLong: currentTimeMillis()).integerValue // currently unused on server!
         qosMeasurementResult.qosResultList = _testResultArray
 
-        let controlServer = ControlServerNew.sharedControlServer
+        let controlServer = ControlServer.sharedControlServer
 
         controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { response in
             logger.debug("QOS TEST RESULT SUBMIT SUCCESS")

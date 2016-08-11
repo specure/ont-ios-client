@@ -226,31 +226,31 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didConnectToAddress address: NSData!) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didConnectToAddress address: NSData) {
         //println("didConnectToAddress: \(address)")
         logger.debug("didConnectToAddress: \(address)")
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didNotConnect error: NSError!) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
         //println("didNotConnect: \(error)")
         logger.debug("didNotConnect: \(error)")
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didSendDataWithTag tag: Int) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
         //println("didSendDataWithTag: \(tag)")
         logger.debug("didSendDataWithTag: \(tag)")
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didNotSendDataWithTag tag: Int, dueToError error: NSError!) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError) {
         //println("didNotSendDataWithTag: \(error)")
         logger.debug("didNotSendDataWithTag: \(error)")
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
 
         dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) { // needed because otherwise println's would merge strangely, TODO: remove this later
 
@@ -506,8 +506,7 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    @objc func udpSocketDidClose(sock: GCDAsyncUdpSocket!, withError error: NSError!) {
-        //println("udpSocketDidClose: \(error)")
+    @objc func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError?) { // crashes if NSError is used without questionmark
         logger.debug("udpSocketDidClose: \(error)")
     }
 

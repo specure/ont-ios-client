@@ -136,7 +136,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     private var progressDurationNanos: UInt64 = 0
 
     ///
-    private var progressCompletionHandler: RMBTBlock!
+    private var progressCompletionHandler: EmptyCallback!
 
     ///
     private var downlinkTestStartedAtNanos: UInt64 = 0
@@ -182,7 +182,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementRequest.geoLocation = geoLocation
         }
 
-        let controlServer = ControlServerNew.sharedControlServer
+        let controlServer = ControlServer.sharedControlServer
         controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
             dispatch_async(self.workerQueue) {
                 self.continueWithTestParams(response)
@@ -485,7 +485,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             let speedMeasurementResultRequest = self.resultObject()
 
-            let controlServer = ControlServerNew.sharedControlServer
+            let controlServer = ControlServer.sharedControlServer
 
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 dispatch_async(self.workerQueue) {
@@ -609,7 +609,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
     ///
     private func startPhase(phase: RMBTTestRunnerPhase, withAllWorkers allWorkers: Bool, performingSelector selector: Selector!,
-                            expectedDuration duration: NSTimeInterval, completion completionHandler: RMBTBlock!) {
+                            expectedDuration duration: NSTimeInterval, completion completionHandler: EmptyCallback!) {
 
         //ASSERT_ON_WORKER_QUEUE();
 

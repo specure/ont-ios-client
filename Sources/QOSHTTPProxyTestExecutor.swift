@@ -30,7 +30,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
 
     ///
     private var alamofireManager: Alamofire.Manager! // !
-    
+
     //
 
     ///

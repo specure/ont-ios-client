@@ -276,8 +276,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         let host = CFHostCreateWithName(nil, serverName).takeRetainedValue()
         CFHostStartInfoResolution(host, .Addresses, nil)
         var success: DarwinBoolean = false
-        if let addresses = CFHostGetAddressing(host, &success)?.takeUnretainedValue() as NSArray?,
-            let theAddress = addresses.firstObject as? NSData {
+        if let addresses = CFHostGetAddressing(host, &success)?.takeUnretainedValue() as NSArray?, theAddress = addresses.firstObject as? NSData {
                 var hostname = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
                 if getnameinfo(UnsafePointer(theAddress.bytes), socklen_t(theAddress.length),
                     &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
