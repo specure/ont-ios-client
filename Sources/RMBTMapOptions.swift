@@ -390,7 +390,7 @@ public class RMBTMapOptionsSubtype: NSObject {
     //
 
     ///
-    public init(response: [String:AnyObject]) {
+    public init(response: [String: AnyObject]) {
         self.title = response["title"] as! String
         self.summary = response["summary"] as! String
         self.mapOptions = response["map_options"] as! String
@@ -406,7 +406,7 @@ public class RMBTMapOptionsSubtype: NSObject {
         ])
 
         for f in type.filters {
-            result.addEntriesFromDictionary(f.activeValue.info as [NSObject : AnyObject])
+            result.addEntriesFromDictionary(f.activeValue.info as [NSObject: AnyObject])
         }
 
         return result
@@ -424,7 +424,7 @@ public class RMBTMapOptionsSubtype: NSObject {
         let filterResult = NSMutableDictionary()
 
         for f in type.filters {
-            filterResult.addEntriesFromDictionary(f.activeValue.info as [NSObject : AnyObject])
+            filterResult.addEntriesFromDictionary(f.activeValue.info as [NSObject: AnyObject])
         }
 
         result.setObject(filterResult, forKey: "filter")

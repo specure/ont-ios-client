@@ -44,12 +44,118 @@ public class IpResponse: BasicResponse {
 
     ///
     override public func mapping(map: Map) {
+        super.mapping(map)
+
         ip <- map["ip"]
         version <- map["version"]
     }
 
     override public var description: String {
         return "ip: \(ip), version: \(version)"
+    }
+}
+
+///
+public class MapOptionResponse: BasicResponse {
+
+    ///
+    var mapTypeList: [MapOptionType]?
+
+    ///
+    var mapFilterList: [String: [MapOptionType]]?
+
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+
+        mapTypeList <- map["mapfilter.mapTypes"]
+        mapFilterList <- map["mapfilter.mapFilters"]
+    }
+
+    ///
+    public class MapOptionType: Mappable {
+
+        ///
+        var title: String?
+
+        ///
+        var options: [/*MapOption*/[String: AnyObject]]?
+
+        ///
+        init() {
+
+        }
+
+        ///
+        required public init?(_ map: Map) {
+
+        }
+
+        ///
+        public func mapping(map: Map) {
+            title   <- map["title"]
+            options <- map["options"]
+        }
+
+        ///
+        public class MapOption: Mappable {
+
+            ///
+            var title: String?
+
+            ///
+            var summary: String?
+
+            ///
+            var isDefault = false
+
+            ///
+            var statisticalMethod: String?
+
+            ///
+            var period: Int?
+
+            ///
+            var provider: String?
+
+            ///
+            var technology: String?
+
+            ///
+            init() {
+
+            }
+
+            ///
+            required public init?(_ map: Map) {
+
+            }
+
+            ///
+            public func mapping(map: Map) {
+                title       <- map["title"]
+                summary     <- map["summary"]
+                isDefault   <- map["default"]
+                statisticalMethod <- map["statistical_method"]
+                period      <- map["period"]
+                provider    <- map["provider"]
+                technology  <- map["technology"]
+            }
+        }
+    }
+}
+
+///
+public class MapMeasurementResponse: BasicResponse {
+
+    ///
+    var measurements: [SpeedMeasurementResultResponse]?
+
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+
+        measurements <- map["measurements"]
     }
 }
 
@@ -521,6 +627,11 @@ public class SpeedMeasurementResultResponse: BasicResponse {
         longitude <- map["geo_long"]
         shareText <- map["share_text"]
         shareSubject <- map["share_subject"]
+    }
+
+    ///
+    override public var description: String {
+        return "SpeedMeasurementResultResponse [\(openTestUuid),\(latitude),\(longitude)]"
     }
 
     ///

@@ -51,7 +51,6 @@
 		E02D18BA1CF59262002A02FE /* RMBTHistoryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */; };
 		E02D18C11CF59262002A02FE /* RMBTJSONHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18261CF59262002A02FE /* RMBTJSONHelper.swift */; };
 		E02D18C21CF59262002A02FE /* RMBTLocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */; };
-		E02D18C41CF59262002A02FE /* RMBTMapMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */; };
 		E02D18C51CF59262002A02FE /* RMBTMapOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D182A1CF59262002A02FE /* RMBTMapOptions.swift */; };
 		E02D18CB1CF59262002A02FE /* RMBTNetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18301CF59262002A02FE /* RMBTNetworkType.swift */; };
 		E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */; };
@@ -207,7 +206,6 @@
 		E02D1A321CFC9D44002A02FE /* QOSWebsiteTestExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18101CF59262002A02FE /* QOSWebsiteTestExecutor.swift */; };
 		E02D1A331CFC9D47002A02FE /* QualityOfServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18111CF59262002A02FE /* QualityOfServiceTest.swift */; };
 		E02D1A341CFC9D4A002A02FE /* QualityOfServiceTestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18121CF59262002A02FE /* QualityOfServiceTestDelegate.swift */; };
-		E02D1A381CFC9D54002A02FE /* RMBTMapMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */; };
 		E02D1A3A1CFC9D5C002A02FE /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E02D1A3C1CFC9D6E002A02FE /* RMBTHistoryResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */; };
 		E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */ = {isa = PBXBuildFile; fileRef = E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */; };
@@ -310,9 +308,7 @@
 		E02D181F1CF59262002A02FE /* RMBTHistoryResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTHistoryResult.swift; sourceTree = "<group>"; };
 		E02D18261CF59262002A02FE /* RMBTJSONHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTJSONHelper.swift; sourceTree = "<group>"; };
 		E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTLocationTracker.swift; sourceTree = "<group>"; };
-		E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTMapMeasurement.swift; sourceTree = "<group>"; };
 		E02D182A1CF59262002A02FE /* RMBTMapOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTMapOptions.swift; sourceTree = "<group>"; };
-		E02D182D1CF59262002A02FE /* RMBTMapServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTMapServer.swift; sourceTree = "<group>"; };
 		E02D18301CF59262002A02FE /* RMBTNetworkType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNetworkType.swift; sourceTree = "<group>"; };
 		E02D18411CF59262002A02FE /* RMBTRAMMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBTRAMMonitor.h; sourceTree = "<group>"; };
 		E02D18421CF59262002A02FE /* RMBTRAMMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBTRAMMonitor.m; sourceTree = "<group>"; };
@@ -596,7 +592,6 @@
 		E02D1A451CFD776D002A02FE /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				E02D18291CF59262002A02FE /* RMBTMapMeasurement.swift */,
 				E02D182A1CF59262002A02FE /* RMBTMapOptions.swift */,
 			);
 			name = Map;
@@ -739,7 +734,6 @@
 				E02D18151CF59262002A02FE /* RMBTConnectivity.swift */,
 				E02D18161CF59262002A02FE /* RMBTConnectivityTracker.swift */,
 				E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */,
-				E02D182D1CF59262002A02FE /* RMBTMapServer.swift */,
 				E02D18431CF59262002A02FE /* RMBTSettings.swift */,
 				E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */,
 				E00C20B21D19654400720394 /* RMBTClient.swift */,
@@ -1146,7 +1140,6 @@
 				E02D18971CF59262002A02FE /* QOSHTTPProxyTest.swift in Sources */,
 				E02D18EC1CF59262002A02FE /* RMBTTestWorker.swift in Sources */,
 				E02D18891CF59262002A02FE /* NSData+Extensions.swift in Sources */,
-				E02D18C41CF59262002A02FE /* RMBTMapMeasurement.swift in Sources */,
 				E02D18C21CF59262002A02FE /* RMBTLocationTracker.swift in Sources */,
 				E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */,
 				E02D192B1CF59F6F002A02FE /* QOSConfig.swift in Sources */,
@@ -1276,7 +1269,6 @@
 				E02D19601CF5A455002A02FE /* RTPSequence.swift in Sources */,
 				E02D19891CF5A51E002A02FE /* CountDownLatch.swift in Sources */,
 				E02D1A3A1CFC9D5C002A02FE /* RMBTTestRunner.swift in Sources */,
-				E02D1A381CFC9D54002A02FE /* RMBTMapMeasurement.swift in Sources */,
 				E02D19541CF5A431002A02FE /* SwiftExactTime.swift in Sources */,
 				E02D198C1CF5A525002A02FE /* AtomicBoolean.swift in Sources */,
 				E02D198F1CF5A52E002A02FE /* UInt+Extensions.swift in Sources */,

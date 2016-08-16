@@ -42,33 +42,89 @@ public class MapServer {
 // MARK: MapServer
 
     ///
-    public func getMapOptions(success successCallback: EmptyCallback, error failure: ErrorCallback) {
-        request(.POST, path: "/tiles/info", requestObject: BasicRequest(), success: { response in
+    public func getMapOptions(success successCallback: (response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: ErrorCallback) {
+        request(.POST, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
 
-            // TODO: return map options
+            // TODO: rewrite MapViewController to use new objects
+            let mapOptions = RMBTMapOptions(response: Mapper().toJSON(response))
+            successCallback(response: mapOptions)
 
         }, error: failure)
     }
 
     ///
-    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Int, success successCallback: EmptyCallback, error failure: ErrorCallback) {
-        // TODO
+    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: (response: [SpeedMeasurementResultResponse]) -> (), error failure: ErrorCallback) {
+
+        let mapMeasurementRequest = MapMeasurementRequest()
+        mapMeasurementRequest.coords = MapMeasurementRequest.CoordObject()
+        mapMeasurementRequest.coords?.latitude = coordinate.latitude
+        mapMeasurementRequest.coords?.longitude = coordinate.longitude
+        mapMeasurementRequest.coords?.zoom = zoom
+
+        mapMeasurementRequest.options = params["options"]
+        mapMeasurementRequest.filter = params["filter"]
+
+        request(.POST, path: "/tiles/markers", requestObject: mapMeasurementRequest, success: { (response: MapMeasurementResponse) in
+            if let measurements = response.measurements {
+                successCallback(response: measurements)
+            } else {
+                failure(error: NSError(domain: "no measurements", code: -12543, userInfo: nil))
+            }
+        }, error: failure)
     }
 
-    //public func tileURLForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: NSDictionary) -> NSURL {
-    //
-    //}
+    ///
+    public func getTileUrlForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: [String: AnyObject]?) -> NSURL? {
+        if let base = baseUrl {
+            // baseUrl and layer
+            var urlString = base + "/tiles/\(overlayType)?path=\(zoom)/\(x)/\(y)"
+
+            // add uuid for highlight
+            if let uuid = ControlServer.sharedControlServer.uuid {
+                urlString += "&highlight=\(uuid)"
+            }
+
+            // add params
+            if let p = params {
+                let paramString = p.map({ (key, value) in
+                    let escapedKey = key.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
+
+                    var escapedValue: String?
+                    if let v = value as? String {
+                        escapedValue = v.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet()) // TODO: does this need a cast to string?
+                    }
+
+                    return "\(escapedKey ?? key)=\(escapedValue ?? value)"
+                }).joinWithSeparator("&")
+
+                urlString += "&" + paramString
+            }
+
+            logger.debug("Generated tile url: \(urlString)")
+
+            return NSURL(string: urlString)
+        }
+
+        return nil
+    }
 
     ///
-    public func getOpenTestUrl(openTestUuid: String, success successCallback: EmptyCallback) {
+    public func getOpenTestUrl(openTestUuid: String, success successCallback: (response: String?) -> ()) {
+        //ControlServer.sharedControlServer.openTest
         // TODO
+        successCallback(response: nil)
     }
 
 // MARK: Private
 
     ///
     private func opentestURLForApp(openTestBaseURL: String) -> String {
-        return "TODO"
+        // hardcoded because @lb doesn't want to provide a good solution
+
+        let r = openTestBaseURL.startIndex..<openTestBaseURL.endIndex
+        let appOpenTestBaseURL = openTestBaseURL.stringByReplacingOccurrencesOfString("/opentest", withString: "/app/opentest", options: NSStringCompareOptions.LiteralSearch, range: r)
+
+        return appOpenTestBaseURL
     }
 
     ///
