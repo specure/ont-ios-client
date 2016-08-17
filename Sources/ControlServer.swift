@@ -112,9 +112,9 @@ public class ControlServer {
 
             logger.debugExec({
                 if let uuid = self.uuid {
-                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults")
+                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
                 } else {
-                    logger.debug("UUID: Uuid was not found in user defaults")
+                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
                 }
             })
         }
@@ -150,7 +150,7 @@ public class ControlServer {
                 NSUserDefaults.standardUserDefaults().synchronize()
             }
 
-            logger.debug("UUID: uuid is now: \(self.uuid)")
+            logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
 
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion

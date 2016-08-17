@@ -293,13 +293,12 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         var jitterMap = [UInt16: Double]()
 
-        var sequenceNumberArray: [UInt16]
-        //var sequenceNumberArray: [UInt16] = [UInt16](rtpControlDataList.keys) // TODO: fatal error? TODO! also occured on 2016-06-07 14:09, again on 2016-07-27 17:34, again on 2016-08-11 15:19
+        //var sequenceNumberArray: [UInt16] = [UInt16](rtpControlDataList.keys) // TODO: fatal error? TODO! also occured on 2016-06-07 14:09, again on 2016-07-27 17:34, again on 2016-08-11 15:19, again on 2016-08-17 17:20
 
-        do {
-            try sequenceNumberArray = [UInt16](rtpControlDataList.keys) // maybe this fixes the EXC_BAD_INSTRUCTION bug?
-        } catch {
-            return nil
+        // since try/catch didn't help, try with forEach instead of .keys
+        var sequenceNumberArray = [UInt16]()
+        rtpControlDataList.forEach { index, data in
+            sequenceNumberArray.append(index)
         }
 
         sequenceNumberArray.sortInPlace() { $0 < $1 } // TODO: delete when set datatype is available
