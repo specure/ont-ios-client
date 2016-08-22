@@ -65,10 +65,10 @@ public class MapServer {
         mapMeasurementRequest.filter = params["filter"]
         
         // add highlight filter (my measurements filter)
-        //mapMeasurementRequest.filter?["highlight"] = "72f88e43-732e-41bc-a096-14963906a2a8"//ControlServer.sharedControlServer.uuid
+        //mapMeasurementRequest.filter?["highlight"] = ControlServer.sharedControlServer.uuid
 
         // submit client_uuid to get measurement_uuid if tapped on an own measurement
-        mapMeasurementRequest.clientUuid = "72f88e43-732e-41bc-a096-14963906a2a8"//ControlServer.sharedControlServer.uuid
+        mapMeasurementRequest.clientUuid = ControlServer.sharedControlServer.uuid
         
         request(.POST, path: "/tiles/markers", requestObject: mapMeasurementRequest, success: { (response: MapMeasurementResponse) in
             if let measurements = response.measurements {
@@ -86,10 +86,9 @@ public class MapServer {
             var urlString = base + "/tiles/\(overlayType)?path=\(zoom)/\(x)/\(y)"
 
             // add uuid for highlight
-            //if let uuid = ControlServer.sharedControlServer.uuid {
-                //urlString += "&highlight=\(uuid)"
-                urlString += "&highlight=72f88e43-732e-41bc-a096-14963906a2a8"
-            //}
+            if let uuid = ControlServer.sharedControlServer.uuid {
+                urlString += "&highlight=\(uuid)"
+            }
 
             // add params
             if let p = params where p.count > 0 {
