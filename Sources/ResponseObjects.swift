@@ -608,6 +608,16 @@ public class SpeedMeasurementResultResponse: BasicResponse {
     ///
     public var shareSubject: String?
 
+    //////////// only for map
+    
+    ///
+    public var highlight = false
+    
+    ///
+    public var measurementUuid: String?
+
+    ////////////
+    
     ///
     override public func mapping(map: Map) {
         super.mapping(map)
@@ -627,6 +637,10 @@ public class SpeedMeasurementResultResponse: BasicResponse {
         longitude <- map["geo_long"]
         shareText <- map["share_text"]
         shareSubject <- map["share_subject"]
+        
+        // only for map
+        highlight <- map["highlight"]
+        measurementUuid <- map["measurement_uuid"]
     }
 
     ///

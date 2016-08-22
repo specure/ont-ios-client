@@ -48,7 +48,7 @@ public class ControlServer {
     var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
-    private let defaultBaseUrl = "https://netcouch.specure.com/api/v1" //http://localhost:8080/api/v1 //RMBT_CONTROL_SERVER_URL
+    private let defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
 
     // TODO: HTTP/2, NGINX, IOS PROBLEM! http://stackoverflow.com/questions/36907767/nsurlerrordomain-code-1004-for-few-seconds-after-app-start-up
 

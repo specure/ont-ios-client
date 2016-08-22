@@ -494,6 +494,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                     self.dead = true
 
                     RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
+                    NSUserDefaults.standardUserDefaults().synchronize() // TODO: this should be done by RMBTSettings kvo
 
                     if let uuid = self.testParams.testUuid {
                         dispatch_async(dispatch_get_main_queue()) {
