@@ -10,7 +10,7 @@ import Foundation
 import XCGLogger
 
 ///
-class QOSTestExecutorClass<T: QOSTest>: QOSTestExecutorProtocol, QOSControlConnectionTaskDelegate {
+class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSControlConnectionTaskDelegate {
 
     let RESULT_TEST_UID = "qos_test_uid"
 
@@ -95,6 +95,8 @@ class QOSTestExecutorClass<T: QOSTest>: QOSTestExecutorProtocol, QOSControlConne
         //////
         qosLog = QOSLog(testType: testType, testUid: testObject.qosTestId)
         //////
+        
+        super.init()
 
         // set control connection task delegate if needed
         if needsControlConnection() {
@@ -116,7 +118,7 @@ class QOSTestExecutorClass<T: QOSTest>: QOSTestExecutorProtocol, QOSControlConne
     }
 
     ///
-    func setTestToken(testToken: String) {
+    func setCurrentTestToken(testToken: String) {
         self.testToken = testToken
     }
 

@@ -7,8 +7,13 @@
 //
 
 import Foundation
+
+#if os(tvOS)
+// TODO
+#else
 import CoreTelephony
 import GCNetworkReachability
+#endif // TODO: use library for network reachability that works on tvOS
 
 ///
 public protocol RMBTConnectivityTrackerDelegate {
@@ -26,6 +31,8 @@ public protocol RMBTConnectivityTrackerDelegate {
 ///
 public class RMBTConnectivityTracker: NSObject {
 
+    #if os(iOS)
+
     /// GCNetworkReachability is not made to be multiply instantiated, so we create a global
     /// singleton first time a RMBTConnectivityTracker is instatiated
     private static let sharedReachability: GCNetworkReachability = GCNetworkReachability.reachabilityForInternetConnection()
@@ -34,6 +41,8 @@ public class RMBTConnectivityTracker: NSObject {
     /// keep a reference to CTTelephonyNetworkInfo live if we want to receive radio changed notifications (?)
     private static let sharedNetworkInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
 
+    #endif
+    
     ///
     private let queue = dispatch_queue_create("com.specure.nettest.connectivitytracker", DISPATCH_QUEUE_SERIAL)
 
@@ -62,9 +71,11 @@ public class RMBTConnectivityTracker: NSObject {
         self.delegate = delegate
         self.stopOnMixed = stopOnMixed
 
+        #if os(iOS)
         dispatch_once(&Static.token) {
             RMBTConnectivityTracker.sharedReachability.startMonitoringNetworkReachabilityWithNotification()
         }
+        #endif
     }
 
     ///
@@ -86,6 +97,7 @@ public class RMBTConnectivityTracker: NSObject {
             // Re-Register for notifications
             NSNotificationCenter.defaultCenter().removeObserver(self)
 
+            #if os(iOS)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTConnectivityTracker.appWillEnterForeground(_:)),
                                                              name: UIApplicationWillEnterForegroundNotification, object: nil)
 
@@ -96,6 +108,7 @@ public class RMBTConnectivityTracker: NSObject {
                                                              name: CTRadioAccessTechnologyDidChangeNotification, object: nil)
 
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
+            #endif
         }
     }
 
@@ -111,18 +124,22 @@ public class RMBTConnectivityTracker: NSObject {
     ///
     public func forceUpdate() {
         dispatch_async(queue) {
+            #if os(iOS)
             assert(self.lastConnectivity != nil, "Connectivity should be known by now")
             self.delegate.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
+            #endif
         }
     }
 
     ///
     public func reachabilityDidChange(n: NSNotification) {
+        #if os(iOS)
         if let status = n.userInfo?[kGCNetworkReachabilityStatusKey] as? NSNumber {
             dispatch_async(queue) {
                 self.reachabilityDidChangeToStatus(GCNetworkReachabilityStatus.init(status.unsignedCharValue))
             }
         }
+        #endif
     }
 
     ///
@@ -135,9 +152,13 @@ public class RMBTConnectivityTracker: NSObject {
 
             self.lastRadioAccessTechnology = n.object as! String
 
+            #if os(iOS)
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
+            #endif
         }
     }
+
+    #if os(iOS)
 
     ///
     private func reachabilityDidChangeToStatus(status: GCNetworkReachabilityStatus) {
@@ -178,10 +199,10 @@ public class RMBTConnectivityTracker: NSObject {
 
             if lastConnectivity != nil {
                 if connectivity.networkType != lastConnectivity.networkType {
-                    logger.debug("Connectivity network mismatched \(lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
+                    logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
                     compatible = false
                 } else if connectivity.networkName != lastConnectivity.networkName {
-                    logger.debug("Connectivity network name mismatched \(lastConnectivity.networkName) -> \(connectivity.networkName)")
+                    logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName) -> \(connectivity.networkName)")
                     compatible = false
                 }
             }
@@ -201,6 +222,8 @@ public class RMBTConnectivityTracker: NSObject {
             delegate.connectivityTracker(self, didDetectConnectivity: connectivity)
         }
     }
+
+    #endif
 
     ///
     deinit {

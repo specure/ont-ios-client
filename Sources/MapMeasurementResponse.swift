@@ -7,3 +7,18 @@
 //
 
 import Foundation
+import ObjectMapper
+
+///
+public class MapMeasurementResponse: BasicResponse {
+
+    ///
+    var measurements: [SpeedMeasurementResultResponse]?
+
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map)
+
+        measurements <- map["measurements"]
+    }
+}

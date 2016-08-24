@@ -266,7 +266,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         if markWorkerAsFinished() {
             if singleThreaded {
-                logger.debug("Downloaded <= \(testParams.pretestMinChunkCountForMultithreading) chunks in the pretest, continuing with single thread.")
+                logger.debug("Downloaded <= \(self.testParams.pretestMinChunkCountForMultithreading) chunks in the pretest, continuing with single thread.")
 
                 activeWorkers = UInt(testParams.numThreads) - 1
                 finishedWorkers = 0
@@ -334,11 +334,11 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(!dead, "Invalid state")
 
         if downlinkTestStartedAtNanos == 0 {
-            downlinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
+            downlinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
             downlinkTestStartedAtNanos = nanos
         }
 
-        logger.debug("Thread \(worker.index): started downlink test with delay \(nanos - downlinkTestStartedAtNanos)")
+        logger.debug("Thread \(worker.index): started downlink test with delay \(nanos - self.downlinkTestStartedAtNanos)")
 
         return downlinkTestStartedAtNanos
     }
@@ -368,7 +368,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if markWorkerAsFinished() {
             logger.debug("Downlink test finished")
 
-            downlinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
+            downlinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
 
             let measuredThroughputs = speedMeasurementResult.flush()
 
@@ -410,7 +410,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if uplinkTestStartedAtNanos == 0 {
             uplinkTestStartedAtNanos = nanos
             delay = 0
-            uplinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
+            uplinkStartInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
         } else {
             delay = nanos - uplinkTestStartedAtNanos
         }
@@ -444,7 +444,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             finalize()
 
-            uplinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity().getInterfaceInfo()
+            uplinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
 
             let measuredThroughputs = speedMeasurementResult.flush()
             logger.debug("Uplink test finished.")
@@ -548,21 +548,21 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         /////////////////////////// SOMETIMES SOME OF THESE VALUES ARE NOT SENT TO THE SERVER?
 
         //let interfaceUpDownTotal = interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "test")
-        if startInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && startInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
-            speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - startInterfaceInfo!.bytesReceived)
-            speedMeasurementResult.interfaceTotalBytesUpload = Int(uplinkEndInterfaceInfo!.bytesSent - startInterfaceInfo!.bytesSent)
+        if let startInfo = startInterfaceInfo, uplinkEndInfo = uplinkEndInterfaceInfo where startInfo.bytesReceived <= uplinkEndInfo.bytesReceived && startInfo.bytesSent < uplinkEndInfo.bytesSent {
+            speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInfo.bytesReceived - startInfo.bytesReceived)
+            speedMeasurementResult.interfaceTotalBytesUpload = Int(uplinkEndInfo.bytesSent - startInfo.bytesSent)
         }
 
         //let interfaceUpDownDownload = interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl")
-        if downlinkStartInterfaceInfo!.bytesReceived <= downlinkEndInterfaceInfo!.bytesReceived && downlinkStartInterfaceInfo!.bytesSent < downlinkEndInterfaceInfo!.bytesSent {
-            speedMeasurementResult.interfaceDltestBytesDownload = Int(downlinkEndInterfaceInfo!.bytesReceived - downlinkStartInterfaceInfo!.bytesReceived)
-            speedMeasurementResult.interfaceDltestBytesUpload = Int(downlinkEndInterfaceInfo!.bytesSent - downlinkStartInterfaceInfo!.bytesSent)
+        if let downStartInfo = downlinkStartInterfaceInfo, downEndInfo = downlinkEndInterfaceInfo where downStartInfo.bytesReceived <= downEndInfo.bytesReceived && downStartInfo.bytesSent < downEndInfo.bytesSent {
+            speedMeasurementResult.interfaceDltestBytesDownload = Int(downEndInfo.bytesReceived - downStartInfo.bytesReceived)
+            speedMeasurementResult.interfaceDltestBytesUpload = Int(downEndInfo.bytesSent - downStartInfo.bytesSent)
         }
 
         //let interfaceUpDownUpload = interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "testul")
-        if uplinkStartInterfaceInfo!.bytesReceived <= uplinkEndInterfaceInfo!.bytesReceived && uplinkStartInterfaceInfo!.bytesSent < uplinkEndInterfaceInfo!.bytesSent {
-            speedMeasurementResult.interfaceUltestBytesDownload = Int(uplinkEndInterfaceInfo!.bytesReceived - uplinkStartInterfaceInfo!.bytesReceived)
-            speedMeasurementResult.interfaceUltestBytesUpload = Int(uplinkEndInterfaceInfo!.bytesSent - uplinkStartInterfaceInfo!.bytesSent)
+        if let upStartInfo = uplinkStartInterfaceInfo, upEndInfo = uplinkEndInterfaceInfo where upStartInfo.bytesReceived <= upEndInfo.bytesReceived && upStartInfo.bytesSent < upEndInfo.bytesSent {
+            speedMeasurementResult.interfaceUltestBytesDownload = Int(upEndInfo.bytesReceived - upStartInfo.bytesReceived)
+            speedMeasurementResult.interfaceUltestBytesUpload = Int(upEndInfo.bytesSent - upStartInfo.bytesSent)
         }
 
         ///////////////////////////
@@ -577,7 +577,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         if TEST_USE_PERSONAL_DATA_FUZZING {
             speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings().publishPublicData
-            logger.info("test result: publish_public_data: \(speedMeasurementResult.publishPublicData)")
+            logger.info("test result: publish_public_data: \(self.speedMeasurementResult.publishPublicData)")
         }
 
         //////

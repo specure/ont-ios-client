@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 ///
-public let RMBTLocationTrackerNotification: String = "RMBTLocationTrackerNotification"
+public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 
 ///
 public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
@@ -26,11 +26,8 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     public var location: CLLocation? {
-        // TODO: if app is not allowed to get location this code fails! WORKS without ".copy() as? CLLocation", but are there any consequences?
-        if let result: CLLocation = locationManager.location/*.copy() as? CLLocation*/ {
-            if CLLocationCoordinate2DIsValid(result.coordinate) {
-                return result
-            }
+        if let result = locationManager.location where CLLocationCoordinate2DIsValid(result.coordinate) {
+            return result
         }
 
         return nil
@@ -50,7 +47,9 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     public func stop() {
+        #if os(iOS) // TODO: replacement for this method?
         locationManager.stopMonitoringSignificantLocationChanges()
+        #endif
         locationManager.stopUpdatingLocation()
     }
 
@@ -58,10 +57,15 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     public func startIfAuthorized() -> Bool {
         let authorizationStatus = CLLocationManager.authorizationStatus()
 
+        #if os(OSX) // TODO
+        #else
         if authorizationStatus == .AuthorizedWhenInUse || authorizationStatus == .AuthorizedAlways {
+            #if os(iOS) // TODO: replacement for this method?
             locationManager.startUpdatingLocation()
+            #endif
             return true
         }
+        #endif
 
         return false
     }
@@ -74,23 +78,33 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
             // Not determined yet
             authorizationCallback = callback
 
+            #if os(OSX) // TODO
+            #else
             locationManager.requestWhenInUseAuthorization()
+            #endif
         } else {
             logger.warning("User hasn't enabled or authorized location services")
             callback()
         }
     }
+    
+    #if os(OSX) // TODO
+    #else
 
     ///
     public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         NSNotificationCenter.defaultCenter().postNotificationName(RMBTLocationTrackerNotification, object: self, userInfo:["locations": locations])
     }
 
+    #endif
+    
     ///
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        #if os(iOS) // TODO: replacement for this method?
         if locationManager.respondsToSelector(#selector(CLLocationManager.startUpdatingLocation)) {
             locationManager.startUpdatingLocation()
         }
+        #endif
 
         if let authorizationCallback = self.authorizationCallback {
             authorizationCallback()

@@ -7,74 +7,91 @@
 //
 
 import Foundation
-import BlocksKit
 
 ///
-class RMBTSettings: NSObject {
+public class RMBTSettings: NSObject {
 
 // MARK: Temporary app state (global variables)
 
     ///
-    var mapOptionsSelection: RMBTMapOptionsSelection
+    public dynamic var mapOptionsSelection: RMBTMapOptionsSelection
 
 // MARK: Persisted app state
 
     ///
-    var testCounter: UInt = 0
+    public dynamic var testCounter: UInt = 0
 
     ///
-    var previousTestStatus: String!
+    public dynamic var previousTestStatus: String!
 
 // MARK: User configurable properties
 
     ///
-    var forceIPv4: Bool = false
+    public dynamic var forceIPv4 = false
 
     ///
-    var publishPublicData: Bool = false
+    public dynamic var publishPublicData = false
 
 // MARK: Debug properties
 
     ///
-    var debugUnlocked: Bool = false
+    public dynamic var debugUnlocked = false
 
     ///
-    var debugForceIPv6: Bool = false
+    public dynamic var debugForceIPv6 = false
 
     // loop mode
 
     ///
-    var debugLoopMode: Bool = false
-    var debugLoopModeMaxTests: UInt = 0
-    var debugLoopModeMinDelay: UInt = 0
-    var debugLoopModeSkipQOS: Bool = false
+    public dynamic var debugLoopMode = false
+
+    ///
+    public dynamic var debugLoopModeMaxTests: UInt = 0
+
+    ///
+    public dynamic var debugLoopModeMinDelay: UInt = 0
+
+    ///
+    public dynamic var debugLoopModeSkipQOS = false
 
     // control server
 
     ///
-    var debugControlServerCustomizationEnabled: Bool = false
-    var debugControlServerHostname: String!
-    var debugControlServerPort: UInt = 0
-    var debugControlServerUseSSL: Bool = false
+    public dynamic var debugControlServerCustomizationEnabled = false
+
+    ///
+    public dynamic var debugControlServerHostname: String!
+
+    ///
+    public dynamic var debugControlServerPort: UInt = 0
+
+    ///
+    public dynamic var debugControlServerUseSSL = false
 
     // map server
 
     ///
-    var debugMapServerCustomizationEnabled: Bool = false
-    var debugMapServerHostname: String!
-    var debugMapServerPort: UInt = 0
-    var debugMapServerUseSSL: Bool = false
+    public dynamic var debugMapServerCustomizationEnabled = false
+
+    ///
+    public dynamic var debugMapServerHostname: String!
+
+    ///
+    public dynamic var debugMapServerPort: UInt = 0
+
+    ///
+    public dynamic var debugMapServerUseSSL = false
 
     // logging
 
     ///
-    var debugLoggingEnabled: Bool = false
+    public dynamic var debugLoggingEnabled = false
 
     ///
     private static let _sharedSettings = RMBTSettings()
 
     /// TODO: remove later
-    class func sharedSettings() -> RMBTSettings {
+    public class func sharedSettings() -> RMBTSettings {
         return _sharedSettings
     }
 
@@ -131,12 +148,20 @@ class RMBTSettings: NSObject {
             }
 
             // Start observing
-            bk_addObserverForKeyPath(keyPath, options: .New, task: { (obj: AnyObject!, change: [NSObject : AnyObject]!) in
-                let newValue = change[NSKeyValueChangeNewKey]
+            addObserver(self, forKeyPath: keyPath, options: .New, context: nil)
+        }
+    }
 
-                NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: keyPath)
-                NSUserDefaults.standardUserDefaults().synchronize()
-            })
+    ///
+    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let newValue = change?[NSKeyValueChangeNewKey], kp = keyPath {
+            logger.debugExec() {
+                let oldValue = NSUserDefaults.standardUserDefaults().objectForKey(kp)
+                logger.debug("Settings changed for keyPath '\(keyPath)' from '\(oldValue)' to '\(newValue)'")
+            }
+
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: kp)
+            NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
 }

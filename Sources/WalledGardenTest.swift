@@ -16,9 +16,9 @@ public class WalledGardenTest {
 
     ///
     public class func isWalledGardenConnection(callback: WalledGardenResultCallback) {
-        if let url: NSURL = NSURL(string: WALLED_GARDEN_URL) {
+        if let url = NSURL(string: WALLED_GARDEN_URL) {
 
-            let request: NSMutableURLRequest = NSMutableURLRequest(URL: url)
+            let request = NSMutableURLRequest(URL: url)
 
             request.HTTPMethod = "GET"
             request.timeoutInterval = (WALLED_GARDEN_SOCKET_TIMEOUT_MS / 1_000.0)

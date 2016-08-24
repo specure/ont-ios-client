@@ -7,9 +7,11 @@
 //
 
 import Foundation
+#if os(iOS)
 import CoreTelephony
-import SystemConfiguration.CaptiveNetwork
 import NetworkExtension
+#endif
+import SystemConfiguration.CaptiveNetwork
 
 ///
 public class RMBTConnectivity {
@@ -34,7 +36,7 @@ public class RMBTConnectivity {
                 return NSLocalizedString("connectivity.cellular", tableName: nil, bundle: NSBundle.mainBundle(), value: "Cellular", comment: "network type description cellular")
             }
         default:
-            logger.warning("Invalid network type \(networkType)")
+            logger.warning("Invalid network type \(self.networkType)")
             return NSLocalizedString("intro.network.connection.name-unknown", tableName: nil, bundle: NSBundle.mainBundle(), value: "Unknown", comment: "network type description unknown")
         }
     }
@@ -57,6 +59,8 @@ public class RMBTConnectivity {
     ///
     public var telephonyNetworkSimCountry: String!
 
+    #if os(iOS)
+    
     ///
     private let cellularCodeTable = [
         CTRadioAccessTechnologyGPRS:         1,
@@ -86,6 +90,8 @@ public class RMBTConnectivity {
         CTRadioAccessTechnologyLTE:             "LTE (4G)",
         CTRadioAccessTechnologyeHRPD:           "HRPD (2G)"
     ]
+    
+    #endif
 
     ///
     public init(networkType: RMBTNetworkType) {
@@ -105,7 +111,9 @@ public class RMBTConnectivity {
         cellularCodeDescription = nil
 
         switch networkType {
+        
         case .Cellular:
+            #if os(iOS)
             // Get carrier name
             let netinfo = CTTelephonyNetworkInfo()
             if let carrier = netinfo.subscriberCellularProvider {
@@ -119,6 +127,9 @@ public class RMBTConnectivity {
                 cellularCode = cellularCodeForCTValue(netinfo.currentRadioAccessTechnology)
                 cellularCodeDescription = cellularCodeDescriptionForCTValue(netinfo.currentRadioAccessTechnology)
             }
+            #else
+            break
+            #endif
         case .WiFi:
             // If WLAN, then show SSID as network name. Fetching SSID does not work on the simulator.
             if let wifiParams = getWiFiParameters() {
@@ -142,6 +153,9 @@ public class RMBTConnectivity {
             // http://stackoverflow.com/questions/32970711/is-it-possible-to-get-wifi-signal-strength-in-ios-9
 
         //} else { // pre iOS 9 way
+        #if os(OSX)
+        // TODO
+        #else
             if let interfaces = CNCopySupportedInterfaces() {
                 for i in 0..<CFArrayGetCount(interfaces) {
                     let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
@@ -156,6 +170,7 @@ public class RMBTConnectivity {
                     }
                 }
             }
+            #endif
         //}
 
         return nil
@@ -167,7 +182,11 @@ public class RMBTConnectivity {
             return nil
         }
 
+        #if os(iOS)
         return cellularCodeTable[value] ?? nil
+        #else
+        return nil
+        #endif
     }
 
     ///
@@ -176,7 +195,11 @@ public class RMBTConnectivity {
             return nil
         }
 
+        #if os(iOS)
         return cellularCodeDescriptionTable[value] ?? nil
+        #else
+        return nil
+        #endif
     }
 
     ///

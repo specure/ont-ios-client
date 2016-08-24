@@ -273,21 +273,21 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
         connectivityInfo.ipv4.internalIp = sock.localHost_IPv4()
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
 
-        logger.debug("local ipv4 address from socket: \(connectivityInfo.ipv4.internalIp)")
-        logger.debug("local ipv6 address from socket: \(connectivityInfo.ipv6.internalIp)")
+        logger.debug("local ipv4 address from socket: \(self.connectivityInfo.ipv4.internalIp)")
+        logger.debug("local ipv6 address from socket: \(self.connectivityInfo.ipv6.internalIp)")
 
         sock.close()
     }
 
     ///
-    public func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
+    public func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
         logger.debug("didNotConnect: \(error)")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
-    public func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError) {
+    public func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError?) {
         logger.debug("udpSocketDidClose: \(error)")
 
         getLocalIpAddresses() // fallback

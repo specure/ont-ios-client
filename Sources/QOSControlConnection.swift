@@ -9,7 +9,7 @@
 import Foundation
 import CocoaAsyncSocket
 
-class QOSControlConnection {
+class QOSControlConnection: NSObject {
 
     private let TAG_GREETING = -1
     private let TAG_FIRST_ACCEPT = -2
@@ -54,6 +54,8 @@ class QOSControlConnection {
     init(testToken: String) {
         self.testToken = testToken
 
+        super.init()
+        
         // create socket
         qosControlConnectionSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue) // TODO: specify other dispath queue
 

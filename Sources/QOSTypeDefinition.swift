@@ -7,16 +7,7 @@
 //
 
 ///
-public typealias QOSTestParameters = [String: AnyObject] // Any
-
-///
-// public typealias QOSTestResultParameterKey = String
-
-///
-// public typealias QOSTestResultParameterValue = AnyObject
-
-///
-// public typealias QOSTestResults = [QOSTestResultParameterKey:QOSTestResultParameterValue]
+public typealias QOSTestParameters = [String: AnyObject]
 
 ///
 public typealias QOSTestResults = [String: AnyObject]

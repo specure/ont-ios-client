@@ -191,7 +191,7 @@ public class QualityOfServiceTest {
         // create sorted array of keys to let the concurrencyGroups increase
         sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sort(<)
 
-        logger.debug("sorted concurrency groups: \(sortedConcurrencyGroups)")
+        logger.debug("sorted concurrency groups: \(self.sortedConcurrencyGroups)")
     }
 
     ///
@@ -236,12 +236,12 @@ public class QualityOfServiceTest {
             return
         }
 
-        logger.debug("TEST TYPE COUNT MAP: \(testTypeCountMap)")
+        logger.debug("TEST TYPE COUNT MAP: \(self.testTypeCountMap)")
     }
 
     ///
     private func runQOSTests() {
-        logger.debug("RUN QOS TESTS (stopped: \(stopped))")
+        logger.debug("RUN QOS TESTS (stopped: \(self.stopped))")
 
         if stopped {
             return
@@ -260,7 +260,7 @@ public class QualityOfServiceTest {
         if sortedConcurrencyGroups.count > 0 {
             let concurrencyGroup = sortedConcurrencyGroups.removeAtIndex(0) // what happens if empty?
 
-            logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(sortedConcurrencyGroups.count))")
+            logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(self.sortedConcurrencyGroups.count))")
 
             if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
 
@@ -288,7 +288,7 @@ public class QualityOfServiceTest {
                         // TODO: which queue?
 
                         // set test token (TODO: IMPROVE)
-                        testExecutor.setTestToken(self.testToken)
+                        testExecutor.setCurrentTestToken(self.testToken)
 
                         if testExecutor.needsControlConnection() {
                             // set control connection timeout (TODO: compute better! (not all tests may use same control connection))

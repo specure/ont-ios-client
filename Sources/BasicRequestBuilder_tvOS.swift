@@ -6,9 +6,7 @@
 //
 //
 
-// TODO: fix podspec for that (tvOS has UIKit?)
-
-/*import Foundation
+import Foundation
 import UIKit
 
 ///
@@ -18,12 +16,13 @@ class BasicRequestBuilder: AbstractBasicRequestBuilder {
     override class func addBasicRequestValues(basicRequest: BasicRequest) {
         super.addBasicRequestValues(basicRequest)
 
-        basicRequest.device = "APPLETV" //currentDevice.model
-        basicRequest.model = "??" //UIDeviceHardware.platform()
-        basicRequest.osVersion = "9.0" //currentDevice.systemVersion
+        let currentDevice = UIDevice.currentDevice()
+        
+        basicRequest.device = currentDevice.model
+        basicRequest.model = UIDeviceHardware.platform()
+        basicRequest.osVersion = currentDevice.systemVersion
         basicRequest.platform = "tvOS"
-        basicRequest.clientType = "APPLETV"
+        basicRequest.clientType = "DESKTOP"//"APPLETV" // TODO: allow client type "APPLETV"
     }
 
 }
-*/

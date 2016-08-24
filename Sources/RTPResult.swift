@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-public struct RTPResult {
+struct RTPResult {
 
     ///
     var jitterMap: [UInt16: Double]
@@ -71,7 +71,7 @@ public struct RTPResult {
 extension RTPResult: CustomStringConvertible {
 
     ///
-    public var description: String {
+    var description: String {
         return "RTPResult: [jitterMap: \(jitterMap), maxJitter: \(maxJitter), meanJitter: \(meanJitter), " +
                "skew: \(skew), maxDelta: \(maxDelta), outOfOrder: \(outOfOrder), minSequential: \(minSequential), maxSequential: \(maxSequential)]"
     }

@@ -62,7 +62,9 @@ let IOS_MODEL_DICTIONARY = [
 
     "i386":            "iOS Simulator",
     "x86_64":          "iOS Simulator",
-    "Emulator x86_64": "iOS Simulator"
+    "Emulator x86_64": "iOS Simulator",
+
+    // TODO: add appletv
 ]
 
 ///

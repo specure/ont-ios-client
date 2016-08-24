@@ -256,7 +256,7 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
         logger.debug("didNotConnect: \(error)")
     }
 
@@ -266,7 +266,7 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError) {
+    func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError?) {
         logger.debug("didNotSendDataWithTag: \(error)")
     }
 

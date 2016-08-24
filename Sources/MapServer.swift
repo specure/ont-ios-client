@@ -63,13 +63,13 @@ public class MapServer {
 
         mapMeasurementRequest.options = params["options"]
         mapMeasurementRequest.filter = params["filter"]
-        
+
         // add highlight filter (my measurements filter)
         //mapMeasurementRequest.filter?["highlight"] = ControlServer.sharedControlServer.uuid
 
         // submit client_uuid to get measurement_uuid if tapped on an own measurement
         mapMeasurementRequest.clientUuid = ControlServer.sharedControlServer.uuid
-        
+
         request(.POST, path: "/tiles/markers", requestObject: mapMeasurementRequest, success: { (response: MapMeasurementResponse) in
             if let measurements = response.measurements {
                 successCallback(response: measurements)

@@ -7,3 +7,13 @@
 //
 
 import Foundation
+import ObjectMapper
+
+///
+class QosMeasurementSubmitResponse: BasicResponse {
+
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map)
+    }
+}

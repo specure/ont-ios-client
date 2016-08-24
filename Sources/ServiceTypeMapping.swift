@@ -23,7 +23,7 @@ WRONG_XID = 8
 WRONG_QUESTION = 9
 } */
 
-let DNSServiceTypeStrToInt: [String:Int] = [
+let DNSServiceTypeStrToInt: [String: Int] = [
     "A":        kDNSServiceType_A,
     //    "NS":       kDNSServiceType_NS,
     "CNAME":    kDNSServiceType_CNAME,
@@ -37,7 +37,7 @@ let DNSServiceTypeStrToInt: [String:Int] = [
     //    "SPF":      kDNSServiceType_SPF
 ]
 
-let DNSServiceTypeIntToStr: [Int:String] = [
+let DNSServiceTypeIntToStr: [Int: String] = [
     kDNSServiceType_A:      "A",
     //    kDNSServiceType_NS:     "NS",
     kDNSServiceType_CNAME:  "CNAME",

@@ -133,7 +133,7 @@ public class RMBTThroughputHistory: CustomStringConvertible {
             logger.debug("- \(t.description)")
         }
 
-        logger.debug("Total: \(totalThroughput.description)")
+        logger.debug("Total: \(self.totalThroughput.description)")
     }
 
     ///

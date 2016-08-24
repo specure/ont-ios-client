@@ -301,7 +301,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 sAddr = ip
             }
 
-            logger.debug("Connecting to host \(sAddr):\(params.measurementServer!.port!)")
+            logger.debug("Connecting to host \(sAddr):\(self.params.measurementServer!.port!)")
 
             try socket.connectToHost(sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
 
@@ -371,7 +371,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         assert(state == .DownlinkPretestStarted || state == .UplinkPretestStarted, "Invalid state")
 
         socket.performBlock {
-            self.negotiatedEncryptionString = RMBTSSLHelper.encryptionStringForSSLContext(sock.sslContext().takeUnretainedValue()) // TODO: or use takeRetainedValue()?
+            if let sslContext = sock.sslContext() {
+                self.negotiatedEncryptionString = RMBTSSLHelper.encryptionStringForSSLContext(sslContext.takeUnretainedValue()) // TODO: or use takeRetainedValue()?
+            }
         }
 
         readLineWithTag(.RxBanner)
@@ -514,7 +516,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             // -> PING
             pingSeq += 1
 
-            logger.debug("Ping packet sent (delta = \(RMBTCurrentNanos() - pingStartNanos))")
+            logger.debug("Ping packet sent (delta = \(RMBTCurrentNanos() - self.pingStartNanos))")
 
             readLineWithTag(.RxPong)
         } else if tag == .RxPong {
@@ -666,7 +668,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 let nanos = RMBTCurrentNanos() + testUploadOffsetNanos
 
                 if nanos - testStartNanos >= UInt64(params.duration * Double(NSEC_PER_SEC)) {
-                    logger.debug("Sending last chunk in thread \(index)")
+                    logger.debug("Sending last chunk in thread \(self.index)")
 
                     testUploadLastChunkSent = true
                     testUploadMaxWaitReachedClientNanos = RMBTCurrentNanos() + UInt64(RMBT_TEST_UPLOAD_MAX_WAIT_S) * NSEC_PER_SEC
@@ -718,21 +720,21 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 let now = RMBTCurrentNanos()
 
                 if testUploadLastChunkSent && now >= testUploadMaxWaitReachedClientNanos {
-                    logger.debug("Max wait reached in thread \(index). Finalizing.")
+                    logger.debug("Max wait reached in thread \(self.index). Finalizing.")
                     finalize()
                     return
                 }
 
                 if testUploadLastChunkSent && now >= testUploadEnoughClientNanos && UInt64(ns) >= testUploadEnoughServerNanos {
                     // We can finalize
-                    logger.debug("Thread \(index) has read enough upload reports at local=\(now - testStartNanos) server=\(ns). Finalizing...")
+                    logger.debug("Thread \(self.index) has read enough upload reports at local=\(now - self.testStartNanos) server=\(ns). Finalizing...")
                     finalize()
                     return
                 }
 
                 readLineWithTag(.RxPutStatistic)
             } else if line.hasPrefix("ACCEPT") {
-                logger.debug("Thread \(index) has read ALL upload reports. Finalizing...")
+                logger.debug("Thread \(self.index) has read ALL upload reports. Finalizing...")
                 finalize()
             } else {
                 // INVALID LINE

@@ -7,3 +7,34 @@
 //
 
 import Foundation
+import ObjectMapper
+
+///
+class MeasurementSpeedRawItem: Mappable {
+
+    ///
+    var thread: Int?
+
+    ///
+    var time: Int?
+
+    ///
+    var bytes: Int?
+
+    ///
+    init() {
+
+    }
+
+    ///
+    required init?(_ map: Map) {
+
+    }
+
+    ///
+    func mapping(map: Map) {
+        thread  <- map["thread"]
+        time    <- map["time"]
+        bytes   <- map["bytes"]
+    }
+}

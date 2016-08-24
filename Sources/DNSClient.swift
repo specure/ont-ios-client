@@ -11,7 +11,7 @@ import CocoaAsyncSocket
 import RMBTClientPrivate
 
 ///
-class DNSClient: GCDAsyncUdpSocketDelegate {
+class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
     typealias DNSQuerySuccessCallback = (DNSRecordClass) -> ()
     typealias DNSQueryFailureCallback = (NSError) -> ()
@@ -38,7 +38,7 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
     private let dnsPort: UInt16
 
     ///
-    convenience init() {
+    override convenience init() {
         let dnsIpDict = GetDNSIP.getdnsIPandPort()
 
         let host: String = dnsIpDict["host"] as! String
@@ -57,6 +57,8 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
         self.dnsServer = dnsServer
         self.dnsPort = dnsPort
 
+        super.init()
+        
         //
 
         // create udpSocket
@@ -232,7 +234,7 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
         //println("didNotConnect: \(error)")
         logger.debug("didNotConnect: \(error)")
     }
@@ -244,7 +246,7 @@ class DNSClient: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError) {
+    @objc func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError?) {
         //println("didNotSendDataWithTag: \(error)")
         logger.debug("didNotSendDataWithTag: \(error)")
     }

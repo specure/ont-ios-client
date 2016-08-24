@@ -8,7 +8,7 @@
 
 import Foundation
 
-let DNS_RCODE_TABLE: [UInt8:String] = [
+let DNS_RCODE_TABLE: [UInt8: String] = [
     0: "NOERROR",
     1: "FORMERR",
     2: "SERVFAIL",

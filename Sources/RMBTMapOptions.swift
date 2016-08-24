@@ -161,9 +161,13 @@ public class RMBTMapOptions {
         if let subtypeIdentifier = selection.subtypeIdentifier {
             for t in types {
 
-                let st: RMBTMapOptionsSubtype? = (t.subtypes as NSArray).bk_match({ (a: AnyObject!) -> Bool in
+                let st = t.subtypes.filter({ a in
+                    return a.identifier == subtypeIdentifier
+                }).first
+
+                /*let st: RMBTMapOptionsSubtype? = (t.subtypes as NSArray)._b_k_match({ (a: AnyObject!) -> Bool in
                     return (a as! RMBTMapOptionsSubtype).identifier == subtypeIdentifier
-                }) as? RMBTMapOptionsSubtype
+                }) as? RMBTMapOptionsSubtype*/
 
                 if let _st = st {
                     activeSubtype = _st
@@ -187,11 +191,17 @@ public class RMBTMapOptions {
             for f in activeSubtype.type.filters {
                 if let activeFilterValueTitle = activeFilters[f.title] {
 
-                    if let v: RMBTMapOptionsFilterValue = (f.possibleValues as NSArray).bk_match({ (a: AnyObject!) -> Bool in
+                    if let v = f.possibleValues.filter({ a in
+                        return a.title == activeFilterValueTitle
+                    }).first {
+                        f.activeValue = v
+                    }
+
+                    /*if let v: RMBTMapOptionsFilterValue = (f.possibleValues as NSArray)._b_k_match({ (a: AnyObject!) -> Bool in
                         return (a as! RMBTMapOptionsFilterValue).title == activeFilterValueTitle
                     }) as? RMBTMapOptionsFilterValue {
                         f.activeValue = v
-                    }
+                    }*/
                 }
             }
         }

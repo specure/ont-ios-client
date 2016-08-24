@@ -9,7 +9,7 @@
 import Foundation
 
 ///
-public struct RTPSequence {
+struct RTPSequence {
 
     ///
     var timestampNS: UInt64

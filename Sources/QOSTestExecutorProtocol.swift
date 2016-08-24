@@ -21,5 +21,5 @@ protocol QOSTestExecutorProtocol {
     func needsCustomTimeoutHandling() -> Bool
 
     ///
-    func setTestToken(testToken: String) // TODO: refactor
+    func setCurrentTestToken(testToken: String) // TODO: refactor
 }

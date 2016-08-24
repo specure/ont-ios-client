@@ -77,17 +77,4 @@ extension CLLocation: RMBTFormat {
 
         return locationItems
     }
-
-    ///
-    func paramsDictionary() -> NSDictionary {
-        return [
-            "long":     NSNumber(double: coordinate.longitude),
-            "lat":      NSNumber(double: coordinate.latitude),
-            "time":     RMBTTimestampWithNSDate(timestamp),
-            "accuracy": NSNumber(double: horizontalAccuracy),
-            "altitude": NSNumber(double: altitude),
-            "speed":    NSNumber(double: (speed > 0 ? self.speed : 0.0))
-        ]
-    }
-
 }
