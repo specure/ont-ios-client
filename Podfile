@@ -5,20 +5,20 @@ inhibit_all_warnings!
 
 abstract_target 'All' do
 
-  pod 'CocoaAsyncSocket', '~> 7.5.0' #:git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git'
+  #pod 'CocoaAsyncSocket', '~> 7.5.1' #:git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git'
+  pod 'CocoaAsyncSocket', :git => 'https://github.com/robbiehanson/CocoaAsyncSocket.git' # until 7.5.1 is available
 
   pod 'Alamofire', '~> 3.4.1'
   pod 'AlamofireObjectMapper', '~> 3.0.2'
 
   # swift pods
-  pod 'XCGLogger', '~> 3.3'
+  pod 'XCGLogger', '~> 3.3.0'
   #pod 'BrightFutures', '~> 1.0.0'
 
   target 'RMBTClient_iOS' do
     platform :ios, '8.4'
 
     # Pods for RMBTClient_iOS
-    pod 'BlocksKit', '~> 2.2.5'
     pod 'GCNetworkReachability', '~> 1.3.2'
   end
 
@@ -26,7 +26,6 @@ abstract_target 'All' do
     platform :osx, '10.9'
 
     # Pods for RMBTClient_OSX
-    pod 'BlocksKit', '~> 2.2.5'
     pod 'GCNetworkReachability', '~> 1.3.2'
   end
 
@@ -34,7 +33,7 @@ abstract_target 'All' do
     platform :tvos, '9.2'
 
     # Pods for RMBTClient_tvOS
-    # TODO: blockskit and GCNetworkReachability
+    # TODO: GCNetworkReachability
   end
 end
 

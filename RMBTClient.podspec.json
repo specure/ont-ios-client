@@ -25,33 +25,23 @@
         "Sources/NSString+IPAddress.{h,m}",
         "Sources/PingUtil.{h,m}"
     ],
-    "osx": {
-        "exclude_files": [
-            "Sources/RMBTHelpers_iOS.swift",
-            "Sources/BasicRequestBuilder_iOS.swift",
-            "Sources/BasicRequestBuilder_tvOS.swift",
-
-            "vvv_remove/these/later_vvv",
-            "Sources/RMBTConnectivity.swift",
-            "Sources/RMBTConnectivityTracker.swift",
-            "Sources/ControlServer.swift",
-            "Sources/ConnectivityService.swift",
-            "Sources/RMBTLocationTracker.swift",
-            "Sources/QualityOfServiceTest.swift",
-            "Sources/RMBTHistoryResult.swift",
-            "Sources/RMBTTestResult.swift",
-            "Sources/RMBTTestRunner.swift",
-            "Sources/RMBTMapMeasurement.swift",
-            "Sources/ConnectivityServiceDelegate.swift",
-            "Sources/RMBTMapServer.swift",
-            "Sources/QualityOfServiceTestDelegate.swift"
-        ]
-    },
     "ios": {
         "exclude_files": [
             "Sources/BasicRequestBuilder_OSX.swift",
             "Sources/BasicRequestBuilder_tvOS.swift"
-        ]
+        ],
+        "dependencies": {
+            "GCNetworkReachability": ["~> 1.3.2"]
+        }
+    },
+    "osx": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_iOS.swift",
+            "Sources/BasicRequestBuilder_tvOS.swift"
+        ],
+        "dependencies": {
+            "GCNetworkReachability": ["~> 1.3.2"]
+        }
     },
     "tvos": {
         "exclude_files": [
@@ -68,13 +58,10 @@
         "Sources/PingUtil.h"
     ],
     "dependencies": {
-        "AFNetworking": ["~> 2.5.4"],
-        "Alamofire": ["~> 3.4"],
-        "AlamofireObjectMapper": ["~> 3.0"],
-        "BlocksKit": ["~> 2.2.5"],
-        "GCNetworkReachability": ["~> 1.3.2"],
+        "Alamofire": ["~> 3.4.1"],
+        "AlamofireObjectMapper": ["~> 3.0.2"],
         "CocoaAsyncSocket": [],
-        "XCGLogger": ["~> 3.3"]
+        "XCGLogger": ["~> 3.3.0"]
     },
     "frameworks": [
        "Foundation",
@@ -88,7 +75,9 @@
     "xcconfig": {
         "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
         "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator",
-        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx"
+        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx",
+        "SWIFT_INCLUDE_PATHS[sdk=appletvos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/tvos",
+        "SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/appletvsimulator"
     },
     "preserve_paths": [ "RMBTClientPrivate/*" ],
     "prepare_command": "RMBTClientPrivate/injectXcodePath.sh"

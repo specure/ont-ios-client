@@ -86,7 +86,6 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Alamofire-iOS/Alamofire.framework"
   install_framework "$BUILT_PRODUCTS_DIR/AlamofireObjectMapper-iOS/AlamofireObjectMapper.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/BlocksKit.common-MessageUI-UIKit/BlocksKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-iOS/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/GCNetworkReachability-iOS/GCNetworkReachability.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-iOS/ObjectMapper.framework"
@@ -95,7 +94,6 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/Alamofire-iOS/Alamofire.framework"
   install_framework "$BUILT_PRODUCTS_DIR/AlamofireObjectMapper-iOS/AlamofireObjectMapper.framework"
-  install_framework "$BUILT_PRODUCTS_DIR/BlocksKit.common-MessageUI-UIKit/BlocksKit.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-iOS/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/GCNetworkReachability-iOS/GCNetworkReachability.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-iOS/ObjectMapper.framework"
