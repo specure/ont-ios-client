@@ -48,7 +48,7 @@ public class ControlServer {
     var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
-    private let defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
+    private let defaultBaseUrl = /*"https://netcouch.specure.com/api/v1"*/ "http://localhost:8080/api/v1" //RMBT_CONTROL_SERVER_URL
 
     // TODO: HTTP/2, NGINX, IOS PROBLEM! http://stackoverflow.com/questions/36907767/nsurlerrordomain-code-1004-for-few-seconds-after-app-start-up
 
@@ -198,8 +198,15 @@ public class ControlServer {
 
     ///
     func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurementResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { uuid in
+        ensureClientUuid(success: { uuid in
             speedMeasurementRequest.uuid = uuid
+            speedMeasurementRequest.anonymous = RMBTSettings.sharedSettings().anonymousModeEnabled
+            
+            logger.debugExec {
+                if speedMeasurementRequest.anonymous {
+                    logger.debug("CLIENT IS ANONYMOUS!")
+                }
+            }
 
             self.request(.POST, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
         }, error: failure)
@@ -207,7 +214,7 @@ public class ControlServer {
 
     ///
     func submitSpeedMeasurementResult(speedMeasurementResult: SpeedMeasurementResult, success: (response: SpeedMeasurementSubmitResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { uuid in
+        ensureClientUuid(success: { uuid in
             if let measurementUuid = speedMeasurementResult.uuid {
                 speedMeasurementResult.clientUuid = uuid
 
@@ -220,15 +227,22 @@ public class ControlServer {
 
     ///
     public func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { _ in
+        ensureClientUuid(success: { _ in
             self.request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
     ///
     public func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { _ in
+        ensureClientUuid(success: { _ in
             self.request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
+        }, error: failure)
+    }
+
+    ///
+    public func disassociateSpeedMeasurement(measurementUuid: String, success: (response: SpeedMeasurementDisassociateResponse) -> (), error failure: ErrorCallback) {
+        ensureClientUuid(success: { clientUuid in
+            self.request(.DELETE, path: "/clients/\(clientUuid)/measurements/\(measurementUuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
@@ -236,7 +250,7 @@ public class ControlServer {
 
     ///
     func requestQosMeasurement(measurementUuid: String?, success: (response: QosMeasurmentResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { uuid in
+        ensureClientUuid(success: { uuid in
             let qosMeasurementRequest = QosMeasurementRequest()
 
             qosMeasurementRequest.clientUuid = uuid
@@ -248,7 +262,7 @@ public class ControlServer {
 
     ///
     func submitQosMeasurementResult(qosMeasurementResult: QosMeasurementResultRequest, success: (response: QosMeasurementSubmitResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { uuid in
+        ensureClientUuid(success: { uuid in
             if let measurementUuid = qosMeasurementResult.measurementUuid {
                 qosMeasurementResult.clientUuid = uuid
 
@@ -261,7 +275,7 @@ public class ControlServer {
 
     ///
     public func getQosMeasurement(uuid: String, success: (response: QosMeasurementResultResponse) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { _ in
+        ensureClientUuid(success: { _ in
             self.request(.GET, path: "/measurements/qos/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
@@ -270,7 +284,7 @@ public class ControlServer {
 
     ///
     public func getMeasurementHistory(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
-        ensureUuid(success: { uuid in
+        ensureClientUuid(success: { uuid in
             self.requestArray(.GET, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
@@ -278,7 +292,7 @@ public class ControlServer {
 // MARK: Private
 
     ///
-    private func ensureUuid(success successCallback: (uuid: String) -> (), error errorCallback: ErrorCallback) {
+    private func ensureClientUuid(success successCallback: (uuid: String) -> (), error errorCallback: ErrorCallback) {
         dispatch_async(uuidQueue) {
             if let uuid = self.uuid {
                 successCallback(uuid: uuid)

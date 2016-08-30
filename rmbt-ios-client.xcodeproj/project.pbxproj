@@ -10,6 +10,9 @@
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
 		B5CE67017534A5BC5AF486AA /* Pods_All_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */; };
 		E00C20B31D19654400720394 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
+		E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
+		E02130461D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
+		E02130471D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
 		E02D18701CF59262002A02FE /* AtomicBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17D51CF59262002A02FE /* AtomicBoolean.swift */; };
 		E02D18711CF59262002A02FE /* CLLocation+RMBTFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17D61CF59262002A02FE /* CLLocation+RMBTFormat.swift */; };
 		E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17DA1CF59262002A02FE /* ConversionUtility.swift */; };
@@ -436,6 +439,7 @@
 		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
 		E00C20B21D19654400720394 /* RMBTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTClient.swift; sourceTree = "<group>"; };
+		E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementDisassociateResponse.swift; sourceTree = "<group>"; };
 		E02D17D51CF59262002A02FE /* AtomicBoolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBoolean.swift; sourceTree = "<group>"; };
 		E02D17D61CF59262002A02FE /* CLLocation+RMBTFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocation+RMBTFormat.swift"; sourceTree = "<group>"; };
 		E02D17D71CF59262002A02FE /* ConnectivityService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityService.swift; sourceTree = "<group>"; };
@@ -1116,6 +1120,7 @@
 				E0FC4C911D6C85EF00D5D236 /* SpeedMeasurementResponse.swift */,
 				E0FC4C951D6C860E00D5D236 /* SpeedMeasurementSubmitResponse.swift */,
 				E0FC4C991D6C862400D5D236 /* SpeedMeasurementResultResponse.swift */,
+				E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */,
 				E0FC4C9D1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift */,
 				E0FC4CA11D6C865F00D5D236 /* QosMeasurmentResponse.swift */,
 				E0FC4CA51D6C867400D5D236 /* QosMeasurementSubmitResponse.swift */,
@@ -1484,6 +1489,7 @@
 				E02D18FB1CF59262002A02FE /* RTPSequence.swift in Sources */,
 				E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */,
 				E02D18E31CF59262002A02FE /* RMBTSSLHelper.swift in Sources */,
+				E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */,
 				E02D18A21CF59262002A02FE /* QOSMeasurementType.swift in Sources */,
 				E02D18C11CF59262002A02FE /* RMBTJSONHelper.swift in Sources */,
 				E0FC4C471D6C82EB00D5D236 /* SettingsRequest.swift in Sources */,
@@ -1593,6 +1599,7 @@
 				E0FC4D001D6D993D00D5D236 /* QOSControlConnection.swift in Sources */,
 				E0FC4D101D6DC63D00D5D236 /* RMBTLocationTracker.swift in Sources */,
 				E0FC4C411D6C827000D5D236 /* BasicRequest.swift in Sources */,
+				E02130471D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */,
 				E0FC4CC61D6C88AC00D5D236 /* SwiftExactTime.swift in Sources */,
 				E0FC4CD71D6C890300D5D236 /* QOSTestResult.swift in Sources */,
 				E0FC4CDE1D6C89F100D5D236 /* SocketUtils.swift in Sources */,
@@ -1722,6 +1729,7 @@
 				E02D19531CF5A42A002A02FE /* DNSResourceRecord.swift in Sources */,
 				E02D198E1CF5A529002A02FE /* NSData+Extensions.swift in Sources */,
 				E0FC4D1D1D6DCD6200D5D236 /* RMBTConnectivity.swift in Sources */,
+				E02130461D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */,
 				E02D1A211CFC9C9E002A02FE /* PingUtilSwiftDelegate.swift in Sources */,
 				E0FC4D191D6DCC1B00D5D236 /* BasicRequestBuilder_OSX.swift in Sources */,
 				E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */,

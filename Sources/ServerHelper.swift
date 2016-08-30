@@ -54,7 +54,7 @@ class ServerHelper {
         }
 
         var encoding: ParameterEncoding = .JSON
-        if method == .GET { // GET request don't support JSON bodies...
+        if method == .GET || method == .DELETE { // GET and DELETE request don't support JSON bodies...
             encoding = .URL
         }
 
@@ -109,7 +109,7 @@ class ServerHelper {
         }
 
         var encoding: ParameterEncoding = .JSON
-        if method == .GET { // GET request don't support JSON bodies...
+        if method == .GET || method == .DELETE { // GET and DELETE request don't support JSON bodies...
             encoding = .URL
         }
 

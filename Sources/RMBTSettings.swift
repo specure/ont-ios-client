@@ -31,6 +31,9 @@ public class RMBTSettings: NSObject {
 
     ///
     public dynamic var publishPublicData = false
+    
+    // anonymous mode
+    public dynamic var anonymousModeEnabled = false
 
 // MARK: Debug properties
 
@@ -113,6 +116,9 @@ public class RMBTSettings: NSObject {
             "debugForceIPv6",
 
             "publishPublicData",
+            
+            // anonymous mode
+            "anonymousModeEnabled",
 
             // loop mode
 

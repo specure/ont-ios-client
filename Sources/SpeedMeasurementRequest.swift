@@ -17,6 +17,9 @@ class SpeedMeasurementRequest: BasicRequest {
 
     ///
     var ndt = false
+    
+    ///
+    var anonymous = false
 
     ///
     var time: Int?
@@ -36,6 +39,7 @@ class SpeedMeasurementRequest: BasicRequest {
 
         uuid        <- map["uuid"]
         ndt         <- map["ndt"]
+        anonymous   <- map["anonymous"]
         time        <- map["time"]
         version     <- map["version"]
         testCounter <- map["test_counter"]
