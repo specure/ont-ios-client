@@ -63,6 +63,8 @@ public class MapServer {
 
         mapMeasurementRequest.options = params["options"]
         mapMeasurementRequest.filter = params["filter"]
+        
+        mapMeasurementRequest.prioritizeUuid = mapMeasurementRequest.clientUuid
 
         // add highlight filter (my measurements filter)
         //mapMeasurementRequest.filter?["highlight"] = ControlServer.sharedControlServer.uuid

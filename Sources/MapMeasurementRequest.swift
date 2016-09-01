@@ -17,6 +17,9 @@ class MapMeasurementRequest: BasicRequest {
 
     ///
     var clientUuid: String?
+    
+    ///
+    var prioritizeUuid: String?
 
     ///
     var coords: CoordObject?
@@ -31,11 +34,12 @@ class MapMeasurementRequest: BasicRequest {
     override func mapping(map: Map) {
         super.mapping(map)
 
-        size        <- map["size"]
-        clientUuid  <- map["client_uuid"]
-        coords      <- map["coords"]
-        options     <- map["options"]
-        filter      <- map["filter"]
+        size            <- map["size"]
+        clientUuid      <- map["client_uuid"]
+        prioritizeUuid  <- map["prioritize"]
+        coords          <- map["coords"]
+        options         <- map["options"]
+        filter          <- map["filter"]
     }
 
     ///
