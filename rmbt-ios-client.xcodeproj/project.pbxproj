@@ -13,6 +13,11 @@
 		E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
 		E02130461D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
 		E02130471D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
+		E021304B1D786FA80034C378 /* StoredMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304A1D786FA80034C378 /* StoredMeasurement.swift */; };
+		E021304C1D786FA80034C378 /* StoredMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304A1D786FA80034C378 /* StoredMeasurement.swift */; };
+		E021304D1D786FA80034C378 /* StoredMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304A1D786FA80034C378 /* StoredMeasurement.swift */; };
+		E02130511D78806C0034C378 /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304F1D78806C0034C378 /* MeasurementHistory.swift */; };
+		E02130521D78806C0034C378 /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304F1D78806C0034C378 /* MeasurementHistory.swift */; };
 		E02D18701CF59262002A02FE /* AtomicBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17D51CF59262002A02FE /* AtomicBoolean.swift */; };
 		E02D18711CF59262002A02FE /* CLLocation+RMBTFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17D61CF59262002A02FE /* CLLocation+RMBTFormat.swift */; };
 		E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D17DA1CF59262002A02FE /* ConversionUtility.swift */; };
@@ -209,6 +214,7 @@
 		E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */; };
 		E02D1A631CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */; };
 		E02D1A6A1CFDDA28002A02FE /* BasicRequestBuilder_tvOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */; };
+		E08EA6A01D7DC6E5000F916A /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304F1D78806C0034C378 /* MeasurementHistory.swift */; };
 		E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B78871D5B13BC00CC1129 /* MapServer.swift */; };
 		E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
 		E0B1C8141CF4AFFD00F19282 /* RMBTClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -440,6 +446,8 @@
 		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
 		E00C20B21D19654400720394 /* RMBTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTClient.swift; sourceTree = "<group>"; };
 		E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementDisassociateResponse.swift; sourceTree = "<group>"; };
+		E021304A1D786FA80034C378 /* StoredMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredMeasurement.swift; sourceTree = "<group>"; };
+		E021304F1D78806C0034C378 /* MeasurementHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasurementHistory.swift; sourceTree = "<group>"; };
 		E02D17D51CF59262002A02FE /* AtomicBoolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBoolean.swift; sourceTree = "<group>"; };
 		E02D17D61CF59262002A02FE /* CLLocation+RMBTFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocation+RMBTFormat.swift"; sourceTree = "<group>"; };
 		E02D17D71CF59262002A02FE /* ConnectivityService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityService.swift; sourceTree = "<group>"; };
@@ -701,6 +709,30 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		E02130481D786F7E0034C378 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				E02130491D786F850034C378 /* Domain */,
+			);
+			name = Database;
+			sourceTree = "<group>";
+		};
+		E02130491D786F850034C378 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				E021304A1D786FA80034C378 /* StoredMeasurement.swift */,
+			);
+			name = Domain;
+			sourceTree = "<group>";
+		};
+		E021304E1D78805D0034C378 /* MeasurementHistory */ = {
+			isa = PBXGroup;
+			children = (
+				E021304F1D78806C0034C378 /* MeasurementHistory.swift */,
+			);
+			name = MeasurementHistory;
+			sourceTree = "<group>";
+		};
 		E02D190B1CF5934F002A02FE /* QOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -946,6 +978,8 @@
 		E0B1C8061CF4AEFC00F19282 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E021304E1D78805D0034C378 /* MeasurementHistory */,
+				E02130481D786F7E0034C378 /* Database */,
 				E09B788B1D5B16D200CC1129 /* Servers */,
 				E02D19271CF59F27002A02FE /* Config */,
 				E02D19181CF597B6002A02FE /* Objc */,
@@ -1517,6 +1551,7 @@
 				E02D189F1CF59262002A02FE /* QOSTestExecutorClass.swift in Sources */,
 				E02D19031CF59262002A02FE /* TrafficClassification.swift in Sources */,
 				E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */,
+				E021304B1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E0FC4C8E1D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
 				E0FC4C921D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E02D19021CF59262002A02FE /* SwiftExactTime.swift in Sources */,
@@ -1561,6 +1596,7 @@
 				E0FC4CA61D6C867400D5D236 /* QosMeasurementSubmitResponse.swift in Sources */,
 				E0FC4C7E1D6C856300D5D236 /* IpResponse.swift in Sources */,
 				E02D199C1CF5AA93002A02FE /* PingUtilDelegateBridge.swift in Sources */,
+				E08EA6A01D7DC6E5000F916A /* MeasurementHistory.swift in Sources */,
 				E0FC4C9E1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
 				E02D19251CF59D1A002A02FE /* GetDNSIP.m in Sources */,
 				E02D1A571CFD882D002A02FE /* ControlServer.swift in Sources */,
@@ -1615,6 +1651,7 @@
 				E0FC4CDA1D6C892300D5D236 /* RMBTHelpers.swift in Sources */,
 				E0FC4CFB1D6D992000D5D236 /* QOSTCPTestExecutor.swift in Sources */,
 				E0FC4CF31D6D98FD00D5D236 /* PingUtilSwiftDelegate.swift in Sources */,
+				E021304D1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E0FC4CA41D6C865F00D5D236 /* QosMeasurmentResponse.swift in Sources */,
 				E0FC4C571D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				E0FC4CBD1D6C881F00D5D236 /* RTPPacket.swift in Sources */,
@@ -1659,6 +1696,7 @@
 				E0FC4C301D6C812200D5D236 /* GetDNSIP.m in Sources */,
 				E0FC4CA81D6C867400D5D236 /* QosMeasurementSubmitResponse.swift in Sources */,
 				E0FC4CEB1D6D979400D5D236 /* RMBTHistoryResult.swift in Sources */,
+				E02130521D78806C0034C378 /* MeasurementHistory.swift in Sources */,
 				E0FC4CF81D6D991900D5D236 /* QOSDNSTestExecutor.swift in Sources */,
 				E0FC4CB31D6C873D00D5D236 /* QOSMeasurementType.swift in Sources */,
 				E02D1A6A1CFDDA28002A02FE /* BasicRequestBuilder_tvOS.swift in Sources */,
@@ -1745,6 +1783,7 @@
 				E02D1A1A1CFC95D3002A02FE /* PingUtil.m in Sources */,
 				E02D19841CF5A50C002A02FE /* QOSControlConnectionDelegate.swift in Sources */,
 				E02D195B1CF5A449002A02FE /* QOSTCPTest.swift in Sources */,
+				E021304C1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E02D194D1CF5A40F002A02FE /* QOSConfig.swift in Sources */,
 				E02D195E1CF5A450002A02FE /* QOSDNSTest.swift in Sources */,
 				E0FC4C931D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
@@ -1789,6 +1828,7 @@
 				E02D1A221CFC9CA8002A02FE /* DNSClient.swift in Sources */,
 				E02D196D1CF5A4B8002A02FE /* SocketUtils.swift in Sources */,
 				E02D1A311CFC9D42002A02FE /* QOSVOIPTestExecutor.swift in Sources */,
+				E02130511D78806C0034C378 /* MeasurementHistory.swift in Sources */,
 				E02D19641CF5A45F002A02FE /* Speed.swift in Sources */,
 				E02D196B1CF5A4A5002A02FE /* RMBTTOS.swift in Sources */,
 				E02D196C1CF5A4A8002A02FE /* RMBTJSONHelper.swift in Sources */,

@@ -89,6 +89,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-OSX/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/GCNetworkReachability-OSX/GCNetworkReachability.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-OSX/ObjectMapper.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Realm-OSX/Realm.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/RealmSwift-OSX/RealmSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XCGLogger-OSX/XCGLogger.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -97,5 +99,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-OSX/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/GCNetworkReachability-OSX/GCNetworkReachability.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-OSX/ObjectMapper.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Realm-OSX/Realm.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/RealmSwift-OSX/RealmSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XCGLogger-OSX/XCGLogger.framework"
 fi

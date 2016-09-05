@@ -17,7 +17,7 @@ class SpeedMeasurementRequest: BasicRequest {
 
     ///
     var ndt = false
-    
+
     ///
     var anonymous = false
 

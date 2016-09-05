@@ -30,7 +30,7 @@ public class ControlServer {
     private let alamofireManager: Alamofire.Manager
 
     ///
-    private let settings = RMBTSettings.sharedSettings()
+    private let settings = RMBTSettings.sharedSettings
 
     ///
     private var uuidQueue = dispatch_queue_create("com.specure.nettest.uuid_queue", DISPATCH_QUEUE_SERIAL)
@@ -77,9 +77,9 @@ public class ControlServer {
         if settings.debugUnlocked {
 
             // check for ip version force
-            if settings.debugForceIPv6 {
+            if settings.nerdModeForceIPv6 { // TODO
                 baseUrl = "https://netcouch.specure.com/api/v1"//RMBT_CONTROL_SERVER_IPV6_URL
-            } else if settings.forceIPv4 {
+            } else if settings.nerdModeForceIPv4 { // TODO
                 baseUrl = "https://netcouch.specure.com/api/v1"//RMBT_CONTROL_SERVER_IPV4_URL
             }
 
@@ -200,8 +200,8 @@ public class ControlServer {
     func requestSpeedMeasurement(speedMeasurementRequest: SpeedMeasurementRequest, success: (response: SpeedMeasurementResponse) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { uuid in
             speedMeasurementRequest.uuid = uuid
-            speedMeasurementRequest.anonymous = RMBTSettings.sharedSettings().anonymousModeEnabled
-            
+            speedMeasurementRequest.anonymous = RMBTSettings.sharedSettings.anonymousModeEnabled
+
             logger.debugExec {
                 if speedMeasurementRequest.anonymous {
                     logger.debug("CLIENT IS ANONYMOUS!")

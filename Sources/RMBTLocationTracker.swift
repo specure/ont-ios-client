@@ -87,7 +87,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
             callback()
         }
     }
-    
+
     #if os(OSX) // TODO
     #else
 
@@ -97,7 +97,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     #endif
-    
+
     ///
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         #if os(iOS) // TODO: replacement for this method?

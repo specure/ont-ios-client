@@ -200,6 +200,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     public var serverIp: String!
 
     ///
+    //private let serverConnectionFailedTimer = GCDTimer()
+
+    ///
     public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: SpeedMeasurementResponse) {
         self.delegate = delegate
         self.index = index
@@ -292,6 +295,8 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     ///
     public func connect() {
         do {
+            //setupConnectionFailedTimer()
+
             // iOS 9: fails with socketDidDisconnect(_:withError:) > Socket disconnected with error Error Domain=kCFStreamErrorDomainNetDB Code=8
             // "nodename nor servname provided, or not known" UserInfo={NSLocalizedDescription=nodename nor servname provided, or not known}
 
@@ -306,9 +311,19 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             try socket.connectToHost(sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
 
         } catch {
-            //fail() // at this point, no error is checked, see https://github.com/appscape/open-rmbt-ios/blob/master/Sources/RMBTTestWorker.m
+            fail()
         }
     }
+
+    ///
+    /*private func setupConnectionFailedTimer() {
+        serverConnectionFailedTimer.interval = 5 // fail after 5 seconds if no connection can be established
+        serverConnectionFailedTimer.timerCallback = {
+            logger.debug("CONNECTION TIMER FIRED!")
+            self.fail()
+        }
+        serverConnectionFailedTimer.start()
+    }*/
 
     ///
     public func abort() {
@@ -316,6 +331,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             return
         }
 
+        //serverConnectionFailedTimer.stop()
         state = .Aborted
 
         if socket.isConnected {
@@ -329,6 +345,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             return
         }
 
+        //serverConnectionFailedTimer.stop()
         state = .Failed
 
         delegate.testWorkerDidFail(self)
@@ -437,6 +454,10 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             // <- OK
             readLineWithTag(.RxChunksize)
         } else if tag == .RxChunksize {
+            // got chunksize -> server should work, now connection failed timer can be stopped
+            //serverConnectionFailedTimer.stop()
+            //
+
             // <- CHUNKSIZE
 
             let line = String(data: data, encoding: NSASCIIStringEncoding)!

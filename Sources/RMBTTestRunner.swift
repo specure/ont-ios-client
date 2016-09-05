@@ -13,14 +13,16 @@ import CoreLocation
     import UIKit
 #endif
 
-/// // TODO: -> enum
-public let RMBTTestStatusNone              = "NONE"
-public let RMBTTestStatusAborted           = "ABORTED"
-public let RMBTTestStatusError             = "ERROR"
-public let RMBTTestStatusErrorFetching     = "ERROR_FETCH"
-public let RMBTTestStatusErrorSubmitting   = "ERROR_SUBMIT"
-public let RMBTTestStatusErrorBackgrounded = "ABORTED_BACKGROUNDED"
-public let RMBTTestStatusEnded             = "END"
+///
+public enum RMBTTestStatus: String {
+    case None              = "NONE"
+    case Aborted           = "ABORTED"
+    case Error             = "ERROR"
+    case ErrorFetching     = "ERROR_FETCH"
+    case ErrorSubmitting   = "ERROR_SUBMIT"
+    case ErrorBackgrounded = "ABORTED_BACKGROUNDED"
+    case Ended             = "END"
+}
 
 ///
 let RMBTTestRunnerProgressUpdateInterval: NSTimeInterval = 0.1 // seconds
@@ -174,7 +176,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
         speedMeasurementRequest.time = Int(currentTimeMillis())
 
-        speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings().testCounter
+        speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings.testCounter
 
         if let l = RMBTLocationTracker.sharedTracker.location {
             let geoLocation = GeoLocation(location: l)
@@ -196,7 +198,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         ////////////////
 
         // Notice that we post previous counter (the test before this one) when requesting the params
-        RMBTSettings.sharedSettings().testCounter += 1
+        RMBTSettings.sharedSettings.testCounter += 1
     }
 
     ///
@@ -493,8 +495,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
                     self.setPhase(.None)
                     self.dead = true
 
-                    RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusEnded
-                    NSUserDefaults.standardUserDefaults().synchronize() // TODO: this should be done by RMBTSettings kvo
+                    RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
 
                     if let uuid = self.testParams.testUuid {
                         dispatch_async(dispatch_get_main_queue()) {
@@ -576,7 +577,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         //
 
         if TEST_USE_PERSONAL_DATA_FUZZING {
-            speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings().publishPublicData
+            speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings.publishPublicData
             logger.info("test result: publish_public_data: \(self.speedMeasurementResult.publishPublicData)")
         }
 
@@ -791,15 +792,15 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         switch reason {
         case .UserRequested:
-            RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusAborted
+            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Aborted.rawValue
         case .AppBackgrounded:
-            RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusErrorBackgrounded
+            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorBackgrounded.rawValue
         case .ErrorFetchingTestingParams:
-            RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusErrorFetching
+            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorFetching.rawValue
         case .ErrorSubmittingTestResult:
-            RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusErrorSubmitting
+            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorSubmitting.rawValue
         default:
-            RMBTSettings.sharedSettings().previousTestStatus = RMBTTestStatusError
+            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Error.rawValue
         }
 
         phase = .None

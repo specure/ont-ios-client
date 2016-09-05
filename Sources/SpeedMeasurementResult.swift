@@ -117,10 +117,10 @@ class SpeedMeasurementResult: BasicRequest {
     var relativeTimeUlNs: Int?
 
     #if os(iOS)
-    
+
     ///
     var signals = [Signal]()
-    
+
     ///
     var telephonyInfo: TelephonyInfo?
 
@@ -131,7 +131,7 @@ class SpeedMeasurementResult: BasicRequest {
     //var cellLocations = [CellLocation]()
 
     #endif
-    
+
     ///
     var publishPublicData = true
 
@@ -528,9 +528,9 @@ class SpeedMeasurementResult: BasicRequest {
         time              <- map["time"]
         relativeTimeDlNs  <- map["relative_time_dl_ns"]
         relativeTimeUlNs  <- map["relative_time_ul_ns"]
-        
+
         publishPublicData <- map["publish_public_data"]
-        
+
         #if os(iOS)
         signals       <- map["signals"]
         telephonyInfo <- map["telephony_info"]

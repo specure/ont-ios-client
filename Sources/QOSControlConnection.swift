@@ -55,7 +55,7 @@ class QOSControlConnection: NSObject {
         self.testToken = testToken
 
         super.init()
-        
+
         // create socket
         qosControlConnectionSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue) // TODO: specify other dispath queue
 

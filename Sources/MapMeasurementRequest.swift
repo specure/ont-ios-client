@@ -17,7 +17,7 @@ class MapMeasurementRequest: BasicRequest {
 
     ///
     var clientUuid: String?
-    
+
     ///
     var prioritizeUuid: String?
 

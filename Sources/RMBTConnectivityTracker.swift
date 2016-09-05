@@ -42,7 +42,7 @@ public class RMBTConnectivityTracker: NSObject {
     private static let sharedNetworkInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
 
     #endif
-    
+
     ///
     private let queue = dispatch_queue_create("com.specure.nettest.connectivitytracker", DISPATCH_QUEUE_SERIAL)
 

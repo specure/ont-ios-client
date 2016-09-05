@@ -60,7 +60,7 @@ public class RMBTConnectivity {
     public var telephonyNetworkSimCountry: String!
 
     #if os(iOS)
-    
+
     ///
     private let cellularCodeTable = [
         CTRadioAccessTechnologyGPRS:         1,
@@ -90,7 +90,7 @@ public class RMBTConnectivity {
         CTRadioAccessTechnologyLTE:             "LTE (4G)",
         CTRadioAccessTechnologyeHRPD:           "HRPD (2G)"
     ]
-    
+
     #endif
 
     ///
@@ -111,7 +111,7 @@ public class RMBTConnectivity {
         cellularCodeDescription = nil
 
         switch networkType {
-        
+
         case .Cellular:
             #if os(iOS)
             // Get carrier name

@@ -58,7 +58,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
         self.dnsPort = dnsPort
 
         super.init()
-        
+
         //
 
         // create udpSocket

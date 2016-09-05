@@ -151,12 +151,12 @@ public class RMBTMapOptions {
 
         selection.activeFilters = activeFilters
 
-        RMBTSettings.sharedSettings().mapOptionsSelection = selection
+        RMBTSettings.sharedSettings.mapOptionsSelection = selection
     }
 
     ///
     private func restoreSelection() {
-        let selection: RMBTMapOptionsSelection = RMBTSettings.sharedSettings().mapOptionsSelection
+        let selection: RMBTMapOptionsSelection = RMBTSettings.sharedSettings.mapOptionsSelection
 
         if let subtypeIdentifier = selection.subtypeIdentifier {
             for t in types {

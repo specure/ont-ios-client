@@ -60,6 +60,7 @@
     "dependencies": {
         "Alamofire": ["~> 3.4.1"],
         "AlamofireObjectMapper": ["~> 3.0.2"],
+        "RealmSwift": ["~> 1.0.2"],
         "CocoaAsyncSocket": [],
         "XCGLogger": ["~> 3.3.0"]
     },

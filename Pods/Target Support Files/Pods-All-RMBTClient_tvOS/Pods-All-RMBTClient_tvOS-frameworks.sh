@@ -88,6 +88,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AlamofireObjectMapper-tvOS/AlamofireObjectMapper.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-tvOS/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-tvOS/ObjectMapper.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Realm-tvOS/Realm.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/RealmSwift-tvOS/RealmSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XCGLogger-tvOS/XCGLogger.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
@@ -95,5 +97,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "$BUILT_PRODUCTS_DIR/AlamofireObjectMapper-tvOS/AlamofireObjectMapper.framework"
   install_framework "$BUILT_PRODUCTS_DIR/CocoaAsyncSocket-tvOS/CocoaAsyncSocket.framework"
   install_framework "$BUILT_PRODUCTS_DIR/ObjectMapper-tvOS/ObjectMapper.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/Realm-tvOS/Realm.framework"
+  install_framework "$BUILT_PRODUCTS_DIR/RealmSwift-tvOS/RealmSwift.framework"
   install_framework "$BUILT_PRODUCTS_DIR/XCGLogger-tvOS/XCGLogger.framework"
 fi

@@ -20,9 +20,9 @@ class AbstractBasicRequestBuilder {
         basicRequest.language = RMBTPreferredLanguage()
         basicRequest.product = nil // always null on iOS...
 
-        logger.debug("ADDING PREVIOUS TEST STATUS: \(RMBTSettings.sharedSettings().previousTestStatus)")
+        logger.debug("ADDING PREVIOUS TEST STATUS: \(RMBTSettings.sharedSettings.previousTestStatus)")
 
-        basicRequest.previousTestStatus = RMBTSettings.sharedSettings().previousTestStatus ?? RMBTTestStatusNone
+        basicRequest.previousTestStatus = RMBTSettings.sharedSettings.previousTestStatus ?? RMBTTestStatus.None.rawValue
         basicRequest.softwareRevision = RMBTBuildInfoString()
         basicRequest.softwareVersion = infoDictionary["CFBundleShortVersionString"] as? String
         basicRequest.softwareVersionCode = infoDictionary["CFBundleVersion"] as? Int

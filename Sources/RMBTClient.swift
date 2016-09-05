@@ -136,8 +136,6 @@ public class RMBTClient {
 
     ///
     public func startMeasurement() {
-        // TODO: hardware timer etc
-
         startSpeedMeasurement()
     }
 
@@ -170,6 +168,17 @@ public class RMBTClient {
             qualityOfServiceTestRunner?.delegate = self
 
             qualityOfServiceTestRunner?.start()
+        }
+    }
+
+    ///
+    private func finishMeasurement() {
+        _running = false
+
+        if let uuid = self.resultUuid {
+            delegate?.measurementDidComplete(self, withResult: uuid)
+        } else {
+            delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.UnknownError) // TODO better error handling (but this error should never happen...)
         }
     }
 
@@ -284,7 +293,11 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
         self.resultUuid = uuid
 
-        startQosMeasurement() // continue with qos measurement // TODO: check if qos is enabled/disabled
+        if RMBTSettings.sharedSettings.nerdModeEnabled && RMBTSettings.sharedSettings.nerdModeQosEnabled {
+            startQosMeasurement() // continue with qos measurement
+        } else {
+            finishMeasurement()
+        }
     }
 
     ///
@@ -315,15 +328,9 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
-        _running = false
-
         // TODO: stop location tracker!
 
-        if let uuid = self.resultUuid {
-            delegate?.measurementDidComplete(self, withResult: uuid)
-        } else {
-            delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.UnknownError) // TODO better error handling (but this error should never happen...)
-        }
+        finishMeasurement()
     }
 
     ///

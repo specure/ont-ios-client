@@ -95,7 +95,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         //////
         qosLog = QOSLog(testType: testType, testUid: testObject.qosTestId)
         //////
-        
+
         super.init()
 
         // set control connection task delegate if needed

@@ -10,8 +10,9 @@ abstract_target 'All' do
 
   pod 'Alamofire', '~> 3.4.1'
   pod 'AlamofireObjectMapper', '~> 3.0.2'
+  
+  pod 'RealmSwift', '~> 1.0.2'
 
-  # swift pods
   pod 'XCGLogger', '~> 3.3.0'
   #pod 'BrightFutures', '~> 1.0.0'
 

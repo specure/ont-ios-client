@@ -11,6 +11,9 @@ import Foundation
 ///
 public class RMBTSettings: NSObject {
 
+    ///
+    public static let sharedSettings = RMBTSettings()
+
 // MARK: Temporary app state (global variables)
 
     ///
@@ -22,26 +25,34 @@ public class RMBTSettings: NSObject {
     public dynamic var testCounter: UInt = 0
 
     ///
-    public dynamic var previousTestStatus: String!
+    public dynamic var previousTestStatus: String?
 
 // MARK: User configurable properties
 
     ///
-    public dynamic var forceIPv4 = false
+    public dynamic var publishPublicData = false // only for akos
+
+    /// anonymous mode
+    public dynamic var anonymousModeEnabled = false
+
+// MARK: Nerd mode
 
     ///
-    public dynamic var publishPublicData = false
-    
-    // anonymous mode
-    public dynamic var anonymousModeEnabled = false
+    public dynamic var nerdModeEnabled = false
+
+    ///
+    public dynamic var nerdModeForceIPv4 = false
+
+    ///
+    public dynamic var nerdModeForceIPv6 = false
+
+    ///
+    public dynamic var nerdModeQosEnabled = false // nkom: qos disabled by default
 
 // MARK: Debug properties
 
     ///
     public dynamic var debugUnlocked = false
-
-    ///
-    public dynamic var debugForceIPv6 = false
 
     // loop mode
 
@@ -54,16 +65,13 @@ public class RMBTSettings: NSObject {
     ///
     public dynamic var debugLoopModeMinDelay: UInt = 0
 
-    ///
-    public dynamic var debugLoopModeSkipQOS = false
-
     // control server
 
     ///
     public dynamic var debugControlServerCustomizationEnabled = false
 
     ///
-    public dynamic var debugControlServerHostname: String!
+    public dynamic var debugControlServerHostname: String?
 
     ///
     public dynamic var debugControlServerPort: UInt = 0
@@ -77,7 +85,7 @@ public class RMBTSettings: NSObject {
     public dynamic var debugMapServerCustomizationEnabled = false
 
     ///
-    public dynamic var debugMapServerHostname: String!
+    public dynamic var debugMapServerHostname: String?
 
     ///
     public dynamic var debugMapServerPort: UInt = 0
@@ -91,14 +99,6 @@ public class RMBTSettings: NSObject {
     public dynamic var debugLoggingEnabled = false
 
     ///
-    private static let _sharedSettings = RMBTSettings()
-
-    /// TODO: remove later
-    public class func sharedSettings() -> RMBTSettings {
-        return _sharedSettings
-    }
-
-    ///
     private override init() {
         mapOptionsSelection = RMBTMapOptionsSelection()
 
@@ -109,23 +109,36 @@ public class RMBTSettings: NSObject {
             "previousTestStatus",
 
             "debugUnlocked",
+            "developerModeEnabled", // TODO: this should replace debug unlocked
+
+            ///////////
+            // USER SETTINGS
 
             // general
-
-            "forceIPv4",
-            "debugForceIPv6",
-
             "publishPublicData",
-            
+
             // anonymous mode
             "anonymousModeEnabled",
 
-            // loop mode
+            ///////////
+            // NERD MODE
 
-            "debugLoopMode",
-            "debugLoopModeMaxTests",
-            "debugLoopModeMinDelay",
-            "debugLoopModeSkipQOS",
+            // nerd mode
+            "nerdModeEnabled",
+
+            "nerdModeForceIPv4",
+            "nerdModeForceIPv6",
+
+            // nerd mode, advanced settings, qos
+            "nerdModeQosEnabled",
+
+            ///////////
+            // DEVELOPER MODE
+
+            // developer mode, advanced settings, loop mode
+            "developerModeLoopMode",
+            "developerModeLoopModeMaxTests",
+            "developerModeLoopModeMinDelay",
 
             // control server
 
@@ -147,6 +160,7 @@ public class RMBTSettings: NSObject {
         ])
     }
 
+    ///
     private func bindKeyPaths(keyPaths: [String]) {
         for keyPath in keyPaths {
             if let value = NSUserDefaults.standardUserDefaults().objectForKey(keyPath) {

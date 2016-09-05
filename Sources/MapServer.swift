@@ -22,7 +22,7 @@ public class MapServer {
     private let alamofireManager: Alamofire.Manager
 
     ///
-    private let settings = RMBTSettings.sharedSettings()
+    private let settings = RMBTSettings.sharedSettings
 
     ///
     private var baseUrl: String? {
@@ -63,7 +63,7 @@ public class MapServer {
 
         mapMeasurementRequest.options = params["options"]
         mapMeasurementRequest.filter = params["filter"]
-        
+
         mapMeasurementRequest.prioritizeUuid = mapMeasurementRequest.clientUuid
 
         // add highlight filter (my measurements filter)

@@ -17,7 +17,7 @@ class BasicRequestBuilder: AbstractBasicRequestBuilder {
         super.addBasicRequestValues(basicRequest)
 
         let currentDevice = UIDevice.currentDevice()
-        
+
         basicRequest.device = currentDevice.model
         basicRequest.model = UIDeviceHardware.platform()
         basicRequest.osVersion = currentDevice.systemVersion
