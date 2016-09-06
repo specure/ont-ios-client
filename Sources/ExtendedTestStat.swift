@@ -63,7 +63,7 @@ class ExtendedTestStat: Mappable {
         class TestStatValue: Mappable {
 
             ///
-            var timeNs: Int?
+            var timeNs: UInt64?
 
             ///
             var value: Double?
@@ -80,7 +80,7 @@ class ExtendedTestStat: Mappable {
 
             ///
             func mapping(map: Map) {
-                timeNs <- map["time_ns"]
+                timeNs <- (map["time_ns"], UInt64NSNumberTransformOf)
                 value <- map["value"]
             }
         }

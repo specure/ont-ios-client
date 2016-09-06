@@ -215,6 +215,9 @@
 		E02D1A631CFDD755002A02FE /* AbstractBasicRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */; };
 		E02D1A6A1CFDDA28002A02FE /* BasicRequestBuilder_tvOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */; };
 		E08EA6A01D7DC6E5000F916A /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E021304F1D78806C0034C378 /* MeasurementHistory.swift */; };
+		E08EA6A21D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
+		E08EA6A31D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
+		E08EA6A41D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
 		E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B78871D5B13BC00CC1129 /* MapServer.swift */; };
 		E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
 		E0B1C8141CF4AFFD00F19282 /* RMBTClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -565,6 +568,7 @@
 		E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractBasicRequestBuilder.swift; sourceTree = "<group>"; };
 		E02D1A661CFDD7EB002A02FE /* BasicRequestBuilder_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_OSX.swift; sourceTree = "<group>"; };
 		E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_tvOS.swift; sourceTree = "<group>"; };
+		E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapperHelper.swift; sourceTree = "<group>"; };
 		E09B78871D5B13BC00CC1129 /* MapServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapServer.swift; sourceTree = "<group>"; };
 		E09B788C1D5B16E900CC1129 /* ServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerHelper.swift; sourceTree = "<group>"; };
 		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1125,6 +1129,7 @@
 				E02D1A661CFDD7EB002A02FE /* BasicRequestBuilder_OSX.swift */,
 				E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */,
 				E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */,
+				E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1495,6 +1500,7 @@
 				E02D18EE1CF59262002A02FE /* RMBTThroughputHistory.swift in Sources */,
 				E02D199F1CF5AAB5002A02FE /* ConnectivityService.swift in Sources */,
 				E02D18991CF59262002A02FE /* QOSNonTransparentProxyTest.swift in Sources */,
+				E08EA6A21D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */,
 				E0FC4C7A1D6C854A00D5D236 /* BasicResponse.swift in Sources */,
 				E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */,
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
@@ -1615,6 +1621,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0FC4C901D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
+				E08EA6A41D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */,
 				E0FC4CC31D6C886D00D5D236 /* RTPHeader.swift in Sources */,
 				E0FC4C981D6C860E00D5D236 /* SpeedMeasurementSubmitResponse.swift in Sources */,
 				E0FC4D0D1D6D99A800D5D236 /* QualityOfServiceTestDelegate.swift in Sources */,
@@ -1747,6 +1754,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0FC4D1C1D6DCD3500D5D236 /* WifiInfo.swift in Sources */,
+				E08EA6A31D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */,
 				E0FC4D201D6DCEA700D5D236 /* RMBTTestRunner.swift in Sources */,
 				E0FC4C731D6C850D00D5D236 /* QosMeasurementRequest.swift in Sources */,
 				E02D19621CF5A45A002A02FE /* RTPPacket.swift in Sources */,

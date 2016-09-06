@@ -13,21 +13,21 @@ import ObjectMapper
 public class Ping: Mappable, CustomStringConvertible {
 
     ///
-    var serverNanos: Int?
+    var serverNanos: UInt64?
 
     ///
-    var clientNanos: Int?
+    var clientNanos: UInt64?
 
     /// relative to test start
-    var relativeTimestampNanos: Int?
+    var relativeTimestampNanos: UInt64?
 
     //
 
     ///
     init(serverNanos: UInt64, clientNanos: UInt64, relativeTimestampNanos timestampNanos: UInt64) {
-        self.serverNanos = Int(serverNanos)
-        self.clientNanos = Int(clientNanos)
-        self.relativeTimestampNanos = Int(timestampNanos)
+        self.serverNanos = serverNanos
+        self.clientNanos = clientNanos
+        self.relativeTimestampNanos = timestampNanos
     }
 
     ///
@@ -37,9 +37,9 @@ public class Ping: Mappable, CustomStringConvertible {
 
     ///
     public func mapping(map: Map) {
-        serverNanos             <- map["value_server"]
-        clientNanos             <- map["value"]
-        relativeTimestampNanos  <- map["relative_time_ns"]
+        serverNanos             <- (map["value_server"], UInt64NSNumberTransformOf)
+        clientNanos             <- (map["value"], UInt64NSNumberTransformOf)
+        relativeTimestampNanos  <- (map["relative_time_ns"], UInt64NSNumberTransformOf)
     }
 
     ///

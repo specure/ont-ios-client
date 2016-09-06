@@ -205,7 +205,7 @@ public class RMBTClient {
             // CPU
 
             if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber] where cpuUsage.count > 0 {
-                testRunner?.addCpuUsage(cpuUsage[0].doubleValue, atNanos: Int(relativeNanos))
+                testRunner?.addCpuUsage(cpuUsage[0].doubleValue, atNanos: relativeNanos)
 
                 logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
             } else {
@@ -217,7 +217,7 @@ public class RMBTClient {
 
             let ramUsagePercentFree = ramMonitor.getRAMUsagePercentFree()
 
-            testRunner?.addMemoryUsage(Double(ramUsagePercentFree), atNanos: Int(relativeNanos))
+            testRunner?.addMemoryUsage(Double(ramUsagePercentFree), atNanos: relativeNanos)
             logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
         }
     }

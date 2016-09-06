@@ -285,7 +285,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     ///
     private func calculateQOS() -> RTPResult? {
 
-        if rtpControlDataList.count == 0 {
+        if rtpControlDataList.count <= 0 {
             return nil
         }
 
@@ -327,8 +327,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
                 tsDiff = Int64(j.receivedNS) - Int64(i.receivedNS)
 
-                let prevJitter: Double = jitterMap[_prevSeqNr]!
-                let delta: Int64 = Int64(abs(calculateDelta(i, j, testObject.sampleRate)))
+                let prevJitter = jitterMap[_prevSeqNr]!
+                let delta = Int64(abs(calculateDelta(i, j, testObject.sampleRate)))
                 let jitter: Double = prevJitter + (Double(delta) - prevJitter) / 16
 
                 jitterMap[x] = jitter

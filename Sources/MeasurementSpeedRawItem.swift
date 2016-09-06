@@ -16,10 +16,10 @@ class MeasurementSpeedRawItem: Mappable {
     var thread: Int?
 
     ///
-    var time: Int?
+    var time: UInt64?
 
     ///
-    var bytes: Int?
+    var bytes: UInt64?
 
     ///
     init() {
@@ -34,7 +34,7 @@ class MeasurementSpeedRawItem: Mappable {
     ///
     func mapping(map: Map) {
         thread  <- map["thread"]
-        time    <- map["time"]
-        bytes   <- map["bytes"]
+        time    <- (map["time"], UInt64NSNumberTransformOf)
+        bytes   <- (map["bytes"], UInt64NSNumberTransformOf)
     }
 }

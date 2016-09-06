@@ -174,7 +174,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         let speedMeasurementRequest = SpeedMeasurementRequest()
 
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
-        speedMeasurementRequest.time = Int(currentTimeMillis())
+        speedMeasurementRequest.time = currentTimeMillis()
 
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings.testCounter
 
@@ -841,12 +841,12 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    public func addCpuUsage(cpuUsage: Double, atNanos ns: Int) {
+    public func addCpuUsage(cpuUsage: Double, atNanos ns: UInt64) {
         speedMeasurementResult.addCpuUsage(cpuUsage, atNanos: ns)
     }
 
     ///
-    public func addMemoryUsage(ramUsage: Double, atNanos ns: Int) {
+    public func addMemoryUsage(ramUsage: Double, atNanos ns: UInt64) {
         speedMeasurementResult.addMemoryUsage(ramUsage, atNanos: ns)
     }
 

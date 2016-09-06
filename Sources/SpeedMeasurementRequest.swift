@@ -22,7 +22,7 @@ class SpeedMeasurementRequest: BasicRequest {
     var anonymous = false
 
     ///
-    var time: Int?
+    var time: UInt64?
 
     ///
     var version: String?
@@ -40,7 +40,7 @@ class SpeedMeasurementRequest: BasicRequest {
         uuid        <- map["uuid"]
         ndt         <- map["ndt"]
         anonymous   <- map["anonymous"]
-        time        <- map["time"]
+        time        <- (map["time"], UInt64NSNumberTransformOf)
         version     <- map["version"]
         testCounter <- map["test_counter"]
 

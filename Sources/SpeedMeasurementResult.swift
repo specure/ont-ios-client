@@ -35,10 +35,10 @@ class SpeedMeasurementResult: BasicRequest {
     var speedDetail = [SpeedRawItem]()
 
     ///
-    var bytesDownload: Int?
+    var bytesDownload: UInt64?
 
     ///
-    var bytesUpload: Int?
+    var bytesUpload: UInt64?
 
     ///
     var encryption: String?
@@ -50,10 +50,10 @@ class SpeedMeasurementResult: BasicRequest {
     var ipServer: String?
 
     ///
-    var durationUploadNs: Int?
+    var durationUploadNs: UInt64?
 
     ///
-    var durationDownloadNs: Int?
+    var durationDownloadNs: UInt64?
 
     ///
     var numThreads = 1
@@ -75,10 +75,10 @@ class SpeedMeasurementResult: BasicRequest {
     var portRemote: Int?
 
     ///
-    var speedDownload: Int?
+    var speedDownload: UInt64?
 
     ///
-    var speedUpload: Int?
+    var speedUpload: UInt64?
 
     ///
     var token: String?
@@ -407,7 +407,7 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     ///
-    func addCpuUsage(cpuUsage: Double, atNanos ns: Int) {
+    func addCpuUsage(cpuUsage: Double, atNanos ns: UInt64) {
         let cpuStatValue = ExtendedTestStat.TestStat.TestStatValue()
 
         cpuStatValue.value = cpuUsage
@@ -417,7 +417,7 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     ///
-    func addMemoryUsage(ramUsage: Double, atNanos ns: Int) {
+    func addMemoryUsage(ramUsage: Double, atNanos ns: UInt64) {
         let memStatValue = ExtendedTestStat.TestStat.TestStatValue()
 
         memStatValue.value = ramUsage
@@ -442,8 +442,8 @@ class SpeedMeasurementResult: BasicRequest {
 
                 speedRawItem.direction = direction
                 speedRawItem.thread = i
-                speedRawItem.time = Int(t.endNanos)
-                speedRawItem.bytes = Int(totalLength)
+                speedRawItem.time = t.endNanos
+                speedRawItem.bytes = totalLength
 
                 speedDetail.append(speedRawItem)
             }
@@ -456,14 +456,14 @@ class SpeedMeasurementResult: BasicRequest {
         calculateThreadThroughputs(perThreadUploadHistories, direction: .Upload)
 
         // download total troughputs
-        speedDownload = Int(totalDownloadHistory.totalThroughput.kilobitsPerSecond())
-        durationDownloadNs = Int(totalDownloadHistory.totalThroughput.endNanos)
-        bytesDownload = Int(totalDownloadHistory.totalThroughput.length)
+        speedDownload = UInt64(totalDownloadHistory.totalThroughput.kilobitsPerSecond())
+        durationDownloadNs = totalDownloadHistory.totalThroughput.endNanos
+        bytesDownload = totalDownloadHistory.totalThroughput.length
 
         // upload total troughputs
-        speedUpload = Int(totalUploadHistory.totalThroughput.kilobitsPerSecond())
-        durationUploadNs = Int(totalUploadHistory.totalThroughput.endNanos)
-        bytesUpload = Int(totalUploadHistory.totalThroughput.length)
+        speedUpload = UInt64(totalUploadHistory.totalThroughput.kilobitsPerSecond())
+        durationUploadNs = totalUploadHistory.totalThroughput.endNanos
+        bytesUpload = totalUploadHistory.totalThroughput.length
 
         #if os(iOS)
         // connectivities
@@ -501,19 +501,19 @@ class SpeedMeasurementResult: BasicRequest {
         pings                   <- map["pings"]
 
         speedDetail             <- map["speed_detail"]
-        bytesDownload           <- map["bytes_download"]
-        bytesUpload             <- map["bytes_upload"]
+        bytesDownload           <- (map["bytes_download"], UInt64NSNumberTransformOf)
+        bytesUpload             <- (map["bytes_upload"], UInt64NSNumberTransformOf)
         encryption              <- map["encryption"]
         ipLocal                 <- map["ip_local"]
         ipServer                <- map["ip_server"]
-        durationUploadNs        <- map["duration_upload_ns"]
-        durationDownloadNs      <- map["duration_download_ns"]
+        durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
+        durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
         numThreads              <- map["num_threads"]
         numThreadsUl            <- map["num_threads_ul"]
         pingShortest            <- map["ping_shortest"]
         portRemote              <- map["port_remote"]
-        speedDownload           <- map["speed_download"]
-        speedUpload             <- map["speed_upload"]
+        speedDownload           <- (map["speed_download"], UInt64NSNumberTransformOf)
+        speedUpload             <- (map["speed_upload"], UInt64NSNumberTransformOf)
 
         token                   <- map["token"]
         totalBytesDownload      <- map["total_bytes_download"]
