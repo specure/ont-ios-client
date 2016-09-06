@@ -48,7 +48,7 @@ public class ControlServer {
     var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
-    private let defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
+    private var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
 
     // TODO: HTTP/2, NGINX, IOS PROBLEM! http://stackoverflow.com/questions/36907767/nsurlerrordomain-code-1004-for-few-seconds-after-app-start-up
 
@@ -60,6 +60,11 @@ public class ControlServer {
     ///
     private init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
+        
+        if let controlServerBaseUrlArgument = NSUserDefaults.standardUserDefaults().stringForKey("controlServerBaseUrl") {
+            defaultBaseUrl = controlServerBaseUrlArgument + "/api/v1"
+            logger.debug("Using control server base url from arguments: \(defaultBaseUrl)")
+        }
     }
 
     ///
