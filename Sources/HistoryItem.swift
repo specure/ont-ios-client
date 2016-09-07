@@ -23,7 +23,7 @@ public class HistoryItem: BasicResponse {
 
     ///
     public var timeString: String?
-    
+
     ///
     public var qosResultAvailable = false
 

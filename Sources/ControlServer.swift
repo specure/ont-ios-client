@@ -60,7 +60,7 @@ public class ControlServer {
     ///
     private init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
-        
+
         if let controlServerBaseUrlArgument = NSUserDefaults.standardUserDefaults().stringForKey("controlServerBaseUrl") {
             defaultBaseUrl = controlServerBaseUrlArgument + "/api/v1"
             logger.debug("Using control server base url from arguments: \(defaultBaseUrl)")
