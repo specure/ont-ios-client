@@ -61,12 +61,20 @@ class ServerHelper {
         manager
             .request(method, (baseUrl != nil ? baseUrl! : "") + path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
+            /*.responseString { response in
+                logger.debug {
+                    debugPrint(response)
+                    return "Response for \(path): \n\(response.result.value)"
+                }
+            }*/
             .responseArray { (response: Response<[T], NSError>) in
                 switch response.result {
                 case .Success:
                     if let responseArray: [T] = response.result.value {
 
                         logger.debug {
+                            debugPrint(response)
+
                             if let jsonString = Mapper().toJSONString(responseArray, prettyPrint: true) {
                                 return "Response for \(path) with object: \n\(jsonString)"
                             }
@@ -116,12 +124,20 @@ class ServerHelper {
         manager
             .request(method, (baseUrl != nil ? baseUrl! : "") + path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
+            /*.responseString { response in
+                logger.debug {
+                    debugPrint(response)
+                    return "Response for \(path): \n\(response.result.value)"
+                }
+            }*/
             .responseObject { (response: Response<T, NSError>) in
                 switch response.result {
                 case .Success:
                     if let responseObj: T = response.result.value {
 
                         logger.debug {
+                            debugPrint(response)
+
                             if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
                                 return "Response for \(path) with object: \n\(jsonString)"
                             }

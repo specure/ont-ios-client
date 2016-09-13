@@ -16,7 +16,7 @@ public class HistoryItem: BasicResponse {
     public var testUuid: String?
 
     ///
-    public var time: Int?
+    public var time: UInt64?
 
     ///
     public var timeZone: String?
@@ -62,7 +62,7 @@ public class HistoryItem: BasicResponse {
         super.mapping(map)
 
         testUuid           <- map["test_uuid"]
-        time               <- map["time"]
+        time               <- (map["time"], UInt64NSNumberTransformOf)
         timeZone           <- map["time_zone"]
         timeString         <- map["time_string"]
         qosResultAvailable <- map["qos_result_available"]

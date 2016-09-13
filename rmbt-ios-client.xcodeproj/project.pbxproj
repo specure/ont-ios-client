@@ -218,6 +218,12 @@
 		E08EA6A21D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
 		E08EA6A31D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
 		E08EA6A41D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */; };
+		E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */; };
+		E08EA6A71D88179E000F916A /* StoredHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */; };
+		E08EA6A81D88179E000F916A /* StoredHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */; };
+		E08EA6AA1D88189B000F916A /* HistoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A91D88189B000F916A /* HistoryFilter.swift */; };
+		E08EA6AB1D88189B000F916A /* HistoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A91D88189B000F916A /* HistoryFilter.swift */; };
+		E08EA6AC1D88189B000F916A /* HistoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08EA6A91D88189B000F916A /* HistoryFilter.swift */; };
 		E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B78871D5B13BC00CC1129 /* MapServer.swift */; };
 		E09B788D1D5B16E900CC1129 /* ServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09B788C1D5B16E900CC1129 /* ServerHelper.swift */; };
 		E0B1C8141CF4AFFD00F19282 /* RMBTClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -569,6 +575,8 @@
 		E02D1A661CFDD7EB002A02FE /* BasicRequestBuilder_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_OSX.swift; sourceTree = "<group>"; };
 		E02D1A681CFDD961002A02FE /* BasicRequestBuilder_tvOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_tvOS.swift; sourceTree = "<group>"; };
 		E08EA6A11D7EBE29000F916A /* ObjectMapperHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectMapperHelper.swift; sourceTree = "<group>"; };
+		E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredHistoryItem.swift; sourceTree = "<group>"; };
+		E08EA6A91D88189B000F916A /* HistoryFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryFilter.swift; sourceTree = "<group>"; };
 		E09B78871D5B13BC00CC1129 /* MapServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapServer.swift; sourceTree = "<group>"; };
 		E09B788C1D5B16E900CC1129 /* ServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerHelper.swift; sourceTree = "<group>"; };
 		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -725,6 +733,7 @@
 			isa = PBXGroup;
 			children = (
 				E021304A1D786FA80034C378 /* StoredMeasurement.swift */,
+				E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -733,6 +742,7 @@
 			isa = PBXGroup;
 			children = (
 				E021304F1D78806C0034C378 /* MeasurementHistory.swift */,
+				E08EA6A91D88189B000F916A /* HistoryFilter.swift */,
 			);
 			name = MeasurementHistory;
 			sourceTree = "<group>";
@@ -1505,6 +1515,7 @@
 				E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */,
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
 				E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */,
+				E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D189C1CF59262002A02FE /* QOSTCPTest.swift in Sources */,
 				E02D19A51CF5AACF002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
 				E02D18EF1CF59262002A02FE /* RMBTTOS.swift in Sources */,
@@ -1558,6 +1569,7 @@
 				E02D19031CF59262002A02FE /* TrafficClassification.swift in Sources */,
 				E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */,
 				E021304B1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
+				E08EA6AA1D88189B000F916A /* HistoryFilter.swift in Sources */,
 				E0FC4C8E1D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
 				E0FC4C921D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E02D19021CF59262002A02FE /* SwiftExactTime.swift in Sources */,
@@ -1660,6 +1672,7 @@
 				E0FC4CF31D6D98FD00D5D236 /* PingUtilSwiftDelegate.swift in Sources */,
 				E021304D1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E0FC4CA41D6C865F00D5D236 /* QosMeasurmentResponse.swift in Sources */,
+				E08EA6A81D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E0FC4C571D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				E0FC4CBD1D6C881F00D5D236 /* RTPPacket.swift in Sources */,
 				E0FC4D041D6D994600D5D236 /* QOSTestExecutorClass.swift in Sources */,
@@ -1689,6 +1702,7 @@
 				E0FC4C8C1D6C85B400D5D236 /* ClientSettings.swift in Sources */,
 				E0FC4D031D6D994400D5D236 /* QOSFactory.swift in Sources */,
 				E0FC4CAC1D6C868D00D5D236 /* QosMeasurementResultResponse.swift in Sources */,
+				E08EA6AC1D88189B000F916A /* HistoryFilter.swift in Sources */,
 				E0FC4CE71D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0FC4CBC1D6C881C00D5D236 /* RTPControlData.swift in Sources */,
 				E0FC4CF01D6D98B300D5D236 /* ConnectivityService.swift in Sources */,
@@ -1793,6 +1807,7 @@
 				E02D195B1CF5A449002A02FE /* QOSTCPTest.swift in Sources */,
 				E021304C1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E02D194D1CF5A40F002A02FE /* QOSConfig.swift in Sources */,
+				E08EA6A71D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D195E1CF5A450002A02FE /* QOSDNSTest.swift in Sources */,
 				E0FC4C931D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E0FC4C441D6C82BE00D5D236 /* MapMeasurementRequest.swift in Sources */,
@@ -1822,6 +1837,7 @@
 				E02D19941CF5A5FB002A02FE /* LogConfig.swift in Sources */,
 				E02D19721CF5A4CB002A02FE /* UDPStreamReceiverDelegate.swift in Sources */,
 				E02D1A1B1CFC95D5002A02FE /* NSString+IPAddress.m in Sources */,
+				E08EA6AB1D88189B000F916A /* HistoryFilter.swift in Sources */,
 				E0FC4C4E1D6C834000D5D236 /* GeoLocation.swift in Sources */,
 				E0FC4CE61D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0B1C8301CF4B65A00F19282 /* Ping.swift in Sources */,

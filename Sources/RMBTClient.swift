@@ -356,3 +356,29 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
 }
+
+// MARK: ControlServer proxy methods
+
+///
+extension RMBTClient {
+
+    ///
+    public class func refreshSettings() {
+        ControlServer.sharedControlServer.updateWithCurrentSettings()
+    }
+
+    ///
+    public class var uuid: String? {
+        get {
+            return ControlServer.sharedControlServer.uuid
+        }
+    }
+
+    ///
+    public class var controlServerVersion: String? {
+        get {
+            return ControlServer.sharedControlServer.version
+        }
+    }
+
+}

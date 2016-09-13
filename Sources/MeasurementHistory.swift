@@ -22,16 +22,83 @@ public class MeasurementHistory {
     ///
     private init() {
         // TODO: remove realm test code
+        // TODO: add migrations? at least look at how they work
         _ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development
     }
 
     ///
-    public func getHistoryList() {
+    public func getHistoryList(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
+        // TODO: add dirty flag, only request history if dirty is true (on app start, after measurement and after sync)
+        
+        if let timestamp = getLastHistoryItemTimestamp() {
+            logger.debug("timestamp!, requesting since \(timestamp)")
 
+            ControlServer.sharedControlServer.getMeasurementHistory(UInt64(timestamp.timeIntervalSince1970), success: { historyItems in
+
+                let serverUuidList = Set<String>(historyItems.map({ return $0.testUuid! })) // !
+                let clientUuidList = Set<String>(self.getHistoryItemUuidList()!) // !
+                
+                logger.debug("server: \(serverUuidList)")
+                logger.debug("client: \(clientUuidList)")
+
+                let toRemove = clientUuidList.subtract(serverUuidList)
+                let toAdd = serverUuidList.subtract(clientUuidList)
+
+                logger.debug("to remove: \(toRemove)")
+                logger.debug("to add: \(toAdd)")
+
+                // add items
+                self.insertOrUpdateHistoryItems(historyItems.filter({ return toAdd.contains($0.testUuid!) })) // !
+
+                // remove items
+                if let realm = try? Realm() {
+                    do {
+                        try realm.write {
+                            realm.delete(realm.objects(StoredHistoryItem.self).filter("uuid IN %@", toRemove))
+                        }
+                    } catch {
+                        logger.debug("realm error \(error)") // do nothing if fails?
+                    }
+                }
+
+                // load items to view
+                if let realm = try? Realm() {
+                    // TODO: add new ones from server, then there are less db queries
+                    let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
+                    success(response: x.flatMap({ storedItem in
+                        return Mapper<HistoryItem>().map(storedItem.jsonData)
+                    }))
+                }
+
+                // TODO: call error callback if there were realm problems
+
+            }, error: { error in // show cached items if this request fails
+                
+                // load items to view
+                if let realm = try? Realm() {
+                    // TODO: add new ones from server, then there are less db queries
+                    let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
+                    success(response: x.flatMap({ storedItem in
+                        return Mapper<HistoryItem>().map(storedItem.jsonData)
+                    }))
+                }
+                
+                // TODO: call error callback if there were realm problems
+                
+            })
+        } else {
+            logger.debug("database empty, requesting without timestamp")
+
+            ControlServer.sharedControlServer.getMeasurementHistory({ historyItems in
+                self.insertOrUpdateHistoryItems(historyItems)
+
+                success(response: historyItems)
+            }, error: failure)
+        }
     }
 
     ///
-    public func getHistoryList(filters: [[String: String]]) {
+    public func getHistoryList(filters: [[String: String]], success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
 
     }
 
@@ -78,7 +145,7 @@ public class MeasurementHistory {
         ControlServer.sharedControlServer.getQosMeasurement(uuid, success: { response in
 
             logger.debug("NEED TO LOAD MEASUREMENT QOS \(uuid) FROM SERVER (this is done every time since qos evaluation can be changed)")
-            
+
             // store qos measurement
             self.storeMeasurementQosData(uuid, measurementQos: response)
 
@@ -91,6 +158,19 @@ public class MeasurementHistory {
 
             failure(error: error)
         })
+    }
+
+    ///
+    public func disassociateMeasurement(measurementUuid: String, success: (response: SpeedMeasurementDisassociateResponse) -> (), error failure: ErrorCallback) {
+        ControlServer.sharedControlServer.disassociateMeasurement(measurementUuid, success: { response in
+            logger.debug("DISASSOCIATE SUCCESS")
+
+            // remove from db
+            self.removeMeasurement(measurementUuid)
+            
+            success(response: response)
+
+        }, error: failure)
     }
 
 // MARK: Get
@@ -140,7 +220,7 @@ public class MeasurementHistory {
 // MARK: Save
 
     ///
-    private func storeMeasurementData(uuid: String, measurement: SpeedMeasurementResultResponse) {
+    private func storeMeasurementData(uuid: String, measurement: SpeedMeasurementResultResponse) { // TODO: store google map static image in db?
         dispatch_async(serialQueue) {
             self.updateStoredMeasurement(uuid) { storedMeasurement in
                 storedMeasurement.measurementData = Mapper<SpeedMeasurementResultResponse>().toJSONString(measurement)
@@ -203,4 +283,91 @@ public class MeasurementHistory {
             }
         }
     }
+
+    ///
+    private func removeMeasurement(uuid: String) {
+        if let realm = try? Realm() {
+            do {
+                try realm.write {
+                    if let storedMeasurement = loadStoredMeasurement(uuid) {
+                        realm.delete(storedMeasurement)
+                    }
+                
+                    // remove also history item:
+                    if let storedHistoryItem = loadStoredHistoryItem(uuid) {
+                        realm.delete(storedHistoryItem)
+                    }
+                }
+            } catch {
+                logger.debug("realm error \(error)") // do nothing if fails?
+            }
+        }
+    }
+
+// MARK: HistoryItem
+
+    ///
+    private func loadStoredHistoryItem(uuid: String) -> StoredHistoryItem? {
+        if let realm = try? Realm() {
+            return realm.objects(StoredHistoryItem.self).filter("uuid == %@", uuid).first
+        }
+
+        return nil
+    }
+
+    ///
+    private func getLastHistoryItemTimestamp() -> NSDate? {
+        if let realm = try? Realm() {
+            return realm.objects(StoredHistoryItem.self).max("timestamp")
+        }
+
+        return nil
+    }
+
+    ///
+    private func getHistoryItemUuidList() -> [String]? {
+        if let realm = try? Realm() {
+            let uuidList = realm.objects(StoredHistoryItem.self).map({ storedItem in
+                return storedItem.uuid! // !
+            })
+
+            return uuidList
+        }
+
+        return nil
+    }
+
+    ///
+    private func insertOrUpdateHistoryItems(historyItems: [HistoryItem]) { // TODO: preload measurement, details and qos?
+        if let realm = try? Realm() {
+            do {
+                try realm.write {
+                    var storedHistoryItemList = [StoredHistoryItem]()
+
+                    historyItems.forEach({ item in
+                        //logger.debug("try to save history item: \(item)")
+
+                        let storedHistoryItem = StoredHistoryItem()
+                        storedHistoryItem.uuid = item.testUuid
+
+                        storedHistoryItem.networkType = item.networkType
+                        storedHistoryItem.device = item.model
+
+                        storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(item.time!)) // !
+
+                        storedHistoryItem.jsonData = Mapper<HistoryItem>().toJSONString(item)
+
+                        storedHistoryItemList.append(storedHistoryItem)
+                    })
+
+                    logger.debug("storing \(storedHistoryItemList)")
+
+                    realm.add(storedHistoryItemList)
+                }
+            } catch {
+                logger.debug("realm error \(error)") // do nothing if fails?
+            }
+        }
+    }
+
 }

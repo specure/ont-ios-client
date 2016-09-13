@@ -1,5 +1,5 @@
 //
-//  StoredMeasurement.swift
+//  StoredHistoryItem.swift
 //  rmbt-ios-client
 //
 //  Created by Benjamin Pucher on 01.09.16.
@@ -11,21 +11,26 @@ import RealmSwift
 import ObjectMapper
 
 ///
-class StoredMeasurement: Object {
+class StoredHistoryItem: Object {
 
     ///
     dynamic var uuid: String?
 
+// MARK: Filterable data
+
+    ///
+    dynamic var networkType: String?
+
+    ///
+    dynamic var device: String?
+
 // MARK: Data
 
     ///
-    dynamic var measurementData: String?
+    dynamic var timestamp: NSDate?
 
     ///
-    dynamic var measurementDetailsData: String?
-
-    ///
-    dynamic var measurementQosData: String?
+    dynamic var jsonData: String?
 
     //
 

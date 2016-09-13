@@ -21,10 +21,10 @@ public typealias ErrorCallback = (error: NSError) -> ()
 public typealias IpResponseSuccessCallback = (ipResponse: IpResponse) -> ()
 
 ///
-public class ControlServer {
+class ControlServer {
 
     ///
-    public static let sharedControlServer = ControlServer()
+    static let sharedControlServer = ControlServer()
 
     ///
     private let alamofireManager: Alamofire.Manager
@@ -36,10 +36,10 @@ public class ControlServer {
     private var uuidQueue = dispatch_queue_create("com.specure.nettest.uuid_queue", DISPATCH_QUEUE_SERIAL)
 
     ///
-    public var version: String?
+    var version: String?
 
     ///
-    public var uuid: String?
+    var uuid: String?
 
     ///
     private var uuidKey: String? // TODO: unique for each control server?
@@ -73,7 +73,7 @@ public class ControlServer {
     }
 
     ///
-    public func updateWithCurrentSettings() { // TODO: how does app set the control server url? need param?
+    func updateWithCurrentSettings() { // TODO: how does app set the control server url? need param?
         // configure control server url
 
         baseUrl = defaultBaseUrl
@@ -135,7 +135,7 @@ public class ControlServer {
 // MARK: Settings
 
     ///
-    public func getSettings(success successCallback: EmptyCallback, error failure: ErrorCallback) {
+    func getSettings(success successCallback: EmptyCallback, error failure: ErrorCallback) {
         let settingsRequest = SettingsRequest()
 
         settingsRequest.client = ClientSettings()
@@ -149,7 +149,7 @@ public class ControlServer {
             // set uuid
             self.uuid = response.client?.uuid
 
-            // safe uuid
+            // save uuid
             if let uuidKey = self.uuidKey {
                 NSUserDefaults.standardUserDefaults().setObject(self.uuid, forKey: uuidKey)
                 NSUserDefaults.standardUserDefaults().synchronize()
@@ -185,17 +185,17 @@ public class ControlServer {
 // MARK: IP
 
     ///
-    public func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
+    func getIpv4(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
         getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
     }
 
     ///
-    public func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
+    func getIpv6(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
         getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
     }
 
     ///
-    public func getIpVersion(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
+    func getIpVersion(success successCallback: IpResponseSuccessCallback, error failure: ErrorCallback) {
         request(.POST, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
     }
 
@@ -231,21 +231,21 @@ public class ControlServer {
     }
 
     ///
-    public func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: ErrorCallback) {
+    func getSpeedMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { _ in
             self.request(.GET, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
     ///
-    public func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: ErrorCallback) {
+    func getSpeedMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { _ in
-            self.request(.GET, path: "/measurements/speed/\(uuid)?details=true", requestObject: nil, success: success, error: failure)
+            self.request(.GET, path: "/measurements/speed/\(uuid)/details", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
     ///
-    public func disassociateSpeedMeasurement(measurementUuid: String, success: (response: SpeedMeasurementDisassociateResponse) -> (), error failure: ErrorCallback) {
+    func disassociateMeasurement(measurementUuid: String, success: (response: SpeedMeasurementDisassociateResponse) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { clientUuid in
             self.request(.DELETE, path: "/clients/\(clientUuid)/measurements/\(measurementUuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
@@ -279,7 +279,7 @@ public class ControlServer {
     }
 
     ///
-    public func getQosMeasurement(uuid: String, success: (response: QosMeasurementResultResponse) -> (), error failure: ErrorCallback) {
+    func getQosMeasurement(uuid: String, success: (response: QosMeasurementResultResponse) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { _ in
             self.request(.GET, path: "/measurements/qos/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
@@ -288,9 +288,16 @@ public class ControlServer {
 // MARK: History
 
     ///
-    public func getMeasurementHistory(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
+    func getMeasurementHistory(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
         ensureClientUuid(success: { uuid in
             self.requestArray(.GET, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
+        }, error: failure)
+    }
+
+    ///
+    func getMeasurementHistory(timestamp: UInt64, success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            self.requestArray(.GET, path: "/clients/\(uuid)/measurements?timestamp=\(timestamp)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
