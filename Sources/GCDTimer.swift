@@ -60,15 +60,14 @@ class GCDTimer {
     ///
     private func createTimer(interval: Double, timerQueue: dispatch_queue_t, block: dispatch_block_t) -> dispatch_source_t {
         let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue)
-        if timer != nil {
-            let nsecPerSec = Double(NSEC_PER_SEC)
-            let dt = dispatch_time(DISPATCH_TIME_NOW, Int64(interval * nsecPerSec))
 
-            dispatch_source_set_timer(timer, dt, DISPATCH_TIME_FOREVER, 0)
+        let nsecPerSec = Double(NSEC_PER_SEC)
+        let dt = dispatch_time(DISPATCH_TIME_NOW, Int64(interval * nsecPerSec))
 
-            dispatch_source_set_event_handler(timer, block)
-            dispatch_resume(timer)
-        }
+        dispatch_source_set_timer(timer, dt, DISPATCH_TIME_FOREVER, 0)
+
+        dispatch_source_set_event_handler(timer, block)
+        dispatch_resume(timer)
 
         return timer
     }

@@ -11,9 +11,6 @@ import CoreLocation
 // MARK: Fixed test parameters
 
 ///
-let RMBT_TEST_CIPHER = SSL_RSA_WITH_RC4_128_MD5
-
-///
 let RMBT_TEST_SOCKET_TIMEOUT_S = 30.0
 
 /// Maximum number of tests to perform in loop mode

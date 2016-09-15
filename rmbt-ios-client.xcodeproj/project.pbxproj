@@ -235,12 +235,6 @@
 		E0B1C82F1CF4B63700F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
 		E0B1C8301CF4B65A00F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
 		E0B1C8311CF4B65A00F19282 /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B1C82E1CF4B63700F19282 /* Ping.swift */; };
-		E0FC4C101D6C78B200D5D236 /* RMBTClient_macos_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C0F1D6C78B100D5D236 /* RMBTClient_macos_Release.xcconfig */; };
-		E0FC4C121D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C111D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig */; };
-		E0FC4C141D6C792700D5D236 /* RMBTClient_macos_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C131D6C792700D5D236 /* RMBTClient_macos_Beta.xcconfig */; };
-		E0FC4C1C1D6C7A6100D5D236 /* RMBTClient_tvOS_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C1B1D6C7A6100D5D236 /* RMBTClient_tvOS_Beta.xcconfig */; };
-		E0FC4C1E1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C1D1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig */; };
-		E0FC4C201D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E0FC4C1F1D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig */; };
 		E0FC4C251D6C80F800D5D236 /* GetDNSIP.h in Headers */ = {isa = PBXBuildFile; fileRef = E02D17E31CF59262002A02FE /* GetDNSIP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0FC4C261D6C80FF00D5D236 /* NSString+IPAddress.h in Headers */ = {isa = PBXBuildFile; fileRef = E02D17EF1CF59262002A02FE /* NSString+IPAddress.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0FC4C271D6C810300D5D236 /* PingUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = E02D17F21CF59262002A02FE /* PingUtil.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1263,7 +1257,6 @@
 				E0B1C7DB1CF4ADBA00F19282 /* Headers */,
 				E0B1C7DC1CF4ADBA00F19282 /* Resources */,
 				4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */,
-				E02D1A6E1CFDE208002A02FE /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1320,10 +1313,11 @@
 		E0B1C7D31CF4AC8800F19282 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					E0B1C7DD1CF4ADBA00F19282 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					E0B1C7EB1CF4ADF100F19282 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -1365,9 +1359,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FC4C201D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig in Resources */,
-				E0FC4C1E1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig in Resources */,
-				E0FC4C1C1D6C7A6100D5D236 /* RMBTClient_tvOS_Beta.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1375,9 +1366,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0FC4C121D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig in Resources */,
-				E0FC4C101D6C78B200D5D236 /* RMBTClient_macos_Release.xcconfig in Resources */,
-				E0FC4C141D6C792700D5D236 /* RMBTClient_macos_Beta.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1473,20 +1461,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		E02D1A6E1CFDE208002A02FE /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1905,7 +1879,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1916,8 +1907,26 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -1925,6 +1934,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -1942,7 +1952,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1979,6 +1989,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1989,6 +2000,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -2006,7 +2018,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2036,6 +2048,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2047,6 +2060,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0FC4C1D1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -2064,6 +2078,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -2110,6 +2125,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0FC4C1F1D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -2127,6 +2143,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2166,6 +2183,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0FC4C111D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
@@ -2183,7 +2201,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2231,6 +2249,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0FC4C0F1D6C78B100D5D236 /* RMBTClient_macos_Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
@@ -2248,7 +2267,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;

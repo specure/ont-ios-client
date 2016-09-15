@@ -98,7 +98,7 @@ class ControlServer {
                 }
 
                 if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) {
-                    baseUrl = url.absoluteString
+                    baseUrl = url.absoluteString! // !
                     uuidKey = "uuid_\(url.host)"
                 }
             }
