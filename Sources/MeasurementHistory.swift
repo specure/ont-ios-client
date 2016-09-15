@@ -19,6 +19,9 @@ public class MeasurementHistory {
     ///
     private let serialQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
 
+    /// Set dirty to true if the history should be reloaded
+    var dirty = false // TODO: set this also after sync
+    
     ///
     private init() {
         // TODO: remove realm test code
@@ -28,7 +31,17 @@ public class MeasurementHistory {
 
     ///
     public func getHistoryList(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
-        // TODO: add dirty flag, only request history if dirty is true (on app start, after measurement and after sync)
+        if !dirty { // return cached elements if not dirty
+            // load items to view // TODO: move this code into a function...
+            if let realm = try? Realm() {
+                // TODO: add new ones from server, then there are less db queries
+                let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
+                success(response: x.flatMap({ storedItem in
+                    return Mapper<HistoryItem>().map(storedItem.jsonData)
+                }))
+            }
+            return
+        }
         
         if let timestamp = getLastHistoryItemTimestamp() {
             logger.debug("timestamp!, requesting since \(timestamp)")
@@ -61,7 +74,7 @@ public class MeasurementHistory {
                     }
                 }
 
-                // load items to view
+                // load items to view // TODO: move this code into a function...
                 if let realm = try? Realm() {
                     // TODO: add new ones from server, then there are less db queries
                     let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
@@ -74,7 +87,7 @@ public class MeasurementHistory {
 
             }, error: { error in // show cached items if this request fails
                 
-                // load items to view
+                // load items to view // TODO: move this code into a function...
                 if let realm = try? Realm() {
                     // TODO: add new ones from server, then there are less db queries
                     let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)

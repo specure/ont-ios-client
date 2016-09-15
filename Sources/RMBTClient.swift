@@ -176,6 +176,8 @@ public class RMBTClient {
         _running = false
 
         if let uuid = self.resultUuid {
+            MeasurementHistory.sharedMeasurementHistory.dirty = true // set history to dirty after measurement
+            
             delegate?.measurementDidComplete(self, withResult: uuid)
         } else {
             delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.UnknownError) // TODO better error handling (but this error should never happen...)
@@ -364,6 +366,7 @@ extension RMBTClient {
 
     ///
     public class func refreshSettings() {
+        MeasurementHistory.sharedMeasurementHistory.dirty = true // set history to dirty for changed control servers
         ControlServer.sharedControlServer.updateWithCurrentSettings()
     }
 
