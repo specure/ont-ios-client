@@ -20,28 +20,62 @@ public class MeasurementHistory {
     private let serialQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
 
     /// Set dirty to true if the history should be reloaded
-    var dirty = false // TODO: set this also after sync
+    var dirty = true // dirty is true on app start // TODO: set this also after sync
     
     ///
     private init() {
         // TODO: remove realm test code
         // TODO: add migrations? at least look at how they work
-        _ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development
+        //_ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development
+        
+        if let realm = try? Realm() {
+            let distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("networkType") as! [String]))
+            let distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("model") as! [String]))
+
+            logger.debug("distinct network types: \(distinctNetworkTypes)")
+            logger.debug("distinct models: \(distinctModels)")
+        }
+    }
+    
+    public func getHistoryFilterModel() -> [[String: AnyObject]] {
+        var distinctNetworkTypes = [String]()
+        var distinctModels = [String]()
+        
+        if let realm = try? Realm() {
+            distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("networkType") as! [String]))
+            distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("model") as! [String]))
+            
+            logger.debug("distinct network types: \(distinctNetworkTypes)")
+            logger.debug("distinct models: \(distinctModels)")
+        }
+        
+        return [
+            [
+                "name": "network_type",
+                "items": distinctNetworkTypes
+            ],
+            [
+                "name": "model",
+                "items": distinctModels
+            ]
+        ]
     }
 
+    
     ///
     public func getHistoryList(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
         if !dirty { // return cached elements if not dirty
-            // load items to view // TODO: move this code into a function...
-            if let realm = try? Realm() {
-                // TODO: add new ones from server, then there are less db queries
-                let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
-                success(response: x.flatMap({ storedItem in
-                    return Mapper<HistoryItem>().map(storedItem.jsonData)
-                }))
+            // load items to view
+            if let historyItems = self.getHistoryItems() {
+                success(response: historyItems)
+            } else {
+                failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
             }
+            
             return
         }
+        
+        dirty = false
         
         if let timestamp = getLastHistoryItemTimestamp() {
             logger.debug("timestamp!, requesting since \(timestamp)")
@@ -64,40 +98,23 @@ public class MeasurementHistory {
                 self.insertOrUpdateHistoryItems(historyItems.filter({ return toAdd.contains($0.testUuid!) })) // !
 
                 // remove items
-                if let realm = try? Realm() {
-                    do {
-                        try realm.write {
-                            realm.delete(realm.objects(StoredHistoryItem.self).filter("uuid IN %@", toRemove))
-                        }
-                    } catch {
-                        logger.debug("realm error \(error)") // do nothing if fails?
-                    }
-                }
+                self.removeHistoryItems(toRemove)
 
-                // load items to view // TODO: move this code into a function...
-                if let realm = try? Realm() {
-                    // TODO: add new ones from server, then there are less db queries
-                    let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
-                    success(response: x.flatMap({ storedItem in
-                        return Mapper<HistoryItem>().map(storedItem.jsonData)
-                    }))
+                // load items to view
+                if let historyItems = self.getHistoryItems() {
+                    success(response: historyItems)
+                } else {
+                    failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
                 }
-
-                // TODO: call error callback if there were realm problems
 
             }, error: { error in // show cached items if this request fails
                 
-                // load items to view // TODO: move this code into a function...
-                if let realm = try? Realm() {
-                    // TODO: add new ones from server, then there are less db queries
-                    let x = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
-                    success(response: x.flatMap({ storedItem in
-                        return Mapper<HistoryItem>().map(storedItem.jsonData)
-                    }))
+                // load items to view
+                if let historyItems = self.getHistoryItems() {
+                    success(response: historyItems)
+                } else {
+                    failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
                 }
-                
-                // TODO: call error callback if there were realm problems
-                
             })
         } else {
             logger.debug("database empty, requesting without timestamp")
@@ -336,6 +353,40 @@ public class MeasurementHistory {
 
         return nil
     }
+    
+    ///
+    private func getHistoryItems() -> [HistoryItem]? {
+        if let realm = try? Realm() {
+            let query = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
+            
+            return query.flatMap({ storedItem in
+                logger.debug("\(storedItem.model)")
+                logger.debug("\(storedItem.networkType)")
+                
+                return Mapper<HistoryItem>().map(storedItem.jsonData)
+            })
+        }
+        
+        return nil
+    }
+    
+    ///
+    private func getHistoryItems(filters: [String]) -> [HistoryItem]? {
+        if let realm = try? Realm() {
+            let query = realm.objects(StoredHistoryItem.self).filter("")
+                
+                .sorted("timestamp", ascending: false)
+            
+            return query.flatMap({ storedItem in
+                logger.debug("\(storedItem.model)")
+                logger.debug("\(storedItem.networkType)")
+                
+                return Mapper<HistoryItem>().map(storedItem.jsonData)
+            })
+        }
+        
+        return nil
+    }
 
     ///
     private func getHistoryItemUuidList() -> [String]? {
@@ -364,7 +415,7 @@ public class MeasurementHistory {
                         storedHistoryItem.uuid = item.testUuid
 
                         storedHistoryItem.networkType = item.networkType
-                        storedHistoryItem.device = item.model
+                        storedHistoryItem.model = item.model
 
                         storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(item.time!)) // !
 
@@ -383,4 +434,17 @@ public class MeasurementHistory {
         }
     }
 
+    ///
+    private func removeHistoryItems(historyItemUuidList: Set<String>) {
+        if let realm = try? Realm() {
+            do {
+                try realm.write {
+                    realm.delete(realm.objects(StoredHistoryItem.self).filter("uuid IN %@", historyItemUuidList))
+                }
+            } catch {
+                logger.debug("realm error \(error)") // do nothing if fails?
+            }
+        }
+    }
+    
 }

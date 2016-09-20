@@ -26,7 +26,7 @@ class GeoLocation: Mappable {
     var altitude: Double?
 
     ///
-    var bearing: Double?
+    var heading: Double?
 
     ///
     var speed: Double?
@@ -53,15 +53,15 @@ class GeoLocation: Mappable {
         altitude        = location.altitude
 
         #if os(iOS)
-        bearing         = location.course
+        heading         = location.course
         speed           = (location.speed > 0.0 ? location.speed : 0.0)
-        provider        = "GPS" // TODO?
+        provider        = "GPS"
         #else
-        provider        = "WiFi" // TODO?
+        provider        = "WiFi"
         #endif
 
         relativeTimeNs  = 0 // TODO?
-        time            = location.timestamp // TODO?
+        time            = location.timestamp
     }
 
     ///
@@ -75,7 +75,7 @@ class GeoLocation: Mappable {
         longitude       <- map["longitude"]
         accuracy        <- map["accuracy"]
         altitude        <- map["altitude"]
-        bearing         <- map["bearing"]
+        heading         <- map["heading"]
         speed           <- map["speed"]
         provider        <- map["provider"]
         time            <- map["time"]

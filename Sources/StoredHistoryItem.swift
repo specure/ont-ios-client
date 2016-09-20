@@ -22,7 +22,7 @@ class StoredHistoryItem: Object {
     dynamic var networkType: String?
 
     ///
-    dynamic var device: String?
+    dynamic var model: String?
 
 // MARK: Data
 
