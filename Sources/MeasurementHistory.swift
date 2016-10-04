@@ -42,6 +42,10 @@ public class MeasurementHistory {
 
             logger.debug("distinct network types: \(distinctNetworkTypes)")
             logger.debug("distinct models: \(distinctModels)")
+            
+            logger.debug("COUNT1: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", distinctModels).count)")
+            logger.debug("COUNT2: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.first!]).count)")
+            logger.debug("COUNT3: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.last!]).count)")
         }
     }
     
@@ -69,12 +73,11 @@ public class MeasurementHistory {
         ]
     }
 
-    
     ///
-    public func getHistoryList(success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
+    public func getHistoryList(filters: [String: [String]], success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
         if !dirty { // return cached elements if not dirty
             // load items to view
-            if let historyItems = self.getHistoryItems() {
+            if let historyItems = self.getHistoryItems(filters) {
                 success(response: historyItems)
             } else {
                 failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
@@ -109,7 +112,7 @@ public class MeasurementHistory {
                 self.removeHistoryItems(toRemove)
 
                 // load items to view
-                if let historyItems = self.getHistoryItems() {
+                if let historyItems = self.getHistoryItems(filters) {
                     success(response: historyItems)
                 } else {
                     failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
@@ -118,7 +121,7 @@ public class MeasurementHistory {
             }, error: { error in // show cached items if this request fails
                 
                 // load items to view
-                if let historyItems = self.getHistoryItems() {
+                if let historyItems = self.getHistoryItems(filters) {
                     success(response: historyItems)
                 } else {
                     failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
@@ -130,14 +133,14 @@ public class MeasurementHistory {
             ControlServer.sharedControlServer.getMeasurementHistory({ historyItems in
                 self.insertOrUpdateHistoryItems(historyItems)
 
-                success(response: historyItems)
+                if let dbHistoryItems = self.getHistoryItems(filters) {
+                    success(response: dbHistoryItems)
+                } else {
+                    success(response: historyItems)
+                }
+                
             }, error: failure)
         }
-    }
-
-    ///
-    public func getHistoryList(filters: [[String: String]], success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
-
     }
 
     ///
@@ -363,27 +366,17 @@ public class MeasurementHistory {
     }
     
     ///
-    private func getHistoryItems() -> [HistoryItem]? {
+    private func getHistoryItems(filters: [String: [String]]) -> [HistoryItem]? {
         if let realm = try? Realm() {
-            let query = realm.objects(StoredHistoryItem.self).sorted("timestamp", ascending: false)
+            var query = realm.objects(StoredHistoryItem.self)
             
-            return query.flatMap({ storedItem in
-                logger.debug("\(storedItem.model)")
-                logger.debug("\(storedItem.networkType)")
-                
-                return Mapper<HistoryItem>().map(storedItem.jsonData)
-            })
-        }
-        
-        return nil
-    }
-    
-    ///
-    private func getHistoryItems(filters: [String]) -> [HistoryItem]? {
-        if let realm = try? Realm() {
-            let query = realm.objects(StoredHistoryItem.self).filter("")
-                
-                .sorted("timestamp", ascending: false)
+            if !filters.isEmpty {
+                for (filterColumn, filterEntries) in filters {
+                    query = query.filter("\(filterColumn) IN %@", filterEntries)
+                }
+            }
+            
+            query = query.sorted("timestamp", ascending: false)
             
             return query.flatMap({ storedItem in
                 logger.debug("\(storedItem.model)")
