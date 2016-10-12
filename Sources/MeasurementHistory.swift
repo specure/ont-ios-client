@@ -36,7 +36,7 @@ public class MeasurementHistory {
         // TODO: add migrations? at least look at how they work
         //_ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development
         
-        if let realm = try? Realm() {
+        /*if let realm = try? Realm() {
             let distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("networkType") as! [String]))
             let distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("model") as! [String]))
 
@@ -46,7 +46,7 @@ public class MeasurementHistory {
             logger.debug("COUNT1: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", distinctModels).count)")
             logger.debug("COUNT2: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.first!]).count)")
             logger.debug("COUNT3: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.last!]).count)")
-        }
+        }*/
     }
     
     public func getHistoryFilterModel() -> [[String: AnyObject]] {
@@ -138,7 +138,6 @@ public class MeasurementHistory {
                 } else {
                     success(response: historyItems)
                 }
-                
             }, error: failure)
         }
     }
@@ -371,6 +370,8 @@ public class MeasurementHistory {
             var query = realm.objects(StoredHistoryItem.self)
             
             if !filters.isEmpty {
+                logger.debug("filters: \(filters)")
+                
                 for (filterColumn, filterEntries) in filters {
                     query = query.filter("\(filterColumn) IN %@", filterEntries)
                 }
