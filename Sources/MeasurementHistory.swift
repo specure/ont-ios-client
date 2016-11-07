@@ -19,6 +19,10 @@ import RealmSwift
 import ObjectMapper
 
 ///
+/// data type alias for filters
+typealias HistoryFilters = [String: [String]]
+
+///
 public class MeasurementHistory {
 
     ///
@@ -365,7 +369,7 @@ public class MeasurementHistory {
     }
     
     ///
-    private func getHistoryItems(filters: [String: [String]]) -> [HistoryItem]? {
+    private func getHistoryItems(filters: HistoryFilters) -> [HistoryItem]? {
         if let realm = try? Realm() {
             var query = realm.objects(StoredHistoryItem.self)
             
