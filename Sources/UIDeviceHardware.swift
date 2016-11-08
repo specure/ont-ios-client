@@ -19,6 +19,7 @@ import Foundation
 
 /// these values are stored on the server side and kept here just for backup
 let IOS_MODEL_DICTIONARY = [
+// iPhone
     "iPhone1,1": "iPhone 1G",
     "iPhone1,2": "iPhone 3G",
     "iPhone2,1": "iPhone 3GS",
@@ -36,13 +37,19 @@ let IOS_MODEL_DICTIONARY = [
     "iPhone7,2": "iPhone 6",
     "iPhone8,1": "iPhone 6s",
     "iPhone8,2": "iPhone 6s Plus",
-
+    "iPhone8,4": "iPhone SE",
+    "iPhone9,1": "iPhone 7 (CDMA)",
+    "iPhone9,3": "iPhone 7 (GSM)",
+    "iPhone9,2": "iPhone 7 Plus (CDMA)",
+    "iPhone9,4": "iPhone 7 Plus (GSM)",
+// iPod
     "iPod1,1": "iPod Touch 1G",
     "iPod2,1": "iPod Touch 2G",
     "iPod3,1": "iPod Touch 3G",
     "iPod4,1": "iPod Touch 4G",
     "iPod5,1": "iPod Touch 5G",
-
+    "iPod7,1": "iPod Touch 6",
+// iPad
     "iPad1,1": "iPad",
     "iPad2,1": "iPad 2 (WiFi)",
     "iPad2,2": "iPad 2 (GSM)",
@@ -66,9 +73,21 @@ let IOS_MODEL_DICTIONARY = [
     "iPad4,7": "iPad Mini 3 (WiFi)",
     "iPad4,8": "iPad Mini 3 (GSM)",
     "iPad4,9": "iPad Mini 3 (LTE)",
+    "iPad5,1": "iPad Mini 4",
+    "iPad5,2": "iPad Mini 4",
     "iPad5,3": "iPad Air 2 (WiFi)",
     "iPad5,4": "iPad Air 2 (GSM)",
-
+    "iPad6,3": "iPad Pro",
+    "iPad6,4": "iPad Pro",
+    "iPad6,7": "iPad Pro",
+    "iPad6,8": "iPad Pro",
+// Apple TV
+    "AppleTV1,1": "Apple TV",
+    "AppleTV2,1": "Apple TV 2G",
+    "AppleTV3,1": "Apple TV 3G",
+    "AppleTV3,2": "Apple TV 3G",
+    "AppleTV5,3": "Apple TV 4G",
+// Simulator
     "i386":            "iOS Simulator",
     "x86_64":          "iOS Simulator",
     "Emulator x86_64": "iOS Simulator",
