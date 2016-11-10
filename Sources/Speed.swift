@@ -61,3 +61,18 @@ public func RMBTSpeedMbpsString(kbps: Int, withMbps: Bool = true) -> String {
         return "\(speedValue)"
     }
 }
+
+///
+public func NCOMSpeedMbpsString(kbps: Int, withMbps: Bool = true) -> String {
+    let speedValue = RMBTFormatNumber(NSNumber(double: Double(kbps) / 1000.0))
+    
+    let speedRounded = Double(speedValue)?.roundToPlaces(2)
+    
+    if withMbps {
+        let localizedMps = NSLocalizedString("test.speed.unit", value: "Mbps", comment: "Speed suffix")
+        
+        return String(format: "%@ %@", speedRounded!, localizedMps)
+    } else {
+        return "\(speedRounded)"
+    }
+}

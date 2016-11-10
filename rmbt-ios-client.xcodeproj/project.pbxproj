@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
+		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
+		A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
+		A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		B5CE67017534A5BC5AF486AA /* Pods_All_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */; };
 		E00C20B31D19654400720394 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
 		E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
@@ -444,6 +447,7 @@
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
@@ -715,6 +719,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		A1720F0B1DD48EFF000AB71D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		E02130481D786F7E0034C378 /* Database */ = {
 			isa = PBXGroup;
 			children = (
@@ -772,6 +784,7 @@
 		E02D190D1CF593A2002A02FE /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A1720F0B1DD48EFF000AB71D /* Extensions */,
 				E02D18671CF59262002A02FE /* SwiftExactTime.swift */,
 				E02D18651CF59262002A02FE /* String+Extensions.swift */,
 				E02D186E1CF59262002A02FE /* UInt+Extensions.swift */,
@@ -1579,6 +1592,7 @@
 				E02D19951CF5A8A8002A02FE /* PingUtilSwiftDelegate.swift in Sources */,
 				E02D18791CF59262002A02FE /* DNSHeader.swift in Sources */,
 				E02D19A91CF5AAD9002A02FE /* RMBTConnectivityTracker.swift in Sources */,
+				A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C6E1D6C84DA00D5D236 /* SpeedMeasurementResult.swift in Sources */,
 				E02D19061CF59262002A02FE /* UDPStreamSender.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
@@ -1726,6 +1740,7 @@
 				E0FC4CD91D6C891700D5D236 /* TrafficClassification.swift in Sources */,
 				E0FC4CCF1D6C88DB00D5D236 /* LogConfig.swift in Sources */,
 				E0FC4CF21D6D98F500D5D236 /* PingUtilDelegateBridge.swift in Sources */,
+				A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4CA01D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
 				E0FC4CCC1D6C88C500D5D236 /* ConversionUtility.swift in Sources */,
 				E0FC4C841D6C857B00D5D236 /* MapOptionResponse.swift in Sources */,
@@ -1861,6 +1876,7 @@
 				E0FC4D0E1D6D99AC00D5D236 /* QualityOfServiceTestDelegate.swift in Sources */,
 				E02D19541CF5A431002A02FE /* SwiftExactTime.swift in Sources */,
 				E0FC4C9B1D6C862400D5D236 /* SpeedMeasurementResultResponse.swift in Sources */,
+				A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C831D6C857B00D5D236 /* MapOptionResponse.swift in Sources */,
 				E02D198C1CF5A525002A02FE /* AtomicBoolean.swift in Sources */,
 				E02D198F1CF5A52E002A02FE /* UInt+Extensions.swift in Sources */,
