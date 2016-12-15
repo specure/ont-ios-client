@@ -422,15 +422,12 @@ public class MeasurementHistory {
 
                         storedHistoryItem.networkType = item.networkType
                         
-                        // added by TB to get correct names of model in the filter list
-//                        if let model = item.model {
-//                            storedHistoryItem.model = UIDeviceHardware.getDeviceNameFromPlatform(model)
-//                        }
-                        
                         storedHistoryItem.model = item.model
                         
-                        storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(item.time!)) // !
-
+                        if let t = item.time {
+                            storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(t))
+                        }
+                        
                         storedHistoryItem.jsonData = Mapper<HistoryItem>().toJSONString(item)
 
                         storedHistoryItemList.append(storedHistoryItem)
