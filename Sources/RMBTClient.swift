@@ -162,7 +162,7 @@ public class RMBTClient {
 
         _running = true
 
-        startHardwareUsageTimer() // start cpu and memory usage timer
+        // startHardwareUsageTimer() // start cpu and memory usage timer // NO need for NKOM
     }
 
     ///
