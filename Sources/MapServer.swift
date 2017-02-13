@@ -108,6 +108,8 @@ public class MapServer {
                     var escapedValue: String?
                     if let v = value as? String {
                         escapedValue = v.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet()) // TODO: does this need a cast to string?
+                    } else if let numValue = value as? NSNumber {
+                        escapedValue = String(numValue)
                     }
 
                     return "\(escapedKey ?? key)=\(escapedValue ?? value)"
