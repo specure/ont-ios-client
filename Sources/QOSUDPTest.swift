@@ -19,13 +19,13 @@ import Foundation
 ///
 class QOSUDPTest: QOSTest {
 
-    private let PARAM_NUM_PACKETS_OUT = "out_num_packets"
-    private let PARAM_NUM_PACKETS_IN = "in_num_packets"
+    fileprivate let PARAM_NUM_PACKETS_OUT = "out_num_packets"
+    fileprivate let PARAM_NUM_PACKETS_IN = "in_num_packets"
 
-    private let PARAM_PORT_OUT = "out_port"
-    private let PARAM_PORT_IN = "in_port"
+    fileprivate let PARAM_PORT_OUT = "out_port"
+    fileprivate let PARAM_PORT_IN = "in_port"
 
-    private let PARAM_DELAY = "delay"
+    fileprivate let PARAM_DELAY = "delay"
 
     //
 

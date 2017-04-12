@@ -15,7 +15,7 @@
  *****************************************************************************************************/
 
 ///
-public typealias QOSTestParameters = [String: AnyObject]
+public typealias QOSTestParameters = [String: Any]
 
 ///
-public typealias QOSTestResults = [String: AnyObject]
+public typealias QOSTestResults = [String: Any]

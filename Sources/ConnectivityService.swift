@@ -57,9 +57,9 @@ public struct ConnectivityInfo: CustomStringConvertible {
 }
 
 ///
-public class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNew
+open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNew
 
-    public typealias ConnectivityInfoCallback = (connectivityInfo: ConnectivityInfo) -> ()
+    public typealias ConnectivityInfoCallback = (_ connectivityInfo: ConnectivityInfo) -> ()
 
     //
 
@@ -90,7 +90,7 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
     }
 
     ///
-    public func checkConnectivity(callback: ConnectivityInfoCallback) {
+    open func checkConnectivity(_ callback: @escaping ConnectivityInfoCallback) {
         if self.callback != nil { // don't allow multiple concurrent executions
             return
         }
@@ -108,7 +108,7 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
     }
 
     ///
-    private func checkIPV4() { // TODO: rewrite with ControlServerNew
+    fileprivate func checkIPV4() { // TODO: rewrite with ControlServerNew
         /*let ipv4Url = ControlServer.sharedControlServer.ipv4RequestUrl
 
         var infoParams = ControlServer.sharedControlServer.systemInfoParams()
@@ -147,7 +147,7 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
     }
 
     ///
-    private func checkIPV6() { // TODO: rewrite with ControlServerNew
+    fileprivate func checkIPV6() { // TODO: rewrite with ControlServerNew
         /*let ipv6Url = ControlServer.sharedControlServer.ipv6RequestUrl
 
         var infoParams = ControlServer.sharedControlServer.systemInfoParams()
@@ -188,7 +188,7 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
     }
 
     ///
-    private func callCallback() {
+    fileprivate func callCallback() {
         objc_sync_enter(self)
 
         if !(ipv4Finished && ipv6Finished) {
@@ -201,7 +201,7 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
         let savedCallback = callback
         callback = nil
 
-        savedCallback?(connectivityInfo: connectivityInfo)
+        savedCallback?(connectivityInfo)
     }
 
 }
@@ -212,33 +212,33 @@ public class ConnectivityService: NSObject { // TODO: rewrite with ControlServer
 extension ConnectivityService {
 
     ///
-    private func getLocalIpAddresses() { // see: http://stackoverflow.com/questions/25626117/how-to-get-ip-address-in-swift
+    fileprivate func getLocalIpAddresses() { // see: http://stackoverflow.com/questions/25626117/how-to-get-ip-address-in-swift
         // Get list of all interfaces on the local machine:
-        var ifaddr: UnsafeMutablePointer<ifaddrs> = nil
+        var ifaddr: UnsafeMutablePointer<ifaddrs>? = nil
         if getifaddrs(&ifaddr) == 0 {
 
             // For each interface ...
             var ptr = ifaddr
             while ptr != nil {
             // for (var ptr = ifaddr; ptr != nil; ptr = ptr.memory.ifa_next) {
-                let flags = Int32(ptr.memory.ifa_flags)
-                var addr = ptr.memory.ifa_addr.memory
+                let flags = Int32((ptr?.pointee.ifa_flags)!)
+                var addr = ptr?.pointee.ifa_addr.pointee
 
                 // Check for running IPv4, IPv6 interfaces. Skip the loopback interface.
                 if (flags & (IFF_UP|IFF_RUNNING|IFF_LOOPBACK)) == (IFF_UP|IFF_RUNNING) {
-                    if addr.sa_family == UInt8(AF_INET) || addr.sa_family == UInt8(AF_INET6) {
+                    if addr?.sa_family == UInt8(AF_INET) || addr?.sa_family == UInt8(AF_INET6) {
 
                         // Convert interface address to a human readable string:
-                        var hostname = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
-                        if getnameinfo(&addr, socklen_t(addr.sa_len), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST) == 0 {
-                            if let address = String.fromCString(hostname) {
+                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                        if getnameinfo(&addr!, socklen_t((addr?.sa_len)!), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST) == 0 {
+                            if let address = String(validatingUTF8: hostname) {
 
-                                if addr.sa_family == UInt8(AF_INET) {
+                                if addr?.sa_family == UInt8(AF_INET) {
                                     if self.connectivityInfo.ipv4.internalIp == nil {
                                         self.connectivityInfo.ipv4.internalIp = address
                                         logger.debug("local ipv4 address from getifaddrs: \(address)")
                                     }
-                                } else if addr.sa_family == UInt8(AF_INET6) {
+                                } else if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp == nil {
                                         self.connectivityInfo.ipv6.internalIp = address
                                         logger.debug("local ipv6 address from getifaddrs: \(address)")
@@ -249,21 +249,21 @@ extension ConnectivityService {
                     }
                 }
 
-                ptr = ptr.memory.ifa_next
+                ptr = ptr?.pointee.ifa_next
             }
             freeifaddrs(ifaddr)
         }
     }
 
     ///
-    private func getLocalIpAddressesFromSocket() {
-        let udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+    fileprivate func getLocalIpAddressesFromSocket() {
+        let udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default))
 
-        let host = NSURL(string: RMBT_URL_HOST)?.host ?? "specure.com"
+        let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"
 
         // connect to any host
         do {
-            try udpSocket.connectToHost(host, onPort: 11111) // TODO: which host, which port? // try!
+            try udpSocket.connect(toHost: host, onPort: 11111) // TODO: which host, which port? // try!
         } catch {
             getLocalIpAddresses() // fallback
         }
@@ -277,7 +277,7 @@ extension ConnectivityService {
 extension ConnectivityService: GCDAsyncUdpSocketDelegate {
 
     ///
-    public func udpSocket(sock: GCDAsyncUdpSocket, didConnectToAddress address: NSData) {
+    public func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
         connectivityInfo.ipv4.internalIp = sock.localHost_IPv4()
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
 
@@ -288,14 +288,14 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    public func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
+    @nonobjc public func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
         logger.debug("didNotConnect: \(error)")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
-    public func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError?) {
+    @nonobjc public func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: NSError?) {
         logger.debug("udpSocketDidClose: \(error)")
 
         getLocalIpAddresses() // fallback

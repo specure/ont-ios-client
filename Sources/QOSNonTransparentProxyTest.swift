@@ -19,8 +19,8 @@ import Foundation
 ///
 class QOSNonTransparentProxyTest: QOSTest {
 
-    private let PARAM_REQUEST = "request"
-    private let PARAM_PORT = "port"
+    fileprivate let PARAM_REQUEST = "request"
+    fileprivate let PARAM_PORT = "port"
 
     //
 

@@ -21,18 +21,18 @@ import CocoaAsyncSocket
 //////////////////
 
 /// default qos socket character encoding
-let QOS_SOCKET_DEFAULT_CHARACTER_ENCODING: UInt = NSUTF8StringEncoding
+let QOS_SOCKET_DEFAULT_CHARACTER_ENCODING: UInt = String.Encoding.utf8.rawValue
 
 ///
 let QOS_CONTROL_CONNECTION_TIMEOUT_NS: UInt64 = 10_000_000_000
-let QOS_CONTROL_CONNECTION_TIMEOUT_SEC = NSTimeInterval(QOS_CONTROL_CONNECTION_TIMEOUT_NS / NSEC_PER_SEC)
+let QOS_CONTROL_CONNECTION_TIMEOUT_SEC = TimeInterval(QOS_CONTROL_CONNECTION_TIMEOUT_NS / NSEC_PER_SEC)
 
 ///
 let QOS_DEFAULT_TIMEOUT_NS: UInt64 = 10_000_000_000 // default timeout value in nano seconds
 
 ///
 let QOS_TLS_SETTINGS: [String: NSNumber] = [
-    GCDAsyncSocketManuallyEvaluateTrust: NSNumber(bool: true)
+    GCDAsyncSocketManuallyEvaluateTrust: NSNumber(value: true as Bool)
 ]
 
 ///

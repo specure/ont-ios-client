@@ -23,45 +23,45 @@ typealias TCPTestExecutor = QOSTCPTestExecutor<QOSTCPTest>
 ///
 class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocketDelegate {
 
-    private let RESULT_TCP_PORT_OUT     = "tcp_objective_out_port" // static stored properties not yet supported in generic types
-    private let RESULT_TCP_PORT_IN      = "tcp_objective_in_port"
-    private let RESULT_TCP_TIMEOUT      = "tcp_objective_timeout"
-    private let RESULT_TCP_OUT          = "tcp_result_out"
-    private let RESULT_TCP_IN           = "tcp_result_in"
-    private let RESULT_TCP_RESPONSE_OUT = "tcp_result_out_response"
-    private let RESULT_TCP_RESPONSE_IN  = "tcp_result_in_response"
+    fileprivate let RESULT_TCP_PORT_OUT     = "tcp_objective_out_port" // static stored properties not yet supported in generic types
+    fileprivate let RESULT_TCP_PORT_IN      = "tcp_objective_in_port"
+    fileprivate let RESULT_TCP_TIMEOUT      = "tcp_objective_timeout"
+    fileprivate let RESULT_TCP_OUT          = "tcp_result_out"
+    fileprivate let RESULT_TCP_IN           = "tcp_result_in"
+    fileprivate let RESULT_TCP_RESPONSE_OUT = "tcp_result_out_response"
+    fileprivate let RESULT_TCP_RESPONSE_IN  = "tcp_result_in_response"
 
     //
 
-    private let TAG_TASK_TCPTEST_OUT = 1001
-    private let TAG_TASK_TCPTEST_IN = 1002
+    fileprivate let TAG_TASK_TCPTEST_OUT = 1001
+    fileprivate let TAG_TASK_TCPTEST_IN = 1002
 
     //
 
-    private let TAG_TCPTEST_OUT_PING = -1
-    private let TAG_TCPTEST_IN_PING = -2
-
-    //
-
-    ///
-    private let socketQueue = dispatch_queue_create("com.specure.rmbt.tcp.socketQueue", DISPATCH_QUEUE_CONCURRENT)
-
-    ///
-    private var tcpTestOutSocket: GCDAsyncSocket!
-
-    ///
-    private var tcpTestInSocket: GCDAsyncSocket!
-
-    ///
-    private var portOutFinished = false
-
-    ///
-    private var portInFinished = false
+    fileprivate let TAG_TCPTEST_OUT_PING = -1
+    fileprivate let TAG_TCPTEST_IN_PING = -2
 
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.tcp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
+
+    ///
+    fileprivate var tcpTestOutSocket: GCDAsyncSocket!
+
+    ///
+    fileprivate var tcpTestInSocket: GCDAsyncSocket!
+
+    ///
+    fileprivate var portOutFinished = false
+
+    ///
+    fileprivate var portInFinished = false
+
+    //
+
+    ///
+    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -92,7 +92,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
             qosLog.debug("TCP TEST PORT IN")
 
             testResult.set(RESULT_TCP_PORT_IN, number: portIn) // put portIn in test result
-            testResult.set(RESULT_TCP_IN, value: "FAILED") // assume test failed if port was provided (don't have to set failed later, only have to success)
+            testResult.set(RESULT_TCP_IN, value: "FAILED" as AnyObject?) // assume test failed if port was provided (don't have to set failed later, only have to success)
 
             // request tcp in test
             sendTaskCommand("TCPTEST IN \(portIn)", withTimeout: timeoutInSec, tag: TAG_TASK_TCPTEST_IN)
@@ -108,8 +108,8 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
     ///
-    private func checkFinish() { // TODO: improve with something like CountDownLatch
-        dispatch_async(delegateQueue) { // TODO: run in delegate queue!
+    fileprivate func checkFinish() { // TODO: improve with something like CountDownLatch
+        delegateQueue.async { // TODO: run in delegate queue!
             self.qosLog.debug("check finish")
             if self.testObject.portOut != nil && !self.portOutFinished {
                 return
@@ -128,7 +128,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 // MARK: QOSControlConnectionDelegate methods
 
     ///
-    override func controlConnection(connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
+    override func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
 
         switch tag {
@@ -142,7 +142,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 
                     // connect client socket
                     do {
-                        try tcpTestOutSocket.connectToHost(testObject.serverAddress, onPort: testObject.portOut!, withTimeout: timeoutInSec)
+                        try tcpTestOutSocket.connect(toHost: testObject.serverAddress, onPort: testObject.portOut!, withTimeout: timeoutInSec)
                     } catch {
                         // there was an error
                         qosLog.debug("connection error \(error)")
@@ -160,7 +160,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
                 tcpTestInSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: socketQueue)
 
                 do {
-                    try tcpTestInSocket.acceptOnPort(testObject.portIn!)
+                    try tcpTestInSocket.accept(onPort: testObject.portIn!)
                 } catch {
                     // TODO: check error (i.e. fail test if error) // try!
                     testDidFail()
@@ -175,7 +175,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 // MARK: GCDAsyncSocketDelegate methods
 
     ///
-    @objc func socket(sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    @objc func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
         if sock == tcpTestInSocket {
             // read line
             SocketUtils.readLine(newSocket, tag: TAG_TCPTEST_IN_PING, withTimeout: timeoutInSec)
@@ -183,7 +183,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    @objc func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         qosLog.debug("DID CONNECT TO HOST \(host) on port \(port)")
         if sock == tcpTestOutSocket {
             // write "PING" and read response
@@ -193,7 +193,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
+    @objc func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
 
         let response: String = SocketUtils.parseResponseToString(data)! // !?
         let responseWithoutLastNewline = response.stringByRemovingLastNewline()

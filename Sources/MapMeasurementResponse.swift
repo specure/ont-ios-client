@@ -18,14 +18,14 @@ import Foundation
 import ObjectMapper
 
 ///
-public class MapMeasurementResponse: BasicResponse {
+open class MapMeasurementResponse: BasicResponse {
 
     ///
     var measurements: [SpeedMeasurementResultResponse]?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         measurements <- map["measurements"]
     }

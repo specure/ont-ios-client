@@ -18,29 +18,29 @@ import Foundation
 import ObjectMapper
 
 ///
-public class SpeedMeasurementDetailResultResponse: BasicResponse {
+open class SpeedMeasurementDetailResultResponse: BasicResponse {
 
     ///
-    public var speedMeasurementResultDetailList: [SpeedMeasurementDetailItem]?
+    open var speedMeasurementResultDetailList: [SpeedMeasurementDetailItem]?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         speedMeasurementResultDetailList <- map["testresultdetail"]
     }
 
     ///
-    public class SpeedMeasurementDetailItem: Mappable {
+    open class SpeedMeasurementDetailItem: Mappable {
 
         ///
-        public var key: String?
+        open var key: String?
 
         ///
-        public var value: String?
+        open var value: String?
 
         ///
-        public var title: String?
+        open var title: String?
 
         ///
         public init() {
@@ -48,12 +48,12 @@ public class SpeedMeasurementDetailResultResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             key <- map["key"]
             value <- map["value"]
             title <- map["title"]

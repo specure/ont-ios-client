@@ -19,24 +19,24 @@ import Foundation
 
 ///
 public enum RMBTNetworkType: Int {
-    case Unknown = -1
-    case None = 0 // Used internally to denote no connection
-    case Browser = 98
-    case WiFi = 99
-    case Cellular = 105
+    case unknown = -1
+    case none = 0 // Used internally to denote no connection
+    case browser = 98
+    case wiFi = 99
+    case cellular = 105
 }
 
 ///
-public func RMBTNetworkTypeMake(code: Int) -> RMBTNetworkType {
-    return RMBTNetworkType(rawValue: code) ?? .Unknown
+public func RMBTNetworkTypeMake(_ code: Int) -> RMBTNetworkType {
+    return RMBTNetworkType(rawValue: code) ?? .unknown
 }
 
 ///
-public func RMBTNetworkTypeIdentifier(networkType: RMBTNetworkType) -> String? {
+public func RMBTNetworkTypeIdentifier(_ networkType: RMBTNetworkType) -> String? {
     switch networkType {
-        case .Cellular: return "cellular"
-        case .WiFi:     return "wifi"
-        case .Browser:  return "browser"
+        case .cellular: return "cellular"
+        case .wiFi:     return "wifi"
+        case .browser:  return "browser"
         default:        return nil
     }
 }

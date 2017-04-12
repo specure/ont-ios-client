@@ -20,199 +20,199 @@ import CocoaAsyncSocket
 
 ///
 public enum RMBTTestWorkerState: Int {
-    case Initialized
+    case initialized
 
-    case DownlinkPretestStarted
-    case DownlinkPretestFinished
+    case downlinkPretestStarted
+    case downlinkPretestFinished
 
-    case LatencyTestStarted
-    case LatencyTestFinished
+    case latencyTestStarted
+    case latencyTestFinished
 
-    case DownlinkTestStarted
-    case DownlinkTestFinished
+    case downlinkTestStarted
+    case downlinkTestFinished
 
-    case UplinkPretestStarted
-    case UplinkPretestFinished
+    case uplinkPretestStarted
+    case uplinkPretestFinished
 
-    case UplinkTestStarted
-    case UplinkTestFinished
+    case uplinkTestStarted
+    case uplinkTestFinished
 
-    case Stopping
-    case Stopped
+    case stopping
+    case stopped
 
-    case Aborted
-    case Failed
+    case aborted
+    case failed
 }
 
 /// We use long to be compatible with GCDAsyncSocket tag datatype
 public enum RMBTTestTag: Int {
-    case RxPretestPart = -2
-    case RxDownlinkPart = -1
+    case rxPretestPart = -2
+    case rxDownlinkPart = -1
 
-    case RxBanner = 1
-    case RxBannerAccept
-    case TxToken
-    case RxTokenOK
-    case RxChunksize
-    case RxChunksizeAccept
-    case TxGetChunks
-    case RxChunk
-    case TxChunkOK
-    case RxStatistic
-    case RxStatisticAccept
-    case TxPing
-    case RxPong
-    case TxPongOK
-    case RxPongStatistic
-    case RxPongAccept
-    case TxGetTime
-    case RxGetTime
-    case RxGetTimeLeftoverChunk
-    case TxGetTimeOK
-    case RxGetTimeStatistic
-    case RxGetTimeAccept
-    case TxQuit
-    case TxPutNoResult
-    case RxPutNoResultOK
-    case TxPutNoResultChunk
-    case RxPutNoResultStatistic
-    case RxPutNoResultAccept
-    case TxPut
-    case RxPutOK
-    case TxPutChunk
-    case RxPutStatistic
-    case RxPutStatisticLast
+    case rxBanner = 1
+    case rxBannerAccept
+    case txToken
+    case rxTokenOK
+    case rxChunksize
+    case rxChunksizeAccept
+    case txGetChunks
+    case rxChunk
+    case txChunkOK
+    case rxStatistic
+    case rxStatisticAccept
+    case txPing
+    case rxPong
+    case txPongOK
+    case rxPongStatistic
+    case rxPongAccept
+    case txGetTime
+    case rxGetTime
+    case rxGetTimeLeftoverChunk
+    case txGetTimeOK
+    case rxGetTimeStatistic
+    case rxGetTimeAccept
+    case txQuit
+    case txPutNoResult
+    case rxPutNoResultOK
+    case txPutNoResultChunk
+    case rxPutNoResultStatistic
+    case rxPutNoResultAccept
+    case txPut
+    case rxPutOK
+    case txPutChunk
+    case rxPutStatistic
+    case rxPutStatisticLast
 }
 
 /// All delegate methods are dispatched on the supplied delegate queue
 public protocol RMBTTestWorkerDelegate {
 
     ///
-    func testWorker(worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
+    func testWorker(_ worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
 
     ///
-    func testWorker(worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
+    func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
 
     ///
-    func testWorkerDidFinishLatencyTest(worker: RMBTTestWorker)
+    func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker)
 
     ///
-    func testWorker(worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64
+    func testWorker(_ worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64
 
     ///
-    func testWorker(worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64)
+    func testWorker(_ worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64)
 
     ///
-    func testWorkerDidFinishDownlinkTest(worker: RMBTTestWorker)
+    func testWorkerDidFinishDownlinkTest(_ worker: RMBTTestWorker)
 
     ///
-    func testWorker(worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt)
+    func testWorker(_ worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt)
 
     ///
-    func testWorker(worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64
+    func testWorker(_ worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64
 
     ///
-    func testWorker(worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64)
+    func testWorker(_ worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64)
 
     ///
-    func testWorkerDidFinishUplinkTest(worker: RMBTTestWorker)
+    func testWorkerDidFinishUplinkTest(_ worker: RMBTTestWorker)
 
     ///
-    func testWorkerDidStop(worker: RMBTTestWorker)
+    func testWorkerDidStop(_ worker: RMBTTestWorker)
 
     ///
-    func testWorkerDidFail(worker: RMBTTestWorker)
+    func testWorkerDidFail(_ worker: RMBTTestWorker)
 }
 
 ///
-public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
+open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     // Test parameters
-    private var params: SpeedMeasurementResponse
+    fileprivate var params: SpeedMeasurementResponse
 
     /// Weak reference to the delegate
-    private let delegate: RMBTTestWorkerDelegate
+    fileprivate let delegate: RMBTTestWorkerDelegate
 
     /// Current state of the worker
-    private var state: RMBTTestWorkerState = .Initialized
+    fileprivate var state: RMBTTestWorkerState = .initialized
 
     ///
-    private var socket: GCDAsyncSocket!
+    fileprivate var socket: GCDAsyncSocket!
 
     /// CHUNKSIZE received from server
-    private var chunksize: UInt = 0
+    fileprivate var chunksize: UInt = 0
 
     /// One chunk of data cached from the downlink phase, to be used as upload data
-    private var chunkData: NSMutableData!
+    fileprivate var chunkData: Data!
 
     /// In pretest, we first request or send 1 chunk at once, then 2, 4, 8 etc.
     /// Number of chunks to request/send in this iteration
-    private var pretestChunksCount: UInt = 0
+    fileprivate var pretestChunksCount: UInt = 0
 
     /// Uplink pretest: number of chunks sent so far in this iteration
-    private var pretestChunksSent: UInt = 0
+    fileprivate var pretestChunksSent: UInt = 0
 
     /// Download pretest: length received so far
-    private var pretestLengthReceived: UInt64 = 0
+    fileprivate var pretestLengthReceived: UInt64 = 0
 
     /// Nanoseconds at which we started pretest
-    private var pretestStartNanos: UInt64 = 0
+    fileprivate var pretestStartNanos: UInt64 = 0
 
     /// Nanoseconds at which we sent the PING
-    private var pingStartNanos: UInt64 = 0
+    fileprivate var pingStartNanos: UInt64 = 0
 
     /// Nanoseconds at which we received PONG
-    private var pingPongNanos: UInt64 = 0
+    fileprivate var pingPongNanos: UInt64 = 0
 
     /// Current ping sequence number (0.._params.pingCount-1)
-    private var pingSeq: UInt = 0
+    fileprivate var pingSeq: UInt = 0
 
     /// Nanoseconds at which test started. Used for both up/down tests.
-    private var testStartNanos: UInt64 = 0
+    fileprivate var testStartNanos: UInt64 = 0
 
     /// Download buffer for capturing bytes for _chunkData
-    private var testDownloadedData: NSMutableData!
+    fileprivate var testDownloadedData: Data!
 
     /// How many nanoseconds is this thread behind the first thread that started upload test
-    private var testUploadOffsetNanos: UInt64 = 0
+    fileprivate var testUploadOffsetNanos: UInt64 = 0
 
     /// Local timestamps after which we'll start discarding server reports and finalize the upload test
-    private var testUploadEnoughClientNanos: UInt64 = 0
-    private var testUploadMaxWaitReachedClientNanos: UInt64 = 0
+    fileprivate var testUploadEnoughClientNanos: UInt64 = 0
+    fileprivate var testUploadMaxWaitReachedClientNanos: UInt64 = 0
 
     // Server timestamp after which it is considered that we have enough upload
-    private var testUploadEnoughServerNanos: UInt64 = 0
+    fileprivate var testUploadEnoughServerNanos: UInt64 = 0
 
     /// Flag indicating that last uplink packet has been sent. After last chunk has been sent, we'll wait upto X sec to
     /// collect statistics, then terminate the test.
-    private var testUploadLastChunkSent = false
+    fileprivate var testUploadLastChunkSent = false
 
     /// Server reports total number of bytes received. We need to track last amount reported so we can calculate relative amounts.
-    private var testUploadLastUploadLength: UInt64 = 0
+    fileprivate var testUploadLastUploadLength: UInt64 = 0
 
     ///
-    public var index: UInt
+    open var index: UInt
 
     ///
-    public var totalBytesUploaded: UInt64 = 0
+    open var totalBytesUploaded: UInt64 = 0
 
     ///
-    public var totalBytesDownloaded: UInt64 = 0
+    open var totalBytesDownloaded: UInt64 = 0
 
     ///
-    public var negotiatedEncryptionString: String!
+    open var negotiatedEncryptionString: String!
 
     ///
-    public var localIp: String!
+    open var localIp: String!
 
     ///
-    public var serverIp: String!
+    open var serverIp: String!
 
     ///
     //private let serverConnectionFailedTimer = GCDTimer()
 
     ///
-    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: dispatch_queue_t, index: UInt, testParams: SpeedMeasurementResponse) {
+    public init(delegate: RMBTTestWorkerDelegate, delegateQueue: DispatchQueue, index: UInt, testParams: SpeedMeasurementResponse) {
         self.delegate = delegate
         self.index = index
         self.params = testParams
@@ -226,73 +226,73 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: State handling
 
     ///
-    public func startDownlinkPretest() {
-        assert(state == .Initialized, "Invalid state")
+    open func startDownlinkPretest() {
+        assert(state == .initialized, "Invalid state")
 
-        state = .DownlinkPretestStarted
+        state = .downlinkPretestStarted
 
         connect()
     }
 
     ///
-    public func stop() {
-        assert(state == .DownlinkPretestFinished, "Invalid state")
+    open func stop() {
+        assert(state == .downlinkPretestFinished, "Invalid state")
 
-        state = .Stopping
+        state = .stopping
 
         socket.disconnect()
     }
 
     ///
-    public func startLatencyTest() {
-        assert(state == .DownlinkPretestFinished, "Invalid state")
+    open func startLatencyTest() {
+        assert(state == .downlinkPretestFinished, "Invalid state")
 
-        state = .LatencyTestStarted
+        state = .latencyTestStarted
 
         pingSeq = 0
-        writeLine("PING", withTag: .TxPing)
+        writeLine("PING", withTag: .txPing)
 
         pingStartNanos = RMBTCurrentNanos()
     }
 
     ///
-    public func startDownlinkTest() {
-        assert(state == .LatencyTestFinished || state == .DownlinkPretestFinished, "Invalid state")
+    open func startDownlinkTest() {
+        assert(state == .latencyTestFinished || state == .downlinkPretestFinished, "Invalid state")
 
-        state = .DownlinkTestStarted
+        state = .downlinkTestStarted
 
-        writeLine("GETTIME \(Int(params.duration))", withTag: .TxGetTime)
+        writeLine("GETTIME \(Int(params.duration))", withTag: .txGetTime)
     }
 
     ///
-    public func startUplinkPretest() {
-        assert(state == .DownlinkTestFinished, "Invalid state")
+    open func startUplinkPretest() {
+        assert(state == .downlinkTestFinished, "Invalid state")
 
-        state = .UplinkPretestStarted
+        state = .uplinkPretestStarted
 
         connect()
     }
 
     ///
-    public func startUplinkTest() {
-        assert(state == .UplinkPretestFinished, "Invalid state")
+    open func startUplinkTest() {
+        assert(state == .uplinkPretestFinished, "Invalid state")
 
-        state = .UplinkTestStarted
+        state = .uplinkTestStarted
 
-        writeLine("PUT", withTag: .TxPut)
+        writeLine("PUT", withTag: .txPut)
     }
 
 // MARK: ...
 
-    private func tryDNSLookup(serverName: String) -> String? {
-        let host = CFHostCreateWithName(nil, serverName).takeRetainedValue()
-        CFHostStartInfoResolution(host, .Addresses, nil)
+    fileprivate func tryDNSLookup(_ serverName: String) -> String? {
+        let host = CFHostCreateWithName(nil, serverName as CFString).takeRetainedValue()
+        CFHostStartInfoResolution(host, .addresses, nil)
         var success: DarwinBoolean = false
-        if let addresses = CFHostGetAddressing(host, &success)?.takeUnretainedValue() as NSArray?, theAddress = addresses.firstObject as? NSData {
-                var hostname = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
-                if getnameinfo(UnsafePointer(theAddress.bytes), socklen_t(theAddress.length),
+        if let addresses = CFHostGetAddressing(host, &success)?.takeUnretainedValue() as NSArray?, let theAddress = addresses.firstObject as? Data {
+                var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                if getnameinfo((theAddress as NSData).bytes.bindMemory(to: sockaddr.self, capacity: theAddress.count), socklen_t(theAddress.count),
                     &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
-                        if let numAddress = String.fromCString(hostname) {
+                        if let numAddress = String(validatingUTF8: hostname) {
                             return numAddress
                         }
                 }
@@ -302,7 +302,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func connect() {
+    open func connect() {
         do {
             //setupConnectionFailedTimer()
 
@@ -317,7 +317,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             logger.debug("Connecting to host \(sAddr):\(self.params.measurementServer!.port!)")
 
-            try socket.connectToHost(sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
+            try socket.connect(toHost: sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
 
         } catch {
             fail()
@@ -335,13 +335,13 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }*/
 
     ///
-    public func abort() {
-        if state == .Aborted {
+    open func abort() {
+        if state == .aborted {
             return
         }
 
         //serverConnectionFailedTimer.stop()
-        state = .Aborted
+        state = .aborted
 
         if socket.isConnected {
             socket.disconnect()
@@ -349,13 +349,13 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func fail() {
-        if state == .Failed {
+    open func fail() {
+        if state == .failed {
             return
         }
 
         //serverConnectionFailedTimer.stop()
-        state = .Failed
+        state = .failed
 
         delegate.testWorkerDidFail(self)
 
@@ -367,57 +367,57 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: Socket delegate methods
 
     ///
-    public func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-        if state == .Aborted {
+    open func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+        if state == .aborted {
             sock.disconnect()
             return
         }
 
-        assert(state == .DownlinkPretestStarted || state == .UplinkPretestStarted, "Invalid state")
+        assert(state == .downlinkPretestStarted || state == .uplinkPretestStarted, "Invalid state")
 
         localIp = sock.localHost
         serverIp = sock.connectedHost
 
-        if let ms = params.measurementServer where ms.encrypted { // TODO
+        if let ms = params.measurementServer, ms.encrypted { // TODO
             sock.startTLS([
-                GCDAsyncSocketManuallyEvaluateTrust: true
+                GCDAsyncSocketManuallyEvaluateTrust: true as NSObject
             ])
         } else {
-            readLineWithTag(.RxBanner)
+            readLineWithTag(.rxBanner)
         }
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket, didReceiveTrust trust: SecTrust, completionHandler: ((Bool) -> Void)) {
+    open func socket(_ sock: GCDAsyncSocket, didReceive trust: SecTrust, completionHandler: @escaping ((Bool) -> Void)) {
         completionHandler(true)
     }
 
     ///
-    public func socketDidSecure(sock: GCDAsyncSocket) {
-        assert(state == .DownlinkPretestStarted || state == .UplinkPretestStarted, "Invalid state")
+    open func socketDidSecure(_ sock: GCDAsyncSocket) {
+        assert(state == .downlinkPretestStarted || state == .uplinkPretestStarted, "Invalid state")
 
-        socket.performBlock {
+        socket.perform {
             if let sslContext = sock.sslContext() {
                 self.negotiatedEncryptionString = RMBTSSLHelper.encryptionStringForSSLContext(sslContext.takeUnretainedValue()) // TODO: or use takeRetainedValue()?
             }
         }
 
-        readLineWithTag(.RxBanner)
+        readLineWithTag(.rxBanner)
     }
 
     ///
-    public func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
+    open func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         if err != nil {
             logger.debug("Socket disconnected with error \(err)")
             fail()
         } else {
-            if state == .DownlinkTestStarted {
-                state = .DownlinkTestFinished
+            if state == .downlinkTestStarted {
+                state = .downlinkTestFinished
                 delegate.testWorkerDidFinishDownlinkTest(self)
-            } else if state == .Stopping {
-                state = .Stopped
+            } else if state == .stopping {
+                state = .stopped
                 delegate.testWorkerDidStop(self)
-            } else if state == .Failed || state == .Aborted || state == .UplinkTestFinished {
+            } else if state == .failed || state == .aborted || state == .uplinkTestFinished {
                 // We've finished/aborted/failed and socket has disconnected. Nothing to do!
             } else {
                 assert(false, "Disconnection in an unexpected state")
@@ -426,8 +426,8 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-        if state == .Aborted {
+    open func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
+        if state == .aborted {
             return
         }
 
@@ -435,49 +435,49 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    public func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
-        if state == .Aborted {
+    open func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
+        if state == .aborted {
             return
         }
 
-        totalBytesDownloaded += UInt64(data.length)
+        totalBytesDownloaded += UInt64(data.count)
 
         socketDidReadOrWriteData(data, withTag: tag, read: true)
     }
 
     /// We unify read and write callbacks for better state documentation
-    public func socketDidReadOrWriteData(data: NSData!, withTag tagRaw: Int, read: Bool) {
+    open func socketDidReadOrWriteData(_ data: Data!, withTag tagRaw: Int, read: Bool) {
         let tag = RMBTTestTag(rawValue: tagRaw)!
 
         // Pretest
-        if tag == .RxBanner {
+        if tag == .rxBanner {
             // <- RMBTv0.3
-            readLineWithTag(.RxBannerAccept)
-        } else if tag == .RxBannerAccept {
+            readLineWithTag(.rxBannerAccept)
+        } else if tag == .rxBannerAccept {
             // <- ACCEPT
-            writeLine("TOKEN \(params.testToken!)", withTag: .TxToken) // TODO: optionals!!!
-        } else if tag == .TxToken {
+            writeLine("TOKEN \(params.testToken!)", withTag: .txToken) // TODO: optionals!!!
+        } else if tag == .txToken {
             // -> TOKEN ...
-            readLineWithTag(.RxTokenOK)
-        } else if tag == .RxTokenOK {
+            readLineWithTag(.rxTokenOK)
+        } else if tag == .rxTokenOK {
             // <- OK
-            readLineWithTag(.RxChunksize)
-        } else if tag == .RxChunksize {
+            readLineWithTag(.rxChunksize)
+        } else if tag == .rxChunksize {
             // got chunksize -> server should work, now connection failed timer can be stopped
             //serverConnectionFailedTimer.stop()
             //
 
             // <- CHUNKSIZE
 
-            let line = String(data: data, encoding: NSASCIIStringEncoding)!
-            let scanner = NSScanner(string: line)
+            let line = String(data: data, encoding: String.Encoding.ascii)!
+            let scanner = Scanner(string: line)
 
-            if (!scanner.scanString("CHUNKSIZE", intoString: nil)) {
+            if (!scanner.scanString("CHUNKSIZE", into: nil)) {
                 assert(false, "Didn't get CHUNKSIZE")
             }
 
             var scannedChunkSize: Int32 = 0
-            if !scanner.scanInt(&scannedChunkSize) {
+            if !scanner.scanInt32(&scannedChunkSize) {
                 assert(false, "Didn't get int value for chunksize")
             }
 
@@ -485,20 +485,20 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             chunksize = UInt(scannedChunkSize)
 
-            readLineWithTag(.RxChunksizeAccept)
-        } else if tag == .RxChunksizeAccept {
+            readLineWithTag(.rxChunksizeAccept)
+        } else if tag == .rxChunksizeAccept {
             // <- ACCEPT ...
 
-            if state == .DownlinkPretestStarted {
+            if state == .downlinkPretestStarted {
                 pretestChunksCount = 1
-                writeLine("GETCHUNKS 1", withTag: .TxGetChunks)
-            } else if state == .UplinkPretestStarted {
+                writeLine("GETCHUNKS 1", withTag: .txGetChunks)
+            } else if state == .uplinkPretestStarted {
                 pretestChunksCount = 1
-                writeLine("PUTNORESULT", withTag: .TxPutNoResult)
+                writeLine("PUTNORESULT", withTag: .txPutNoResult)
             } else {
                 assert(false, "Invalid state")
             }
-        } else if tag == .TxGetChunks {
+        } else if tag == .txGetChunks {
             // -> GETCHUNKS X
 
             if pretestChunksCount == 1 {
@@ -507,67 +507,67 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             pretestLengthReceived = 0
 
-            socket.readDataWithTimeout(RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.RxPretestPart.rawValue)
-        } else if tag == .RxPretestPart {
-            pretestLengthReceived += UInt64(data.length)
+            socket.readData(withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.rxPretestPart.rawValue)
+        } else if tag == .rxPretestPart {
+            pretestLengthReceived += UInt64(data.count)
 
             if pretestLengthReceived >= UInt64(pretestChunksCount * chunksize) {
                 assert(pretestLengthReceived == UInt64(pretestChunksCount * chunksize), "Received more than expected")
 
-                writeLine("OK", withTag: .TxChunkOK)
+                writeLine("OK", withTag: .txChunkOK)
             } else {
                 // Read more
-                socket.readDataWithTimeout(RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.RxPretestPart.rawValue)
+                socket.readData(withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.rxPretestPart.rawValue)
             }
-        } else if tag == .TxChunkOK {
+        } else if tag == .txChunkOK {
             // -> OK
-            readLineWithTag(.RxStatistic)
-        } else if tag == .RxStatistic {
+            readLineWithTag(.rxStatistic)
+        } else if tag == .rxStatistic {
             // <- STATISTIC
-            readLineWithTag(.RxStatisticAccept)
-        } else if tag == .RxStatisticAccept {
+            readLineWithTag(.rxStatisticAccept)
+        } else if tag == .rxStatisticAccept {
             // <- ACCEPT ...
 
             // Did we run out of time?
             if RMBTCurrentNanos() - pretestStartNanos >= UInt64(params.pretestDuration * Double(NSEC_PER_SEC)) {
-                state = .DownlinkPretestFinished
+                state = .downlinkPretestFinished
                 delegate.testWorker(self, didFinishDownlinkPretestWithChunkCount: pretestChunksCount, withTime: RMBTCurrentNanos() - pretestStartNanos)
             } else {
                 // ..no, get more chunks
                 pretestChunksCount *= 2
 
                 // -> GETCHUNKS *2
-                writeLine("GETCHUNKS \(pretestChunksCount)", withTag: .TxGetChunks)
+                writeLine("GETCHUNKS \(pretestChunksCount)", withTag: .txGetChunks)
             }
         }
 
         // Latency test
-        else if tag == .TxPing {
+        else if tag == .txPing {
             // -> PING
             pingSeq += 1
 
             logger.debug("Ping packet sent (delta = \(RMBTCurrentNanos() - self.pingStartNanos))")
 
-            readLineWithTag(.RxPong)
-        } else if tag == .RxPong {
+            readLineWithTag(.rxPong)
+        } else if tag == .rxPong {
             pingPongNanos = RMBTCurrentNanos()
             // <- PONG
-            writeLine("OK", withTag: .TxPongOK)
-        } else if tag == .TxPongOK {
+            writeLine("OK", withTag: .txPongOK)
+        } else if tag == .txPongOK {
             // -> OK
-            readLineWithTag(.RxPongStatistic)
-        } else if tag == .RxPongStatistic {
+            readLineWithTag(.rxPongStatistic)
+        } else if tag == .rxPongStatistic {
             // <- TIME
             var ns: Int64 = -1
 
-            let line = String(data: data, encoding: NSASCIIStringEncoding)!
-            let scanner = NSScanner(string: line)
+            let line = String(data: data, encoding: String.Encoding.ascii)!
+            let scanner = Scanner(string: line)
 
-            if (!scanner.scanString("TIME", intoString: nil)) {
+            if (!scanner.scanString("TIME", into: nil)) {
                 assert(false, "Didn't get TIME statistic -> \(line)")
             }
 
-            if !scanner.scanLongLong(&ns) {
+            if !scanner.scanInt64(&ns) {
                 assert(false, "Didn't get long value for latency")
             }
 
@@ -575,50 +575,50 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             delegate.testWorker(self, didMeasureLatencyWithServerNanos: UInt64(ns), clientNanos: pingPongNanos - pingStartNanos)
 
-            readLineWithTag(.RxPongAccept)
-        } else if tag == .RxPongAccept {
+            readLineWithTag(.rxPongAccept)
+        } else if tag == .rxPongAccept {
             // <- ACCEPT
             assert(pingSeq <= UInt(params.numPings), "Invalid ping count") // TODO
 
             if pingSeq == UInt(params.numPings) { // TODO
-                state = .LatencyTestFinished
+                state = .latencyTestFinished
                 delegate.testWorkerDidFinishLatencyTest(self)
             } else {
                 // Send PING again
-                writeLine("PING", withTag: .TxPing)
+                writeLine("PING", withTag: .txPing)
                 pingStartNanos = RMBTCurrentNanos()
             }
         }
 
         // Downlink test
-        else if tag == .TxGetTime {
+        else if tag == .txGetTime {
             // -> GETTIME (duration)
-            testDownloadedData = NSMutableData(capacity: Int(chunksize))!
+            testDownloadedData = Data() //NSMutableData(capacity: Int(chunksize))!
 
-            socket.readDataWithTimeout(RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.RxDownlinkPart.rawValue)
+            socket.readData(withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.rxDownlinkPart.rawValue)
 
             // We want to align starting times of all threads, so allow delegate to supply us a start timestamp
             // (usually from the first thread that reached this point)
             testStartNanos = delegate.testWorker(self, didStartDownlinkTestAtNanos: RMBTCurrentNanos())
-        } else if tag == .RxDownlinkPart {
+        } else if tag == .rxDownlinkPart {
             let elapsedNanos = RMBTCurrentNanos() - testStartNanos
             let finished = (elapsedNanos >= UInt64(params.duration * Double(NSEC_PER_SEC)))
 
             if chunkData == nil {
                 // We still need to fill up one chunk for transmission in upload test
-                testDownloadedData.appendData(data)
-                if testDownloadedData.length >= Int(chunksize) {
-                    chunkData = NSMutableData(data: testDownloadedData.subdataWithRange(NSRange(location: 0, length: Int(chunksize))))
+                testDownloadedData.append(data)
+                if testDownloadedData.count >= Int(chunksize) {
+                    chunkData = testDownloadedData.subdata(in: 0..<Int(chunksize)) //NSData(data: testDownloadedData.subdata(in: NSRange(location: 0, length: Int(chunksize)))) as Data as Data
                 }
             } // else discard the received data
 
-            delegate.testWorker(self, didDownloadLength: UInt64(data.length), atNanos: elapsedNanos)
+            delegate.testWorker(self, didDownloadLength: UInt64(data.count), atNanos: elapsedNanos)
 
             if finished {
                 socket.disconnect()
             } else {
                 // Request more
-                socket.readDataWithTimeout(RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.RxDownlinkPart.rawValue)
+                socket.readData(withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: RMBTTestTag.rxDownlinkPart.rawValue)
             }
         }
 
@@ -636,9 +636,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         //    }
 
         // Uplink pretest
-        else if tag == .TxPutNoResult {
-            readLineWithTag(.RxPutNoResultOK)
-        } else if tag == .RxPutNoResultOK {
+        else if tag == .txPutNoResult {
+            readLineWithTag(.rxPutNoResultOK)
+        } else if tag == .rxPutNoResultOK {
             if pretestChunksCount == 1 {
                 pretestStartNanos = RMBTCurrentNanos()
             }
@@ -646,35 +646,35 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             updateLastChunkFlagToValue(pretestChunksCount == 1)
 
-            writeData(chunkData, withTag: .TxPutNoResultChunk)
-        } else if tag == .TxPutNoResultChunk {
+            writeData(chunkData as Data, withTag: .txPutNoResultChunk)
+        } else if tag == .txPutNoResultChunk {
             pretestChunksSent += 1
 
             assert(pretestChunksSent <= pretestChunksCount)
 
             if pretestChunksSent == pretestChunksCount {
-                readLineWithTag(.RxPutNoResultStatistic)
+                readLineWithTag(.rxPutNoResultStatistic)
             } else {
                 updateLastChunkFlagToValue(pretestChunksSent == (pretestChunksCount - 1))
-                writeData(chunkData, withTag: .TxPutNoResultChunk)
+                writeData(chunkData as Data, withTag: .txPutNoResultChunk)
             }
-        } else if tag == .RxPutNoResultStatistic {
-            readLineWithTag(.RxPutNoResultAccept)
-        } else if tag == .RxPutNoResultAccept {
+        } else if tag == .rxPutNoResultStatistic {
+            readLineWithTag(.rxPutNoResultAccept)
+        } else if tag == .rxPutNoResultAccept {
             if RMBTCurrentNanos() - pretestStartNanos >= UInt64(params.pretestDuration * Double(NSEC_PER_SEC)) {
-                state = .UplinkPretestFinished
+                state = .uplinkPretestFinished
                 delegate.testWorker(self, didFinishUplinkPretestWithChunkCount: pretestChunksCount)
             } else {
                 pretestChunksCount *= 2
-                writeLine("PUTNORESULT", withTag: .TxPutNoResult)
+                writeLine("PUTNORESULT", withTag: .txPutNoResult)
             }
         }
 
         // Uplink test
-        else if tag == .TxPut {
+        else if tag == .txPut {
             // -> PUT
-            readLineWithTag(.RxPutOK)
-        } else if tag == .RxPutOK {
+            readLineWithTag(.rxPutOK)
+        } else if tag == .rxPutOK {
             testUploadLastUploadLength = 0
             testUploadLastChunkSent = false
             testStartNanos = RMBTCurrentNanos()
@@ -689,9 +689,9 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             testUploadEnoughClientNanos = testStartNanos + UInt64((params.duration + RMBT_TEST_UPLOAD_MIN_WAIT_S) * Double(NSEC_PER_SEC))
 
             updateLastChunkFlagToValue(false)
-            writeData(chunkData, withTag: .TxPutChunk)
-            readLineWithTag(.RxPutStatistic)
-        } else if tag == .TxPutChunk {
+            writeData(chunkData as Data, withTag: .txPutChunk)
+            readLineWithTag(.rxPutStatistic)
+        } else if tag == .txPutChunk {
             if testUploadLastChunkSent {
                 // This was the last chunk
             } else {
@@ -707,32 +707,32 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                     updateLastChunkFlagToValue(true)
                 }
 
-                writeData(chunkData, withTag: .TxPutChunk)
+                writeData(chunkData as Data, withTag: .txPutChunk)
             }
-        } else if tag == .RxPutStatistic {
+        } else if tag == .rxPutStatistic {
             // <- TIME
 
-            let line = String(data: data, encoding: NSASCIIStringEncoding)! // !
+            let line = String(data: data, encoding: String.Encoding.ascii)! // !
 
             if line.hasPrefix("TIME") {
                 var ns: Int64 = -1
                 var bytes: Int64 = -1
 
-                let scanner = NSScanner(string: line)
+                let scanner = Scanner(string: line)
 
                 // redundant, remove?
-                if (!scanner.scanString("TIME", intoString: nil)) {
+                if (!scanner.scanString("TIME", into: nil)) {
                     assert(false, "Didn't scan TIME")
                 }
 
-                if !scanner.scanLongLong(&ns) {
+                if !scanner.scanInt64(&ns) {
                     assert(false, "Didn't get long value for TIME")
                 }
 
                 assert(ns > 0, "Invalid time")
 
-                if scanner.scanString("BYTES", intoString: nil) {
-                    if !scanner.scanLongLong(&bytes) {
+                if scanner.scanString("BYTES", into: nil) {
+                    if !scanner.scanInt64(&bytes) {
                         assert(false, "Didn't get long value for BYTES")
                     }
 
@@ -762,7 +762,7 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                     return
                 }
 
-                readLineWithTag(.RxPutStatistic)
+                readLineWithTag(.rxPutStatistic)
             } else if line.hasPrefix("ACCEPT") {
                 logger.debug("Thread \(self.index) has read ALL upload reports. Finalizing...")
                 finalize()
@@ -780,8 +780,8 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     /// Finishes the uplink test and closes the connection
-    override public func finalize() {
-        state = .UplinkTestFinished
+    override open func finalize() {
+        state = .uplinkTestFinished
 
         socket.disconnect()
         delegate.testWorkerDidFinishUplinkTest(self)
@@ -790,43 +790,48 @@ public class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: Socket helpers
 
     ///
-    private func readLineWithTag(tag: RMBTTestTag) {
-        if let data = "\n".dataUsingEncoding(NSASCIIStringEncoding) {
-            socket.readDataToData(data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
+    fileprivate func readLineWithTag(_ tag: RMBTTestTag) {
+        if let data = "\n".data(using: String.Encoding.ascii) {
+            socket.readData(to: data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
         }
     }
 
     ///
-    private func writeLine(line: String, withTag tag: RMBTTestTag) {
-        writeData(line.stringByAppendingString("\n").dataUsingEncoding(NSASCIIStringEncoding)!, withTag: tag) // !
+    fileprivate func writeLine(_ line: String, withTag tag: RMBTTestTag) {
+        writeData((line + "\n").data(using: String.Encoding.ascii)!, withTag: tag) // !
     }
 
     ///
-    private func writeData(data: NSData, withTag tag: RMBTTestTag) {
-        totalBytesUploaded += UInt64(data.length)
-        socket.writeData(data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
+    fileprivate func writeData(_ data: Data, withTag tag: RMBTTestTag) {
+        totalBytesUploaded += UInt64(data.count)
+        socket.write(data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
     }
 
     ///
-    private func logData(data: NSData) {
-        logger.debug("RX: \(String(data: data, encoding: NSASCIIStringEncoding))")
+    fileprivate func logData(_ data: Data) {
+        logger.debug("RX: \(String(data: data, encoding: String.Encoding.ascii))")
     }
 
     ///
-    private func isLastChunk(data: NSData) -> Bool {
-        var bytes = [UInt8](count: (data.length / sizeof(UInt8)), repeatedValue: 0) // TODO: better way?
-        data.getBytes(&bytes, length: bytes.count) // TODO: better way?
+    fileprivate func isLastChunk(_ data: Data) -> Bool {
+        var bytes = [UInt8](repeating: 0, count: (data.count / MemoryLayout<UInt8>.size)) // TODO: better way?
+        (data as NSData).getBytes(&bytes, length: bytes.count) // TODO: better way?
         //data.getBytes(&bytes,) // TODO: better way?
 
-        let lastByte: UInt8 = bytes[data.length - 1]
+        let lastByte: UInt8 = bytes[data.count - 1]
 
         return lastByte == 0xff
     }
 
     ///
-    private func updateLastChunkFlagToValue(lastChunk: Bool) {
+    fileprivate func updateLastChunkFlagToValue(_ lastChunk: Bool) {
         var lastByte: UInt8 = lastChunk ? 0xff : 0x00
+        
+        let lastByteData = Data(buffer: UnsafeBufferPointer(start: &lastByte, count: 1)) //Data(bytes: &lastByte, count: 1)
 
-        chunkData.replaceBytesInRange(NSRange(location: chunkData.length - 1, length: 1), withBytes: &lastByte)
+        // old
+        // chunkData.replaceBytesInRange(NSRange(location: chunkData.length - 1, length: 1), withBytes: &lastByte)
+        // ??????
+        chunkData.replaceSubrange(chunkData.count-1..<chunkData.count, with: lastByteData)
     }
 }

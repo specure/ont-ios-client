@@ -18,26 +18,26 @@ import Foundation
 import ObjectMapper
 
 ///
-public class QosMeasurementResultResponse: BasicResponse {
+open class QosMeasurementResultResponse: BasicResponse {
 
     ///
-    public var evaluation: String?
+    open var evaluation: String?
 
     ///
-    public var evalTimes: [String: Int]?
+    open var evalTimes: [String: Int]?
 
     ///
-    public var testResultDetail: [MeasurementQosResult]?
+    open var testResultDetail: [MeasurementQosResult]?
 
     ///
-    public var testResultDetailDescription: [MeasurementQosResultDetailDescription]?
+    open var testResultDetailDescription: [MeasurementQosResultDetailDescription]?
 
     ///
-    public var testResultDetailTestDescription: [MeasurementQosResultDetailTestDescription]?
+    open var testResultDetailTestDescription: [MeasurementQosResultDetailTestDescription]?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         evaluation <- map["evaluation"]
         evalTimes <- map["eval_times"]
@@ -47,31 +47,31 @@ public class QosMeasurementResultResponse: BasicResponse {
     }
 
     ///
-    public class MeasurementQosResult: Mappable {
+    open class MeasurementQosResult: Mappable {
 
         ///
-        public var objectiveId: Int?
+        open var objectiveId: Int?
 
         ///
-        public var type: QOSMeasurementType?
+        open var type: QOSMeasurementType?
 
         ///
-        public var successCount: Int?
+        open var successCount: Int?
 
         ///
-        public var failureCount: Int?
+        open var failureCount: Int?
 
         ///
-        public var result: [String: AnyObject]?
+        open var result: [String: AnyObject]?
 
         ///
-        public var testDesc: String?
+        open var testDesc: String?
 
         ///
-        public var summary: String?
+        open var summary: String?
 
         ///
-        public var oldUid: Int?
+        open var oldUid: Int?
 
         ///
         public init() {
@@ -79,12 +79,12 @@ public class QosMeasurementResultResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             objectiveId <- map["objectiveId"]
             type <- map["test_type"]
             successCount <- map["success_count"]
@@ -97,22 +97,22 @@ public class QosMeasurementResultResponse: BasicResponse {
     }
 
     ///
-    public class MeasurementQosResultDetailDescription: Mappable {
+    open class MeasurementQosResultDetailDescription: Mappable {
 
         ///
-        public var uid: [Int]?
+        open var uid: [Int]?
 
         ///
-        public var test: QOSMeasurementType?
+        open var test: QOSMeasurementType?
 
         ///
-        public var key: String?
+        open var key: String?
 
         ///
-        public var status: String?
+        open var status: String?
 
         ///
-        public var description: String?
+        open var description: String?
 
         ///
         public init() {
@@ -120,12 +120,12 @@ public class QosMeasurementResultResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             uid <- map["uid"]
             test <- map["test"]
             key <- map["key"]
@@ -135,16 +135,16 @@ public class QosMeasurementResultResponse: BasicResponse {
     }
 
     ///
-    public class MeasurementQosResultDetailTestDescription: Mappable {
+    open class MeasurementQosResultDetailTestDescription: Mappable {
 
         ///
-        public var name: String?
+        open var name: String?
 
         ///
-        public var type: QOSMeasurementType?
+        open var type: QOSMeasurementType?
 
         ///
-        public var description: String?
+        open var description: String?
 
         ///
         public init() {
@@ -152,12 +152,12 @@ public class QosMeasurementResultResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             name <- map["name"]
             type <- map["test_type"]
             description <- map["desc"]

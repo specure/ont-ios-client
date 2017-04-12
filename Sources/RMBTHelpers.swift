@@ -26,7 +26,7 @@ import Foundation
 //
 //    return left
 // }
-func +=<K, V>(inout left: [K: V], right: [K: V]) {
+func +=<K, V>(left: inout [K: V], right: [K: V]) {
     for (k, v) in right {
         left[k] = v
     }
@@ -34,7 +34,7 @@ func +=<K, V>(inout left: [K: V], right: [K: V]) {
 
 /// Returns a string containing git commit, branch and commit count from Info.plist fields written by the build script
 public func RMBTBuildInfoString() -> String {
-    let info = NSBundle.mainBundle().infoDictionary!
+    let info = Bundle.main.infoDictionary!
 
     let gitBranch       = info["GitBranch"] as? String ?? "none"
     let gitCommitCount  = info["GitCommitCount"] as? String ?? "-1"
@@ -46,21 +46,21 @@ public func RMBTBuildInfoString() -> String {
 
 ///
 public func RMBTBuildDateString() -> String {
-    let info = NSBundle.mainBundle().infoDictionary!
+    let info = Bundle.main.infoDictionary!
 
     return info["BuildDate"] as! String
 }
 
 ///
 public func RMBTVersionString() -> String {
-    let info = NSBundle.mainBundle().infoDictionary!
+    let info = Bundle.main.infoDictionary!
 
     return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
 }
 
 ///
 public func RMBTPreferredLanguage() -> String? {
-    let preferredLanguages = NSLocale.preferredLanguages()
+    let preferredLanguages = Locale.preferredLanguages
 
     // logger.debug("\(preferredLanguages)")
 
@@ -68,7 +68,7 @@ public func RMBTPreferredLanguage() -> String? {
         return nil
     }
 
-    let sep = preferredLanguages[0].componentsSeparatedByString("-")
+    let sep = preferredLanguages[0].components(separatedBy: "-")
 
     var lang = sep[0] // becuase sometimes (ios9?) there's "en-US" instead of en
 
@@ -81,8 +81,8 @@ public func RMBTPreferredLanguage() -> String? {
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
-public func RMBTLocalizeURLString(urlString: NSString) -> String {
-    let r = urlString.rangeOfString("$lang")
+public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
+    let r = urlString.range(of: "$lang")
 
     if r.location == NSNotFound {
         return urlString as String // return same string if no $lang was found
@@ -90,7 +90,7 @@ public func RMBTLocalizeURLString(urlString: NSString) -> String {
 
     let lang = RMBTPreferredLanguage() ?? "en"
 
-    let replacedURL = urlString.stringByReplacingOccurrencesOfString("$lang", withString: lang)
+    let replacedURL = urlString.replacingOccurrences(of: "$lang", with: lang)
 
     // logger.debug("replaced $lang in string, output: \(replacedURL)")
 
@@ -99,26 +99,26 @@ public func RMBTLocalizeURLString(urlString: NSString) -> String {
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)
 public func RMBTAppTitle() -> String {
-    let info = NSBundle.mainBundle().infoDictionary!
+    let info = Bundle.main.infoDictionary!
 
     return info["CFBundleDisplayName"] as! String
 }
 
 ///
 public func RMBTAppCustomerName() -> String {
-    let info = NSBundle.mainBundle().infoDictionary!
+    let info = Bundle.main.infoDictionary!
 
     return info["CFCustomerName"] as! String
 }
 
 ///
-public func RMBTValueOrNull(value: AnyObject!) -> AnyObject {
+public func RMBTValueOrNull(_ value: AnyObject!) -> Any {
 //    return value ?? NSNUll()
     return (value != nil) ? value : NSNull()
 }
 
 ///
-public func RMBTValueOrString(value: AnyObject!, _ result: String) -> AnyObject {
+public func RMBTValueOrString(_ value: AnyObject!, _ result: String) -> Any {
 //    return value ?? result
     return (value != nil) ? value : result
 }
@@ -142,24 +142,24 @@ public func RMBTCurrentNanos() -> UInt64 {
 }
 
 ///
-public func RMBTMillisecondsStringWithNanos(nanos: UInt64) -> String {
-    let ms = NSNumber(double: Double(nanos) * 1.0e-6)
+public func RMBTMillisecondsStringWithNanos(_ nanos: UInt64) -> String {
+    let ms = NSNumber(value: Double(nanos) * 1.0e-6 as Double)
     return "\(RMBTFormatNumber(ms)) ms"
 }
 
 ///
-public func RMBTSecondsStringWithNanos(nanos: UInt64) -> String {
+public func RMBTSecondsStringWithNanos(_ nanos: UInt64) -> String {
     return NSString(format: "%f s", Double(nanos) * 1.0e-9) as String
 }
 
 ///
-public func RMBTTimestampWithNSDate(date: NSDate) -> NSNumber {
-    return NSNumber(unsignedLongLong: UInt64(date.timeIntervalSince1970) * 1000)
+public func RMBTTimestampWithNSDate(_ date: Date) -> NSNumber {
+    return NSNumber(value: UInt64(date.timeIntervalSince1970) * 1000 as UInt64)
 }
 
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
-public func RMBTFormatNumber(number: NSNumber) -> String {
-    let formatter = NSNumberFormatter()
+public func RMBTFormatNumber(_ number: NSNumber) -> String {
+    let formatter = NumberFormatter()
 
     // TODO: dispatch_once
     formatter.decimalSeparator = "."
@@ -168,18 +168,18 @@ public func RMBTFormatNumber(number: NSNumber) -> String {
     formatter.maximumSignificantDigits = 2
     //
 
-    return formatter.stringFromNumber(number)!
+    return formatter.string(from: number)!
 }
 
 /// Normalize hexadecimal identifier, i.e. 0:1:c -> 00:01:0c
-public func RMBTReformatHexIdentifier(identifier: String!) -> String! { // !
+public func RMBTReformatHexIdentifier(_ identifier: String!) -> String! { // !
     if identifier == nil {
         return nil
     }
 
     var tmp = [String]()
 
-    for c in identifier.componentsSeparatedByString(":") {
+    for c in identifier.components(separatedBy: ":") {
         if c.characters.count == 0 {
             tmp.append("00")
         } else if c.characters.count == 1 {
@@ -189,5 +189,5 @@ public func RMBTReformatHexIdentifier(identifier: String!) -> String! { // !
         }
     }
 
-    return tmp.joinWithSeparator(":")
+    return tmp.joined(separator: ":")
 }

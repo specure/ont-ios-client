@@ -23,19 +23,19 @@ import ObjectMapper
 typealias HistoryFilters = [String: [String]]
 
 ///
-public class MeasurementHistory {
+open class MeasurementHistory {
 
     ///
-    public static let sharedMeasurementHistory = MeasurementHistory()
+    open static let sharedMeasurementHistory = MeasurementHistory()
 
     ///
-    private let serialQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+    fileprivate let serialQueue = DispatchQueue(label: "DefaultHistoryQueue", attributes: [])
 
     /// Set dirty to true if the history should be reloaded
     var dirty = true // dirty is true on app start // TODO: set this also after sync
     
     ///
-    private init() {
+    fileprivate init() {
         // TODO: remove realm test code
         // TODO: add migrations? at least look at how they work
         //_ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development
@@ -53,13 +53,13 @@ public class MeasurementHistory {
         }*/
     }
     
-    public func getHistoryFilterModel() -> [[String: AnyObject]] {
+    open func getHistoryFilterModel() -> [[String: AnyObject]] {
         var distinctNetworkTypes = [String]()
         var distinctModels = [String]()
         
         if let realm = try? Realm() {
-            distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("networkType") as! [String]))
-            distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("model") as! [String]))
+            distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).value(forKey: "networkType") as! [String]))
+            distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).value(forKey: "model") as! [String]))
             
             logger.debug("distinct network types: \(distinctNetworkTypes)")
             logger.debug("distinct models: \(distinctModels)")
@@ -67,24 +67,24 @@ public class MeasurementHistory {
         
         return [
             [
-                "name": "network_type",
-                "items": distinctNetworkTypes
+                "name": "network_type" as AnyObject,
+                "items": distinctNetworkTypes as AnyObject
             ],
             [
-                "name": "model",
-                "items": distinctModels
+                "name": "model" as AnyObject,
+                "items": distinctModels as AnyObject
             ]
         ]
     }
 
     ///
-    public func getHistoryList(filters: [String: [String]], success: (response: [HistoryItem]) -> (), error failure: ErrorCallback) {
+    open func getHistoryList(_ filters: [String: [String]], success: @escaping (_ response: [HistoryItem]) -> (), error failure: @escaping ErrorCallback) {
         if !dirty { // return cached elements if not dirty
             // load items to view
             if let historyItems = self.getHistoryItems(filters) {
-                success(response: historyItems)
+                success(historyItems)
             } else {
-                failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
+                failure(NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
             }
             
             return
@@ -103,8 +103,8 @@ public class MeasurementHistory {
                 logger.debug("server: \(serverUuidList)")
                 logger.debug("client: \(clientUuidList)")
 
-                let toRemove = clientUuidList.subtract(serverUuidList)
-                let toAdd = serverUuidList.subtract(clientUuidList)
+                let toRemove = clientUuidList.subtracting(serverUuidList)
+                let toAdd = serverUuidList.subtracting(clientUuidList)
 
                 logger.debug("to remove: \(toRemove)")
                 logger.debug("to add: \(toAdd)")
@@ -117,18 +117,18 @@ public class MeasurementHistory {
 
                 // load items to view
                 if let historyItems = self.getHistoryItems(filters) {
-                    success(response: historyItems)
+                    success(historyItems)
                 } else {
-                    failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
+                    failure(NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
                 }
 
             }, error: { error in // show cached items if this request fails
                 
                 // load items to view
                 if let historyItems = self.getHistoryItems(filters) {
-                    success(response: historyItems)
+                    success(historyItems)
                 } else {
-                    failure(error: NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
+                    failure(NSError(domain: "didnt get history items", code: -12351223, userInfo: nil)) // TODO: call error callback if there were realm problems
                 }
             })
         } else {
@@ -138,18 +138,18 @@ public class MeasurementHistory {
                 self.insertOrUpdateHistoryItems(historyItems)
 
                 if let dbHistoryItems = self.getHistoryItems(filters) {
-                    success(response: dbHistoryItems)
+                    success(dbHistoryItems)
                 } else {
-                    success(response: historyItems)
+                    success(historyItems)
                 }
             }, error: failure)
         }
     }
 
     ///
-    public func getMeasurement(uuid: String, success: (response: SpeedMeasurementResultResponse) -> (), error failure: ErrorCallback) {
+    open func getMeasurement(_ uuid: String, success: @escaping (_ response: SpeedMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
         if let measurement = getStoredMeasurementData(uuid) {
-            success(response: measurement)
+            success(measurement)
             return
         }
 
@@ -160,14 +160,14 @@ public class MeasurementHistory {
             // store measurement
             self.storeMeasurementData(uuid, measurement: response)
 
-            success(response: response)
+            success(response)
         }, error: failure)
     }
 
     ///
-    public func getMeasurementDetails(uuid: String, success: (response: SpeedMeasurementDetailResultResponse) -> (), error failure: ErrorCallback) {
+    open func getMeasurementDetails(_ uuid: String, success: @escaping (_ response: SpeedMeasurementDetailResultResponse) -> (), error failure: @escaping ErrorCallback) {
         if let measurementDetails = getStoredMeasurementDetailsData(uuid) {
-            success(response: measurementDetails)
+            success(measurementDetails)
             return
         }
 
@@ -178,12 +178,12 @@ public class MeasurementHistory {
             // store measurement details
             self.storeMeasurementDetailsData(uuid, measurementDetails: response)
 
-            success(response: response)
+            success(response)
         }, error: failure)
     }
 
     ///
-    public func getQosMeasurement(uuid: String, success: (response: QosMeasurementResultResponse) -> (), error failure: ErrorCallback) {
+    open func getQosMeasurement(_ uuid: String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
         // Logic is different for qos (because the evaluation can change): load results every time and only return cached result if the request failed
 
         ControlServer.sharedControlServer.getQosMeasurement(uuid, success: { response in
@@ -193,26 +193,26 @@ public class MeasurementHistory {
             // store qos measurement
             self.storeMeasurementQosData(uuid, measurementQos: response)
 
-            success(response: response)
+            success(response)
         }, error: { error in
             if let measurementQos = self.getStoredMeasurementQosData(uuid) {
-                success(response: measurementQos)
+                success(measurementQos)
                 return
             }
 
-            failure(error: error)
+            failure(error)
         })
     }
 
     ///
-    public func disassociateMeasurement(measurementUuid: String, success: (response: SpeedMeasurementDisassociateResponse) -> (), error failure: ErrorCallback) {
+    open func disassociateMeasurement(_ measurementUuid: String, success: @escaping (_ response: SpeedMeasurementDisassociateResponse) -> (), error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.disassociateMeasurement(measurementUuid, success: { response in
             logger.debug("DISASSOCIATE SUCCESS")
 
             // remove from db
             self.removeMeasurement(measurementUuid)
             
-            success(response: response)
+            success(response)
 
         }, error: failure)
     }
@@ -220,10 +220,10 @@ public class MeasurementHistory {
 // MARK: Get
 
     ///
-    private func getStoredMeasurementData(uuid: String) -> SpeedMeasurementResultResponse? {
+    fileprivate func getStoredMeasurementData(_ uuid: String) -> SpeedMeasurementResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementData = storedMeasurement.measurementData where measurementData.characters.count > 0 {
-                if let measurement = Mapper<SpeedMeasurementResultResponse>().map(measurementData) {
+            if let measurementData = storedMeasurement.measurementData, measurementData.characters.count > 0 {
+                if let measurement = Mapper<SpeedMeasurementResultResponse>().map(JSONString:measurementData) {
                     logger.debug("RETURNING CACHED MEASUREMENT \(uuid)")
                     return measurement
                 }
@@ -234,10 +234,10 @@ public class MeasurementHistory {
     }
 
     ///
-    private func getStoredMeasurementDetailsData(uuid: String) -> SpeedMeasurementDetailResultResponse? {
+    fileprivate func getStoredMeasurementDetailsData(_ uuid: String) -> SpeedMeasurementDetailResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementDetailsData = storedMeasurement.measurementDetailsData where measurementDetailsData.characters.count > 0 {
-                if let measurementDetails = Mapper<SpeedMeasurementDetailResultResponse>().map(measurementDetailsData) {
+            if let measurementDetailsData = storedMeasurement.measurementDetailsData, measurementDetailsData.characters.count > 0 {
+                if let measurementDetails = Mapper<SpeedMeasurementDetailResultResponse>().map(JSONString:measurementDetailsData) {
                     logger.debug("RETURNING CACHED MEASUREMENT DETAILS \(uuid)")
                     return measurementDetails
                 }
@@ -248,10 +248,10 @@ public class MeasurementHistory {
     }
 
     ///
-    private func getStoredMeasurementQosData(uuid: String) -> QosMeasurementResultResponse? {
+    fileprivate func getStoredMeasurementQosData(_ uuid: String) -> QosMeasurementResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementQosData = storedMeasurement.measurementQosData where measurementQosData.characters.count > 0 {
-                if let measurementQos = Mapper<QosMeasurementResultResponse>().map(measurementQosData) {
+            if let measurementQosData = storedMeasurement.measurementQosData, measurementQosData.characters.count > 0 {
+                if let measurementQos = Mapper<QosMeasurementResultResponse>().map(JSONString:measurementQosData) {
                     logger.debug("RETURNING CACHED QOS RESULT \(uuid)")
                     return measurementQos
                 }
@@ -264,8 +264,8 @@ public class MeasurementHistory {
 // MARK: Save
 
     ///
-    private func storeMeasurementData(uuid: String, measurement: SpeedMeasurementResultResponse) { // TODO: store google map static image in db?
-        dispatch_async(serialQueue) {
+    fileprivate func storeMeasurementData(_ uuid: String, measurement: SpeedMeasurementResultResponse) { // TODO: store google map static image in db?
+        (serialQueue).async {
             self.updateStoredMeasurement(uuid) { storedMeasurement in
                 storedMeasurement.measurementData = Mapper<SpeedMeasurementResultResponse>().toJSONString(measurement)
             }
@@ -273,8 +273,8 @@ public class MeasurementHistory {
     }
 
     ///
-    private func storeMeasurementDetailsData(uuid: String, measurementDetails: SpeedMeasurementDetailResultResponse) {
-        dispatch_async(serialQueue) {
+    fileprivate func storeMeasurementDetailsData(_ uuid: String, measurementDetails: SpeedMeasurementDetailResultResponse) {
+        (serialQueue).async {
             self.updateStoredMeasurement(uuid) { storedMeasurement in
                 storedMeasurement.measurementDetailsData = Mapper<SpeedMeasurementDetailResultResponse>().toJSONString(measurementDetails)
             }
@@ -282,8 +282,8 @@ public class MeasurementHistory {
     }
 
     ///
-    private func storeMeasurementQosData(uuid: String, measurementQos: QosMeasurementResultResponse) {
-        dispatch_async(serialQueue) {
+    fileprivate func storeMeasurementQosData(_ uuid: String, measurementQos: QosMeasurementResultResponse) {
+        (serialQueue).async {
             self.updateStoredMeasurement(uuid) { storedMeasurement in
                 storedMeasurement.measurementQosData = Mapper<QosMeasurementResultResponse>().toJSONString(measurementQos)
             }
@@ -291,7 +291,7 @@ public class MeasurementHistory {
     }
 
     ///
-    private func loadStoredMeasurement(uuid: String) -> StoredMeasurement? {
+    fileprivate func loadStoredMeasurement(_ uuid: String) -> StoredMeasurement? {
         if let realm = try? Realm() {
             return realm.objects(StoredMeasurement.self).filter("uuid == %@", uuid).first
         }
@@ -300,7 +300,7 @@ public class MeasurementHistory {
     }
 
     ///
-    private func loadOrCreateStoredMeasurement(uuid: String) -> StoredMeasurement {
+    fileprivate func loadOrCreateStoredMeasurement(_ uuid: String) -> StoredMeasurement {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
             return storedMeasurement
         }
@@ -312,13 +312,13 @@ public class MeasurementHistory {
     }
 
     ///
-    private func updateStoredMeasurement(uuid: String, updateBlock: (storedMeasurement: StoredMeasurement) -> ()) {
+    fileprivate func updateStoredMeasurement(_ uuid: String, updateBlock: (_ storedMeasurement: StoredMeasurement) -> ()) {
         if let realm = try? Realm() {
             do {
                 try realm.write {
                     let storedMeasurement = self.loadOrCreateStoredMeasurement(uuid)
 
-                    updateBlock(storedMeasurement: storedMeasurement)
+                    updateBlock(storedMeasurement)
 
                     realm.add(storedMeasurement)
                 }
@@ -329,7 +329,7 @@ public class MeasurementHistory {
     }
 
     ///
-    private func removeMeasurement(uuid: String) {
+    fileprivate func removeMeasurement(_ uuid: String) {
         if let realm = try? Realm() {
             do {
                 try realm.write {
@@ -351,7 +351,7 @@ public class MeasurementHistory {
 // MARK: HistoryItem
 
     ///
-    private func loadStoredHistoryItem(uuid: String) -> StoredHistoryItem? {
+    fileprivate func loadStoredHistoryItem(_ uuid: String) -> StoredHistoryItem? {
         if let realm = try? Realm() {
             return realm.objects(StoredHistoryItem.self).filter("uuid == %@", uuid).first
         }
@@ -360,16 +360,16 @@ public class MeasurementHistory {
     }
 
     ///
-    private func getLastHistoryItemTimestamp() -> NSDate? {
+    fileprivate func getLastHistoryItemTimestamp() -> Date? {
         if let realm = try? Realm() {
-            return realm.objects(StoredHistoryItem.self).max("timestamp")
+            return realm.objects(StoredHistoryItem.self).max(ofProperty: "timestamp")
         }
 
         return nil
     }
     
     ///
-    private func getHistoryItems(filters: HistoryFilters) -> [HistoryItem]? {
+    fileprivate func getHistoryItems(_ filters: HistoryFilters) -> [HistoryItem]? {
         if let realm = try? Realm() {
             var query = realm.objects(StoredHistoryItem.self)
             
@@ -381,13 +381,13 @@ public class MeasurementHistory {
                 }
             }
             
-            query = query.sorted("timestamp", ascending: false)
+            query = query.sorted(byKeyPath: "timestamp", ascending: false)
             
             return query.flatMap({ storedItem in
                 logger.debug("\(storedItem.model)")
                 logger.debug("\(storedItem.networkType)")
                 
-                return Mapper<HistoryItem>().map(storedItem.jsonData)
+                return Mapper<HistoryItem>().map(JSONString:storedItem.jsonData!)
             })
         }
         
@@ -395,20 +395,20 @@ public class MeasurementHistory {
     }
 
     ///
-    private func getHistoryItemUuidList() -> [String]? {
+    fileprivate func getHistoryItemUuidList() -> [String]? {
         if let realm = try? Realm() {
             let uuidList = realm.objects(StoredHistoryItem.self).map({ storedItem in
                 return storedItem.uuid! // !
             })
 
-            return uuidList
+            return Array(uuidList)
         }
 
         return nil
     }
 
     ///
-    private func insertOrUpdateHistoryItems(historyItems: [HistoryItem]) { // TODO: preload measurement, details and qos?
+    fileprivate func insertOrUpdateHistoryItems(_ historyItems: [HistoryItem]) { // TODO: preload measurement, details and qos?
         if let realm = try? Realm() {
             do {
                 try realm.write {
@@ -425,7 +425,7 @@ public class MeasurementHistory {
                         storedHistoryItem.model = item.model
                         
                         if let t = item.time {
-                            storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(t))
+                            storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(t)) as Date
                         }
                         
                         storedHistoryItem.jsonData = Mapper<HistoryItem>().toJSONString(item)
@@ -444,7 +444,7 @@ public class MeasurementHistory {
     }
 
     ///
-    private func removeHistoryItems(historyItemUuidList: Set<String>) {
+    fileprivate func removeHistoryItems(_ historyItemUuidList: Set<String>) {
         if let realm = try? Realm() {
             do {
                 try realm.write {

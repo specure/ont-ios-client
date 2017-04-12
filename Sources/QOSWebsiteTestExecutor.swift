@@ -22,13 +22,13 @@ typealias WebsiteTestExecutor = QOSWebsiteTestExecutor<QOSWebsiteTest>
 ///
 class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
 
-    private let RESULT_WEBSITE_URL      = "website_objective_url"
-    private let RESULT_WEBSITE_TIMEOUT  = "website_objective_timeout"
-    private let RESULT_WEBSITE_DURATION = "website_result_duration"
-    private let RESULT_WEBSITE_STATUS   = "website_result_status"
-    private let RESULT_WEBSITE_INFO     = "website_result_info"
-    private let RESULT_WEBSITE_RX_BYTES = "website_result_rx_bytes"
-    private let RESULT_WEBSITE_TX_BYTES = "website_result_tx_bytes"
+    fileprivate let RESULT_WEBSITE_URL      = "website_objective_url"
+    fileprivate let RESULT_WEBSITE_TIMEOUT  = "website_objective_timeout"
+    fileprivate let RESULT_WEBSITE_DURATION = "website_result_duration"
+    fileprivate let RESULT_WEBSITE_STATUS   = "website_result_status"
+    fileprivate let RESULT_WEBSITE_INFO     = "website_result_info"
+    fileprivate let RESULT_WEBSITE_RX_BYTES = "website_result_rx_bytes"
+    fileprivate let RESULT_WEBSITE_TX_BYTES = "website_result_tx_bytes"
 
     //
 
@@ -37,12 +37,12 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
 
 //    private let webViewDelegate = WebViewDelegate()
 
-    private var requestStartTimeTicks: UInt64 = 0
+    fileprivate var requestStartTimeTicks: UInt64 = 0
 
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -50,7 +50,7 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
     override func startTest() {
         super.startTest()
 
-        testResult.set(RESULT_WEBSITE_URL, value: testObject.url)
+        testResult.set(RESULT_WEBSITE_URL, value: testObject.url as AnyObject?)
         testResult.set(RESULT_WEBSITE_TIMEOUT, number: testObject.timeout)
     }
 

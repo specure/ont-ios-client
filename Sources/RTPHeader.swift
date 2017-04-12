@@ -101,7 +101,7 @@ struct RTPHeader {
 
     ///
     var length: Int {
-        return sizeof(UInt16) + sizeof(UInt16) + sizeof(UInt32) + sizeof(UInt32) + (sizeof(UInt32) * csrcList.count)
+        return MemoryLayout<UInt16>.size + MemoryLayout<UInt16>.size + MemoryLayout<UInt32>.size + MemoryLayout<UInt32>.size + (MemoryLayout<UInt32>.size * csrcList.count)
     }
 
     //
@@ -127,12 +127,12 @@ struct RTPHeader {
     }
 
     ///
-    mutating func increaseSequenceNumberBy(step: UInt16) {
+    mutating func increaseSequenceNumberBy(_ step: UInt16) {
         sequenceNumber += step
     }
 
     ///
-    mutating func increaseTimestampBy(step: UInt32) {
+    mutating func increaseTimestampBy(_ step: UInt32) {
         timestamp += step
     }
 
@@ -155,7 +155,7 @@ struct RTPHeader {
     //    }
 
     ///
-    func toData() -> NSData {
+    func toData() -> Data {
         let data = NSMutableData()
 
         data.appendValue(flags.bigEndian)
@@ -168,12 +168,12 @@ struct RTPHeader {
             data.appendValue(csrcList[cnt].bigEndian)
         }
 
-        return data
+        return data as Data
     }
 
     ///
-    static func fromData(packetData: NSData) -> RTPHeader? {
-        if packetData.length < 12 {
+    static func fromData(_ packetData: Data) -> RTPHeader? {
+        if packetData.count < 12 {
             return nil // packet size too small
         }
 
@@ -182,16 +182,16 @@ struct RTPHeader {
         var offset = 0
 
         rtpHeader.flags = packetData.readHostByteOrderUInt16(packetData, atOffset: offset)
-        offset += sizeof(UInt16)
+        offset += MemoryLayout<UInt16>.size
 
         rtpHeader.sequenceNumber = packetData.readHostByteOrderUInt16(packetData, atOffset: offset)
-        offset += sizeof(UInt16)
+        offset += MemoryLayout<UInt16>.size
 
         rtpHeader.timestamp = packetData.readHostByteOrderUInt32(packetData, atOffset: offset)
-        offset += sizeof(UInt32)
+        offset += MemoryLayout<UInt32>.size
 
         rtpHeader.ssrc = packetData.readHostByteOrderUInt32(packetData, atOffset: offset)
-        offset += sizeof(UInt32)
+        offset += MemoryLayout<UInt32>.size
 
         // TODO: parse csrcList
         // let csrcCount = rtpPacket.header &

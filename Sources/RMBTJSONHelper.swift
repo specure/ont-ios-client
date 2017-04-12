@@ -17,8 +17,8 @@
 import Foundation
 
 ///
-func jsonValueOrNull(obj: AnyObject!) -> AnyObject {
-    return obj != nil ? obj : NSNull()
+func jsonValueOrNull(_ obj: AnyObject?) -> AnyObject {
+    return obj != nil ? obj as AnyObject:NSNull()
 }
 
 /* func jsonValueOrNull<T : AnyObject>(obj: T?) -> T {
@@ -26,6 +26,6 @@ func jsonValueOrNull(obj: AnyObject!) -> AnyObject {
 } */
 
 ///
-func jsonize(value: UInt64) -> NSNumber {
-    return NSNumber(unsignedLongLong: value)
+func jsonize(_ value: UInt64) -> NSNumber {
+    return NSNumber(value: value as UInt64)
 }

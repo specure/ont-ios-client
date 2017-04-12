@@ -18,16 +18,16 @@ import Foundation
 import ObjectMapper
 
 ///
-public class SpeedMeasurementResponse: BasicResponse {
+open class SpeedMeasurementResponse: BasicResponse {
 
     ///
-    public var testToken: String?
+    open var testToken: String?
 
     ///
-    public var testUuid: String?
+    open var testUuid: String?
 
     ///
-    public var clientRemoteIp: String?
+    open var clientRemoteIp: String?
 
     ///
     var duration: Double = 7 // TODO: int instead of double?
@@ -48,11 +48,11 @@ public class SpeedMeasurementResponse: BasicResponse {
     var testWait: Double = 0 // TODO: int instead of double?
 
     ///
-    public var measurementServer: TargetMeasurementServer?
+    open var measurementServer: TargetMeasurementServer?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         testToken           <- map["test_token"]
         testUuid            <- map["test_uuid"]
@@ -68,12 +68,12 @@ public class SpeedMeasurementResponse: BasicResponse {
     }
 
     ///
-    override public var description: String {
+    override open var description: String {
         return "SpeedMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), clientRemoteIp: \n\(clientRemoteIp)"
     }
 
     ///
-    public class TargetMeasurementServer: Mappable {
+    open class TargetMeasurementServer: Mappable {
 
         ///
         var address: String?
@@ -82,7 +82,7 @@ public class SpeedMeasurementResponse: BasicResponse {
         var encrypted = false
 
         ///
-        public var name: String?
+        open var name: String?
 
         ///
         var port: Int?
@@ -99,12 +99,12 @@ public class SpeedMeasurementResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             address     <- map["address"]
             encrypted   <- map["is_encrypted"]
             name        <- map["name"]

@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public class MapOptionResponse: BasicResponse {
+open class MapOptionResponse: BasicResponse {
 
     ///
     var mapTypeList: [MapOptionType]?
@@ -27,15 +27,15 @@ public class MapOptionResponse: BasicResponse {
     var mapFilterList: [String: [MapOptionType]]?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         mapTypeList <- map["mapfilter.mapTypes"]
         mapFilterList <- map["mapfilter.mapFilters"]
     }
 
     ///
-    public class MapOptionType: Mappable {
+    open class MapOptionType: Mappable {
 
         ///
         var title: String?
@@ -49,18 +49,18 @@ public class MapOptionResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             title   <- map["title"]
             options <- map["options"]
         }
 
         ///
-        public class MapOption: Mappable {
+        open class MapOption: Mappable {
 
             ///
             var title: String?
@@ -89,12 +89,12 @@ public class MapOptionResponse: BasicResponse {
             }
 
             ///
-            required public init?(_ map: Map) {
+            required public init?(map: Map) {
 
             }
 
             ///
-            public func mapping(map: Map) {
+            open func mapping(map: Map) {
                 title       <- map["title"]
                 summary     <- map["summary"]
                 isDefault   <- map["default"]

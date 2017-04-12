@@ -34,7 +34,7 @@ public enum RMBTTestStatus: String {
 }
 
 ///
-let RMBTTestRunnerProgressUpdateInterval: NSTimeInterval = 0.1 // seconds
+let RMBTTestRunnerProgressUpdateInterval: TimeInterval = 0.1 // seconds
 
 /*
 // Used to assert that we are running on a correct queue via dispatch_queue_set_specific(),
@@ -45,119 +45,119 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 
 ///
 public enum RMBTTestRunnerPhase: Int {
-    case None = 0
-    case FetchingTestParams
-    case Wait
+    case none = 0
+    case fetchingTestParams
+    case wait
     case Init
-    case Latency
-    case Down
-    case InitUp
-    case Up
-    case SubmittingTestResult
+    case latency
+    case down
+    case initUp
+    case up
+    case submittingTestResult
 }
 
 ///
 public enum RMBTTestRunnerCancelReason: Int {
-    case UserRequested
-    case NoConnection
-    case MixedConnectivity
-    case ErrorFetchingTestingParams
-    case ErrorSubmittingTestResult
-    case AppBackgrounded
+    case userRequested
+    case noConnection
+    case mixedConnectivity
+    case errorFetchingTestingParams
+    case errorSubmittingTestResult
+    case appBackgrounded
 }
 
 ///
 public protocol RMBTTestRunnerDelegate {
 
     ///
-    func testRunnerDidStartPhase(phase: RMBTTestRunnerPhase)
+    func testRunnerDidStartPhase(_ phase: RMBTTestRunnerPhase)
 
     ///
-    func testRunnerDidFinishPhase(phase: RMBTTestRunnerPhase)
+    func testRunnerDidFinishPhase(_ phase: RMBTTestRunnerPhase)
 
     ///
-    func testRunnerDidUpdateProgress(progress: Float, inPhase phase: RMBTTestRunnerPhase)
+    func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase)
 
     ///
-    func testRunnerDidMeasureThroughputs(throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase)
+    func testRunnerDidMeasureThroughputs(_ throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase)
 
     /// These delegate methods will be called even before the test starts
-    func testRunnerDidDetectConnectivity(connectivity: RMBTConnectivity)
+    func testRunnerDidDetectConnectivity(_ connectivity: RMBTConnectivity)
 
     ///
-    func testRunnerDidDetectLocation(location: CLLocation)
+    func testRunnerDidDetectLocation(_ location: CLLocation)
 
     ///
-    func testRunnerDidCompleteWithResult(uuid: String)
+    func testRunnerDidCompleteWithResult(_ uuid: String)
 
     ///
-    func testRunnerDidCancelTestWithReason(cancelReason: RMBTTestRunnerCancelReason)
+    func testRunnerDidCancelTestWithReason(_ cancelReason: RMBTTestRunnerCancelReason)
 
     ///
-    func testRunnerDidFinishInit(time: UInt64)
+    func testRunnerDidFinishInit(_ time: UInt64)
 }
 
 ///
-public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
+open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
 
     ///
-    private let workerQueue: dispatch_queue_t // We perform all work on this background queue. Workers also callback onto this queue.
+    fileprivate let workerQueue: DispatchQueue // We perform all work on this background queue. Workers also callback onto this queue.
 
     ///
-    private var timer: dispatch_source_t!
+    fileprivate var timer: DispatchSource!
 
     ///
-    private var workers = [RMBTTestWorker]()
+    fileprivate var workers = [RMBTTestWorker]()
 
     ///
-    private let delegate: RMBTTestRunnerDelegate
+    fileprivate let delegate: RMBTTestRunnerDelegate
 
     ///
-    private var phase: RMBTTestRunnerPhase = .None
+    fileprivate var phase: RMBTTestRunnerPhase = .none
 
     ///
-    private var dead = false
+    fileprivate var dead = false
 
     /// Flag indicating that downlink pretest in one of the workers was too slow and we need to
     /// continue with a single thread only
-    private var singleThreaded = false
+    fileprivate var singleThreaded = false
 
     ///
-    public var testParams: SpeedMeasurementResponse!
+    open var testParams: SpeedMeasurementResponse!
 
     ///
-    private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
+    fileprivate let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
-    private var connectivityTracker: RMBTConnectivityTracker!
+    fileprivate var connectivityTracker: RMBTConnectivityTracker!
 
     /// Snapshots of the network interface byte counts at a given phase
-    private var startInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    private var uplinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    private var uplinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    private var downlinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    private var downlinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    fileprivate var startInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    fileprivate var uplinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    fileprivate var uplinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    fileprivate var downlinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    fileprivate var downlinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
 
     ///
-    private var finishedWorkers: UInt = 0
-    private var activeWorkers: UInt = 0
+    fileprivate var finishedWorkers: UInt = 0
+    fileprivate var activeWorkers: UInt = 0
 
     ///
-    private var progressStartedAtNanos: UInt64 = 0
-    private var progressDurationNanos: UInt64 = 0
+    fileprivate var progressStartedAtNanos: UInt64 = 0
+    fileprivate var progressDurationNanos: UInt64 = 0
 
     ///
-    private var progressCompletionHandler: EmptyCallback!
+    fileprivate var progressCompletionHandler: EmptyCallback!
 
     ///
-    private var downlinkTestStartedAtNanos: UInt64 = 0
-    private var uplinkTestStartedAtNanos: UInt64 = 0
+    fileprivate var downlinkTestStartedAtNanos: UInt64 = 0
+    fileprivate var uplinkTestStartedAtNanos: UInt64 = 0
 
     ///
     public init(delegate: RMBTTestRunnerDelegate) {
         self.delegate = delegate
         //self.phase = .None
-        self.workerQueue = dispatch_queue_create("at.rtr.rmbt.testrunner", nil) // TODO: nil?
+        self.workerQueue = DispatchQueue(label: "at.rtr.rmbt.testrunner", attributes: []) // TODO: nil?
 
         super.init()
 
@@ -172,11 +172,11 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     /// Run on main queue (called from VC)
-    public func start() {
-        assert(phase == .None, "Invalid state")
+    open func start() {
+        assert(phase == .none, "Invalid state")
         assert(!dead, "Invalid state")
 
-        phase = .FetchingTestParams
+        phase = .fetchingTestParams
 
         ////////////////
 
@@ -195,12 +195,12 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         let controlServer = ControlServer.sharedControlServer
         controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
-            dispatch_async(self.workerQueue) {
+            self.workerQueue.async {
                 self.continueWithTestParams(response)
             }
         }) { error in
-            dispatch_async(self.workerQueue) {
-                self.cancelWithReason(.ErrorFetchingTestingParams)
+            self.workerQueue.async {
+                self.cancelWithReason(.errorFetchingTestingParams)
             }
         }
 
@@ -211,9 +211,9 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    private func continueWithTestParams(testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
+    fileprivate func continueWithTestParams(_ testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .FetchingTestParams || phase == .None, "Invalid state")
+        assert(phase == .fetchingTestParams || phase == .none, "Invalid state")
 
         if dead {
             return
@@ -223,23 +223,23 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         speedMeasurementResult.markTestStart()
 
-        for i in 0..<(testParams.numThreads ?? 0) {
+        for i in 0..<testParams.numThreads {
             let worker = RMBTTestWorker(delegate: self, delegateQueue: workerQueue, index: UInt(i), testParams: testParams)
             workers.append(worker)
         }
 
         #if os(iOS)
             // Start observing app going to background notifications
-            NSNotificationCenter.defaultCenter().addObserver(
+            NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)),
-                name: UIApplicationDidEnterBackgroundNotification,
+                name: NSNotification.Name.UIApplicationDidEnterBackground,
                 object: nil
             )
         #endif
 
         // Register as observer for location tracker updates
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RMBTTestRunner.locationsDidChange(_:)), name: "RMBTLocationTrackerNotification", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(RMBTTestRunner.locationsDidChange(_:)), name: NSNotification.Name(rawValue: "RMBTLocationTrackerNotification"), object: nil)
 
         // ..and force an update right away
         RMBTLocationTracker.sharedTracker.forceUpdate()
@@ -251,7 +251,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
         if testParams.testWait > 0 {
             // Let progress timer run, then start init
-            startPhase(.Wait, withAllWorkers: false, performingSelector: nil, expectedDuration: testParams.testWait, completion: startInit)
+            startPhase(.wait, withAllWorkers: false, performingSelector: nil, expectedDuration: testParams.testWait, completion: startInit)
         } else {
             startInit()
         }
@@ -261,7 +261,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 // MARK: Test worker delegate method
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64) {
+    open func testWorker(_ worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Init, "Invalid state")
         assert(!dead, "Invalid state")
@@ -290,31 +290,31 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 
             } else {
                 speedMeasurementResult.startDownloadWithThreadCount(Int(testParams.numThreads))
-                startPhase(.Latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
+                startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
             }
         }
     }
 
     ///
-    public func testWorkerDidStop(worker: RMBTTestWorker) {
+    open func testWorkerDidStop(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .Init, "Invalid state")
         assert(!dead, "Invalid state")
 
         logger.debug("Thread \(worker.index): stopped")
 
-        workers.removeAtIndex(workers.indexOf(worker)!) // !
+        workers.remove(at: workers.index(of: worker)!) // !
 
         if markWorkerAsFinished() {
             // We stopped all but one workers because of slow connection. Proceed to latency with single worker.
-            startPhase(.Latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
+            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
         }
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64) {
+    open func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Latency, "Invalid state")
+        assert(phase == .latency, "Invalid state")
         assert(!dead, "Invalid state")
 
         logger.debug("Thread \(worker.index): pong (server = \(serverNanos), client = \(clientNanos))")
@@ -322,26 +322,26 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
 
         let p = Double(speedMeasurementResult.pings.count) / Double(testParams.numPings)
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
         }
     }
 
     ///
-    public func testWorkerDidFinishLatencyTest(worker: RMBTTestWorker) {
+    open func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Latency, "Invalid state")
+        assert(phase == .latency, "Invalid state")
         assert(!dead, "Invalid state")
 
         if markWorkerAsFinished() {
-            startPhase(.Down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+            startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
+    open func testWorker(_ worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Down, "Invalid state")
+        assert(phase == .down, "Invalid state")
         assert(!dead, "Invalid state")
 
         if downlinkTestStartedAtNanos == 0 {
@@ -355,25 +355,25 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64) {
+    open func testWorker(_ worker: RMBTTestWorker, didDownloadLength length: UInt64, atNanos nanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Down, "Invalid state")
+        assert(phase == .down, "Invalid state")
         assert(!dead, "Invalid state")
 
         let measuredThroughputs = speedMeasurementResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index))
 
         if measuredThroughputs != nil {
         //if let measuredThroughputs = testResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs, inPhase: .Down)
+            DispatchQueue.main.async {
+                self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
             }
         }
     }
 
     ///
-    public func testWorkerDidFinishDownlinkTest(worker: RMBTTestWorker) {
+    open func testWorkerDidFinishDownlinkTest(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Down, "Invalid state")
+        assert(phase == .down, "Invalid state")
         assert(!dead, "Invalid state")
 
         if markWorkerAsFinished() {
@@ -386,19 +386,19 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementResult.totalDownloadHistory.log()
 
             if let _ = measuredThroughputs {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs, inPhase: .Down)
+                DispatchQueue.main.async {
+                    self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
                 }
             }
 
-            startPhase(.InitUp, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
+            startPhase(.initUp, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
         }
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt) {
+    open func testWorker(_ worker: RMBTTestWorker, didFinishUplinkPretestWithChunkCount chunks: UInt) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .InitUp, "Invalid state")
+        assert(phase == .initUp, "Invalid state")
         assert(!dead, "Invalid state")
 
         logger.debug("Thread \(worker.index): finished uplink pretest (chunks = \(chunks))")
@@ -406,14 +406,14 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if markWorkerAsFinished() {
             logger.debug("Uplink pretest finished")
             speedMeasurementResult.startUpload()
-            startPhase(.Up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.duration, completion: nil)
+            startPhase(.up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64 {
+    open func testWorker(_ worker: RMBTTestWorker, didStartUplinkTestAtNanos nanos: UInt64) -> UInt64 {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Up, "Invalid state")
+        assert(phase == .up, "Invalid state")
         assert(!dead, "Invalid state")
 
         var delay: UInt64 = 0
@@ -432,22 +432,22 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    public func testWorker(worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64) {
+    open func testWorker(_ worker: RMBTTestWorker, didUploadLength length: UInt64, atNanos nanos: UInt64) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Up, "Invalid state")
+        assert(phase == .up, "Invalid state")
         assert(!dead, "Invalid state")
 
         if let measuredThroughputs = speedMeasurementResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs, inPhase: .Up)
+            DispatchQueue.main.async {
+                self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs as NSArray, inPhase: .up)
             }
         }
     }
 
     ///
-    public func testWorkerDidFinishUplinkTest(worker: RMBTTestWorker) {
+    open func testWorkerDidFinishUplinkTest(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .Up, "Invalid state")
+        assert(phase == .up, "Invalid state")
         assert(!dead, "Invalid state")
 
         if markWorkerAsFinished() {
@@ -463,75 +463,75 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
             speedMeasurementResult.totalUploadHistory.log()
 
             if let _ = measuredThroughputs {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs, inPhase: .Up)
+                DispatchQueue.main.async {
+                    self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .up)
                 }
             }
 
             //self.phase = .SubmittingTestResult
-            setPhase(.SubmittingTestResult)
+            setPhase(.submittingTestResult)
 
             submitResult()
         }
     }
 
     ///
-    public func testWorkerDidFail(worker: RMBTTestWorker) {
+    open func testWorkerDidFail(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();
         //assert(!dead, "Invalid state") // TODO: if worker fails, then this assertion lets app terminate
 
-        self.cancelWithReason(.NoConnection)
+        self.cancelWithReason(.noConnection)
     }
 
 ///////
 
     ///
-    private func submitResult() {
-        dispatch_async(workerQueue) {
+    fileprivate func submitResult() {
+        workerQueue.async {
             if self.dead {
                 return
             }
 
-            self.setPhase(.SubmittingTestResult)
+            self.setPhase(.submittingTestResult)
 
             let speedMeasurementResultRequest = self.resultObject()
 
             let controlServer = ControlServer.sharedControlServer
 
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
-                dispatch_async(self.workerQueue) {
+                self.workerQueue.async {
                     //self.phase = .None
-                    self.setPhase(.None)
+                    self.setPhase(.none)
                     self.dead = true
 
                     RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
 
                     if let uuid = self.testParams.testUuid {
-                        dispatch_async(dispatch_get_main_queue()) {
+                        DispatchQueue.main.async {
                             self.delegate.testRunnerDidCompleteWithResult(uuid)
                         }
                     } else {
-                        dispatch_async(self.workerQueue) {
-                            self.cancelWithReason(.ErrorSubmittingTestResult) // TODO
+                        self.workerQueue.async {
+                            self.cancelWithReason(.errorSubmittingTestResult) // TODO
                         }
                     }
                 }
             }, error: { error in
-                dispatch_async(self.workerQueue) {
-                    self.cancelWithReason(.ErrorSubmittingTestResult)
+                self.workerQueue.async {
+                    self.cancelWithReason(.errorSubmittingTestResult)
                 }
             })
         }
     }
 
     ///
-    private func resultObject() -> SpeedMeasurementResult {
+    fileprivate func resultObject() -> SpeedMeasurementResult {
         speedMeasurementResult.token = testParams.testToken
         speedMeasurementResult.uuid = testParams.testUuid
 
         //speedMeasurementResultRequest.portRemote =
 
-        speedMeasurementResult.time = NSDate()
+        speedMeasurementResult.time = Date()
 
         // Collect total transfers from all threads
         var sumBytesDownloaded: UInt64 = 0
@@ -546,8 +546,8 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
 
         if let firstWorker = workers.first {
-            speedMeasurementResult.totalBytesDownload = NSNumber(unsignedLongLong: sumBytesDownloaded).integerValue // TODO: ?
-            speedMeasurementResult.totalBytesUpload = NSNumber(unsignedLongLong: sumBytesUploaded).integerValue // TODO: ?
+            speedMeasurementResult.totalBytesDownload = NSNumber(value: sumBytesDownloaded).intValue // TODO: ?
+            speedMeasurementResult.totalBytesUpload = NSNumber(value: sumBytesUploaded).intValue // TODO: ?
 
             speedMeasurementResult.encryption = firstWorker.negotiatedEncryptionString
 
@@ -558,19 +558,19 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         /////////////////////////// SOMETIMES SOME OF THESE VALUES ARE NOT SENT TO THE SERVER?
 
         //let interfaceUpDownTotal = interfaceBytesResultDictionaryWithStartInfo(startInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "test")
-        if let startInfo = startInterfaceInfo, uplinkEndInfo = uplinkEndInterfaceInfo where startInfo.bytesReceived <= uplinkEndInfo.bytesReceived && startInfo.bytesSent < uplinkEndInfo.bytesSent {
+        if let startInfo = startInterfaceInfo, let uplinkEndInfo = uplinkEndInterfaceInfo, startInfo.bytesReceived <= uplinkEndInfo.bytesReceived && startInfo.bytesSent < uplinkEndInfo.bytesSent {
             speedMeasurementResult.interfaceTotalBytesDownload = Int(uplinkEndInfo.bytesReceived - startInfo.bytesReceived)
             speedMeasurementResult.interfaceTotalBytesUpload = Int(uplinkEndInfo.bytesSent - startInfo.bytesSent)
         }
 
         //let interfaceUpDownDownload = interfaceBytesResultDictionaryWithStartInfo(downlinkStartInterfaceInfo!, endInfo: downlinkEndInterfaceInfo!, prefix: "testdl")
-        if let downStartInfo = downlinkStartInterfaceInfo, downEndInfo = downlinkEndInterfaceInfo where downStartInfo.bytesReceived <= downEndInfo.bytesReceived && downStartInfo.bytesSent < downEndInfo.bytesSent {
+        if let downStartInfo = downlinkStartInterfaceInfo, let downEndInfo = downlinkEndInterfaceInfo, downStartInfo.bytesReceived <= downEndInfo.bytesReceived && downStartInfo.bytesSent < downEndInfo.bytesSent {
             speedMeasurementResult.interfaceDltestBytesDownload = Int(downEndInfo.bytesReceived - downStartInfo.bytesReceived)
             speedMeasurementResult.interfaceDltestBytesUpload = Int(downEndInfo.bytesSent - downStartInfo.bytesSent)
         }
 
         //let interfaceUpDownUpload = interfaceBytesResultDictionaryWithStartInfo(uplinkStartInterfaceInfo!, endInfo: uplinkEndInterfaceInfo!, prefix: "testul")
-        if let upStartInfo = uplinkStartInterfaceInfo, upEndInfo = uplinkEndInterfaceInfo where upStartInfo.bytesReceived <= upEndInfo.bytesReceived && upStartInfo.bytesSent < upEndInfo.bytesSent {
+        if let upStartInfo = uplinkStartInterfaceInfo, let upEndInfo = uplinkEndInterfaceInfo, upStartInfo.bytesReceived <= upEndInfo.bytesReceived && upStartInfo.bytesSent < upEndInfo.bytesSent {
             speedMeasurementResult.interfaceUltestBytesDownload = Int(upEndInfo.bytesReceived - upStartInfo.bytesReceived)
             speedMeasurementResult.interfaceUltestBytesUpload = Int(upEndInfo.bytesSent - upStartInfo.bytesSent)
         }
@@ -580,8 +580,8 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         // Add relative time_(dl/ul)_ns timestamps
         let startNanos = speedMeasurementResult.testStartNanos
 
-        speedMeasurementResult.relativeTimeDlNs = NSNumber(unsignedLongLong: downlinkTestStartedAtNanos - startNanos).integerValue
-        speedMeasurementResult.relativeTimeUlNs = NSNumber(unsignedLongLong: uplinkTestStartedAtNanos - startNanos).integerValue
+        speedMeasurementResult.relativeTimeDlNs = NSNumber(value: downlinkTestStartedAtNanos - startNanos).intValue
+        speedMeasurementResult.relativeTimeUlNs = NSNumber(value: uplinkTestStartedAtNanos - startNanos).intValue
 
         //
 
@@ -600,27 +600,27 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 // MARK: Utility methods
 
     ///
-    private func setPhase(phase: RMBTTestRunnerPhase) {
-        if self.phase != .None {
+    fileprivate func setPhase(_ phase: RMBTTestRunnerPhase) {
+        if self.phase != .none {
             let oldPhase = self.phase
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.delegate.testRunnerDidFinishPhase(oldPhase)
             }
         }
 
         self.phase = phase
 
-        if self.phase != .None {
-            dispatch_async(dispatch_get_main_queue()) {
+        if self.phase != .none {
+            DispatchQueue.main.async {
                 self.delegate.testRunnerDidStartPhase(self.phase)
             }
         }
     }
 
     ///
-    private func startPhase(phase: RMBTTestRunnerPhase, withAllWorkers allWorkers: Bool, performingSelector selector: Selector!,
-                            expectedDuration duration: NSTimeInterval, completion completionHandler: EmptyCallback!) {
+    fileprivate func startPhase(_ phase: RMBTTestRunnerPhase, withAllWorkers allWorkers: Bool, performingSelector selector: Selector!,
+                            expectedDuration duration: TimeInterval, completion completionHandler: EmptyCallback!) {
 
         //ASSERT_ON_WORKER_QUEUE();
 
@@ -632,7 +632,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         progressDurationNanos = UInt64(duration * Double(NSEC_PER_SEC))
 
         if timer != nil {
-            dispatch_source_cancel(timer)
+            timer.cancel()
             timer = nil
         }
 
@@ -641,39 +641,41 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if duration > 0 {
             progressCompletionHandler = completionHandler
 
-            timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
-            dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, UInt64(RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC)), 50 * NSEC_PER_MSEC)
-            dispatch_source_set_event_handler(timer) {
+            timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+            // timer.setTimer(start: DispatchTime.now(), interval: UInt64(RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC)), leeway: 50 * NSEC_PER_MSEC)
+            // ??????
+            timer.scheduleRepeating(deadline: DispatchTime.now(), interval:RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC), leeway: DispatchTimeInterval.nanoseconds(50))
+            timer.setEventHandler {
                 let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
                 if elapsedNanos > self.progressDurationNanos {
                     // We've reached end of interval...
                     // ..send 1.0 progress one last time..
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate.testRunnerDidUpdateProgress(1.0, inPhase: phase)
                     }
 
                     // ..then kill the timer
                     if self.timer != nil {
-                        dispatch_source_cancel(self.timer) // TODO: after swift rewrite of AppDelegate one test got an exception here!
+                        self.timer.cancel() // TODO: after swift rewrite of AppDelegate one test got an exception here!
                     }
                     self.timer = nil
 
                     // ..and perform completion handler, if any.
                     if self.progressCompletionHandler != nil {
-                        dispatch_async(self.workerQueue, self.progressCompletionHandler)
+                        self.workerQueue.async(execute: self.progressCompletionHandler)
                         self.progressCompletionHandler = nil
                     }
                 } else {
                     let p = Double(elapsedNanos) / Double(self.progressDurationNanos)
                     assert(p <= 1.0, "Invalid percentage")
 
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: phase)
                     }
                 }
 
             }
-            dispatch_resume(timer)
+            timer.resume()
         }
 
         if selector == nil {
@@ -683,16 +685,16 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         if allWorkers {
             activeWorkers = UInt(workers.count)
             for w in workers {
-                w.performSelector(selector)
+                w.perform(selector)
             }
         } else {
             activeWorkers = 1
-            workers.first?.performSelector(selector)
+            _ = workers.first?.perform(selector)
         }
     }
 
     ///
-    private func markWorkerAsFinished() -> Bool {
+    fileprivate func markWorkerAsFinished() -> Bool {
         finishedWorkers += 1
         return finishedWorkers == activeWorkers
     }
@@ -700,36 +702,36 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 // MARK: Connectivity tracking
 
     ///
-    public func connectivityTrackerDidDetectNoConnectivity(tracker: RMBTConnectivityTracker) {
+    open func connectivityTrackerDidDetectNoConnectivity(_ tracker: RMBTConnectivityTracker) {
         // Ignore for now, let connection time out
     }
 
     ///
-    public func connectivityTracker(tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
-        dispatch_async(workerQueue) {
+    open func connectivityTracker(_ tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
+        workerQueue.async {
             if self.speedMeasurementResult.lastConnectivity() == nil { // TODO: error here?
                 self.startInterfaceInfo = connectivity.getInterfaceInfo()
             }
 
-            if self.phase != .None {
+            if self.phase != .none {
                 self.speedMeasurementResult.addConnectivity(connectivity)
             }
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate.testRunnerDidDetectConnectivity(connectivity)
         }
     }
 
     ///
-    public func connectivityTracker(tracker: RMBTConnectivityTracker, didStopAndDetectIncompatibleConnectivity connectivity: RMBTConnectivity) {
-        dispatch_async(dispatch_get_main_queue()) {
+    open func connectivityTracker(_ tracker: RMBTConnectivityTracker, didStopAndDetectIncompatibleConnectivity connectivity: RMBTConnectivity) {
+        DispatchQueue.main.async {
             self.delegate.testRunnerDidDetectConnectivity(connectivity)
         }
 
-        dispatch_async(workerQueue) {
-            if self.phase != .None {
-                self.cancelWithReason(.MixedConnectivity)
+        workerQueue.async {
+            if self.phase != .none {
+                self.cancelWithReason(.mixedConnectivity)
             }
         }
     }
@@ -737,17 +739,17 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 // MARK: App state tracking
 
     ///
-    public func applicationDidSwitchToBackground(n: NSNotification) {
+    open func applicationDidSwitchToBackground(_ n: Notification) {
         logger.debug("App backgrounded, aborting \(n)")
-        dispatch_async(workerQueue) {
-            self.cancelWithReason(.AppBackgrounded)
+        workerQueue.async {
+            self.cancelWithReason(.appBackgrounded)
         }
     }
 
 // MARK: Tracking location
 
     ///
-    public func locationsDidChange(notification: NSNotification) {
+    open func locationsDidChange(_ notification: Notification) {
         var lastLocation: CLLocation?
 
         for l in (notification.userInfo as! [String: AnyObject])["locations"] as! [CLLocation] { // !
@@ -761,7 +763,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         }
 
         if let _ = lastLocation {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.delegate.testRunnerDidDetectLocation(lastLocation!) // !
             }
         }
@@ -770,14 +772,14 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
 // MARK: Cancelling and cleanup
 
     ///
-    override public func finalize() {
+    override open func finalize() {
         // Stop observing
         connectivityTracker.stop()
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
 
         // Cancel timer
         if timer != nil {
-            dispatch_source_cancel(timer)
+            timer.cancel()
             timer = nil
         }
     }
@@ -788,7 +790,7 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
     }
 
     ///
-    private func cancelWithReason(reason: RMBTTestRunnerCancelReason) {
+    fileprivate func cancelWithReason(_ reason: RMBTTestRunnerCancelReason) {
         //ASSERT_ON_WORKER_QUEUE();
 
         logger.debug("REASON: \(reason)")
@@ -800,62 +802,62 @@ public class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityT
         }
 
         switch reason {
-        case .UserRequested:
+        case .userRequested:
             RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Aborted.rawValue
-        case .AppBackgrounded:
+        case .appBackgrounded:
             RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorBackgrounded.rawValue
-        case .ErrorFetchingTestingParams:
+        case .errorFetchingTestingParams:
             RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorFetching.rawValue
-        case .ErrorSubmittingTestResult:
+        case .errorSubmittingTestResult:
             RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorSubmitting.rawValue
         default:
             RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Error.rawValue
         }
 
-        phase = .None
+        phase = .none
         dead = true
 
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate.testRunnerDidCancelTestWithReason(reason)
         }
     }
 
     ///
-    public func cancel() {
-        dispatch_async(workerQueue) {
-            self.cancelWithReason(.UserRequested)
+    open func cancel() {
+        workerQueue.async {
+            self.cancelWithReason(.userRequested)
         }
     }
 
 // MARK: Public API
 
     ///
-    public func testStartNanos() -> UInt64 {
+    open func testStartNanos() -> UInt64 {
         return speedMeasurementResult.testStartNanos
     }
 
     ///
-    public func medianPingNanos() -> UInt64 { // maybe better as computed property?
+    open func medianPingNanos() -> UInt64 { // maybe better as computed property?
         return speedMeasurementResult.medianPingNanos
     }
 
     ///
-    public func downloadKilobitsPerSecond() -> Int {
+    open func downloadKilobitsPerSecond() -> Int {
         return Int(speedMeasurementResult.totalDownloadHistory.totalThroughput.kilobitsPerSecond())
     }
 
     ///
-    public func uploadKilobitsPerSecond() -> Int {
+    open func uploadKilobitsPerSecond() -> Int {
         return Int(speedMeasurementResult.totalUploadHistory.totalThroughput.kilobitsPerSecond())
     }
 
     ///
-    public func addCpuUsage(cpuUsage: Double, atNanos ns: UInt64) {
+    open func addCpuUsage(_ cpuUsage: Double, atNanos ns: UInt64) {
         speedMeasurementResult.addCpuUsage(cpuUsage, atNanos: ns)
     }
 
     ///
-    public func addMemoryUsage(ramUsage: Double, atNanos ns: UInt64) {
+    open func addMemoryUsage(_ ramUsage: Double, atNanos ns: UInt64) {
         speedMeasurementResult.addMemoryUsage(ramUsage, atNanos: ns)
     }
 

@@ -19,11 +19,11 @@ import Foundation
 ///
 class QOSHTTPProxyTest: QOSTest {
 
-    private let PARAM_URL = "url"
-    private let PARAM_RANGE = "range"
+    fileprivate let PARAM_URL = "url"
+    fileprivate let PARAM_RANGE = "range"
 
-    private let PARAM_DOWNLOAD_TIMEOUT = "download_timeout"
-    private let PARAM_CONNECTION_TIMEOUT = "conn_timeout"
+    fileprivate let PARAM_DOWNLOAD_TIMEOUT = "download_timeout"
+    fileprivate let PARAM_CONNECTION_TIMEOUT = "conn_timeout"
 
     //
 

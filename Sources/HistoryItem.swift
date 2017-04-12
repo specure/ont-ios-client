@@ -18,56 +18,56 @@ import Foundation
 import ObjectMapper
 
 ///
-public class HistoryItem: BasicResponse {
+open class HistoryItem: BasicResponse {
 
     ///
-    public var testUuid: String?
+    open var testUuid: String?
 
     ///
-    public var time: UInt64?
+    open var time: UInt64?
 
     ///
-    public var timeZone: String?
+    open var timeZone: String?
 
     ///
-    public var timeString: String?
+    open var timeString: String?
 
     ///
-    public var qosResultAvailable = false
+    open var qosResultAvailable = false
 
     ///
-    public var speedDownload: String?
+    open var speedDownload: String?
 
     ///
-    public var speedUpload: String?
+    open var speedUpload: String?
 
     ///
-    public var ping: String?
+    open var ping: String?
 
     ///
-    public var pingShortest: String?
+    open var pingShortest: String?
 
     ///
-    public var model: String?
+    open var model: String?
 
     ///
-    public var networkType: String?
+    open var networkType: String?
 
     ///
-    public var speedDownloadClassification: Int?
+    open var speedDownloadClassification: Int?
 
     ///
-    public var speedUploadClassification: Int?
+    open var speedUploadClassification: Int?
 
     ///
-    public var pingClassification: Int?
+    open var pingClassification: Int?
 
     ///
-    public var pingShortClassification: Int?
+    open var pingShortClassification: Int?
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         testUuid           <- map["test_uuid"]
         time               <- (map["time"], UInt64NSNumberTransformOf)

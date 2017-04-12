@@ -21,9 +21,9 @@ import Foundation
 
 ///
 public enum RMBTMapOptionsMapViewType: Int {
-    case Standard = 0
-    case Satellite = 1
-    case Hybrid = 2
+    case standard = 0
+    case satellite = 1
+    case hybrid = 2
 }
 
 ///
@@ -75,22 +75,22 @@ public let RMBTMapOptionsToastInfoKeys = "keys"
 public let RMBTMapOptionsToastInfoValues = "values"
 
 ///
-public class RMBTMapOptions {
+open class RMBTMapOptions {
 
     ///
-    public var mapViewType: RMBTMapOptionsMapViewType = .Standard
+    open var mapViewType: RMBTMapOptionsMapViewType = .standard
 
     ///
-    public var types = [RMBTMapOptionsType]()
+    open var types = [RMBTMapOptionsType]()
 
     ///
-    public var overlays: [RMBTMapOptionsOverlay]
+    open var overlays: [RMBTMapOptionsOverlay]
 
     ///
-    public var activeSubtype: RMBTMapOptionsSubtype
+    open var activeSubtype: RMBTMapOptionsSubtype
 
     ///
-    public var activeOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto
+    open var activeOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto
 
     //
 
@@ -125,7 +125,7 @@ public class RMBTMapOptions {
     }
 
     /// Returns dictionary with following keys set, representing information to be shown in the toast
-    public func toastInfo() -> [String: [String]] {
+    open func toastInfo() -> [String: [String]] {
         var info = [String: [String]]()
         var keys = [String]()
         var values = [String]()
@@ -136,7 +136,7 @@ public class RMBTMapOptions {
         values.append(activeOverlay.localizedDescription)
 
         for f in activeSubtype.type.filters {
-            keys.append(f.title.capitalizedString)
+            keys.append(f.title.capitalized)
             values.append(f.activeValue.title)
         }
 
@@ -147,7 +147,7 @@ public class RMBTMapOptions {
     }
 
     ///
-    public func saveSelection() {
+    open func saveSelection() {
         let selection = RMBTMapOptionsSelection()
 
         selection.subtypeIdentifier = activeSubtype.identifier
@@ -164,7 +164,7 @@ public class RMBTMapOptions {
     }
 
     ///
-    private func restoreSelection() {
+    fileprivate func restoreSelection() {
         let selection: RMBTMapOptionsSelection = RMBTSettings.sharedSettings.mapOptionsSelection
 
         if let subtypeIdentifier = selection.subtypeIdentifier {
@@ -219,26 +219,26 @@ public class RMBTMapOptions {
 }
 
 // Used to persist selected map options between map views
-public class RMBTMapOptionsSelection: NSObject {
+open class RMBTMapOptionsSelection: NSObject {
 
     ///
-    public var subtypeIdentifier: String!
+    open var subtypeIdentifier: String!
 
     ///
-    public var overlayIdentifier: String!
+    open var overlayIdentifier: String!
 
     ///
-    public var activeFilters: [String: String]!
+    open var activeFilters: [String: String]!
 }
 
 ///
-public class RMBTMapOptionsOverlay: NSObject {
+open class RMBTMapOptionsOverlay: NSObject {
 
     ///
-    public var identifier: String
+    open var identifier: String
 
     ///
-    public var localizedDescription: String
+    open var localizedDescription: String
 
     ///
     public init(identifier: String, localizedDescription: String) {
@@ -248,19 +248,19 @@ public class RMBTMapOptionsOverlay: NSObject {
 }
 
 ///
-public class RMBTMapOptionsFilterValue: NSObject {
+open class RMBTMapOptionsFilterValue: NSObject {
 
     ///
-    public var title: String
+    open var title: String
 
     ///
-    public var summary: String
+    open var summary: String
 
     ///
-    public var isDefault: Bool = false
+    open var isDefault: Bool = false
 
     ///
-    public var info: NSDictionary
+    open var info: NSDictionary
 
     //
 
@@ -274,34 +274,34 @@ public class RMBTMapOptionsFilterValue: NSObject {
         }
 
         var d = response
-        d.removeValueForKey("title")
-        d.removeValueForKey("summary")
-        d.removeValueForKey("default")
+        d.removeValue(forKey: "title")
+        d.removeValue(forKey: "summary")
+        d.removeValue(forKey: "default")
 
         // Remove empty keys // TODO: check performance!
         for key in d.keys {
             if let val = (d[key] as? String) {
                 if val == "" {
                     logger.debug("removing obj for key: \(key), val: \(val)")
-                    d.removeValueForKey(key)
+                    d.removeValue(forKey: key)
                 }
             }
         }
-        info = d
+        info = d as NSDictionary
     }
 }
 
 ///
-public class RMBTMapOptionsFilter: NSObject {
+open class RMBTMapOptionsFilter: NSObject {
 
     ///
-    public var title: String
+    open var title: String
 
     ///
-    public var possibleValues = [RMBTMapOptionsFilterValue]()
+    open var possibleValues = [RMBTMapOptionsFilterValue]()
 
     ///
-    public var activeValue: RMBTMapOptionsFilterValue!
+    open var activeValue: RMBTMapOptionsFilterValue!
 
     //
 
@@ -323,22 +323,22 @@ public class RMBTMapOptionsFilter: NSObject {
 
 
 /// Type = mobile|cell|browser
-public class RMBTMapOptionsType: NSObject {
+open class RMBTMapOptionsType: NSObject {
 
     /// localized
-    public var title: String
+    open var title: String
 
     /// mobile|cell|browser
-    public var identifier: String!
+    open var identifier: String!
 
     ///
-    public var filters = [RMBTMapOptionsFilter]()
+    open var filters = [RMBTMapOptionsFilter]()
 
     ///
-    public var subtypes = [RMBTMapOptionsSubtype]()
+    open var subtypes = [RMBTMapOptionsSubtype]()
 
     ///
-    private var _paramsDictionary: NSMutableDictionary!
+    fileprivate var _paramsDictionary = [String:Any]() // NSMutableDictionary!
 
     //
 
@@ -354,7 +354,7 @@ public class RMBTMapOptionsType: NSObject {
 
             subtypes.append(subtype)
 
-            var pathComponents = subtype.mapOptions.componentsSeparatedByString("/")
+            var pathComponents = subtype.mapOptions.components(separatedBy: "/")
 
             // browser/signal -> browser
             if identifier == nil {
@@ -366,45 +366,48 @@ public class RMBTMapOptionsType: NSObject {
     }
 
     ///
-    public func addFilter(filter: RMBTMapOptionsFilter) {
+    open func addFilter(_ filter: RMBTMapOptionsFilter) {
         filters.append(filter)
     }
 
     ///
-    public func paramsDictionary() -> [NSObject: AnyObject] {
-        if _paramsDictionary == nil {
-            _paramsDictionary = NSMutableDictionary()
+    open func paramsDictionary() -> [AnyHashable: Any] {
+        // if _paramsDictionary == nil {
+        //    _paramsDictionary = NSMutableDictionary()
 
             for f in filters {
-                _paramsDictionary.addEntriesFromDictionary(f.activeValue.info as [NSObject: AnyObject])
+                let index = filters.index(of: f)
+                // _paramsDictionary.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
+                _paramsDictionary.updateValue(f.activeValue.info.allValues[index!],
+                                              forKey: f.activeValue.info.allKeys[index!] as! String)
             }
-        }
+        // }
 
-        return _paramsDictionary as [NSObject: AnyObject]
+        return _paramsDictionary as [AnyHashable: Any]
     }
 
 }
 
 /// Subtype = type + up|down|signal etc. (depending on type)
-public class RMBTMapOptionsSubtype: NSObject {
+open class RMBTMapOptionsSubtype: NSObject {
 
     ///
-    public var type: RMBTMapOptionsType!
+    open var type: RMBTMapOptionsType!
 
     ///
-    public var identifier: String
+    open var identifier: String
 
     ///
-    public var title: String
+    open var title: String
 
     ///
-    public var summary: String
+    open var summary: String
 
     ///
-    public var mapOptions: String
+    open var mapOptions: String
 
     ///
-    public var overlayType: String
+    open var overlayType: String
 
     //
 
@@ -419,20 +422,20 @@ public class RMBTMapOptionsSubtype: NSObject {
     }
 
     ///
-    public func paramsDictionary() -> NSDictionary {
+    open func paramsDictionary() -> NSDictionary {
         let result = NSMutableDictionary(dictionary: [
             "map_options": mapOptions
         ])
 
         for f in type.filters {
-            result.addEntriesFromDictionary(f.activeValue.info as [NSObject: AnyObject])
+            result.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
         }
 
         return result
     }
 
     ///
-    public func markerParamsDictionary() -> NSDictionary {
+    open func markerParamsDictionary() -> NSDictionary {
         let result = NSMutableDictionary(dictionary: [
             "options": [
                 "map_options": mapOptions,
@@ -443,10 +446,10 @@ public class RMBTMapOptionsSubtype: NSObject {
         let filterResult = NSMutableDictionary()
 
         for f in type.filters {
-            filterResult.addEntriesFromDictionary(f.activeValue.info as [NSObject: AnyObject])
+            filterResult.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
         }
 
-        result.setObject(filterResult, forKey: "filter")
+        result.setObject(filterResult, forKey: "filter" as NSCopying)
 
         return result
     }

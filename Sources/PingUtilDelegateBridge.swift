@@ -28,22 +28,22 @@ class PingUtilDelegateBridge: NSObject, PingUtilDelegate {
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didFailWithError error: NSError?) {
+    func pingUtil(_ pingUtil: PingUtil, didFailWithError error: Error?) {
         dObj.pingUtil(pingUtil, didFailWithError: error)
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didStartWithAddress address: NSData) {
+    func pingUtil(_ pingUtil: PingUtil, didStartWithAddress address: Data) {
         dObj.pingUtil(pingUtil, didStartWithAddress: address)
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didSendPacket packet: NSData) {
+    func pingUtil(_ pingUtil: PingUtil, didSendPacket packet: Data) {
         dObj.pingUtil(pingUtil, didSendPacket: packet)
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didReceivePingResponsePacket packet: NSData, withType type: UInt8, fromIp: String) {
+    func pingUtil(_ pingUtil: PingUtil, didReceivePingResponsePacket packet: Data, withType type: UInt8, fromIp: String) {
         dObj.pingUtil(pingUtil, didReceivePingResponsePacket: packet, withType: type, fromIp: fromIp)
     }
 

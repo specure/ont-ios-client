@@ -22,41 +22,41 @@ typealias TracerouteTestExecutor = QOSTracerouteTestExecutor<QOSTracerouteTest>
 ///
 class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
 
-    private let RESULT_TRACEROUTE_HOST      = "traceroute_objective_host"
-    private let RESULT_TRACEROUTE_DETAILS   = "traceroute_result_details"
-    private let RESULT_TRACEROUTE_TIMEOUT   = "traceroute_objective_timeout"
-    private let RESULT_TRACEROUTE_STATUS    = "traceroute_result_status"
-    private let RESULT_TRACEROUTE_MAX_HOPS  = "traceroute_objective_max_hops"
-    private let RESULT_TRACEROUTE_HOPS      = "traceroute_result_hops"
+    fileprivate let RESULT_TRACEROUTE_HOST      = "traceroute_objective_host"
+    fileprivate let RESULT_TRACEROUTE_DETAILS   = "traceroute_result_details"
+    fileprivate let RESULT_TRACEROUTE_TIMEOUT   = "traceroute_objective_timeout"
+    fileprivate let RESULT_TRACEROUTE_STATUS    = "traceroute_result_status"
+    fileprivate let RESULT_TRACEROUTE_MAX_HOPS  = "traceroute_objective_max_hops"
+    fileprivate let RESULT_TRACEROUTE_HOPS      = "traceroute_result_hops"
 
     //
 
     ///
-    private var pingUtilDelegateBridge: PingUtilDelegateBridge!
+    fileprivate var pingUtilDelegateBridge: PingUtilDelegateBridge!
 
     ///
-    private let timer = GCDTimer()
+    fileprivate let timer = GCDTimer()
 
     ///
-    private var pingUtil: PingUtil!
+    fileprivate var pingUtil: PingUtil!
 
     ///
-    private var ttl: UInt8 = 1
+    fileprivate var ttl: UInt8 = 1
 
     ///
-    private var ttlCurrentTry: UInt8 = 0
+    fileprivate var ttlCurrentTry: UInt8 = 0
 
     ///
-    private var hopDetailArray = [[String: AnyObject]]()
+    fileprivate var hopDetailArray = [[String: AnyObject]]()
 
     ///
-    private var currentHopDetail = HopDetail()
+    fileprivate var currentHopDetail = HopDetail()
 
     ///
-    private var currentPingStartTimeTicks: UInt64!
+    fileprivate var currentPingStartTimeTicks: UInt64!
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
 
         pingUtilDelegateBridge = PingUtilDelegateBridge(obj: self)
@@ -107,7 +107,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
 
             repeat { // needed for CFRunLoop things...
                 // logger.debug("executing run loop")
-                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture())
+                RunLoop.current.run(mode: RunLoopMode.defaultRunLoopMode, before: Date.distantFuture)
                 // logger.debug("run loop ran")
             } while self.pingUtil != nil
         }
@@ -156,7 +156,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
 // MARK: custom methods
 
     ///
-    private func failWithMaxHopsExceeded() {
+    fileprivate func failWithMaxHopsExceeded() {
         stop()
 
         // TODO: failure
@@ -168,7 +168,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
     }
 
     ///
-    private func ping() {
+    fileprivate func ping() {
         ttlCurrentTry += 1
 
         if ttlCurrentTry > testObject.triesPerTTL {
@@ -212,14 +212,14 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
     }
 
     ///
-    private func stop() {
+    fileprivate func stop() {
         timer.stop()
 
         pingUtil = nil
     }
 
     ///
-    private func appendLastHopDetail() {
+    fileprivate func appendLastHopDetail() {
         // TODO: reverse dns query for ip addresses?
 
         hopDetailArray.append(currentHopDetail.getAsDictionary())
@@ -231,18 +231,18 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
 extension QOSTracerouteTestExecutor: PingUtilSwiftDelegate {
 
     ///
-    func pingUtil(pingUtil: PingUtil, didStartWithAddress address: NSData) {
+    func pingUtil(_ pingUtil: PingUtil, didStartWithAddress address: Data) {
         // start with test
         ping()
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didSendPacket packet: NSData) {
+    func pingUtil(_ pingUtil: PingUtil, didSendPacket packet: Data) {
         qosLog.debug("ping util sent packet: \(packet)")
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didReceivePingResponsePacket packet: NSData, withType type: UInt8, fromIp: String) {
+    func pingUtil(_ pingUtil: PingUtil, didReceivePingResponsePacket packet: Data, withType type: UInt8, fromIp: String) {
         qosLog.debug("received response packet with type \(type)! stopping timer")
 
         // stop timer
@@ -268,7 +268,7 @@ extension QOSTracerouteTestExecutor: PingUtilSwiftDelegate {
     }
 
     ///
-    func pingUtil(pingUtil: PingUtil, didFailWithError error: NSError!) {
+    func pingUtil(_ pingUtil: PingUtil, didFailWithError error: Error!) {
         qosLog.debug("ping util did fail with error!")
 
         // test failed, TODO: set in result dictionary
@@ -285,20 +285,20 @@ extension QOSTracerouteTestExecutor: PingUtilSwiftDelegate {
 extension QOSTracerouteTestExecutor {
 
     ///
-    private func resolveIP(host: String) -> String? {
-        let host = CFHostCreateWithName(nil, host).takeRetainedValue()
+    fileprivate func resolveIP(_ host: String) -> String? {
+        let host = CFHostCreateWithName(nil, host as CFString).takeRetainedValue()
 
-        CFHostStartInfoResolution(host, .Addresses, nil)
+        CFHostStartInfoResolution(host, .addresses, nil)
 
         var success: DarwinBoolean = false
         let addresses = CFHostGetAddressing(host, &success)!.takeUnretainedValue() as NSArray // !
 
         for addr in addresses {
-            let theAddress = addr as! NSData
-            var hostname = [CChar](count: Int(NI_MAXHOST), repeatedValue: 0)
+            let theAddress = addr as! Data
+            var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
 
-            if getnameinfo(UnsafePointer(theAddress.bytes), socklen_t(theAddress.length), &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
-                if let numAddress = String.fromCString(hostname) {
+            if getnameinfo((theAddress as NSData).bytes.bindMemory(to: sockaddr.self, capacity: theAddress.count), socklen_t(theAddress.count), &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
+                if let numAddress = String(validatingUTF8: hostname) {
                     if (numAddress as NSString).isValidIPv4() { // traceroute currently only supports ipv4
                         return numAddress
                     }

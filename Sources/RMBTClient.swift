@@ -19,52 +19,52 @@ import CoreLocation
 
 ///
 public enum SpeedMeasurementPhase: Int {
-    case None = 0
-    case FetchingTestParams
-    case Wait
+    case none = 0
+    case fetchingTestParams
+    case wait
     case Init
-    case Latency
-    case Down
-    case InitUp
-    case Up
-    case SubmittingTestResult
+    case latency
+    case down
+    case initUp
+    case up
+    case submittingTestResult
 
     ///
-    public static func mapFromRmbtRunnerPhase(phase: RMBTTestRunnerPhase) -> SpeedMeasurementPhase { // TODO: improve
+    public static func mapFromRmbtRunnerPhase(_ phase: RMBTTestRunnerPhase) -> SpeedMeasurementPhase { // TODO: improve
         return SpeedMeasurementPhase.init(rawValue: phase.rawValue)!
     }
 }
 
 ///
 public enum RMBTClientCancelReason: Int {
-    case UnknownError = 0
-    case UserRequested
-    case AppBackgrounded
+    case unknownError = 0
+    case userRequested
+    case appBackgrounded
 
-    case NoConnection
-    case MixedConnectivity
+    case noConnection
+    case mixedConnectivity
 
-    case ErrorFetchingSpeedMeasurementParams
-    case ErrorSubmittingSpeedMeasurement
+    case errorFetchingSpeedMeasurementParams
+    case errorSubmittingSpeedMeasurement
 
-    case ErrorFetchingQosMeasurementParams
-    case ErrorSubmittingQosMeasurement
+    case errorFetchingQosMeasurementParams
+    case errorSubmittingQosMeasurement
 
     ///
-    public static func mapFromSpeedMesurementCancelReason(cancelReason: RMBTTestRunnerCancelReason) -> RMBTClientCancelReason { // TODO: improve
+    public static func mapFromSpeedMesurementCancelReason(_ cancelReason: RMBTTestRunnerCancelReason) -> RMBTClientCancelReason { // TODO: improve
         switch cancelReason {
-        case .UserRequested:
-            return .UserRequested
-        case .AppBackgrounded:
-            return .AppBackgrounded
-        case .MixedConnectivity:
-            return .MixedConnectivity
-        case .NoConnection:
-            return .NoConnection
-        case .ErrorFetchingTestingParams:
-            return .ErrorFetchingSpeedMeasurementParams
-        case .ErrorSubmittingTestResult:
-            return .ErrorSubmittingSpeedMeasurement
+        case .userRequested:
+            return .userRequested
+        case .appBackgrounded:
+            return .appBackgrounded
+        case .mixedConnectivity:
+            return .mixedConnectivity
+        case .noConnection:
+            return .noConnection
+        case .errorFetchingTestingParams:
+            return .errorFetchingSpeedMeasurementParams
+        case .errorSubmittingTestResult:
+            return .errorSubmittingSpeedMeasurement
         }
     }
 }
@@ -76,66 +76,66 @@ public protocol RMBTClientDelegate {
     //func measurementDidStart(client: RMBTClient)
 
     ///
-    func measurementDidComplete(client: RMBTClient, withResult result: String)
+    func measurementDidComplete(_ client: RMBTClient, withResult result: String)
 
     ///
-    func measurementDidFail(client: RMBTClient, withReason reason: RMBTClientCancelReason)
+    func measurementDidFail(_ client: RMBTClient, withReason reason: RMBTClientCancelReason)
 
 // MARK: Speed
 
     ///
-    func speedMeasurementDidMeasureSpeed(kbps: Int, inPhase phase: SpeedMeasurementPhase)
+    func speedMeasurementDidMeasureSpeed(_ kbps: Int, inPhase phase: SpeedMeasurementPhase)
 
     ///
-    func speedMeasurementDidStartPhase(phase: SpeedMeasurementPhase)
+    func speedMeasurementDidStartPhase(_ phase: SpeedMeasurementPhase)
 
     ///
-    func speedMeasurementDidFinishPhase(phase: SpeedMeasurementPhase, withResult result: Int)
+    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Int)
 
 // MARK: Qos
 
     ///
-    func qosMeasurementDidStart(client: RMBTClient)
+    func qosMeasurementDidStart(_ client: RMBTClient)
 
     ///
-    func qosMeasurementDidUpdateProgress(client: RMBTClient, progress: Float)
+    func qosMeasurementDidUpdateProgress(_ client: RMBTClient, progress: Float)
 }
 
 /////////////
 
 ///
-public class RMBTClient {
+open class RMBTClient {
 
     ///
-    private var testRunner: RMBTTestRunner?
+    fileprivate var testRunner: RMBTTestRunner?
 
     ///
-    private var qualityOfServiceTestRunner: QualityOfServiceTest?
+    fileprivate var qualityOfServiceTestRunner: QualityOfServiceTest?
 
     ///
-    public var delegate: RMBTClientDelegate?
+    open var delegate: RMBTClientDelegate?
 
     ///
-    private var resultUuid: String?
+    fileprivate var resultUuid: String?
 
     ///
-    public var running: Bool {
+    open var running: Bool {
         get {
             return _running
         }
     }
 
     ///
-    private var _running = false
+    fileprivate var _running = false
 
     /// used for updating cpu and memory usage
-    private var hardwareUsageTimer: NSTimer?
+    fileprivate var hardwareUsageTimer: Timer?
 
     ///
-    private let cpuMonitor = RMBTCPUMonitor()
+    fileprivate let cpuMonitor = RMBTCPUMonitor()
 
     ///
-    private let ramMonitor = RMBTRAMMonitor()
+    fileprivate let ramMonitor = RMBTRAMMonitor()
 
     ///
     public init() {
@@ -143,12 +143,12 @@ public class RMBTClient {
     }
 
     ///
-    public func startMeasurement() {
+    open func startMeasurement() {
         startSpeedMeasurement()
     }
 
     ///
-    public func stopMeasurement() {
+    open func stopMeasurement() {
         testRunner?.cancel()
         qualityOfServiceTestRunner?.stop()
 
@@ -156,7 +156,7 @@ public class RMBTClient {
     }
 
     ///
-    private func startSpeedMeasurement() {
+    fileprivate func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.start()
 
@@ -166,10 +166,10 @@ public class RMBTClient {
     }
 
     ///
-    private func startQosMeasurement() {
+    fileprivate func startQosMeasurement() {
         if let testToken = testRunner?.testParams.testToken,
-               measurementUuid = testRunner?.testParams.testUuid,
-               testStartNanos = testRunner?.testStartNanos() {
+               let measurementUuid = testRunner?.testParams.testUuid,
+               let testStartNanos = testRunner?.testStartNanos() {
 
             qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos)
 
@@ -180,7 +180,7 @@ public class RMBTClient {
     }
 
     ///
-    private func finishMeasurement() {
+    fileprivate func finishMeasurement() {
         _running = false
 
         if let uuid = self.resultUuid {
@@ -188,7 +188,7 @@ public class RMBTClient {
             
             delegate?.measurementDidComplete(self, withResult: uuid)
         } else {
-            delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.UnknownError) // TODO better error handling (but this error should never happen...)
+            delegate?.measurementDidFail(self, withReason: RMBTClientCancelReason.unknownError) // TODO better error handling (but this error should never happen...)
         }
     }
 
@@ -196,7 +196,7 @@ public class RMBTClient {
 
     ///
     func startHardwareUsageTimer() {
-        hardwareUsageTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(hardwareUsageTimerFired), userInfo: nil, repeats: true)
+        hardwareUsageTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hardwareUsageTimerFired), userInfo: nil, repeats: true)
     }
 
     ///
@@ -214,7 +214,7 @@ public class RMBTClient {
             //////////////////
             // CPU
 
-            if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber] where cpuUsage.count > 0 {
+            if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber], cpuUsage.count > 0 {
                 testRunner?.addCpuUsage(cpuUsage[0].doubleValue, atNanos: relativeNanos)
 
                 logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
@@ -237,35 +237,35 @@ public class RMBTClient {
 extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
-    public func testRunnerDidDetectConnectivity(connectivity: RMBTConnectivity) {
+    public func testRunnerDidDetectConnectivity(_ connectivity: RMBTConnectivity) {
         logger.debug("TESTRUNNER: CONNECTIVITY")
     }
 
     ///
-    public func testRunnerDidDetectLocation(location: CLLocation) {
+    public func testRunnerDidDetectLocation(_ location: CLLocation) {
         // TODO: do nothing?
     }
 
     ///
-    public func testRunnerDidStartPhase(phase: RMBTTestRunnerPhase) {
+    public func testRunnerDidStartPhase(_ phase: RMBTTestRunnerPhase) {
         //logger.debug("TESTRUNNER: DID START PHASE: \(phase)")
         delegate?.speedMeasurementDidStartPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
     }
 
     ///
-    public func testRunnerDidFinishPhase(phase: RMBTTestRunnerPhase) {
+    public func testRunnerDidFinishPhase(_ phase: RMBTTestRunnerPhase) {
         var result = -1
 
         switch phase {
-        case .Latency:
+        case .latency:
             if let r = testRunner?.medianPingNanos() {
                 result = Int(r)
             }
-        case .Down:
+        case .down:
             if let r = testRunner?.downloadKilobitsPerSecond() {
                 result = Int(r)
             }
-        case .Up:
+        case .up:
             if let r = testRunner?.uploadKilobitsPerSecond() {
                 result = Int(r)
             }
@@ -278,27 +278,27 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     }
 
     ///
-    public func testRunnerDidFinishInit(time: UInt64) {
+    public func testRunnerDidFinishInit(_ time: UInt64) {
         //logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
     }
 
     ///
-    public func testRunnerDidUpdateProgress(progress: Float, inPhase phase: RMBTTestRunnerPhase) {
+    public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
         //logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
     }
 
     ///
-    public func testRunnerDidMeasureThroughputs(throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase) {
+    public func testRunnerDidMeasureThroughputs(_ throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase) {
         // TODO: use same logic as in android app? (RMBTClient.java:646)
 
-        if let throughputs = throughputs as? [RMBTThroughput], throughput = throughputs.last { // last?
+        if let throughputs = throughputs as? [RMBTThroughput], let throughput = throughputs.last { // last?
             let kbps = throughput.kilobitsPerSecond()
             delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
         }
     }
 
     ///
-    public func testRunnerDidCompleteWithResult(uuid: String) {
+    public func testRunnerDidCompleteWithResult(_ uuid: String) {
         stopHardwareUsageTimer() // stop cpu and memory usage timer
 
         self.resultUuid = uuid
@@ -311,7 +311,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     }
 
     ///
-    public func testRunnerDidCancelTestWithReason(cancelReason: RMBTTestRunnerCancelReason) {
+    public func testRunnerDidCancelTestWithReason(_ cancelReason: RMBTTestRunnerCancelReason) {
         stopHardwareUsageTimer() // stop cpu and memory usage timer
 
         _running = false
@@ -327,41 +327,41 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
-    public func qualityOfServiceTestDidStart(test: QualityOfServiceTest) {
+    public func qualityOfServiceTestDidStart(_ test: QualityOfServiceTest) {
         delegate?.qosMeasurementDidStart(self)
     }
 
     ///
-    public func qualityOfServiceTestDidStop(test: QualityOfServiceTest) { // TODO: what is stop, when is it executed? is this necessary?
-        delegate?.measurementDidFail(self, withReason: .UnknownError) // TODO: better errors
+    public func qualityOfServiceTestDidStop(_ test: QualityOfServiceTest) { // TODO: what is stop, when is it executed? is this necessary?
+        delegate?.measurementDidFail(self, withReason: .unknownError) // TODO: better errors
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
         // TODO: stop location tracker!
 
         finishMeasurement()
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFailWithError: NSError!) {
         _running = false
 
-        delegate?.measurementDidFail(self, withReason: .UnknownError) // TODO: better errors
+        delegate?.measurementDidFail(self, withReason: .unknownError) // TODO: better errors
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType]) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
     }
 
     ///
-    public func qualityOfServiceTest(test: QualityOfServiceTest, didProgressToValue progress: Float) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
         delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
     }
 

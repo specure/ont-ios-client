@@ -20,8 +20,8 @@ import Foundation
 protocol UDPStreamReceiverDelegate {
 
     /// returns false if the class should stop
-    func udpStreamReceiver(udpStreamReceiver: UDPStreamReceiver, didReceivePacket packetData: NSData) -> Bool
+    func udpStreamReceiver(_ udpStreamReceiver: UDPStreamReceiver, didReceivePacket packetData: Data) -> Bool
 
     /// returns true if the class should send response packet
-    func udpStreamReceiver(udpStreamReceiver: UDPStreamReceiver, willSendPacketWithNumber packetNumber: UInt16, inout data: NSMutableData) -> Bool
+    func udpStreamReceiver(_ udpStreamReceiver: UDPStreamReceiver, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool
 }

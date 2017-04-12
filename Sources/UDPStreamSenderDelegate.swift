@@ -20,11 +20,11 @@ import Foundation
 protocol UDPStreamSenderDelegate {
 
     /// returns false if the class should stop
-    func udpStreamSender(udpStreamSender: UDPStreamSender, didReceivePacket packetData: NSData) -> Bool
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, didReceivePacket packetData: Data) -> Bool
 
     /// returns false if the class should stop
-    func udpStreamSender(udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, inout data: NSMutableData) -> Bool
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool
 
     /// returns the port on which the socket has bound
-    func udpStreamSender(udpStreamSender: UDPStreamSender, didBindToPort port: UInt16)
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, didBindToPort port: UInt16)
 }

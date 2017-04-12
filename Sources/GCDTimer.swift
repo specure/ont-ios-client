@@ -28,14 +28,16 @@ class GCDTimer {
     var interval: Double?
 
     ///
-    private var timerSource: dispatch_source_t!
+    fileprivate var timerSource: DispatchSource!
 
     ///
-    private let timerQueue: dispatch_queue_t
+    fileprivate let timerQueue: DispatchQueue
 
     ///
     init() {
-        timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        // ??????
+        // timerQueue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
+        timerQueue = DispatchQueue(label: "com.firm.app.timer", attributes: .concurrent)
     }
 
     ///
@@ -61,23 +63,29 @@ class GCDTimer {
     ///
     func stop() {
         if timerSource != nil {
-            dispatch_source_cancel(timerSource)
+            timerSource.cancel()
         }
     }
 
     ///
-    private func createTimer(interval: Double, timerQueue: dispatch_queue_t, block: dispatch_block_t) -> dispatch_source_t {
-        let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue)
+    fileprivate func createTimer(_ interval: Double, timerQueue: DispatchQueue, block: @escaping ()->()) -> DispatchSource {
+        let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: timerQueue)
 
         let nsecPerSec = Double(NSEC_PER_SEC)
-        let dt = dispatch_time(DISPATCH_TIME_NOW, Int64(interval * nsecPerSec))
+        let dt = DispatchTime.now() + Double(Int64(interval * nsecPerSec)) / Double(NSEC_PER_SEC)
 
-        dispatch_source_set_timer(timer, dt, DISPATCH_TIME_FOREVER, 0)
+        //timer.setTimer(start: dt, interval: DispatchTime.distantFuture, leeway: 0)
+        timer.scheduleRepeating(deadline: dt,
+                                interval: DispatchTimeInterval.nanoseconds(Int(DispatchTime.distantFuture.uptimeNanoseconds)) ,
+                                leeway: DispatchTimeInterval.seconds(0))
 
-        dispatch_source_set_event_handler(timer, block)
-        dispatch_resume(timer)
+        timer.setEventHandler { // `[weak self]` only needed if you reference `self` in this closure and you want to prevent strong reference cycle
+            block()
+        }
+        
+        timer.resume()
 
-        return timer
+        return timer as! DispatchSource
     }
 
 }

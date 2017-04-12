@@ -19,9 +19,9 @@ import Foundation
 ///
 class QOSDNSTest: QOSTest {
 
-    private let PARAM_HOST = "host"
-    private let PARAM_RESOLVER = "resolver"
-    private let PARAM_RECORD = "record"
+    fileprivate let PARAM_HOST = "host"
+    fileprivate let PARAM_RESOLVER = "resolver"
+    fileprivate let PARAM_RECORD = "record"
 
     //
 

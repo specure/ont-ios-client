@@ -18,97 +18,97 @@
 import Foundation
 
 ///
-public class RMBTSettings: NSObject {
+open class RMBTSettings: NSObject {
 
     ///
-    public static let sharedSettings = RMBTSettings()
+    open static let sharedSettings = RMBTSettings()
 
 // MARK: Temporary app state (global variables)
 
     ///
-    public dynamic var mapOptionsSelection: RMBTMapOptionsSelection
+    open dynamic var mapOptionsSelection: RMBTMapOptionsSelection
 
 // MARK: Persisted app state
 
     ///
-    public dynamic var testCounter: UInt = 0
+    open dynamic var testCounter: UInt = 0
 
     ///
-    public dynamic var previousTestStatus: String?
+    open dynamic var previousTestStatus: String?
 
 // MARK: User configurable properties
 
     ///
-    public dynamic var publishPublicData = false // only for akos
+    open dynamic var publishPublicData = false // only for akos
 
     /// anonymous mode
-    public dynamic var anonymousModeEnabled = false
+    open dynamic var anonymousModeEnabled = false
 
 // MARK: Nerd mode
 
     ///
-    public dynamic var nerdModeEnabled = false
+    open dynamic var nerdModeEnabled = false
 
     ///
-    public dynamic var nerdModeForceIPv4 = false
+    open dynamic var nerdModeForceIPv4 = false
 
     ///
-    public dynamic var nerdModeForceIPv6 = false
+    open dynamic var nerdModeForceIPv6 = false
 
     ///
-    public dynamic var nerdModeQosEnabled = false // nkom: qos disabled by default
+    open dynamic var nerdModeQosEnabled = false // nkom: qos disabled by default
 
 // MARK: Debug properties
 
     ///
-    public dynamic var debugUnlocked = false
+    open dynamic var debugUnlocked = false
 
     // loop mode
 
     ///
-    public dynamic var debugLoopMode = false
+    open dynamic var debugLoopMode = false
 
     ///
-    public dynamic var debugLoopModeMaxTests: UInt = 0
+    open dynamic var debugLoopModeMaxTests: UInt = 0
 
     ///
-    public dynamic var debugLoopModeMinDelay: UInt = 0
+    open dynamic var debugLoopModeMinDelay: UInt = 0
 
     // control server
 
     ///
-    public dynamic var debugControlServerCustomizationEnabled = false
+    open dynamic var debugControlServerCustomizationEnabled = false
 
     ///
-    public dynamic var debugControlServerHostname: String?
+    open dynamic var debugControlServerHostname: String?
 
     ///
-    public dynamic var debugControlServerPort: UInt = 0
+    open dynamic var debugControlServerPort: UInt = 0
 
     ///
-    public dynamic var debugControlServerUseSSL = false
+    open dynamic var debugControlServerUseSSL = false
 
     // map server
 
     ///
-    public dynamic var debugMapServerCustomizationEnabled = false
+    open dynamic var debugMapServerCustomizationEnabled = false
 
     ///
-    public dynamic var debugMapServerHostname: String?
+    open dynamic var debugMapServerHostname: String?
 
     ///
-    public dynamic var debugMapServerPort: UInt = 0
+    open dynamic var debugMapServerPort: UInt = 0
 
     ///
-    public dynamic var debugMapServerUseSSL = false
+    open dynamic var debugMapServerUseSSL = false
 
     // logging
 
     ///
-    public dynamic var debugLoggingEnabled = false
+    open dynamic var debugLoggingEnabled = false
 
     ///
-    private override init() {
+    fileprivate override init() {
         mapOptionsSelection = RMBTMapOptionsSelection()
 
         super.init()
@@ -170,27 +170,27 @@ public class RMBTSettings: NSObject {
     }
 
     ///
-    private func bindKeyPaths(keyPaths: [String]) {
+    fileprivate func bindKeyPaths(_ keyPaths: [String]) {
         for keyPath in keyPaths {
-            if let value = NSUserDefaults.standardUserDefaults().objectForKey(keyPath) {
+            if let value = UserDefaults.standard.object(forKey: keyPath) {
                 setValue(value, forKey: keyPath)
             }
 
             // Start observing
-            addObserver(self, forKeyPath: keyPath, options: .New, context: nil)
+            addObserver(self, forKeyPath: keyPath, options: .new, context: nil)
         }
     }
 
     ///
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let newValue = change?[NSKeyValueChangeNewKey], kp = keyPath {
+    open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let newValue = change?[NSKeyValueChangeKey.newKey], let kp = keyPath {
             logger.debugExec() {
-                let oldValue = NSUserDefaults.standardUserDefaults().objectForKey(kp)
+                let oldValue = UserDefaults.standard.object(forKey: kp)
                 logger.debug("Settings changed for keyPath '\(keyPath)' from '\(oldValue)' to '\(newValue)'")
             }
 
-            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: kp)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            UserDefaults.standard.set(newValue, forKey: kp)
+            UserDefaults.standard.synchronize()
         }
     }
 }

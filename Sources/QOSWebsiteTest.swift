@@ -19,7 +19,7 @@ import Foundation
 ///
 class QOSWebsiteTest: QOSTest {
 
-    private let PARAM_URL = "url"
+    fileprivate let PARAM_URL = "url"
 
     //
 

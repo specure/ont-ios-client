@@ -20,8 +20,8 @@ import Foundation
 class AbstractBasicRequestBuilder {
 
     ///
-    class func addBasicRequestValues(basicRequest: BasicRequest) {
-        let infoDictionary = NSBundle.mainBundle().infoDictionary! // !
+    class func addBasicRequestValues(_ basicRequest: BasicRequest) {
+        let infoDictionary = Bundle.main.infoDictionary! // !
 
         basicRequest.apiLevel = nil // always null on iOS...
         basicRequest.clientName = "RMBT"
@@ -38,7 +38,7 @@ class AbstractBasicRequestBuilder {
 
         basicRequest.clientVersion = "0.3" // TODO: fix this on server side
 
-        basicRequest.timezone = NSTimeZone.systemTimeZone().name
+        basicRequest.timezone = TimeZone.current.identifier
     }
 
 }

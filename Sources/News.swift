@@ -33,6 +33,6 @@ public final class News {
     public init(response: [String: AnyObject]) {
         self.title = response["title"] as! String
         self.text = response["text"] as! String
-        self.uid = (response["uid"] as! NSNumber).unsignedLongValue
+        self.uid = (response["uid"] as! NSNumber).uintValue
     } // TODO: does this work? casts to NSString and CLong?
 }

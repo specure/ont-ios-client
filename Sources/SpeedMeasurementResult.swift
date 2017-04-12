@@ -17,6 +17,19 @@
 import Foundation
 import ObjectMapper
 import CoreLocation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 ///
 class SpeedMeasurementResult: BasicRequest {
@@ -116,7 +129,7 @@ class SpeedMeasurementResult: BasicRequest {
     var interfaceUltestBytesUpload = 0
 
     ///
-    var time: NSDate?
+    var time: Date?
 
     ///
     var relativeTimeDlNs: Int?
@@ -155,7 +168,7 @@ class SpeedMeasurementResult: BasicRequest {
     var testStartNanos: UInt64 = 0
 
     ///
-    var testStartDate: NSDate?
+    var testStartDate: Date?
 
     ///
     var bestPingNanos: UInt64 = 0
@@ -166,7 +179,7 @@ class SpeedMeasurementResult: BasicRequest {
     /////
 
     ///
-    private var maxFrozenPeriodIndex: Int!
+    fileprivate var maxFrozenPeriodIndex: Int!
 
     ///
     let totalDownloadHistory: RMBTThroughputHistory
@@ -187,7 +200,7 @@ class SpeedMeasurementResult: BasicRequest {
     var perThreadUploadHistories: NSMutableArray!//[RMBTThroughputHistory]()
 
     ///
-    private var connectivities = [RMBTConnectivity]()
+    fileprivate var connectivities = [RMBTConnectivity]()
 
     ////////////
 
@@ -205,14 +218,18 @@ class SpeedMeasurementResult: BasicRequest {
     required init?(_ map: Map) {
         fatalError("init has not been implemented")
     }
+    
+    required init?(map: Map) {
+        fatalError("init(map:) has not been implemented")
+    }
 
     //////////
 
     ///
-    func addLength(length: UInt64, atNanos ns: UInt64, forThreadIndex threadIndex: Int) -> [RMBTThroughput]! {
+    func addLength(_ length: UInt64, atNanos ns: UInt64, forThreadIndex threadIndex: Int) -> [RMBTThroughput]! {
         assert(threadIndex >= 0 && threadIndex < numThreads, "Invalid thread index")
 
-        let h = currentHistories.objectAtIndex(threadIndex) as! RMBTThroughputHistory//currentHistories[threadIndex]
+        let h = currentHistories.object(at: threadIndex) as! RMBTThroughputHistory//currentHistories[threadIndex]
         h.addLength(length, atNanos: ns)
 
         // TODO: optimize calling updateTotalHistory only when certain preconditions are met
@@ -221,7 +238,7 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     /// Returns array of throughputs in intervals for which all threads have reported speed
-    private func updateTotalHistory() -> [RMBTThroughput]! { // TODO: distinguish between download/upload thread counts
+    fileprivate func updateTotalHistory() -> [RMBTThroughput]! { // TODO: distinguish between download/upload thread counts
         var commonFrozenPeriodIndex = Int.max
 
         for h in currentHistories {
@@ -235,14 +252,14 @@ class SpeedMeasurementResult: BasicRequest {
 
         for i in maxFrozenPeriodIndex + 1...commonFrozenPeriodIndex {
             //for var i = maxFrozenPeriodIndex + 1; i <= commonFrozenPeriodIndex; i += 1 {
-            if i == commonFrozenPeriodIndex && (currentHistories.objectAtIndex(0) as! RMBTThroughputHistory).isFrozen { //currentHistories[0].isFrozen) {
+            if i == commonFrozenPeriodIndex && (currentHistories.object(at: 0) as! RMBTThroughputHistory).isFrozen { //currentHistories[0].isFrozen) {
                 // We're adding up the last throughput, clip totals according to spec
                 // 1) find t*
                 var minEndNanos: UInt64 = 0
                 var minPeriodIndex: UInt64 = 0
 
                 for threadIndex in 0 ..< numThreads {
-                    let threadHistory = currentHistories.objectAtIndex(threadIndex) as! RMBTThroughputHistory //currentHistories[threadIndex]
+                    let threadHistory = currentHistories.object(at: threadIndex) as! RMBTThroughputHistory //currentHistories[threadIndex]
                     assert(threadHistory.isFrozen)
 
                     let threadLastFrozenPeriodIndex = threadHistory.lastFrozenPeriodIndex
@@ -282,8 +299,8 @@ class SpeedMeasurementResult: BasicRequest {
             }
         }
 
-        let result = (totalCurrentHistory.periods as NSArray).subarrayWithRange(
-            NSRange(location: maxFrozenPeriodIndex + 1, length: commonFrozenPeriodIndex - maxFrozenPeriodIndex)
+        let result = (totalCurrentHistory.periods as NSArray).subarray(
+            with: NSRange(location: maxFrozenPeriodIndex + 1, length: commonFrozenPeriodIndex - maxFrozenPeriodIndex)
             ) as! [RMBTThroughput]
         //var result = Array(totalCurrentHistory.periods[Int(maxFrozenPeriodIndex + 1)...Int(commonFrozenPeriodIndex - maxFrozenPeriodIndex)])
         // TODO: why is this not optional? does this return an empty array? see return statement
@@ -296,15 +313,15 @@ class SpeedMeasurementResult: BasicRequest {
     //////////
 
     ///
-    func startDownloadWithThreadCount(threadCount: Int) {
+    func startDownloadWithThreadCount(_ threadCount: Int) {
         numThreads = threadCount
 
         perThreadDownloadHistories = NSMutableArray(capacity: threadCount)
         perThreadUploadHistories = NSMutableArray(capacity: threadCount)
 
         for _ in 0 ..< threadCount {
-            perThreadDownloadHistories.addObject(RMBTThroughputHistory(resolutionNanos: resolutionNanos))
-            perThreadUploadHistories.addObject(RMBTThroughputHistory(resolutionNanos: resolutionNanos))
+            perThreadDownloadHistories.add(RMBTThroughputHistory(resolutionNanos: resolutionNanos))
+            perThreadUploadHistories.add(RMBTThroughputHistory(resolutionNanos: resolutionNanos))
         }
 
         totalCurrentHistory = totalDownloadHistory // TODO: check pass by value on array
@@ -353,7 +370,7 @@ class SpeedMeasurementResult: BasicRequest {
     //////
 
     ///
-    func addConnectivity(connectivity: RMBTConnectivity) {
+    func addConnectivity(_ connectivity: RMBTConnectivity) {
         connectivities.append(connectivity)
     }
 
@@ -367,11 +384,11 @@ class SpeedMeasurementResult: BasicRequest {
     ///
     func markTestStart() {
         testStartNanos = RMBTCurrentNanos()
-        testStartDate = NSDate()
+        testStartDate = Date()
     }
 
     ///
-    func addPingWithServerNanos(serverNanos: UInt64, clientNanos: UInt64) {
+    func addPingWithServerNanos(_ serverNanos: UInt64, clientNanos: UInt64) {
         assert(testStartNanos > 0)
 
         let ping = Ping(
@@ -390,7 +407,7 @@ class SpeedMeasurementResult: BasicRequest {
         }
 
         // Take median from server pings as "best" ping
-        let sortedPings = pings.sort { (p1: Ping, p2: Ping) -> Bool in
+        let sortedPings = pings.sorted { (p1: Ping, p2: Ping) -> Bool in
             return p1.serverNanos < p2.serverNanos // TODO: is this correct?
         }
 
@@ -408,14 +425,14 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     ///
-    func addLocation(location: CLLocation) {
+    func addLocation(_ location: CLLocation) {
         let geoLocation = GeoLocation(location: location)
         //geoLocation.relativeTimeNs =
         geoLocations.append(geoLocation)
     }
 
     ///
-    func addCpuUsage(cpuUsage: Double, atNanos ns: UInt64) {
+    func addCpuUsage(_ cpuUsage: Double, atNanos ns: UInt64) {
         let cpuStatValue = ExtendedTestStat.TestStat.TestStatValue()
 
         cpuStatValue.value = cpuUsage
@@ -425,7 +442,7 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     ///
-    func addMemoryUsage(ramUsage: Double, atNanos ns: UInt64) {
+    func addMemoryUsage(_ ramUsage: Double, atNanos ns: UInt64) {
         let memStatValue = ExtendedTestStat.TestStat.TestStatValue()
 
         memStatValue.value = ramUsage
@@ -437,10 +454,10 @@ class SpeedMeasurementResult: BasicRequest {
     /////////
 
     ///
-    func calculateThreadThroughputs(perThreadArray: /*[RMBTThroughputHistory]*/NSArray, direction: SpeedRawItem.SpeedRawItemDirection) {
+    func calculateThreadThroughputs(_ perThreadArray: /*[RMBTThroughputHistory]*/NSArray, direction: SpeedRawItem.SpeedRawItemDirection) {
 
         for i in 0 ..< perThreadArray.count {
-            let h = perThreadArray.objectAtIndex(i)/*[i]*/ as! RMBTThroughputHistory
+            let h = perThreadArray.object(at: i)/*[i]*/ as! RMBTThroughputHistory
             var totalLength: UInt64 = 0
 
             for t in h.periods {
@@ -484,9 +501,9 @@ class SpeedMeasurementResult: BasicRequest {
 
         // TODO: is it correct to get telephony/wifi info from lastConnectivity?
         if let lastConnectivity = lastConnectivity() {
-            if lastConnectivity.networkType == .Cellular {
+            if lastConnectivity.networkType == .cellular {
                 telephonyInfo = TelephonyInfo(connectivity: lastConnectivity)
-            } else if lastConnectivity.networkType == .WiFi {
+            } else if lastConnectivity.networkType == .wiFi {
                 wifiInfo = WifiInfo(connectivity: lastConnectivity)
             }
         }
@@ -499,7 +516,7 @@ class SpeedMeasurementResult: BasicRequest {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         uuid                    <- map["uuid"]
         clientUuid              <- map["client_uuid"]

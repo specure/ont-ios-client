@@ -18,24 +18,24 @@
 import Foundation
 
 ///
-public class RMBTThroughputHistory: CustomStringConvertible {
+open class RMBTThroughputHistory: CustomStringConvertible {
 
     /// Total bytes/time transferred so far. Equal to sum of all reported lengths / largest reported timestamp.
-    public var totalThroughput = RMBTThroughput(length: 0, startNanos: 0, endNanos: 0)
+    open var totalThroughput = RMBTThroughput(length: 0, startNanos: 0, endNanos: 0)
 
     /// Time axis is split into periods of this duration. Each period has a throughput object associated with it.
     /// Reported transfers are then proportionally divided accross the throughputs it spans over.
-    public var resolutionNanos: UInt64
+    open var resolutionNanos: UInt64
 
     /// Array of throughput objects for each period
-    public var periods = [RMBTThroughput]()
+    open var periods = [RMBTThroughput]()
 
     /// Returns the index of the last period which is complete, meaning that no reports can change its value.
     /// -1 if not even the first period is complete yet
-    public var lastFrozenPeriodIndex: Int = -1
+    open var lastFrozenPeriodIndex: Int = -1
 
     /// See freeze
-    public var isFrozen: Bool = false
+    open var isFrozen: Bool = false
 
     //
 
@@ -45,7 +45,7 @@ public class RMBTThroughputHistory: CustomStringConvertible {
     }
 
     ///
-    func addLength(length: UInt64, atNanos timestampNanos: UInt64) {
+    func addLength(_ length: UInt64, atNanos timestampNanos: UInt64) {
         assert(!isFrozen, "Tried adding to frozen history")
 
         totalThroughput.length += length
@@ -114,7 +114,7 @@ public class RMBTThroughputHistory: CustomStringConvertible {
     }
 
     /// Concatenetes last count periods into one, or nop if there are less than two periods in the history.
-    func squashLastPeriods(count: Int) {
+    func squashLastPeriods(_ count: Int) {
         assert(count >= 1, "Count must be >= 1")
         assert(isFrozen, "History should be frozen before squashing")
 
@@ -146,7 +146,7 @@ public class RMBTThroughputHistory: CustomStringConvertible {
     }
 
     ///
-    public var description: String {
+    open var description: String {
         return "total = \(totalThroughput), entries = \(periods.description)"
     }
 }

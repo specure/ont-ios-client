@@ -20,5 +20,5 @@ import Foundation
 protocol ConnectivityServiceDelegate {
 
     ///
-    func connectivityDidChange(connectivityService: ConnectivityService, connectivityInfo: ConnectivityInfo)
+    func connectivityDidChange(_ connectivityService: ConnectivityService, connectivityInfo: ConnectivityInfo)
 }

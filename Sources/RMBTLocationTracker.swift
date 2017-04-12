@@ -22,20 +22,20 @@ import CoreLocation
 public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 
 ///
-public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
+open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
-    public static let sharedTracker = RMBTLocationTracker()
+    open static let sharedTracker = RMBTLocationTracker()
 
     ///
-    public let locationManager: CLLocationManager
+    open let locationManager: CLLocationManager
 
     ///
-    public var authorizationCallback: EmptyCallback?
+    open var authorizationCallback: EmptyCallback?
 
     ///
-    public var location: CLLocation? {
-        if let result = locationManager.location where CLLocationCoordinate2DIsValid(result.coordinate) {
+    open var location: CLLocation? {
+        if let result = locationManager.location, CLLocationCoordinate2DIsValid(result.coordinate) {
             return result
         }
 
@@ -43,7 +43,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    override private init() {
+    override fileprivate init() {
         locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = 3.0
@@ -55,7 +55,7 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    public func stop() {
+    open func stop() {
         #if os(iOS) // TODO: replacement for this method?
         locationManager.stopMonitoringSignificantLocationChanges()
         #endif
@@ -63,12 +63,12 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    public func startIfAuthorized() -> Bool {
+    open func startIfAuthorized() -> Bool {
         let authorizationStatus = CLLocationManager.authorizationStatus()
 
         #if os(OSX) // TODO
         #else
-        if authorizationStatus == .AuthorizedWhenInUse || authorizationStatus == .AuthorizedAlways {
+        if authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways {
             #if os(iOS) // TODO: replacement for this method?
             locationManager.startUpdatingLocation()
             #endif
@@ -80,10 +80,10 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    public func startAfterDeterminingAuthorizationStatus(callback: EmptyCallback) {
+    open func startAfterDeterminingAuthorizationStatus(_ callback: @escaping EmptyCallback) {
         if startIfAuthorized() {
             callback()
-        } else if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.NotDetermined {
+        } else if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.notDetermined {
             // Not determined yet
             authorizationCallback = callback
 
@@ -101,16 +101,16 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     #else
 
     ///
-    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        NSNotificationCenter.defaultCenter().postNotificationName(RMBTLocationTrackerNotification, object: self, userInfo:["locations": locations])
+    open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: RMBTLocationTrackerNotification), object: self, userInfo:["locations": locations])
     }
 
     #endif
 
     ///
-    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    open func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         #if os(iOS) // TODO: replacement for this method?
-        if locationManager.respondsToSelector(#selector(CLLocationManager.startUpdatingLocation)) {
+        if locationManager.responds(to: #selector(CLLocationManager.startUpdatingLocation)) {
             locationManager.startUpdatingLocation()
         }
         #endif
@@ -121,13 +121,13 @@ public class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         logger.error("Failed to obtain location \(error)")
     }
 
     ///
-    public func forceUpdate() {
+    open func forceUpdate() {
         stop()
-        startIfAuthorized()
+        _ = startIfAuthorized()
     }
 }

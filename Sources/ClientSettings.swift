@@ -38,7 +38,7 @@ class ClientSettings: Mappable, CustomStringConvertible {
     }
 
     ///
-    required init?(_ map: Map) {
+    required init?(map: Map) {
 
     }
 

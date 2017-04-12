@@ -18,24 +18,24 @@ struct OrderedDictionary<KeyType: Hashable, ValueType> {
   }
 
   // 1
-  mutating func insert(value: ValueType, forKey key: KeyType, atIndex index: Int) -> ValueType? {
+  mutating func insert(_ value: ValueType, forKey key: KeyType, atIndex index: Int) -> ValueType? {
     var adjustedIndex = index
 
     // 2
     let existingValue = self.dictionary[key]
     if existingValue != nil {
       // 3
-      let existingIndex = self.array.indexOf(key)!
+      let existingIndex = self.array.index(of: key)!
 
       // 4
       if existingIndex < index {
         adjustedIndex -= 1
       }
-      self.array.removeAtIndex(existingIndex)
+      self.array.remove(at: existingIndex)
     }
 
     // 5
-    self.array.insert(key, atIndex: adjustedIndex)
+    self.array.insert(key, at: adjustedIndex)
     self.dictionary[key] = value
 
     // 6
@@ -43,15 +43,15 @@ struct OrderedDictionary<KeyType: Hashable, ValueType> {
   }
 
   // 1
-  mutating func removeAtIndex(index: Int) -> (KeyType, ValueType) {
+  mutating func removeAtIndex(_ index: Int) -> (KeyType, ValueType) {
     // 2
     precondition(index < self.array.count, "Index out-of-bounds")
 
     // 3
-    let key = self.array.removeAtIndex(index)
+    let key = self.array.remove(at: index)
 
     // 4
-    let value = self.dictionary.removeValueForKey(key)!
+    let value = self.dictionary.removeValue(forKey: key)!
 
     // 5
     return (key, value)
@@ -67,7 +67,7 @@ struct OrderedDictionary<KeyType: Hashable, ValueType> {
     // 2(b)
     set {
       // 4
-      if let _ = self.array.indexOf(key) {
+      if let _ = self.array.index(of: key) {
       } else {
         self.array.append(key)
       }

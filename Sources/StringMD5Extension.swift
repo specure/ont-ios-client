@@ -18,35 +18,42 @@ import Foundation
 import RMBTClientPrivate
 
 ///
-extension Int {
-
-    func hexString() -> String {
-        return String(format: "%02x", self)
-    }
-
-}
+//extension Int {
+//
+//    func hexString() -> String {
+//        return String(format: "%02x", self)
+//    }
+//
+//}
 
 ///
-extension NSData {
+extension Data {
 
     func hexString() -> String {
-        var string = String()
-        for i in UnsafeBufferPointer<UInt8>(start: UnsafeMutablePointer<UInt8>(bytes), count: length) {
-            string += Int(i).hexString()
+        return map { String(format: "%02hhx", $0) }.joined()
+    }
+
+    func MD5() -> Data {
+        var result = Data(count: Int(CC_MD5_DIGEST_LENGTH))
+        _ = result.withUnsafeMutableBytes {resultPtr in
+            self.withUnsafeBytes {(bytes: UnsafePointer<UInt8>) in
+                CC_MD5(bytes, CC_LONG(count), resultPtr)
+            }
         }
-        return string
+        return result
     }
 
-    func MD5() -> NSData {
-        let result = NSMutableData(length: Int(CC_MD5_DIGEST_LENGTH))!
-        CC_MD5(bytes, CC_LONG(length), UnsafeMutablePointer<UInt8>(result.mutableBytes))
-        return NSData(data: result)
+    func SHA1() -> Data {
+//        let result = NSMutableData(length: Int(CC_SHA1_DIGEST_LENGTH))!
+//        CC_SHA1(bytes, CC_LONG(count), UnsafeMutablePointer<UInt8>(result.mutableBytes))
+//        return (NSData(data: result as Data) as Data)
+        //
+        var result = Data(count: Int(CC_SHA1_DIGEST_LENGTH))
+        _ = result.withUnsafeMutableBytes {resultPtr in
+            self.withUnsafeBytes {(bytes: UnsafePointer<UInt8>) in
+                CC_MD5(bytes, CC_LONG(count), resultPtr)
+            }
+        }
+        return result
     }
-
-    func SHA1() -> NSData {
-        let result = NSMutableData(length: Int(CC_SHA1_DIGEST_LENGTH))!
-        CC_SHA1(bytes, CC_LONG(length), UnsafeMutablePointer<UInt8>(result.mutableBytes))
-        return NSData(data: result)
-    }
-
 }

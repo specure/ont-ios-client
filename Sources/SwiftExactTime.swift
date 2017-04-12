@@ -18,7 +18,7 @@ import Foundation
 
 ///
 public func currentTimeMillis() -> UInt64 {
-    return UInt64(NSDate().timeIntervalSince1970 * 1000)
+    return UInt64(Date().timeIntervalSince1970 * 1000)
 }
 
 ///
@@ -32,7 +32,7 @@ public func getCurrentTimeTicks() -> UInt64 {
 }
 
 ///
-public func ticksToNanoTime(ticks: UInt64) -> UInt64 {
+public func ticksToNanoTime(_ ticks: UInt64) -> UInt64 {
     var sTimebaseInfo = mach_timebase_info(numer: 0, denom: 0)
     mach_timebase_info(&sTimebaseInfo)
 
@@ -42,7 +42,7 @@ public func ticksToNanoTime(ticks: UInt64) -> UInt64 {
 }
 
 ///
-public func getTimeDifferenceInNanoSeconds(fromTicks: UInt64) -> UInt64 {
+public func getTimeDifferenceInNanoSeconds(_ fromTicks: UInt64) -> UInt64 {
     let to: UInt64 = mach_absolute_time()
     let elapsed: UInt64 = to - fromTicks
 

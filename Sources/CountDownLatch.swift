@@ -20,13 +20,13 @@ import Foundation
 class CountDownLatch {
 
     ///
-    private var count: UInt8 = 0
+    fileprivate var count: UInt8 = 0
 
     ///
-    private let mutualExclusionQueue = dispatch_queue_create("com.specure.rmbt.cdl.mutualExclusionQueue", DISPATCH_QUEUE_SERIAL)
+    fileprivate let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.cdl.mutualExclusionQueue", attributes: [])
 
     ///
-    private let semaphore = dispatch_semaphore_create(0)
+    fileprivate let semaphore = DispatchSemaphore(value: 0)
 
     ///
     convenience init() {
@@ -42,7 +42,7 @@ class CountDownLatch {
 
     ///
     func countDown() {
-        dispatch_sync(mutualExclusionQueue) { // dispatch_sync
+        mutualExclusionQueue.sync { // dispatch_sync
             if self.count == 0 {
                 return
             }
@@ -50,17 +50,17 @@ class CountDownLatch {
             self.count -= 1
             if self.count == 0 {
                 logger.debug("signal semaphore")
-                dispatch_semaphore_signal(self.semaphore)
+                self.semaphore.signal()
             }
         }
     }
 
     ///
-    func await(timeout: UInt64) -> Bool {
-        let dt = dispatch_time(DISPATCH_TIME_NOW, Int64(timeout))
-        let ret = dispatch_semaphore_wait(self.semaphore, dt)
+    func await(_ timeout: UInt64) -> Bool {
+        let dt = DispatchTime.now() + Double(Int64(timeout)) / Double(NSEC_PER_SEC)
+        let ret = self.semaphore.wait(timeout: dt)
 
-        return (ret == 0)
+        return (ret == .success)
     }
 
 }

@@ -23,38 +23,38 @@ import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 
 ///
-public class RMBTConnectivity {
+open class RMBTConnectivity {
 
     ///
-    public let networkType: RMBTNetworkType
+    open let networkType: RMBTNetworkType
 
     ///
-    public let timestamp: NSDate
+    open let timestamp: Date
 
     ///
-    public var networkTypeDescription: String {
+    open var networkTypeDescription: String {
         switch networkType {
-        case .None:
-            return NSLocalizedString("connectivity.not-connected", tableName: nil, bundle: NSBundle.mainBundle(), value: "Not connected", comment: "network type description not connected")
-        case .WiFi:
-            return NSLocalizedString("connectivity.wifi", tableName: nil, bundle: NSBundle.mainBundle(), value: "Wi-Fi", comment: "network type description wifi")
-        case .Cellular:
+        case .none:
+            return NSLocalizedString("connectivity.not-connected", tableName: nil, bundle: Bundle.main, value: "Not connected", comment: "network type description not connected")
+        case .wiFi:
+            return NSLocalizedString("connectivity.wifi", tableName: nil, bundle: Bundle.main, value: "Wi-Fi", comment: "network type description wifi")
+        case .cellular:
             if cellularCodeDescription != nil {
                 return cellularCodeDescription
             } else {
-                return NSLocalizedString("connectivity.cellular", tableName: nil, bundle: NSBundle.mainBundle(), value: "Cellular", comment: "network type description cellular")
+                return NSLocalizedString("connectivity.cellular", tableName: nil, bundle: Bundle.main, value: "Cellular", comment: "network type description cellular")
             }
         default:
             logger.warning("Invalid network type \(self.networkType)")
-            return NSLocalizedString("intro.network.connection.name-unknown", tableName: nil, bundle: NSBundle.mainBundle(), value: "Unknown", comment: "network type description unknown")
+            return NSLocalizedString("intro.network.connection.name-unknown", tableName: nil, bundle: Bundle.main, value: "Unknown", comment: "network type description unknown")
         }
     }
 
     ///
-    public var networkName: String!
+    open var networkName: String!
 
     ///
-    public var bssid: String!
+    open var bssid: String!
 
     ///
     var cellularCode: NSNumber!
@@ -63,15 +63,15 @@ public class RMBTConnectivity {
     var cellularCodeDescription: String!
 
     ///
-    public var telephonyNetworkSimOperator: String!
+    open var telephonyNetworkSimOperator: String!
 
     ///
-    public var telephonyNetworkSimCountry: String!
+    open var telephonyNetworkSimCountry: String!
 
     #if os(iOS)
 
     ///
-    private let cellularCodeTable = [
+    fileprivate let cellularCodeTable = [
         CTRadioAccessTechnologyGPRS:         1,
         CTRadioAccessTechnologyEdge:         2,
         CTRadioAccessTechnologyWCDMA:        3,
@@ -86,7 +86,7 @@ public class RMBTConnectivity {
     ]
 
     ///
-    private let cellularCodeDescriptionTable = [
+    fileprivate let cellularCodeDescriptionTable = [
         CTRadioAccessTechnologyGPRS:            "GPRS (2G)",
         CTRadioAccessTechnologyEdge:            "EDGE (2G)",
         CTRadioAccessTechnologyWCDMA:           "UMTS (3G)",
@@ -105,7 +105,7 @@ public class RMBTConnectivity {
     ///
     public init(networkType: RMBTNetworkType) {
         self.networkType = networkType
-        timestamp = NSDate()
+        timestamp = Date()
 
         getNetworkDetails()
     }
@@ -113,7 +113,7 @@ public class RMBTConnectivity {
 // MARK: Internal
 
     ///
-    public func getNetworkDetails() {
+    open func getNetworkDetails() {
         networkName = nil
         bssid = nil
         cellularCode = nil
@@ -121,7 +121,7 @@ public class RMBTConnectivity {
 
         switch networkType {
 
-        case .Cellular:
+        case .cellular:
             #if os(iOS)
             // Get carrier name
             let netinfo = CTTelephonyNetworkInfo()
@@ -131,7 +131,7 @@ public class RMBTConnectivity {
                 telephonyNetworkSimOperator = "\(carrier.mobileCountryCode!)-\(carrier.mobileNetworkCode!)" // TODO: !
             }
 
-            if netinfo.respondsToSelector(Selector("currentRadioAccessTechnology")) {
+            if netinfo.responds(to: #selector(getter: CTTelephonyNetworkInfo.currentRadioAccessTechnology)) {
                 // iOS 7
                 cellularCode = cellularCodeForCTValue(netinfo.currentRadioAccessTechnology)
                 cellularCodeDescription = cellularCodeDescriptionForCTValue(netinfo.currentRadioAccessTechnology)
@@ -139,7 +139,7 @@ public class RMBTConnectivity {
             #else
             break
             #endif
-        case .WiFi:
+        case .wiFi:
             // If WLAN, then show SSID as network name. Fetching SSID does not work on the simulator.
             if let wifiParams = getWiFiParameters() {
                 networkName = wifiParams.ssid
@@ -148,7 +148,7 @@ public class RMBTConnectivity {
 
             break
 
-        case .None:
+        case .none:
             break
         default:
             assert(false, "Invalid network type \(networkType)")
@@ -156,7 +156,7 @@ public class RMBTConnectivity {
     }
 
     ///
-    private func getWiFiParameters() -> (ssid: String, bssid: String)? {
+    fileprivate func getWiFiParameters() -> (ssid: String, bssid: String)? {
         //if #available(iOS 9, *) {
 
             // http://stackoverflow.com/questions/32970711/is-it-possible-to-get-wifi-signal-strength-in-ios-9
@@ -167,13 +167,13 @@ public class RMBTConnectivity {
         #else
             if let interfaces = CNCopySupportedInterfaces() {
                 for i in 0..<CFArrayGetCount(interfaces) {
-                    let interfaceName: UnsafePointer<Void> = CFArrayGetValueAtIndex(interfaces, i)
-                    let rec = unsafeBitCast(interfaceName, AnyObject.self)
-                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)") {
-                        let interfaceData = unsafeInterfaceData as [NSObject: AnyObject]
+                    let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interfaces, i)
+                    let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
+                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString) {
+                        let interfaceData = unsafeInterfaceData as! [AnyHashable: Any]
 
-                        if let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
-                            currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
+                        if let currentSSID = interfaceData[kCNNetworkInfoKeySSID as AnyHashable] as? String,
+                            let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID as AnyHashable] as? String {
                                 return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
                         }
                     }
@@ -186,20 +186,21 @@ public class RMBTConnectivity {
     }
 
     ///
-    private func cellularCodeForCTValue(value: String!) -> NSNumber? {
+    fileprivate func cellularCodeForCTValue(_ value: String!) -> NSNumber? {
         if value == nil {
             return nil
         }
 
         #if os(iOS)
-        return cellularCodeTable[value] ?? nil
+            //??????
+        return (cellularCodeTable[value] as AnyObject) as? NSNumber
         #else
         return nil
         #endif
     }
 
     ///
-    private func cellularCodeDescriptionForCTValue(value: String!) -> String? {
+    fileprivate func cellularCodeDescriptionForCTValue(_ value: String!) -> String? {
         if value == nil {
             return nil
         }
@@ -212,14 +213,14 @@ public class RMBTConnectivity {
     }
 
     ///
-    public func isEqualToConnectivity(otherConn: RMBTConnectivity?) -> Bool {
+    open func isEqualToConnectivity(_ otherConn: RMBTConnectivity?) -> Bool {
         if let other = otherConn {
             if other === self {
                 return true
             }
 
             // cannot compare two optional strings with ==, because one or both could be nil
-            if let oNetworkName = other.networkName, sNetworkName = self.networkName {
+            if let oNetworkName = other.networkName, let sNetworkName = self.networkName {
                 return other.networkTypeDescription == self.networkTypeDescription && oNetworkName == sNetworkName
             }
         }
@@ -228,7 +229,7 @@ public class RMBTConnectivity {
     }
 
     ///
-    public func getInterfaceInfo() -> RMBTConnectivityInterfaceInfo {
+    open func getInterfaceInfo() -> RMBTConnectivityInterfaceInfo {
         return RMBTTrafficCounter.getInterfaceInfo(networkType.rawValue)
     }
 

@@ -21,17 +21,17 @@ extension String {
 
     ///
     public func trim() -> String {
-        return self.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     ///
     public func stringByRemovingAllNewlines() -> String {
-        return self.stringByReplacingOccurrencesOfString("\n", withString: "", options: .LiteralSearch, range: nil)
+        return self.replacingOccurrences(of: "\n", with: "", options: .literal, range: nil)
     }
 
     ///
     public func stringByRemovingLastNewline() -> String { // TODO: improve...
-        return self.stringByReplacingOccurrencesOfString("\n", withString: "", options: .BackwardsSearch, range: self.endIndex.advancedBy(-2)..<self.endIndex)
+        return self.replacingOccurrences(of: "\n", with: "", options: .backwards, range: self.characters.index(self.endIndex, offsetBy: -2)..<self.endIndex)
     }
 
 }

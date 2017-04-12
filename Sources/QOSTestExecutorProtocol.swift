@@ -20,7 +20,7 @@ import Foundation
 protocol QOSTestExecutorProtocol {
 
     ///
-    func execute(finish finishCallback: (testResult: QOSTestResult) -> ())
+    func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ())
 
     ///
     func needsControlConnection() -> Bool
@@ -29,5 +29,5 @@ protocol QOSTestExecutorProtocol {
     func needsCustomTimeoutHandling() -> Bool
 
     ///
-    func setCurrentTestToken(testToken: String) // TODO: refactor
+    func setCurrentTestToken(_ testToken: String) // TODO: refactor
 }

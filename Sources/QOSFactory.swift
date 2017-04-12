@@ -20,12 +20,12 @@ import Foundation
 class QOSFactory {
 
     ///
-    private init() {
+    fileprivate init() {
 
     }
 
     ///
-    class func createQOSTest(typeString: String, params: QOSTestParameters) -> QOSTest? {
+    class func createQOSTest(_ typeString: String, params: QOSTestParameters) -> QOSTest? {
         if let type = getTypeIfEnabled(QOSMeasurementType(rawValue: typeString)) {
 
             switch type {
@@ -59,7 +59,7 @@ class QOSFactory {
     }
 
     ///
-    class func createTestExecutor(testObject: QOSTest, controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
+    class func createTestExecutor(_ testObject: QOSTest, controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
         if let type = getTypeIfEnabled(testObject.getType()) {
 
             switch type {
@@ -133,7 +133,7 @@ class QOSFactory {
     }
 
     ///
-    private class func getTypeIfEnabled(type: QOSMeasurementType?) -> QOSMeasurementType? {
+    fileprivate class func getTypeIfEnabled(_ type: QOSMeasurementType?) -> QOSMeasurementType? {
         if type != nil && !isEnabled(type!) {
             return nil
         }
@@ -142,7 +142,7 @@ class QOSFactory {
     }
 
     ///
-    private class func isEnabled(type: QOSMeasurementType) -> Bool {
+    fileprivate class func isEnabled(_ type: QOSMeasurementType) -> Bool {
         return QOS_ENABLED_TESTS.contains(type)
     }
 }

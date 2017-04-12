@@ -17,17 +17,17 @@
 import Foundation
 
 ///
-public class HopDetail: NSObject { /* struct */
+open class HopDetail: NSObject { /* struct */
     //    var transmitted: UInt64
     //    var received: UInt64
     //    var errors: UInt64
     //    var packetLoss: UInt64
 
     ///
-    private var timeTries = [UInt64]()
+    fileprivate var timeTries = [UInt64]()
 
     ///
-    public var time: UInt64 { // return middle value
+    open var time: UInt64 { // return middle value
         var t: UInt64 = 0
 
         for ti: UInt64 in timeTries {
@@ -39,23 +39,23 @@ public class HopDetail: NSObject { /* struct */
     }
 
     ///
-    public var fromIp: String!
+    open var fromIp: String!
 
     ///
-    public func addTry(time: UInt64) {
+    open func addTry(_ time: UInt64) {
         timeTries.append(time)
     }
 
     ///
-    public func getAsDictionary() -> [String: AnyObject] {
+    open func getAsDictionary() -> [String: AnyObject] {
         return [
-            "host": jsonValueOrNull(fromIp),
-            "time": NSNumber(unsignedLongLong: time)
+            "host": jsonValueOrNull(fromIp as AnyObject) ,
+            "time": NSNumber(value: time as UInt64)
         ]
     }
 
     ///
-    public override var description: String {
+    open override var description: String {
         return "HopDetail: fromIp: \(fromIp), time: \(time)"
     }
 }

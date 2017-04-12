@@ -18,10 +18,10 @@ import Foundation
 import ObjectMapper
 
 ///
-public class BasicResponse: Mappable, CustomStringConvertible {
+open class BasicResponse: Mappable, CustomStringConvertible {
 
     ///
-    public var description: String {
+    open var description: String {
         return "<empty BasicResponse>"
     }
 
@@ -31,12 +31,12 @@ public class BasicResponse: Mappable, CustomStringConvertible {
     }
 
     ///
-    required public init?(_ map: Map) {
+    required public init?(map: Map) {
 
     }
 
     ///
-    public func mapping(map: Map) {
+    open func mapping(map: Map) {
 
     }
 }

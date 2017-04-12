@@ -31,7 +31,7 @@ class SettingsReponse: BasicResponse {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         settings <- map["settings"]
         client <- map["client"]
@@ -77,7 +77,7 @@ class SettingsReponse: BasicResponse {
         }
 
         ///
-        required init?(_ map: Map) {
+        required init?(map: Map) {
 
         }
 
@@ -122,7 +122,7 @@ class SettingsReponse: BasicResponse {
             }
 
             ///
-            required init?(_ map: Map) {
+            required init?(map: Map) {
 
             }
 
@@ -164,7 +164,7 @@ class SettingsReponse: BasicResponse {
             }
 
             ///
-            required init?(_ map: Map) {
+            required init?(map: Map) {
 
             }
 
@@ -200,7 +200,7 @@ class SettingsReponse: BasicResponse {
             }
 
             ///
-            required init?(_ map: Map) {
+            required init?(map: Map) {
 
             }
 
@@ -231,7 +231,7 @@ class SettingsReponse: BasicResponse {
             }
 
             ///
-            required init?(_ map: Map) {
+            required init?(map: Map) {
 
             }
 
@@ -255,7 +255,7 @@ class SettingsReponse: BasicResponse {
             }
 
             ///
-            required init?(_ map: Map) {
+            required init?(map: Map) {
 
             }
 

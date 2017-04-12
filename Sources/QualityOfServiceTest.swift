@@ -15,9 +15,22 @@
  *****************************************************************************************************/
 
 import Foundation
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 ///
-public class QualityOfServiceTest {
+open class QualityOfServiceTest {
 
     ///
     public typealias ConcurrencyGroup = UInt
@@ -28,52 +41,52 @@ public class QualityOfServiceTest {
     //
 
     ///
-    private let executorQueue = dispatch_queue_create("com.specure.rmbt.executorQueue", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private let qosQueue = dispatch_queue_create("com.specure.rmbt.qosQueue", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private let mutualExclusionQueue = dispatch_queue_create("com.specure.rmbt.qos.mutualExclusionQueue", DISPATCH_QUEUE_SERIAL)
+    fileprivate let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
 
     ///
-    public var delegate: QualityOfServiceTestDelegate?
+    open var delegate: QualityOfServiceTestDelegate?
 
     ///
-    private let testToken: String
+    fileprivate let testToken: String
 
     ///
-    private let measurementUuid: String
+    fileprivate let measurementUuid: String
 
     ///
-    private let speedtestStartTime: UInt64
+    fileprivate let speedtestStartTime: UInt64
 
     ///
-    private var testCount: UInt16 = 0
+    fileprivate var testCount: UInt16 = 0
 
     ///
-    private var currentTestCount: UInt16 = 0
+    fileprivate var currentTestCount: UInt16 = 0
 
     ///
-    private var activeTestsInConcurrencyGroup = 0
+    fileprivate var activeTestsInConcurrencyGroup = 0
 
     ///
-    private var controlConnectionMap = [String: QOSControlConnection]()
+    fileprivate var controlConnectionMap = [String: QOSControlConnection]()
 
     ///
-    private var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
+    fileprivate var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
 
     ///
-    private var testTypeCountMap = [QOSMeasurementType: UInt16]()
+    fileprivate var testTypeCountMap = [QOSMeasurementType: UInt16]()
 
     ///
-    private var sortedConcurrencyGroups = [ConcurrencyGroup]()
+    fileprivate var sortedConcurrencyGroups = [ConcurrencyGroup]()
 
     ///
-    private var resultArray = [QOSTestResult]()
+    fileprivate var resultArray = [QOSTestResult]()
 
     ///
-    private var stopped = false
+    fileprivate var stopped = false
 
     //
 
@@ -87,26 +100,26 @@ public class QualityOfServiceTest {
     }
 
     ///
-    public func start() {
+    open func start() {
         if !stopped {
-            dispatch_async(qosQueue) {
+            qosQueue.async {
                 self.fetchQOSTestParameters()
             }
         }
     }
 
     ///
-    public func stop() {
+    open func stop() {
         logger.debug("ABORTING QOS TEST")
 
-        dispatch_sync(mutualExclusionQueue) {
+        mutualExclusionQueue.sync {
             self.stopped = true
 
             // close all control connections
             self.closeAllControlConnections()
 
             // inform delegate
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.delegate?.qualityOfServiceTestDidStop(self)
                 return
             }
@@ -116,7 +129,7 @@ public class QualityOfServiceTest {
     //
 
     ///
-    private func fetchQOSTestParameters() {
+    fileprivate func fetchQOSTestParameters() {
         if stopped {
             return
         }
@@ -124,7 +137,7 @@ public class QualityOfServiceTest {
         let controlServer = ControlServer.sharedControlServer
 
         controlServer.requestQosMeasurement(measurementUuid, success: { response in
-            dispatch_async(self.qosQueue) {
+            self.qosQueue.async {
                 self.continueWithQOSParameters(response)
             }
         }) { error in
@@ -135,13 +148,13 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func continueWithQOSParameters(responseObject: QosMeasurmentResponse) {
+    fileprivate func continueWithQOSParameters(_ responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
 
         // call didStart delegate method // TODO: right place here?
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTestDidStart(self)
             return
         }
@@ -153,7 +166,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func parseRequestResult(responseObject: QosMeasurmentResponse) {
+    fileprivate func parseRequestResult(_ responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
@@ -197,13 +210,13 @@ public class QualityOfServiceTest {
         currentTestCount = testCount
 
         // create sorted array of keys to let the concurrencyGroups increase
-        sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sort(<)
+        sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sorted(by: <)
 
         logger.debug("sorted concurrency groups: \(self.sortedConcurrencyGroups)")
     }
 
     ///
-    private func createTestTypeCountMap() {
+    fileprivate func createTestTypeCountMap() {
         if stopped {
             return
         }
@@ -215,31 +228,31 @@ public class QualityOfServiceTest {
             for test in testArray { // loop the tests inside each concurrency group
                 let testType = test.getType()
 
-                var count: UInt16? = testTypeCountMap[testType]
+                var count: UInt16? = testTypeCountMap[testType!]
                 if count == nil {
                     count = 0
                 }
 
                 count! += 1
 
-                testTypeCountMap[testType] = count!
+                testTypeCountMap[testType!] = count!
 
                 //////
 
-                if testTypeSortDictionary[testType] == nil {
-                    testTypeSortDictionary[testType] = cg
+                if testTypeSortDictionary[testType!] == nil {
+                    testTypeSortDictionary[testType!] = cg
                 }
             }
         }
 
         // get test types and sort them according to their first execution
         var testTypeArray = [QOSMeasurementType](self.testTypeCountMap.keys)
-        testTypeArray.sortInPlace() { lhs, rhs in
+        testTypeArray.sort() { lhs, rhs in
             testTypeSortDictionary[lhs] < testTypeSortDictionary[rhs]
         }
 
         // call didFetchTestTypes delegate method
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray)
             return
         }
@@ -248,7 +261,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func runQOSTests() {
+    fileprivate func runQOSTests() {
         logger.debug("RUN QOS TESTS (stopped: \(self.stopped))")
 
         if stopped {
@@ -260,13 +273,13 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func runTestsOfNextConcurrencyGroup() {
+    fileprivate func runTestsOfNextConcurrencyGroup() {
         if stopped {
             return
         }
 
         if sortedConcurrencyGroups.count > 0 {
-            let concurrencyGroup = sortedConcurrencyGroups.removeAtIndex(0) // what happens if empty?
+            let concurrencyGroup = sortedConcurrencyGroups.remove(at: 0) // what happens if empty?
 
             logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(self.sortedConcurrencyGroups.count))")
 
@@ -309,7 +322,7 @@ public class QualityOfServiceTest {
                                 // don't do this test
                                 logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
 
-                                dispatch_sync(self.mutualExclusionQueue) {
+                                self.mutualExclusionQueue.sync {
                                     self.qosTestFinishedWithResult(qosTest.getType(), withTestResult: nil) // no result because test didn't run
                                 }
 
@@ -320,10 +333,10 @@ public class QualityOfServiceTest {
                         logger.debug("starting execution of test: \(qosTest)")
 
                         // execute test
-                        dispatch_async(self.executorQueue) {
+                        self.executorQueue.async {
                             testExecutor.execute { (testResult: QOSTestResult) in
 
-                                dispatch_sync(self.mutualExclusionQueue) {
+                                self.mutualExclusionQueue.sync {
                                     self.qosTestFinishedWithResult(testResult.testType, withTestResult: testResult)
                                 }
                             }
@@ -335,7 +348,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func qosTestFinishedWithResult(testType: QOSMeasurementType, withTestResult testResult: QOSTestResult?) {
+    fileprivate func qosTestFinishedWithResult(_ testType: QOSMeasurementType, withTestResult testResult: QOSTestResult?) {
         if stopped {
             return
         }
@@ -362,7 +375,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func checkProgress() {
+    fileprivate func checkProgress() {
         if stopped {
             return
         }
@@ -376,14 +389,14 @@ public class QualityOfServiceTest {
 
         logger.debug("QOS: increasing progress to \(percent)")
 
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didProgressToValue: percent)
             return
         }
     }
 
     ///
-    private func checkTypeCount(testType: QOSMeasurementType) {
+    fileprivate func checkTypeCount(_ testType: QOSMeasurementType) {
         if stopped {
             return
         }
@@ -394,7 +407,7 @@ public class QualityOfServiceTest {
 
             logger.debug("QOS: finished test type: \(testType)")
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType)
                 return
             }
@@ -402,7 +415,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func checkTestState() {
+    fileprivate func checkTestState() {
         if stopped {
             return
         }
@@ -416,12 +429,12 @@ public class QualityOfServiceTest {
             if sortedConcurrencyGroups.count > 0 {
                 // there are more concurrency groups (and tests)
 
-                dispatch_async(self.qosQueue) {
+                self.qosQueue.async {
                     self.runTestsOfNextConcurrencyGroup()
                 }
             } else {
                 // all concurrency groups finished
-                dispatch_async(self.qosQueue) {
+                self.qosQueue.async {
                     self.finalizeQOSTests()
                 }
             }
@@ -429,7 +442,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func finalizeQOSTests() {
+    fileprivate func finalizeQOSTests() {
         if stopped {
             return
         }
@@ -443,7 +456,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func getControlConnection(qosTest: QOSTest) -> QOSControlConnection {
+    fileprivate func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
         // determine control connection
         let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)"
 
@@ -460,7 +473,7 @@ public class QualityOfServiceTest {
             // conn.delegate = self
 
             // connect
-            /* let isConnected = */conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort) // blocking
+            /* let isConnected = */_ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort) // blocking
 
             // logger.debug("AFTER LOCK: have control connection?: \(isConnected)")
             // TODO: return nil? if not connected
@@ -474,21 +487,21 @@ public class QualityOfServiceTest {
 
         if !conn.connected {
             // reconnect
-            conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
+            _ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
         }
 
         return conn
     }
 
     ///
-    private func openAllControlConnections() {
+    fileprivate func openAllControlConnections() {
         logger.info("opening all control connections")
 
         for concurrencyGroup in self.sortedConcurrencyGroups {
             if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
                 for qosTest in testArray {
                     // dispatch_sync(mutualExclusionQueue) {
-                        /* let controlConnection = */self.getControlConnection(qosTest)
+                        /* let controlConnection = */_ = self.getControlConnection(qosTest)
                         // logger.debug("opened control connection for qosTest \(qosTest)")
                     // }
                 }
@@ -497,7 +510,7 @@ public class QualityOfServiceTest {
     }
 
     ///
-    private func closeAllControlConnections() {
+    fileprivate func closeAllControlConnections() {
         logger.info("closing all control connections")
 
         // TODO: if everything is done: close all control connections
@@ -510,26 +523,26 @@ public class QualityOfServiceTest {
     ///////////////
 
     ///
-    private func fail(error: NSError?) {
+    fileprivate func fail(_ error: NSError?) {
         if stopped {
             return
         }
 
         stop()
 
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didFailWithError: error)
             return
         }
     }
 
     ///
-    private func success() {
+    fileprivate func success() {
         if stopped {
             return
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didFinishWithResults: self.resultArray)
             return
         }
@@ -538,7 +551,7 @@ public class QualityOfServiceTest {
     ////////////////////////////////////////////
 
     ///
-    private func submitQOSTestResults() {
+    fileprivate func submitQOSTestResults() {
         if stopped {
             return
         }
@@ -564,7 +577,7 @@ public class QualityOfServiceTest {
         let qosMeasurementResult = QosMeasurementResultRequest()
         qosMeasurementResult.measurementUuid = measurementUuid
         qosMeasurementResult.testToken = testToken
-        qosMeasurementResult.time = NSNumber(unsignedLongLong: currentTimeMillis()).integerValue // currently unused on server!
+        qosMeasurementResult.time = NSNumber(value: currentTimeMillis() as UInt64).intValue // currently unused on server!
         qosMeasurementResult.qosResultList = _testResultArray
 
         let controlServer = ControlServer.sharedControlServer
@@ -578,7 +591,7 @@ public class QualityOfServiceTest {
             logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
 
             // here the test failed...
-            self.fail(error)
+            self.fail(error as NSError?)
         }
     }
 

@@ -25,20 +25,20 @@ protocol WriteToNSMutableData {
 extension NSMutableData: WriteToNSMutableData {
 
     ///
-    public func appendValue<T>(data: T) {
+    public func appendValue<T>(_ data: T) {
         var data = data
 
-        withUnsafePointer(&data) { p in
-            self.appendBytes(p, length: sizeofValue(data))
+        withUnsafePointer(to: &data) { p in
+            self.append(p, length: MemoryLayout.size(ofValue: data))
         }
     }
 
     ///
-    public func appendValue<T>(data: T, size: Int) {
+    public func appendValue<T>(_ data: T, size: Int) {
         var data = data
 
-        withUnsafePointer(&data) { p in
-            self.appendBytes(p, length: size)
+        withUnsafePointer(to: &data) { p in
+            self.append(p, length: size)
         }
     }
 
@@ -50,33 +50,33 @@ protocol ReadFromNSData {
 }
 
 ///
-extension NSData: ReadFromNSData {
+extension Data: ReadFromNSData {
 
     ///
-    public func readUInt16(data: NSData, atOffset offset: Int) -> UInt16 {
+    public func readUInt16(_ data: Data, atOffset offset: Int) -> UInt16 {
         var value: UInt16 = 0
 
-        data.getBytes(&value, range: NSRange(location: offset, length: sizeof(UInt16)))
+        (data as NSData).getBytes(&value, range: NSRange(location: offset, length: MemoryLayout<UInt16>.size))
 
         return value
     }
 
     ///
-    public func readHostByteOrderUInt16(data: NSData, atOffset offset: Int) -> UInt16 {
+    public func readHostByteOrderUInt16(_ data: Data, atOffset offset: Int) -> UInt16 {
         return CFSwapInt16BigToHost(readUInt16(data, atOffset: offset))
     }
 
     ///
-    public func readUInt32(data: NSData, atOffset offset: Int) -> UInt32 {
+    public func readUInt32(_ data: Data, atOffset offset: Int) -> UInt32 {
         var value: UInt32 = 0
 
-        data.getBytes(&value, range: NSRange(location: offset, length: sizeof(UInt32)))
+        (data as NSData).getBytes(&value, range: NSRange(location: offset, length: MemoryLayout<UInt32>.size))
 
         return value
     }
 
     ///
-    public func readHostByteOrderUInt32(data: NSData, atOffset offset: Int) -> UInt32 {
+    public func readHostByteOrderUInt32(_ data: Data, atOffset offset: Int) -> UInt32 {
         return CFSwapInt32BigToHost(readUInt32(data, atOffset: offset))
     }
 

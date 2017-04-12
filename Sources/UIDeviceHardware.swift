@@ -96,26 +96,26 @@ let IOS_MODEL_DICTIONARY = [
 ]
 
 ///
-public class UIDeviceHardware {
+open class UIDeviceHardware {
 
     ///
-    public class func platform() -> String {
+    open class func platform() -> String {
         var size = 0
         sysctlbyname("hw.machine", nil, &size, nil, 0)
 
-        var machine = [CChar](count: Int(size), repeatedValue: 0)
+        var machine = [CChar](repeating: 0, count: Int(size))
         sysctlbyname("hw.machine", &machine, &size, nil, 0)
 
-        return String.fromCString(machine)!
+        return String(cString: machine)
     }
 
     ///
-    public class func platformString() -> String {
+    open class func platformString() -> String {
         return getDeviceNameFromPlatform(platform())
     }
 
     ///
-    public class func getDeviceNameFromPlatform(platform: String) -> String {
+    open class func getDeviceNameFromPlatform(_ platform: String) -> String {
         return IOS_MODEL_DICTIONARY[platform] ?? platform
     }
 

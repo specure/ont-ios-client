@@ -23,13 +23,13 @@ struct RTPPacket {
     var header: RTPHeader
 
     ///
-    var payload: NSData // [UInt32]
+    var payload: Data // [UInt32]
 
     //
 
     ///
     var length: Int {
-        return header.length + payload.length
+        return header.length + payload.count
     }
 
     //
@@ -38,24 +38,24 @@ struct RTPPacket {
     init() {
         header = RTPHeader()
 
-        payload = NSData() // [UInt32](count: 1, repeatedValue: 0)
+        payload = Data() // [UInt32](count: 1, repeatedValue: 0)
     }
 
 // MARK: to/from data methods
 
     ///
-    func toData() -> NSData {
+    func toData() -> Data {
         let data = NSMutableData()
 
-        data.appendData(header.toData())
-        data.appendData(payload)
+        data.append(header.toData() as Data)
+        data.append(payload)
 
-        return data
+        return data as Data
     }
 
     ///
-    static func fromData(packetData: NSData) -> RTPPacket? {
-        if packetData.length < 12 {
+    static func fromData(_ packetData: Data) -> RTPPacket? {
+        if packetData.count < 12 {
             return nil // packet size too small
         }
 
@@ -73,7 +73,10 @@ struct RTPPacket {
         }
 
         // payload
-        rtpPacket.payload = packetData.subdataWithRange(NSRange(location: offset, length: packetData.length - offset))
+        // rtpPacket.payload = packetData.subdata(in: NSRange(location: offset, length: packetData.count - offset))
+        // let r = offset..<packetData.count-offset
+
+        rtpPacket.payload = packetData.subdata(in: offset..<packetData.count-offset)
 
         return rtpPacket
     }

@@ -18,13 +18,13 @@
 import Foundation
 
 ///
-public class RMBTThroughput: CustomStringConvertible {
+open class RMBTThroughput: CustomStringConvertible {
 
     ///
     var length: UInt64
 
     ///
-    private var _startNanos: UInt64 // nasty hack to get around endless loop with didSet
+    fileprivate var _startNanos: UInt64 // nasty hack to get around endless loop with didSet
     var startNanos: UInt64 {
         get {
             return _startNanos
@@ -38,7 +38,7 @@ public class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    private var _endNanos: UInt64 // nasty hack to get around endless loop with didSet
+    fileprivate var _endNanos: UInt64 // nasty hack to get around endless loop with didSet
     var endNanos: UInt64 {
         get {
             return _endNanos
@@ -52,7 +52,7 @@ public class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    private var _durationNanos: UInt64 // nasty hack to get around endless loop with didSet
+    fileprivate var _durationNanos: UInt64 // nasty hack to get around endless loop with didSet
     var durationNanos: UInt64 {
         get {
             return _durationNanos
@@ -83,17 +83,17 @@ public class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    func containsNanos(nanos: UInt64) -> Bool {
+    func containsNanos(_ nanos: UInt64) -> Bool {
         return (_startNanos <= nanos && _endNanos >= nanos)
     }
 
     ///
-    public func kilobitsPerSecond() -> UInt32 {
+    open func kilobitsPerSecond() -> UInt32 {
         return UInt32(Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6))) // TODO: improve
     }
 
     ///
-    public var description: String {
+    open var description: String {
         return String(format: "(%@-%@, %lld bytes, %@)",
                         RMBTSecondsStringWithNanos(_startNanos),
                         RMBTSecondsStringWithNanos(_endNanos),

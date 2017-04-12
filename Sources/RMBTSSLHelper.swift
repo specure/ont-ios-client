@@ -12,34 +12,34 @@ import Foundation
 class RMBTSSLHelper {
 
     ///
-    private init() {
+    fileprivate init() {
 
     }
 
     ///
-    class func encryptionStringForSSLContext(sslContext: SSLContextRef) -> String {
+    class func encryptionStringForSSLContext(_ sslContext: SSLContext) -> String {
         return "\(encryptionProtocolStringForSSLContext(sslContext)) (\(encryptionCipherStringForSSLContext(sslContext)))"
     }
 
     ///
-    class func encryptionProtocolStringForSSLContext(sslContext: SSLContextRef) -> String {
-        var sslProtocol: SSLProtocol = .SSLProtocolUnknown
+    class func encryptionProtocolStringForSSLContext(_ sslContext: SSLContext) -> String {
+        var sslProtocol: SSLProtocol = .sslProtocolUnknown
         SSLGetNegotiatedProtocolVersion(sslContext, &sslProtocol)
 
         switch sslProtocol {
-            case .SSLProtocolUnknown: return "No Protocol"
-            case .SSLProtocol2:       return "SSLv2"
-            case .SSLProtocol3:       return "SSLv3"
-            case .SSLProtocol3Only:   return "SSLv3 Only"
-            case .TLSProtocol1:       return "TLSv1"
-            case .TLSProtocol11:      return "TLSv1.1"
-            case .TLSProtocol12:      return "TLSv1.2"
+            case .sslProtocolUnknown: return "No Protocol"
+            case .sslProtocol2:       return "SSLv2"
+            case .sslProtocol3:       return "SSLv3"
+            case .sslProtocol3Only:   return "SSLv3 Only"
+            case .tlsProtocol1:       return "TLSv1"
+            case .tlsProtocol11:      return "TLSv1.1"
+            case .tlsProtocol12:      return "TLSv1.2"
             default:                  return "other protocol: \(sslProtocol)"
         }
     }
 
     ///
-    class func encryptionCipherStringForSSLContext(sslContext: SSLContextRef) -> String {
+    class func encryptionCipherStringForSSLContext(_ sslContext: SSLContext) -> String {
         var cipher = SSLCipherSuite()
         SSLGetNegotiatedCipher(sslContext, &cipher)
 

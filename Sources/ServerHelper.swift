@@ -23,26 +23,26 @@ import ObjectMapper
 class ServerHelper {
 
     ///
-    class func configureAlamofireManager() -> Alamofire.Manager {
-        let configuration = NSURLSessionConfiguration.ephemeralSessionConfiguration() //defaultSessionConfiguration()
+    class func configureAlamofireManager() -> Alamofire.SessionManager {
+        let configuration = URLSessionConfiguration.ephemeral //defaultSessionConfiguration()
         configuration.timeoutIntervalForRequest = 30 // seconds
         configuration.timeoutIntervalForResource = 30
 
         configuration.allowsCellularAccess = true
-        configuration.HTTPShouldUsePipelining = true
+        configuration.httpShouldUsePipelining = true
 
         // Set user agent
-        if let userAgent = NSUserDefaults.standardUserDefaults().stringForKey("UserAgent") {
-            configuration.HTTPAdditionalHeaders = [
+        if let userAgent = UserDefaults.standard.string(forKey: "UserAgent") {
+            configuration.httpAdditionalHeaders = [
                 "User-Agent": userAgent
             ]
         }
 
-        return Alamofire.Manager(configuration: configuration)
+        return Alamofire.SessionManager(configuration: configuration)
     }
 
     ///
-    class func requestArray<T: BasicResponse>(manager: Alamofire.Manager, baseUrl: String?, method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: [T]) -> (), error failure: ErrorCallback) {
+    class func requestArray<T: BasicResponse>(_ manager: Alamofire.SessionManager, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
 
         var parameters: [String: AnyObject]?
@@ -50,9 +50,9 @@ class ServerHelper {
         if let reqObj = requestObject {
             BasicRequestBuilder.addBasicRequestValues(reqObj)
 
-            parameters = Mapper().toJSON(reqObj)
+            parameters = reqObj.toJSON() as [String : AnyObject]?
 
-            logger.debug {
+            logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                     return "Requesting \(path) with object: \n\(jsonString)"
                 }
@@ -61,13 +61,16 @@ class ServerHelper {
             }
         }
 
-        var encoding: ParameterEncoding = .JSON
-        if method == .GET || method == .DELETE { // GET and DELETE request don't support JSON bodies...
-            encoding = .URL
+        var encoding: ParameterEncoding = JSONEncoding.default
+        if method == .get || method == .delete { // GET and DELETE request don't support JSON bodies...
+            encoding = URLEncoding.default
         }
+        
+        let basePath = (baseUrl != nil ? baseUrl! : "") + path
 
         manager
-            .request(method, (baseUrl != nil ? baseUrl! : "") + path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
+            .request(basePath, method: method, parameters: parameters, encoding: encoding, headers: [:])
+            //.request(method, basePath, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             /*.responseString { response in
                 logger.debug {
@@ -75,9 +78,9 @@ class ServerHelper {
                     return "Response for \(path): \n\(response.result.value)"
                 }
             }*/
-            .responseArray { (response: Response<[T], NSError>) in
+            .responseArray { (response: DataResponse<[T]>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     if let responseArray: [T] = response.result.value {
 
                         logger.debug {
@@ -90,22 +93,22 @@ class ServerHelper {
                             return "Response for \(path) with object: <json serialization failed>"
                         }
 
-                        success(response: responseArray)
+                        success(responseArray)
                     }
-                case .Failure(let error):
+                case .failure(let error):
                     logger.debug("\(error)") // TODO: error callback
 
                     /*if let responseObj = response.result.value as? String {
                      logger.debug("error msg from server: \(responseObj)")
                      }*/
 
-                    failure(error: error)
+                    failure(error as Error)
                 }
-        }
+            }
     }
 
     ///
-    class func request<T: BasicResponse>(manager: Alamofire.Manager, baseUrl: String?, method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: T) -> (), error failure: ErrorCallback) {
+    class func request<T: BasicResponse>(_ manager: Alamofire.SessionManager, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success:  @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
 
         var parameters: [String: AnyObject]?
@@ -113,9 +116,9 @@ class ServerHelper {
         if let reqObj = requestObject {
             BasicRequestBuilder.addBasicRequestValues(reqObj)
 
-            parameters = Mapper().toJSON(reqObj)
+            parameters = reqObj.toJSON() as [String : AnyObject]? ///Mapper(). toJSON(reqObj)
 
-            logger.debug {
+            logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                     return "Requesting \(path) with object: \n\(jsonString)"
                 }
@@ -124,23 +127,20 @@ class ServerHelper {
             }
         }
 
-        var encoding: ParameterEncoding = .JSON
-        if method == .GET || method == .DELETE { // GET and DELETE request don't support JSON bodies...
-            encoding = .URL
+        var encoding: ParameterEncoding = JSONEncoding.default
+        if method == .get || method == .delete { // GET and DELETE request don't support JSON bodies...
+            encoding = URLEncoding.default
         }
+        let url = (baseUrl != nil ? baseUrl! : "") + path
 
         manager
-            .request(method, (baseUrl != nil ? baseUrl! : "") + path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
+            .request(url, method: method, parameters: parameters, encoding: encoding, headers: nil)
+//            .request(method, (baseUrl != nil ? baseUrl! : "")+path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
-            /*.responseString { response in
-                logger.debug {
-                    debugPrint(response)
-                    return "Response for \(path): \n\(response.result.value)"
-                }
-            }*/
-            .responseObject { (response: Response<T, NSError>) in
+        
+            .responseObject { (response: DataResponse<T>) in
                 switch response.result {
-                case .Success:
+                case .success:
                     if let responseObj: T = response.result.value {
 
                         logger.debug {
@@ -153,17 +153,17 @@ class ServerHelper {
                             return "Response for \(path) with object: <json serialization failed>"
                         }
 
-                        success(response: responseObj)
+                        success(responseObj)
                     }
-                case .Failure(let error):
+                case .failure(let error):
                     logger.debug("\(error)") // TODO: error callback
 
                     /*if let responseObj = response.result.value as? String {
                      logger.debug("error msg from server: \(responseObj)")
                      }*/
 
-                    failure(error: error)
+                    failure(error as Error)
                 }
-        }
+            }
     }
 }

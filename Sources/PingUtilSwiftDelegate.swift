@@ -20,14 +20,14 @@ import Foundation
 protocol PingUtilSwiftDelegate {
 
     ///
-    func pingUtil(pingUtil: PingUtil, didFailWithError error: NSError!)
+    func pingUtil(_ pingUtil: PingUtil, didFailWithError error: Error!)
 
     ///
-    func pingUtil(pingUtil: PingUtil, didStartWithAddress address: NSData)
+    func pingUtil(_ pingUtil: PingUtil, didStartWithAddress address: Data)
 
     ///
-    func pingUtil(pingUtil: PingUtil, didSendPacket packet: NSData)
+    func pingUtil(_ pingUtil: PingUtil, didSendPacket packet: Data)
 
     ///
-    func pingUtil(pingUtil: PingUtil, didReceivePingResponsePacket packet: NSData, withType type: UInt8, fromIp: String)
+    func pingUtil(_ pingUtil: PingUtil, didReceivePingResponsePacket packet: Data, withType type: UInt8, fromIp: String)
 }

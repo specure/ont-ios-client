@@ -17,10 +17,10 @@
 import Foundation
 
 ///
-public class AtomicBoolean {
+open class AtomicBoolean {
 
     ///
-    private var value: UInt8 = 0
+    fileprivate var value: UInt8 = 0
 
     ///
     public init() {
@@ -33,7 +33,7 @@ public class AtomicBoolean {
     }
 
     ///
-    func testAndSet(newValue: Bool) -> Bool {
+    func testAndSet(_ newValue: Bool) -> Bool {
         if newValue {
             return OSAtomicTestAndSet(7, &value)
         } else {
@@ -47,24 +47,24 @@ public class AtomicBoolean {
     }
 
     ///
-    public func get() -> Bool {
+    open func get() -> Bool {
         return value != 0
     }
 
     ///
-    public func set(newValue: Bool) {
+    open func set(_ newValue: Bool) {
         value = newValue ? 1 : 0
     }
 
 }
 
 ///
-extension AtomicBoolean: BooleanLiteralConvertible {
+extension AtomicBoolean: ExpressibleByBooleanLiteral {
 
 }
 
 ///
-extension AtomicBoolean: BooleanType {
+extension AtomicBoolean {
 
     ///
     public var boolValue: Bool {

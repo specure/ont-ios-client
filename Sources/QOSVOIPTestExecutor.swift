@@ -22,68 +22,68 @@ typealias VOIPTestExecutor = QOSVOIPTestExecutor<QOSVOIPTest>
 ///
 class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSenderDelegate {
 
-    private let RESULT_VOIP_PREFIX          = "voip_result"
-    private let RESULT_VOIP_PREFIX_INCOMING = "_in_"
-    private let RESULT_VOIP_PREFIX_OUTGOING = "_out_"
+    fileprivate let RESULT_VOIP_PREFIX          = "voip_result"
+    fileprivate let RESULT_VOIP_PREFIX_INCOMING = "_in_"
+    fileprivate let RESULT_VOIP_PREFIX_OUTGOING = "_out_"
 
     ///
 
-    private let RESULT_VOIP_PAYLOAD             = "voip_objective_payload"
-    private let RESULT_VOIP_IN_PORT             = "voip_objective_in_port"
-    private let RESULT_VOIP_OUT_PORT            = "voip_objective_out_port"
-    private let RESULT_VOIP_CALL_DURATION       = "voip_objective_call_duration"
-    private let RESULT_VOIP_BITS_PER_SAMPLE     = "voip_objective_bits_per_sample"
-    private let RESULT_VOIP_SAMPLE_RATE         = "voip_objective_sample_rate"
-    private let RESULT_VOIP_DELAY               = "voip_objective_delay"
-    private let RESULT_VOIP_STATUS              = "voip_result_status"
-    private let RESULT_VOIP_VOIP_PREFIX         = "voip_result"
-    private let RESULT_VOIP_INCOMING_PREFIX     = "_in_"
-    private let RESULT_VOIP_OUTGOING_PREFIX     = "_out_"
-    private let RESULT_VOIP_SHORT_SEQUENTIAL    = "short_seq"
-    private let RESULT_VOIP_LONG_SEQUENTIAL     = "long_seq"
-    private let RESULT_VOIP_MAX_JITTER          = "max_jitter"
-    private let RESULT_VOIP_MEAN_JITTER         = "mean_jitter"
-    private let RESULT_VOIP_MAX_DELTA           = "max_delta"
-    private let RESULT_VOIP_SKEW                = "skew"
-    private let RESULT_VOIP_NUM_PACKETS         = "num_packets"
-    private let RESULT_VOIP_SEQUENCE_ERRORS     = "sequence_error"
-    private let RESULT_VOIP_TIMEOUT             = "voip_objective_timeout"
+    fileprivate let RESULT_VOIP_PAYLOAD             = "voip_objective_payload"
+    fileprivate let RESULT_VOIP_IN_PORT             = "voip_objective_in_port"
+    fileprivate let RESULT_VOIP_OUT_PORT            = "voip_objective_out_port"
+    fileprivate let RESULT_VOIP_CALL_DURATION       = "voip_objective_call_duration"
+    fileprivate let RESULT_VOIP_BITS_PER_SAMPLE     = "voip_objective_bits_per_sample"
+    fileprivate let RESULT_VOIP_SAMPLE_RATE         = "voip_objective_sample_rate"
+    fileprivate let RESULT_VOIP_DELAY               = "voip_objective_delay"
+    fileprivate let RESULT_VOIP_STATUS              = "voip_result_status"
+    fileprivate let RESULT_VOIP_VOIP_PREFIX         = "voip_result"
+    fileprivate let RESULT_VOIP_INCOMING_PREFIX     = "_in_"
+    fileprivate let RESULT_VOIP_OUTGOING_PREFIX     = "_out_"
+    fileprivate let RESULT_VOIP_SHORT_SEQUENTIAL    = "short_seq"
+    fileprivate let RESULT_VOIP_LONG_SEQUENTIAL     = "long_seq"
+    fileprivate let RESULT_VOIP_MAX_JITTER          = "max_jitter"
+    fileprivate let RESULT_VOIP_MEAN_JITTER         = "mean_jitter"
+    fileprivate let RESULT_VOIP_MAX_DELTA           = "max_delta"
+    fileprivate let RESULT_VOIP_SKEW                = "skew"
+    fileprivate let RESULT_VOIP_NUM_PACKETS         = "num_packets"
+    fileprivate let RESULT_VOIP_SEQUENCE_ERRORS     = "sequence_error"
+    fileprivate let RESULT_VOIP_TIMEOUT             = "voip_objective_timeout"
 
     //
 
-    private let TAG_TASK_VOIPTEST = 4001
-    private let TAG_TASK_VOIPRESULT = 4002
-
-    //
-
-    ///
-    private var udpStreamSender: UDPStreamSender!
-
-    ///
-    private var initialSequenceNumber: UInt16!
-
-    ///
-    private var ssrc: UInt32!
-
-    ///
-    private var initialRTPPacket: RTPPacket!
-
-    ///
-    private var rtpControlDataList = [UInt16: RTPControlData]()
-
-    ///
-    private var payloadSize: Int!
-
-    ///
-    private var payloadTimestamp: UInt32!
-
-    ///
-    private var cdl: CountDownLatch!
+    fileprivate let TAG_TASK_VOIPTEST = 4001
+    fileprivate let TAG_TASK_VOIPRESULT = 4002
 
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    fileprivate var udpStreamSender: UDPStreamSender!
+
+    ///
+    fileprivate var initialSequenceNumber: UInt16!
+
+    ///
+    fileprivate var ssrc: UInt32!
+
+    ///
+    fileprivate var initialRTPPacket: RTPPacket!
+
+    ///
+    fileprivate var rtpControlDataList = [UInt16: RTPControlData]()
+
+    ///
+    fileprivate var payloadSize: Int!
+
+    ///
+    fileprivate var payloadTimestamp: UInt32!
+
+    ///
+    fileprivate var cdl: CountDownLatch!
+
+    //
+
+    ///
+    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -98,7 +98,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         testResult.set(RESULT_VOIP_IN_PORT,         number: testObject.portIn)
         testResult.set(RESULT_VOIP_SAMPLE_RATE,     number: testObject.sampleRate)
         testResult.set(RESULT_VOIP_PAYLOAD,         number: testObject.payloadType)
-        testResult.set(RESULT_VOIP_STATUS,          value: "OK") // !
+        testResult.set(RESULT_VOIP_STATUS,          value: "OK" as AnyObject?) // !
         testResult.set(RESULT_VOIP_TIMEOUT,         number: testObject.timeout)
 
         initialSequenceNumber = UInt16(arc4random_uniform(10000) + 1)
@@ -132,7 +132,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     ///
     override func testDidTimeout() {
-        testResult.set(RESULT_VOIP_STATUS, value: "TIMEOUT")
+        testResult.set(RESULT_VOIP_STATUS, value: "TIMEOUT" as AnyObject?)
 
         udpStreamSender?.stop()
 
@@ -141,7 +141,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     ///
     override func testDidFail() {
-        testResult.set(RESULT_VOIP_STATUS, value: "ERROR")
+        testResult.set(RESULT_VOIP_STATUS, value: "ERROR" as AnyObject?)
 
         udpStreamSender?.stop()
 
@@ -150,7 +150,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
 // MARK: Other methods
 
-    func cdlTimeout(timeoutMs: UInt64, forTag: String) {
+    func cdlTimeout(_ timeoutMs: UInt64, forTag: String) {
         cdl = CountDownLatch()
         let noTimeout = cdl.await(timeoutMs * NSEC_PER_MSEC)
         cdl = nil
@@ -170,7 +170,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: test methods
 
     ///
-    private func startOutgoingTest() {
+    fileprivate func startOutgoingTest() {
 
         let dDelay          = Double(testObject.delay / NSEC_PER_MSEC)
         let dSampleRate     = Double(testObject.sampleRate)
@@ -249,7 +249,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     ///
-    private func finishOutgoingTest() {
+    fileprivate func finishOutgoingTest() {
         qosLog.debug("FINISH OUTGOING VOIP TEST")
 
         let prefix = RESULT_VOIP_PREFIX + RESULT_VOIP_PREFIX_INCOMING
@@ -291,7 +291,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: calculate qos
 
     ///
-    private func calculateQOS() -> RTPResult? {
+    fileprivate func calculateQOS() -> RTPResult? {
 
         if rtpControlDataList.count <= 0 {
             return nil
@@ -309,7 +309,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
             sequenceNumberArray.append(index)
         }
 
-        sequenceNumberArray.sortInPlace() { $0 < $1 } // TODO: delete when set datatype is available
+        sequenceNumberArray.sort() { $0 < $1 } // TODO: delete when set datatype is available
 
         var sequenceArray = [RTPSequence]()
 
@@ -352,7 +352,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
             prevSeqNr = x
             sequenceArray.append(RTPSequence(timestampNS: j.receivedNS, seq: x))
-            sequenceArray.sortInPlace() { $0.timestampNS < $1.timestampNS } // TODO: delete when set datatype is available
+            sequenceArray.sort() { $0.timestampNS < $1.timestampNS } // TODO: delete when set datatype is available
         }
 
         //
@@ -407,7 +407,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     ///
-    private func calculateDelta(i: RTPControlData, _ j: RTPControlData, _ sampleRate: UInt16) -> Int64 {
+    fileprivate func calculateDelta(_ i: RTPControlData, _ j: RTPControlData, _ sampleRate: UInt16) -> Int64 {
         let msDiff: Int64 = Int64(j.receivedNS) - Int64(i.receivedNS)
         let tsDiff: Int64 = Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(sampleRate) * 1000) * Double(NSEC_PER_MSEC))
 
@@ -417,7 +417,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: QOSControlConnectionDelegate methods
 
     ///
-    override func controlConnection(connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
+    override func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
 
         switch tag {
@@ -427,7 +427,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                 if response.hasPrefix("OK") {
                     cdl?.countDown()
 
-                    ssrc = UInt32(response.componentsSeparatedByString(" ")[1]) // !
+                    ssrc = UInt32(response.components(separatedBy: " ")[1]) // !
                     qosLog.info("got ssrc: \(ssrc)")
 
                     startOutgoingTest()
@@ -438,7 +438,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
                 if response.hasPrefix("VOIPRESULT") {
 
-                    let voipResultArray = response.componentsSeparatedByString(" ") // split(response) { $0 == " " }
+                    let voipResultArray = response.components(separatedBy: " ") // split(response) { $0 == " " }
 
                     if voipResultArray.count >= 9 {
                         cdl?.countDown()
@@ -466,7 +466,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: UDPStreamSenderDelegate methods
 
     /// returns false if the class should stop
-    func udpStreamSender(udpStreamSender: UDPStreamSender, didReceivePacket packetData: NSData) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, didReceivePacket packetData: Data) -> Bool {
         // qosLog.debug("udpStreamSenderDidReceive: \(packetData)")
 
         let receivedNS = nanoTime()
@@ -483,7 +483,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, inout data: NSMutableData) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool {
         if packetNumber > 0 {
             initialRTPPacket.header.increaseSequenceNumberBy(1)
             initialRTPPacket.header.increaseTimestampBy(payloadTimestamp)
@@ -495,18 +495,19 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // generate random bytes
 
         var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
-        initialRTPPacket.payload = NSData(bytes: &payloadBytes, length: Int(payloadSize))
+        initialRTPPacket.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
+        // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
         free(payloadBytes)
 
         //
 
-        data.appendData(initialRTPPacket.toData())
+        data.append(initialRTPPacket.toData() as Data)
 
         return true
     }
 
     ///
-    func udpStreamSender(udpStreamSender: UDPStreamSender, didBindToPort port: UInt16) {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, didBindToPort port: UInt16) {
         testResult.set(RESULT_VOIP_IN_PORT, number: port)
     }
 

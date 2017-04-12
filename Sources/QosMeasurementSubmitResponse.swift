@@ -22,6 +22,6 @@ class QosMeasurementSubmitResponse: BasicResponse {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
     }
 }

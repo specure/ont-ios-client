@@ -18,60 +18,60 @@ import Foundation
 import ObjectMapper
 
 ///
-public class SpeedMeasurementResultResponse: BasicResponse {
+open class SpeedMeasurementResultResponse: BasicResponse {
 
     ///
-    public var classifiedMeasurementDataList: [ClassifiedResultItem]?
+    open var classifiedMeasurementDataList: [ClassifiedResultItem]?
 
     ///
-    public var networkDetailList: [ResultItem]?
+    open var networkDetailList: [ResultItem]?
 
     ///
-    public var networkType: Int?
+    open var networkType: Int?
 
     ///
-    public var openTestUuid: String?
+    open var openTestUuid: String?
 
     ///
-    public var openUuid: String?
+    open var openUuid: String?
 
     ///
-    public var time: Int?
+    open var time: Int?
 
     ///
-    public var timeString: String?
+    open var timeString: String?
 
     ///
-    public var timezone: String?
+    open var timezone: String?
 
     ///
-    public var location: String?
+    open var location: String?
 
     ///
-    public var latitude: Double?
+    open var latitude: Double?
 
     ///
-    public var longitude: Double?
+    open var longitude: Double?
 
     ///
-    public var shareText: String?
+    open var shareText: String?
 
     ///
-    public var shareSubject: String?
+    open var shareSubject: String?
 
     //////////// only for map
 
     ///
-    public var highlight = false
+    open var highlight = false
 
     ///
-    public var measurementUuid: String?
+    open var measurementUuid: String?
 
     ////////////
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         classifiedMeasurementDataList <- map["measurement"]
         networkDetailList <- map["net"]
@@ -95,18 +95,18 @@ public class SpeedMeasurementResultResponse: BasicResponse {
     }
 
     ///
-    override public var description: String {
+    override open var description: String {
         return "SpeedMeasurementResultResponse [\(openTestUuid),\(latitude),\(longitude)]"
     }
 
     ///
-    public class ResultItem: Mappable {
+    open class ResultItem: Mappable {
 
         ///
-        public var value: String?
+        open var value: String?
 
         ///
-        public var title: String?
+        open var title: String?
 
         ///
         init() {
@@ -114,26 +114,26 @@ public class SpeedMeasurementResultResponse: BasicResponse {
         }
 
         ///
-        required public init?(_ map: Map) {
+        required public init?(map: Map) {
 
         }
 
         ///
-        public func mapping(map: Map) {
+        open func mapping(map: Map) {
             value <- map["value"]
             title <- map["title"]
         }
     }
 
     ///
-    public class ClassifiedResultItem: ResultItem {
+    open class ClassifiedResultItem: ResultItem {
 
         ///
-        public var classification: Int?
+        open var classification: Int?
 
         ///
-        override public func mapping(map: Map) {
-            super.mapping(map)
+        override open func mapping(map: Map) {
+            super.mapping(map: map)
 
             classification <- map["classification"]
         }

@@ -23,11 +23,11 @@ typealias NonTransparentProxyTestExecutor = QOSNonTransparentProxyTestExecutor<Q
 ///
 class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTestExecutorClass<T>, GCDAsyncSocketDelegate {
 
-    private let RESULT_NONTRANSPARENT_PROXY_RESPONSE    = "nontransproxy_result_response"
-    private let RESULT_NONTRANSPARENT_PROXY_REQUEST     = "nontransproxy_objective_request"
-    private let RESULT_NONTRANSPARENT_PROXY_PORT        = "nontransproxy_objective_port"
-    private let RESULT_NONTRANSPARENT_PROXY_TIMEOUT     = "nontransproxy_objective_timeout"
-    private let RESULT_NONTRANSPARENT_PROXY_STATUS      = "nontransproxy_result"
+    fileprivate let RESULT_NONTRANSPARENT_PROXY_RESPONSE    = "nontransproxy_result_response"
+    fileprivate let RESULT_NONTRANSPARENT_PROXY_REQUEST     = "nontransproxy_objective_request"
+    fileprivate let RESULT_NONTRANSPARENT_PROXY_PORT        = "nontransproxy_objective_port"
+    fileprivate let RESULT_NONTRANSPARENT_PROXY_TIMEOUT     = "nontransproxy_objective_timeout"
+    fileprivate let RESULT_NONTRANSPARENT_PROXY_STATUS      = "nontransproxy_result"
 
     //
 
@@ -38,18 +38,18 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     let TAG_NTPTEST_REQUEST = -1
 
     ///
-    private let socketQueue = dispatch_queue_create("com.specure.rmbt.qos.ntp.socketQueue", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.qos.ntp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private var ntpTestSocket: GCDAsyncSocket!
+    fileprivate var ntpTestSocket: GCDAsyncSocket!
 
     ///
-    private var gotReply = false
+    fileprivate var gotReply = false
 
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -100,7 +100,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
 // MARK: QOSControlConnectionDelegate methods
 
-    override func controlConnection(connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
+    override func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
 
         switch tag {
@@ -114,7 +114,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
                 // connect client socket
                 do {
-                    try ntpTestSocket.connectToHost(testObject.serverAddress, onPort: testObject.port!, withTimeout: timeoutInSec)
+                    try ntpTestSocket.connect(toHost: testObject.serverAddress, onPort: testObject.port!, withTimeout: timeoutInSec)
                 } catch {
                     // there was an error
                     qosLog.debug("connection error \(error)")
@@ -134,7 +134,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 // MARK: GCDAsyncSocketDelegate methods
 
     ///
-    @objc func socket(sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
+    @objc func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         if sock == ntpTestSocket {
             qosLog.debug("will send \(testObject.request) to the server")
 
@@ -145,14 +145,14 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     }
 
     ///
-    @objc func socket(sock: GCDAsyncSocket, didReadData data: NSData, withTag tag: Int) {
+    @objc func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
         if sock == ntpTestSocket {
             switch tag {
             case TAG_NTPTEST_REQUEST:
 
                 gotReply = true
 
-                qosLog.debug("\(String(data: data, encoding: NSASCIIStringEncoding))")
+                qosLog.debug("\(String(data: data, encoding: String.Encoding.ascii))")
 
                 if let response = SocketUtils.parseResponseToString(data) {
                     qosLog.debug("response: \(response)")
@@ -173,7 +173,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     }
 
     ///
-    @objc func socketDidDisconnect(sock: GCDAsyncSocket, withError err: NSError?) {
+    @objc func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         // if (err != nil && err.code == GCDAsyncSocketConnectTimeoutError) { //check for timeout
         //    return testDidTimeout()
         // }

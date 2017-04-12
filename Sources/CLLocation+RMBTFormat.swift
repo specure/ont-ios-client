@@ -38,7 +38,7 @@ extension CLLocation: RMBTFormat {
 
     ///
     func rmbtFormattedString() -> String {
-        let _cllocation_timestampFormatter = NSDateFormatter()
+        let _cllocation_timestampFormatter = DateFormatter()
         _cllocation_timestampFormatter.dateFormat = "HH:mm:ss"
 
         var latSeconds: Int = Int(round(abs(self.coordinate.latitude * 3600)))
@@ -57,12 +57,12 @@ extension CLLocation: RMBTFormat {
         return String(
             format: "%@ %ld° %.3f' %@ %ld° %.3f' (+/- %.0fm)\n@%@",
             latDirection, latDegrees as CLong, latMinutes, longDirection, longDegrees as CLong, longMinutes,
-            self.horizontalAccuracy, _cllocation_timestampFormatter.stringFromDate(self.timestamp))
+            self.horizontalAccuracy, _cllocation_timestampFormatter.string(from: self.timestamp))
     }
 
     ///
     func rmbtFormattedArray() -> [String] {
-        let cllocationTimestampFormatter = NSDateFormatter()
+        let cllocationTimestampFormatter = DateFormatter()
         cllocationTimestampFormatter.dateFormat = "HH:mm:ss"
 
         var latSeconds: Int = Int(round(abs(self.coordinate.latitude * 3600)))
@@ -82,7 +82,7 @@ extension CLLocation: RMBTFormat {
         let longMin = String(format: "(+/- %.0fm)", self.horizontalAccuracy)
         let locAltitude = String(format: "%.0f m", self.altitude)  // ("\(self.altitude) m")
 
-        let locationItems: [String] = [position, longMin, cllocationTimestampFormatter.stringFromDate(self.timestamp), locAltitude]
+        let locationItems: [String] = [position, longMin, cllocationTimestampFormatter.string(from: self.timestamp), locAltitude]
 
         return locationItems
     }

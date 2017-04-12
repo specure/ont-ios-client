@@ -1,6 +1,6 @@
 {
     "name": "RMBTClient",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "summary": "RMBTClient libary for iOS, OS X and tvOS.",
     "homepage": "https://github.com/specure/...",
     "license": {
@@ -8,11 +8,11 @@
     },
     "source": {
         "git": "https://github.com/specure/...",
-        "tag": "0.0.1"
+        "tag": "0.0.3"
     },
     "authors": "Specure GmbH",
     "platforms": {
-        "ios": "8.2",
+        "ios": "9.0",
         "osx": "10.9",
         "tvos": "9.0"
     },
@@ -58,11 +58,11 @@
         "Sources/PingUtil.h"
     ],
     "dependencies": {
-        "Alamofire": ["~> 3.5.0"],
-        "AlamofireObjectMapper": ["~> 3.0.2"],
-        "RealmSwift": ["~> 2.0.2"],
+        "Alamofire": [],
+        "AlamofireObjectMapper": [],
+        "RealmSwift": [],
         "CocoaAsyncSocket": [],
-        "XCGLogger": ["~> 3.3.0"]
+        "XCGLogger": []
     },
     "frameworks": [
        "Foundation",

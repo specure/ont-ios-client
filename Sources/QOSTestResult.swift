@@ -17,19 +17,19 @@
 import Foundation
 
 ///
-public class QOSTestResult {
+open class QOSTestResult {
 
     ///
-    public var resultDictionary = QOSTestResults()
+    open var resultDictionary = QOSTestResults()
 
     ///
-    public var testType: QOSMeasurementType
+    open var testType: QOSMeasurementType
 
     ///
-    public var fatalError = false
+    open var fatalError = false
 
     ///
-    public var readOnly = false
+    open var readOnly = false
 
     //
 
@@ -37,16 +37,16 @@ public class QOSTestResult {
     public init(type: QOSMeasurementType) {
         self.testType = type
 
-        resultDictionary["test_type"] = type.rawValue
+        resultDictionary["test_type"] = type.rawValue as AnyObject?
     }
 
     ///
-    public func isEmpty() -> Bool {
+    open func isEmpty() -> Bool {
         return !fatalError && resultDictionary.isEmpty
     }
 
     ///
-    public func freeze() {
+    open func freeze() {
         readOnly = true
     }
 
@@ -69,62 +69,62 @@ extension QOSTestResult: CustomStringConvertible {
 extension QOSTestResult {
 
     ///
-    public func set(key: String, value: AnyObject?) {
+    public func set(_ key: String, value: Any?) {
         if !readOnly {
-            resultDictionary[key] = jsonValueOrNull(value)
+            resultDictionary[key] = jsonValueOrNull(value as AnyObject?)
         }
     }
 
     // TODO: can this be improved?
 
     ///
-    public func set(key: String, number: UInt!) {
-        set(key, value: (number != nil ? NSNumber(unsignedLong: number) : nil))
+    public func set(_ key: String, number: UInt!) {
+        set(key, value: (number != nil ? NSNumber(value: number as UInt) : nil))
     }
 
     ///
-    public func set(key: String, number: UInt8!) {
-        set(key, value: (number != nil ? NSNumber(unsignedChar: number) : nil))
+    public func set(_ key: String, number: UInt8!) {
+        set(key, value: (number != nil ? NSNumber(value: number as UInt8) : nil))
     }
 
     ///
-    public func set(key: String, number: UInt16!) {
-        set(key, value: (number != nil ? NSNumber(unsignedShort: number) : nil))
+    public func set(_ key: String, number: UInt16!) {
+        set(key, value: (number != nil ? NSNumber(value: number as UInt16) : nil))
     }
 
     ///
-    public func set(key: String, number: UInt32!) {
-        set(key, value: (number != nil ? NSNumber(unsignedInt: number) : nil))
+    public func set(_ key: String, number: UInt32!) {
+        set(key, value: (number != nil ? NSNumber(value: number as UInt32) : nil))
     }
 
     ///
-    public func set(key: String, number: UInt64!) {
-        set(key, value: (number != nil ? NSNumber(unsignedLongLong: number) : nil))
+    public func set(_ key: String, number: UInt64!) {
+        set(key, value: (number != nil ? NSNumber(value: number as UInt64) : nil))
     }
 
     ///
-    public func set(key: String, number: Int!) {
-        set(key, value: (number != nil ? NSNumber(long: number) : nil))
+    public func set(_ key: String, number: Int!) {
+        set(key, value: (number != nil ? NSNumber(value: number as Int) : nil))
     }
 
     ///
-    public func set(key: String, number: Int8!) {
-        set(key, value: (number != nil ? NSNumber(char: number) : nil))
+    public func set(_ key: String, number: Int8!) {
+        set(key, value: (number != nil ? NSNumber(value: number as Int8) : nil))
     }
 
     ///
-    public func set(key: String, number: Int16!) {
-        set(key, value: (number != nil ? NSNumber(short: number) : nil))
+    public func set(_ key: String, number: Int16!) {
+        set(key, value: (number != nil ? NSNumber(value: number as Int16) : nil))
     }
 
     ///
-    public func set(key: String, number: Int32!) {
-        set(key, value: (number != nil ? NSNumber(int: number) : nil))
+    public func set(_ key: String, number: Int32!) {
+        set(key, value: (number != nil ? NSNumber(value: number as Int32) : nil))
     }
 
     ///
-    public func set(key: String, number: Int64!) {
-        set(key, value: (number != nil ? NSNumber(longLong: number) : nil))
+    public func set(_ key: String, number: Int64!) {
+        set(key, value: (number != nil ? NSNumber(value: number as Int64) : nil))
     }
 
 }

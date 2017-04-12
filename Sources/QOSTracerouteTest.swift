@@ -19,8 +19,8 @@ import Foundation
 ///
 class QOSTracerouteTest: QOSTest {
 
-    private let PARAM_HOST = "host"
-    private let PARAM_MAX_HOPS = "max_hops"
+    fileprivate let PARAM_HOST = "host"
+    fileprivate let PARAM_MAX_HOPS = "max_hops"
 
     //
 
@@ -28,7 +28,7 @@ class QOSTracerouteTest: QOSTest {
     var maxHops: UInt8 = 64
 
     /// config values not configured on server
-    var noResponseTimeout: NSTimeInterval = 1 // x seconds
+    var noResponseTimeout: TimeInterval = 1 // x seconds
     var bytesPerPackage: UInt16 = 72 // 72 bytes
     var triesPerTTL: UInt8 = 1 // x tries per ttl
     ///

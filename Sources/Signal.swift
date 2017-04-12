@@ -33,7 +33,7 @@ class Signal: Mappable {
     var catTechnology: String? // results only
 
     ///
-    var time: NSDate?
+    var time: Date?
 
     ///
     var signalStrength: Int?
@@ -68,18 +68,18 @@ class Signal: Mappable {
     init(connectivity: RMBTConnectivity) {
         // TODO: additional fields?
 
-        relativeTimeNs = RMBTTimestampWithNSDate(connectivity.timestamp).integerValue
-        time = connectivity.timestamp
+        relativeTimeNs = RMBTTimestampWithNSDate(connectivity.timestamp).intValue
+        time = connectivity.timestamp as Date
 
-        if connectivity.networkType == .Cellular {
-            networkTypeId = connectivity.cellularCode.integerValue
+        if connectivity.networkType == .cellular {
+            networkTypeId = connectivity.cellularCode.intValue
         } else {
             networkTypeId = connectivity.networkType.rawValue
         }
     }
 
     ///
-    required init?(_ map: Map) {
+    required init?(map: Map) {
 
     }
 

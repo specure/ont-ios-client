@@ -40,7 +40,7 @@ class MapMeasurementRequest: BasicRequest {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         size            <- map["size"]
         clientUuid      <- map["client_uuid"]
@@ -68,7 +68,7 @@ class MapMeasurementRequest: BasicRequest {
         }
 
         ///
-        required internal init?(_ map: Map) {
+        required internal init?(map: Map) {
 
         }
 

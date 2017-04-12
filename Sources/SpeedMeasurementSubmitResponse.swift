@@ -28,7 +28,7 @@ class SpeedMeasurementSubmitResponse: BasicResponse {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         openTestUuid <- map["open_test_uuid"]
         testUuid <- map["test_uuid"]

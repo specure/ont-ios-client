@@ -18,14 +18,14 @@ import Foundation
 import ObjectMapper
 
 ///
-public class SpeedMeasurementDisassociateResponse: BasicResponse {
+open class SpeedMeasurementDisassociateResponse: BasicResponse {
 
     ///
-    public var success = false
+    open var success = false
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         success <- map["success"]
     }

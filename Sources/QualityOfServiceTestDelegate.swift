@@ -20,23 +20,23 @@ import Foundation
 public protocol QualityOfServiceTestDelegate {
 
     ///
-    func qualityOfServiceTestDidStart(test: QualityOfServiceTest)
+    func qualityOfServiceTestDidStart(_ test: QualityOfServiceTest)
 
     ///
-    func qualityOfServiceTestDidStop(test: QualityOfServiceTest)
+    func qualityOfServiceTestDidStop(_ test: QualityOfServiceTest)
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult])
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult])
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType])
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType])
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType)
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType)
 
     ///
-    func qualityOfServiceTest(test: QualityOfServiceTest, didProgressToValue progress: Float)
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float)
 }

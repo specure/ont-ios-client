@@ -21,7 +21,7 @@ import CocoaAsyncSocket
 struct UDPStreamSenderSettings {
     var host: String
     var port: UInt16 = 0
-    var delegateQueue: dispatch_queue_t
+    var delegateQueue: DispatchQueue
     var sendResponse: Bool = false
     var maxPackets: UInt16 = 5
     var timeout: UInt64 = 10_000_000_000
@@ -34,16 +34,16 @@ struct UDPStreamSenderSettings {
 class UDPStreamSender: NSObject {
 
     ///
-    private let streamSenderQueue = dispatch_queue_create("com.specure.rmbt.udp.streamSenderQueue", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate let streamSenderQueue = DispatchQueue(label: "com.specure.rmbt.udp.streamSenderQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private var udpSocket: GCDAsyncUdpSocket!
+    fileprivate var udpSocket: GCDAsyncUdpSocket!
 
     ///
-    private let countDownLatch = CountDownLatch()
+    fileprivate let countDownLatch = CountDownLatch()
 
     ///
-    private var running = AtomicBoolean()
+    fileprivate var running = AtomicBoolean()
 
     //
 
@@ -51,30 +51,30 @@ class UDPStreamSender: NSObject {
     var delegate: UDPStreamSenderDelegate?
 
     ///
-    private let settings: UDPStreamSenderSettings
+    fileprivate let settings: UDPStreamSenderSettings
 
     //
 
     ///
-    private var packetsReceived: UInt16 = 0
+    fileprivate var packetsReceived: UInt16 = 0
 
     ///
-    private var packetsSent: UInt16 = 0
+    fileprivate var packetsSent: UInt16 = 0
 
     ///
-    private let delayMS: UInt64
+    fileprivate let delayMS: UInt64
 
     ///
-    private let timeoutMS: UInt64
+    fileprivate let timeoutMS: UInt64
 
     ///
-    private let timeoutSec: Double
+    fileprivate let timeoutSec: Double
 
     ///
-    private var lastSentTimestampMS: UInt64 = 0
+    fileprivate var lastSentTimestampMS: UInt64 = 0
 
     ///
-    private var usleepOverhead: UInt64 = 0
+    fileprivate var usleepOverhead: UInt64 = 0
 
     //
 
@@ -90,11 +90,11 @@ class UDPStreamSender: NSObject {
 
     ///
     func stop() {
-        running.testAndSet(false)
+        _ = running.testAndSet(false)
     }
 
     ///
-    private func connect() {
+    fileprivate func connect() {
         logger.debug("connecting udp socket")
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: streamSenderQueue)
 
@@ -103,12 +103,12 @@ class UDPStreamSender: NSObject {
         do {
 
             if let portIn = settings.portIn {
-                try udpSocket.bindToPort(portIn)
+                try udpSocket.bind(toPort: portIn)
             }
 
-            try udpSocket.connectToHost(settings.host, onPort: settings.port)
+            try udpSocket.connect(toHost: settings.host, onPort: settings.port)
 
-            countDownLatch.await(200 * NSEC_PER_MSEC)
+            _ = countDownLatch.await(200 * NSEC_PER_MSEC)
 
             //
 
@@ -123,7 +123,7 @@ class UDPStreamSender: NSObject {
     }
 
     ///
-    private func close() {
+    fileprivate func close() {
         logger.debug("closing udp socket")
         udpSocket?.closeAfterSending()
     }
@@ -144,9 +144,9 @@ class UDPStreamSender: NSObject {
 
         var hasTimeout = false
 
-        running.testAndSet(true)
+        _ = running.testAndSet(true)
 
-        while running {
+        while running.boolValue {
 
             ////////////////////////////////////
             // check if should stop
@@ -161,7 +161,7 @@ class UDPStreamSender: NSObject {
             ////////////////////////////////////
             // check delay
 
-            logger.verbose("currentTimeMS: \(currentTimeMillis()), lastSentTimestampMS: \(lastSentTimestampMS)")
+            logger.verbose("currentTimeMS: \(currentTimeMillis()), lastSentTimestampMS: \(self.lastSentTimestampMS)")
 
             var currentDelay = currentTimeMillis() - lastSentTimestampMS + usleepOverhead
             logger.verbose("current delay: \(currentDelay)")
@@ -184,7 +184,7 @@ class UDPStreamSender: NSObject {
                     usleepOverhead = 0
                 }
 
-                logger.verbose("usleep for \(currentDelay)ms took \(usleepCurrentOverhead)ms (overhead \(usleepOverhead))")
+                logger.verbose("usleep for \(currentDelay)ms took \(usleepCurrentOverhead)ms (overhead \(self.usleepOverhead))")
             }
 
             ////////////////////////////////////
@@ -198,7 +198,7 @@ class UDPStreamSender: NSObject {
                 if shouldSend {
                     lastSentTimestampMS = currentTimeMillis()
 
-                    udpSocket.sendData(dataToSend, withTimeout: timeoutSec, tag: Int(packetsSent)) // TAG == packet number
+                    udpSocket.send(dataToSend as Data, withTimeout: timeoutSec, tag: Int(packetsSent)) // TAG == packet number
 
                     packetsSent += 1
 
@@ -231,13 +231,13 @@ class UDPStreamSender: NSObject {
     }
 
     ///
-    private func receivePacket(dataReceived: NSData, fromAddress address: NSData) { // TODO: use dataReceived
+    fileprivate func receivePacket(_ dataReceived: Data, fromAddress address: Data) { // TODO: use dataReceived
         if packetsReceived < settings.maxPackets {
             packetsReceived += 1
 
             // call callback
-            dispatch_async(settings.delegateQueue) {
-                self.delegate?.udpStreamSender(self, didReceivePacket: dataReceived)
+            settings.delegateQueue.async {
+                let _ = self.delegate?.udpStreamSender(self, didReceivePacket: dataReceived)
                 return
             }
         }
@@ -251,11 +251,11 @@ class UDPStreamSender: NSObject {
 extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didConnectToAddress address: NSData) {
+    func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
         logger.debug("didConnectToAddress: address: \(address)")
-        logger.debug("didConnectToAddress: local port: \(udpSocket.localPort())")
+        logger.debug("didConnectToAddress: local port: \(self.udpSocket.localPort())")
 
-        dispatch_async(settings.delegateQueue) {
+        settings.delegateQueue.async {
             self.delegate?.udpStreamSender(self, didBindToPort: self.udpSocket.localPort())
             return
         }
@@ -264,33 +264,33 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
+    func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
         logger.debug("didNotConnect: \(error)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
+    func udpSocket(_ sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
         // logger.debug("didSendDataWithTag: \(tag)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: NSError?) {
+    func udpSocket(_ sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: Error?) {
         logger.debug("didNotSendDataWithTag: \(error)")
     }
 
     ///
-    func udpSocket(sock: GCDAsyncUdpSocket, didReceiveData data: NSData, fromAddress address: NSData, withFilterContext filterContext: AnyObject?) {
+    func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
         // logger.debug("didReceiveData: \(data)")
 
         // dispatch_async(streamSenderQueue) {
-            if self.running {
+            if self.running.boolValue {
                 self.receivePacket(data, fromAddress: address)
             }
         // }
     }
 
     ///
-    func udpSocketDidClose(sock: GCDAsyncUdpSocket, withError error: NSError?) { // crashes if NSError is used without questionmark
+    func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
         logger.debug("udpSocketDidClose: \(error)")
     }
 

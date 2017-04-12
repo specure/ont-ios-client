@@ -35,7 +35,7 @@ class StoredHistoryItem: Object {
 // MARK: Data
 
     ///
-    dynamic var timestamp: NSDate?
+    dynamic var timestamp: Date?
 
     ///
     dynamic var jsonData: String?

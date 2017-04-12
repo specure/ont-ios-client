@@ -18,4 +18,4 @@ import Foundation
 import ObjectMapper
 
 ///
-let UInt64NSNumberTransformOf = TransformOf<UInt64, NSNumber>(fromJSON: { $0?.unsignedLongLongValue }, toJSON: { $0.map { NSNumber(unsignedLongLong: $0) } })
+let UInt64NSNumberTransformOf = TransformOf<UInt64, NSNumber>(fromJSON: { $0?.uint64Value }, toJSON: { $0.map { NSNumber(value: $0) } })

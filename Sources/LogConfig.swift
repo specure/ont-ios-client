@@ -18,7 +18,7 @@ import Foundation
 import XCGLogger
 
 ///
-let logger = XCGLogger.defaultInstance()
+let logger = XCGLogger.default
 
 ///
 class LogConfig {
@@ -27,8 +27,8 @@ class LogConfig {
     // *) set log level in app
 
     ///
-    static let fileDateFormatter = NSDateFormatter()
-    static let startedAt = NSDate()
+    static let fileDateFormatter = DateFormatter()
+    static let startedAt = Date()
 
     /// setup logging system
     class func initLoggingFramework() {
@@ -52,7 +52,7 @@ class LogConfig {
     }
 
     ///
-    private class func setupFileDateFormatter() {
+    fileprivate class func setupFileDateFormatter() {
 /*        let bundleIdentifier = NSBundle.mainBundle().bundleIdentifier ?? "rmbt"
         let uuid = ControlServer.sharedControlServer.uuid ?? "uuid_missing"
 
@@ -70,18 +70,18 @@ class LogConfig {
 
     ///
     class func getCurrentLogFileName() -> String {
-        return fileDateFormatter.stringFromDate(startedAt)
+        return fileDateFormatter.string(from: startedAt)
     }
 
     ///
     class func getLogFolderPath() -> String {
-        let cacheDirectory = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0]
+        let cacheDirectory = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true)[0]
         let logDirectory = cacheDirectory + "/logs"
 
         // try to create logs directory if it doesn't exist yet
-        if !NSFileManager.defaultManager().fileExistsAtPath(logDirectory) {
+        if !FileManager.default.fileExists(atPath: logDirectory) {
             do {
-                try NSFileManager.defaultManager().createDirectoryAtPath(logDirectory, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.default.createDirectory(atPath: logDirectory, withIntermediateDirectories: false, attributes: nil)
             } catch {
                 // TODO
             }
@@ -167,15 +167,3 @@ class LogConfig {
 */
 }
 
-// TODO: move to other file...
-extension NSDate: Comparable {}
-
-///
-/* public func ==(lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs.timeIntervalSince1970 == rhs.timeIntervalSince1970
-} */
-
-///
-public func < (lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs.timeIntervalSince1970 < rhs.timeIntervalSince1970
-}

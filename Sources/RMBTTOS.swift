@@ -18,44 +18,44 @@
 import Foundation
 
 ///
-public class RMBTTOS: NSObject {
+open class RMBTTOS: NSObject {
 
     ///
-    private let TOS_VERSION_KEY = "tos_version"
+    fileprivate let TOS_VERSION_KEY = "tos_version"
 
     ///
-    public dynamic var lastAcceptedVersion: Int
+    open dynamic var lastAcceptedVersion: Int
 
     ///
-    public var currentVersion: Int
+    open var currentVersion: Int
 
     ///
-    public static let sharedTOS = RMBTTOS()
+    open static let sharedTOS = RMBTTOS()
 
     ///
     override public init() {
-        lastAcceptedVersion = NSUserDefaults.standardUserDefaults().integerForKey(TOS_VERSION_KEY) ?? 0
+        lastAcceptedVersion = UserDefaults.standard.integer(forKey: TOS_VERSION_KEY) 
         currentVersion = RMBT_TOS_VERSION
     }
 
     ///
-    public func isCurrentVersionAccepted() -> Bool {
+    open func isCurrentVersionAccepted() -> Bool {
         return lastAcceptedVersion >= currentVersion // is this correct?
     }
 
     ///
-    public func acceptCurrentVersion() {
+    open func acceptCurrentVersion() {
         lastAcceptedVersion = currentVersion
 
-        NSUserDefaults.standardUserDefaults().setInteger(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.set(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
+        UserDefaults.standard.synchronize()
     }
 
     ///
-    public func declineCurrentVersion() {
+    open func declineCurrentVersion() {
         lastAcceptedVersion = currentVersion > 0 ? currentVersion - 1 : 0 // go to previous version or 0 if not accepted
 
-        NSUserDefaults.standardUserDefaults().setInteger(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.set(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
+        UserDefaults.standard.synchronize()
     }
 }

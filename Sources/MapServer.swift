@@ -21,24 +21,24 @@ import AlamofireObjectMapper
 import ObjectMapper
 
 ///
-public class MapServer {
+open class MapServer {
 
     ///
-    public static let sharedMapServer = MapServer()
+    open static let sharedMapServer = MapServer()
 
     ///
-    private let alamofireManager: Alamofire.Manager
+    fileprivate let alamofireManager: Alamofire.SessionManager
 
     ///
-    private let settings = RMBTSettings.sharedSettings
+    fileprivate let settings = RMBTSettings.sharedSettings
 
     ///
-    private var baseUrl: String? {
+    fileprivate var baseUrl: String? {
         return ControlServer.sharedControlServer.mapServerBaseUrl // don't store in variable, could be changed in settings
     }
 
     ///
-    private init() {
+    fileprivate init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
     }
 
@@ -50,18 +50,18 @@ public class MapServer {
 // MARK: MapServer
 
     ///
-    public func getMapOptions(success successCallback: (response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: ErrorCallback) {
-        request(.POST, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
+    open func getMapOptions(success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+        request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
 
             // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: Mapper().toJSON(response))
-            successCallback(response: mapOptions)
+            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary)
+            successCallback(mapOptions)
 
-        }, error: failure)
+        } , error: failure)
     }
 
     ///
-    public func getMeasurementsAtCoordinate(coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: (response: [SpeedMeasurementResultResponse]) -> (), error failure: ErrorCallback) {
+    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
 
         let mapMeasurementRequest = MapMeasurementRequest()
         mapMeasurementRequest.coords = MapMeasurementRequest.CoordObject()
@@ -80,17 +80,17 @@ public class MapServer {
         // submit client_uuid to get measurement_uuid if tapped on an own measurement
         mapMeasurementRequest.clientUuid = ControlServer.sharedControlServer.uuid
 
-        request(.POST, path: "/tiles/markers", requestObject: mapMeasurementRequest, success: { (response: MapMeasurementResponse) in
+        request(.post, path: "/tiles/markers", requestObject: mapMeasurementRequest, success: { (response: MapMeasurementResponse) in
             if let measurements = response.measurements {
-                successCallback(response: measurements)
+                successCallback(measurements)
             } else {
-                failure(error: NSError(domain: "no measurements", code: -12543, userInfo: nil))
+                failure(NSError(domain: "no measurements", code: -12543, userInfo: nil))
             }
         }, error: failure)
     }
 
     ///
-    public func getTileUrlForMapOverlayType(overlayType: String, x: UInt, y: UInt, zoom: UInt, params: [String: AnyObject]?) -> NSURL? {
+    open func getTileUrlForMapOverlayType(_ overlayType: String, x: UInt, y: UInt, zoom: UInt, params: [String: Any]?) -> URL? {
         if let base = baseUrl {
             // baseUrl and layer
             var urlString = base + "/tiles/\(overlayType)?path=\(zoom)/\(x)/\(y)"
@@ -101,57 +101,57 @@ public class MapServer {
             }
 
             // add params
-            if let p = params where p.count > 0 {
+            if let p = params, p.count > 0 {
                 let paramString = p.map({ (key, value) in
-                    let escapedKey = key.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
+                    let escapedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
 
                     var escapedValue: String?
                     if let v = value as? String {
-                        escapedValue = v.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet()) // TODO: does this need a cast to string?
+                        escapedValue = v.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) // TODO: does this need a cast to string?
                     } else if let numValue = value as? NSNumber {
-                        escapedValue = String(numValue)
+                        escapedValue = String(describing: numValue)
                     }
 
-                    return "\(escapedKey ?? key)=\(escapedValue ?? value)"
-                }).joinWithSeparator("&")
+                    return "\(escapedKey ?? key)=\(escapedValue ?? value as! String)"
+                }).joined(separator: "&")
 
                 urlString += "&" + paramString
             }
 
             logger.debug("Generated tile url: \(urlString)")
 
-            return NSURL(string: urlString)
+            return URL(string: urlString)
         }
 
         return nil
     }
 
     ///
-    public func getOpenTestUrl(openTestUuid: String, success successCallback: (response: String?) -> ()) {
+    open func getOpenTestUrl(_ openTestUuid: String, success successCallback: (_ response: String?) -> ()) {
         //ControlServer.sharedControlServer.openTest
         // TODO
-        successCallback(response: nil)
+        successCallback(nil)
     }
 
 // MARK: Private
 
     ///
-    private func opentestURLForApp(openTestBaseURL: String) -> String {
+    fileprivate func opentestURLForApp(_ openTestBaseURL: String) -> String {
         // hardcoded because @lb doesn't want to provide a good solution
 
         let r = openTestBaseURL.startIndex..<openTestBaseURL.endIndex
-        let appOpenTestBaseURL = openTestBaseURL.stringByReplacingOccurrencesOfString("/opentest", withString: "/app/opentest", options: NSStringCompareOptions.LiteralSearch, range: r)
+        let appOpenTestBaseURL = openTestBaseURL.replacingOccurrences(of: "/opentest", with: "/app/opentest", options: NSString.CompareOptions.literal, range: r)
 
         return appOpenTestBaseURL
     }
 
     ///
-    private func requestArray<T: BasicResponse>(method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: [T]) -> (), error failure: ErrorCallback) {
+    fileprivate func requestArray<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.requestArray(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 
     ///
-    private func request<T: BasicResponse>(method: Alamofire.Method, path: String, requestObject: BasicRequest?, success: (response: T) -> (), error failure: ErrorCallback) {
+    fileprivate func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 }

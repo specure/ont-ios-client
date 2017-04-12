@@ -46,7 +46,7 @@ class GeoLocation: Mappable {
     var relativeTimeNs: Int?
 
     ///
-    var time: NSDate?
+    var time: Date?
 
     ///
     init() {
@@ -73,7 +73,7 @@ class GeoLocation: Mappable {
     }
 
     ///
-    required init?(_ map: Map) {
+    required init?(map: Map) {
 
     }
 

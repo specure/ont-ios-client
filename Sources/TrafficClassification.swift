@@ -26,7 +26,7 @@ public enum TrafficClassification: String {
     case HIGH = "high" // = 125000..UInt64.max
 
     ///
-    public static func classifyBytesPerSecond(bytesPerSecond: Int64?) -> TrafficClassification {
+    public static func classifyBytesPerSecond(_ bytesPerSecond: Int64?) -> TrafficClassification {
         if let bps = bytesPerSecond {
             switch bps {
                 case 0...1249:

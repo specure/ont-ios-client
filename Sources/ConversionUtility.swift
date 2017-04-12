@@ -17,11 +17,11 @@
 import Foundation
 
 ///
-func nsToSec(ns: UInt64) -> Double {
+func nsToSec(_ ns: UInt64) -> Double {
     return Double(ns / NSEC_PER_SEC)
 }
 
 ///
-func nsToMs(ns: UInt64) -> Double {
+func nsToMs(_ ns: UInt64) -> Double {
     return Double(ns / NSEC_PER_MSEC)
 }

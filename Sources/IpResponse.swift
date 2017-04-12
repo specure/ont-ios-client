@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public class IpResponse: BasicResponse {
+open class IpResponse: BasicResponse {
 
     ///
     var ip: String = ""
@@ -27,14 +27,14 @@ public class IpResponse: BasicResponse {
     var version: String = ""
 
     ///
-    override public func mapping(map: Map) {
-        super.mapping(map)
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
 
         ip <- map["ip"]
         version <- map["version"]
     }
 
-    override public var description: String {
+    override open var description: String {
         return "ip: \(ip), version: \(version)"
     }
 }

@@ -35,7 +35,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     let controlConnection: QOSControlConnection
 
     ///
-    let delegateQueue: dispatch_queue_t
+    let delegateQueue: DispatchQueue
 
     ///
     let testObject: T
@@ -59,7 +59,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     let timeoutInSec: Double
 
     ///
-    private let timer = GCDTimer()
+    fileprivate let timer = GCDTimer()
 
     ///
     var testToken: String!
@@ -71,15 +71,15 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 //    private let timeoutCountDownLatch: CountDownLatch = CountDownLatch()
 
     ///
-    private var timeoutDuration: UInt64!
+    fileprivate var timeoutDuration: UInt64!
 
     ///
-    private let speedtestStartTime: UInt64
+    fileprivate let speedtestStartTime: UInt64
 
     //
 
     ///
-    init(controlConnection: QOSControlConnection, delegateQueue: dispatch_queue_t, testObject: T, speedtestStartTime: UInt64) {
+    init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         self.controlConnection = controlConnection
 
         //self.delegate = delegate
@@ -95,13 +95,13 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
         // initialize test result
         let testType = testObject.getType()
-        testResult = QOSTestResult(type: testType)
+        testResult = QOSTestResult(type: testType!)
 
         // set initial values on test result
-        testResult.set(RESULT_TEST_UID, value: self.testObject.qosTestId)
+        testResult.set(RESULT_TEST_UID, value: self.testObject.qosTestId as AnyObject?)
 
         //////
-        qosLog = QOSLog(testType: testType, testUid: testObject.qosTestId)
+        qosLog = QOSLog(testType: testType!, testUid: testObject.qosTestId)
         //////
 
         super.init()
@@ -117,7 +117,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
             self.qosLog.error("TIMEOUT IN QOS TEST")
 
             if !self.hasFinished {
-                dispatch_async(self.delegateQueue) {
+                self.delegateQueue.async {
                     //assert(self.finishCallback != nil)
                     self.testDidTimeout()
                 }
@@ -126,7 +126,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     }
 
     ///
-    func setCurrentTestToken(testToken: String) {
+    func setCurrentTestToken(_ testToken: String) {
         self.testToken = testToken
     }
 
@@ -142,7 +142,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         timer.stop()
 
         if let _ = timeoutDuration {
-            logger.info("stopped timeout timer after \((getTimeDifferenceInNanoSeconds(timeoutDuration)) / NSEC_PER_MSEC)ms")
+            logger.info("stopped timeout timer after \((getTimeDifferenceInNanoSeconds(self.timeoutDuration)) / NSEC_PER_MSEC)ms")
         }
     }
 
@@ -167,7 +167,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     }
 
     ///
-    func execute(finish finishCallback: (testResult: QOSTestResult) -> ()) {
+    func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ()) {
         self.finishCallback = finishCallback
 
         // call startTest method
@@ -271,7 +271,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 // MARK: convenience methods
 
     ///
-    func sendTaskCommand(command: String, withTimeout timeout: NSTimeInterval, tag: Int) {
+    func sendTaskCommand(_ command: String, withTimeout timeout: TimeInterval, tag: Int) {
         controlConnection.sendTaskCommand(command, withTimeout: timeout, forTaskId: testObject.qosTestId, tag: tag)
     }
 
@@ -286,12 +286,12 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
 // MARK: QOSControlConnectionTaskDelegate methods
 
-    func controlConnection(connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
+    func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
     }
 
     ///
-    func controlConnection(connection: QOSControlConnection, didReceiveTimeout elapsed: NSTimeInterval, withTaskId taskId: UInt, tag: Int) {
+    func controlConnection(_ connection: QOSControlConnection, didReceiveTimeout elapsed: TimeInterval, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), TIMEOUT")
 
         // let test timeout
@@ -315,39 +315,43 @@ class QOSLog {
     }
 
     ///
-    func verbose(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Verbose, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func verbose(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .verbose, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func debug(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Debug, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func debug(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .debug, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func info(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Info, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func info(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .info, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func warning(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Warning, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func warning(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .warning, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func error(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Error, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func error(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .error, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func severe(logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
-        self.logln(logMessage, logLevel: .Severe, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func severe(_ logMessage: String, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+        self.logln(logMessage, logLevel: .severe, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
 
     ///
-    func logln(logMessage: String, logLevel: XCGLogger.LogLevel = .Debug, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+    private func logln(_ logMessage: String, logLevel: XCGLogger.Level = .debug, functionName: String = #function, fileName: String = #file, lineNumber: Int = #line) {
+//        let s = "\(testType.rawValue.uppercased())<\(testUid)>: \(functionName)"
+//        
+//        let sString:StaticString = s
+        
         if QOS_ENABLED_TESTS_LOG.contains(testType) {
-            logger.logln(logMessage, logLevel: logLevel, functionName: "\(testType.rawValue.uppercaseString)<\(testUid)>: \(functionName)", fileName: fileName, lineNumber: lineNumber)
+            // logger.logln(logMessage, level: logLevel, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
         }
     }
 }

@@ -43,7 +43,7 @@ class SpeedMeasurementRequest: BasicRequest {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         uuid        <- map["uuid"]
         ndt         <- map["ndt"]

@@ -37,7 +37,7 @@ class QosMeasurementResultRequest: BasicRequest {
 
     ///
     override func mapping(map: Map) {
-        super.mapping(map)
+        super.mapping(map: map)
 
         measurementUuid <- map["uuid"]
         clientUuid      <- map["client_uuid"]

@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public class Ping: Mappable, CustomStringConvertible {
+open class Ping: Mappable, CustomStringConvertible {
 
     ///
     var serverNanos: UInt64?
@@ -39,19 +39,19 @@ public class Ping: Mappable, CustomStringConvertible {
     }
 
     ///
-    required public init?(_ map: Map) {
+    required public init?(map: Map) {
 
     }
 
     ///
-    public func mapping(map: Map) {
+    open func mapping(map: Map) {
         serverNanos             <- (map["value_server"], UInt64NSNumberTransformOf)
         clientNanos             <- (map["value"], UInt64NSNumberTransformOf)
         relativeTimestampNanos  <- (map["relative_time_ns"], UInt64NSNumberTransformOf)
     }
 
     ///
-    public var description: String {
+    open var description: String {
         //return String(format: "RMBTPing (server=%" PRIu64 ", client=%" PRIu64 ")", serverNanos, clientNanos)
         return "RMBTPing  (server = \(serverNanos), client = \(clientNanos))"
     }
