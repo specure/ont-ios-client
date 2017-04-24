@@ -580,7 +580,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                 //println("this is a count: \(firstByteOfBlock)")
 
-                let rangeData = subData.subdata(in: localOffset..<Int(firstByteOfBlock) /*NSRange(location: localOffset, length: Int(firstByteOfBlock))*/)
+                let rangeData = subData.subdata(in: localOffset..<localOffset+Int(firstByteOfBlock) /*NSRange(location: localOffset, length: Int(firstByteOfBlock))*/)
                 let partStr = NSString(data: rangeData, encoding: String.Encoding.ascii.rawValue)!
 
                 localOffset += Int(firstByteOfBlock)

@@ -28,7 +28,7 @@ class GCDTimer {
     var interval: Double?
 
     ///
-    fileprivate var timerSource: DispatchSource!
+    fileprivate var timerSource: DispatchSourceTimer!
 
     ///
     fileprivate let timerQueue: DispatchQueue
@@ -37,7 +37,7 @@ class GCDTimer {
     init() {
         // ??????
         // timerQueue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)
-        timerQueue = DispatchQueue(label: "com.firm.app.timer", attributes: .concurrent)
+        timerQueue = DispatchQueue(label: "com.specure.nettest.timer", attributes: .concurrent)
     }
 
     ///
@@ -68,16 +68,20 @@ class GCDTimer {
     }
 
     ///
-    fileprivate func createTimer(_ interval: Double, timerQueue: DispatchQueue, block: @escaping ()->()) -> DispatchSource {
-        let timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: timerQueue)
+    fileprivate func createTimer(_ interval: Double, timerQueue: DispatchQueue, block: @escaping ()->()) -> DispatchSourceTimer {
+        let timer = DispatchSource.makeTimerSource(/*flags: DispatchSource.TimerFlags(rawValue: 0),*/ queue: timerQueue)
 
         let nsecPerSec = Double(NSEC_PER_SEC)
         let dt = DispatchTime.now() + Double(Int64(interval * nsecPerSec)) / Double(NSEC_PER_SEC)
+        
+        let distantFuture = DispatchTime.distantFuture.uptimeNanoseconds
+        //
+        let zeroInterval = DispatchTimeInterval.seconds(0)
 
         //timer.setTimer(start: dt, interval: DispatchTime.distantFuture, leeway: 0)
-        timer.scheduleRepeating(deadline: dt,
-                                interval: DispatchTimeInterval.nanoseconds(Int(DispatchTime.distantFuture.uptimeNanoseconds)) ,
-                                leeway: DispatchTimeInterval.seconds(0))
+        timer.scheduleRepeating(deadline: dt, //dt,
+                                interval: .seconds(2), //Double(distantFuture),
+                                leeway: .seconds(0))
 
         timer.setEventHandler { // `[weak self]` only needed if you reference `self` in this closure and you want to prevent strong reference cycle
             block()
@@ -85,7 +89,7 @@ class GCDTimer {
         
         timer.resume()
 
-        return timer as! DispatchSource
+        return timer as! DispatchSourceTimer
     }
 
 }
