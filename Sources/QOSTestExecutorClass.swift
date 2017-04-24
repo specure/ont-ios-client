@@ -303,13 +303,13 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 class QOSLog {
 
     ///
-    let testType: QOSMeasurementType
+    let testType: QosMeasurementType
 
     ///
     let testUid: UInt
 
     ///
-    init(testType: QOSMeasurementType, testUid: UInt) {
+    init(testType: QosMeasurementType, testUid: UInt) {
         self.testType = testType
         self.testUid = testUid
     }

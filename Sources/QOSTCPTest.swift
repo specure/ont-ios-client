@@ -56,7 +56,7 @@ class QOSTCPTest: QOSTest {
     }
 
     ///
-    override func getType() -> QOSMeasurementType! {
+    override func getType() -> QosMeasurementType! {
         return .TCP
     }
 

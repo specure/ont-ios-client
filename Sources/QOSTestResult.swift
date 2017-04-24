@@ -23,7 +23,7 @@ open class QOSTestResult {
     open var resultDictionary = QOSTestResults()
 
     ///
-    open var testType: QOSMeasurementType
+    open var testType: QosMeasurementType
 
     ///
     open var fatalError = false
@@ -34,7 +34,7 @@ open class QOSTestResult {
     //
 
     ///
-    public init(type: QOSMeasurementType) {
+    public init(type: QosMeasurementType) {
         self.testType = type
 
         resultDictionary["test_type"] = type.rawValue as AnyObject?

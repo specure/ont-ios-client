@@ -32,10 +32,10 @@ public protocol QualityOfServiceTestDelegate {
     func qualityOfServiceTest(_ test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
 
     ///
-    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType])
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType])
 
     ///
-    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType)
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType)
 
     ///
     func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float)

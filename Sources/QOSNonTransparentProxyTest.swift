@@ -63,7 +63,7 @@ class QOSNonTransparentProxyTest: QOSTest {
     }
 
     ///
-    override func getType() -> QOSMeasurementType! {
+    override func getType() -> QosMeasurementType! {
         return .NonTransparentProxy
     }
 

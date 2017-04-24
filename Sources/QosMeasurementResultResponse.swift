@@ -53,7 +53,7 @@ open class QosMeasurementResultResponse: BasicResponse {
         open var objectiveId: Int?
 
         ///
-        open var type: QOSMeasurementType?
+        open var type: QosMeasurementType?
 
         ///
         open var successCount: Int?
@@ -103,7 +103,7 @@ open class QosMeasurementResultResponse: BasicResponse {
         open var uid: [Int]?
 
         ///
-        open var test: QOSMeasurementType?
+        open var test: QosMeasurementType?
 
         ///
         open var key: String?
@@ -141,7 +141,7 @@ open class QosMeasurementResultResponse: BasicResponse {
         open var name: String?
 
         ///
-        open var type: QOSMeasurementType?
+        open var type: QosMeasurementType?
 
         ///
         open var description: String?

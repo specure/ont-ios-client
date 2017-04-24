@@ -171,7 +171,7 @@ class ControlServer {
             // set qos test type desc
             response.qosMeasurementTypes?.forEach({ measurementType in
                 if let type = measurementType.type {
-                    QOSMeasurementType.localizedNameDict[type] = measurementType.name
+                    QosMeasurementType.localizedNameDict[type] = measurementType.name
                 }
             })
 

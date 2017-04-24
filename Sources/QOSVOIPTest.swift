@@ -117,7 +117,7 @@ class QOSVOIPTest: QOSTest {
     }
 
     ///
-    override func getType() -> QOSMeasurementType! {
+    override func getType() -> QosMeasurementType! {
         return .VOIP
     }
 

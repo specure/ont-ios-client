@@ -351,12 +351,12 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QOSMeasurementType]) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QOSMeasurementType) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
     }
 

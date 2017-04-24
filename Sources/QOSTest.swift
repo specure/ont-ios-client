@@ -101,7 +101,7 @@ class QOSTest: CustomStringConvertible { /* TODO: declarations in extensions can
     //
 
     /// returns the type of this test object
-    func getType() -> QOSMeasurementType! {
+    func getType() -> QosMeasurementType! {
         return nil
     }
 

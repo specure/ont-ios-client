@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-public enum QOSMeasurementType: String { // TODO: rename to QosMeasurementType
+public enum QosMeasurementType: String {
     case HttpProxy              = "http_proxy"
     case NonTransparentProxy    = "non_transparent_proxy"
     case WEBSITE                = "website"
@@ -28,14 +28,14 @@ public enum QOSMeasurementType: String { // TODO: rename to QosMeasurementType
     case TRACEROUTE             = "traceroute"
 
     ///
-    static var localizedNameDict = [QOSMeasurementType: String]()
+    static var localizedNameDict = [QosMeasurementType: String]()
 }
 
 ///
-extension QOSMeasurementType: CustomStringConvertible {
+extension QosMeasurementType: CustomStringConvertible {
 
     ///
     public var description: String {
-        return QOSMeasurementType.localizedNameDict[self] ?? self.rawValue
+        return QosMeasurementType.localizedNameDict[self] ?? self.rawValue
     }
 }

@@ -84,7 +84,7 @@ class QOSHTTPProxyTest: QOSTest {
     }
 
     ///
-    override func getType() -> QOSMeasurementType! {
+    override func getType() -> QosMeasurementType! {
         return .HttpProxy
     }
 

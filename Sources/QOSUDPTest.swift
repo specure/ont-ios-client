@@ -88,7 +88,7 @@ class QOSUDPTest: QOSTest {
     }
 
     ///
-    override func getType() -> QOSMeasurementType! {
+    override func getType() -> QosMeasurementType! {
         return .UDP
     }
 
