@@ -33,7 +33,7 @@ open class WalledGardenTest {
             request.cachePolicy = .reloadIgnoringLocalCacheData // disable cache
 
             // send async request // TODO: or send sync request?
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue(), completionHandler: { (response: URLResponse?, data: Data?, error: NSError?) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue(), completionHandler: { (response: URLResponse?, data: Data?, error: Error?) -> Void in
                 if let res = response as? HTTPURLResponse {
                     let httpResponse = res
 
