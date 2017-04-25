@@ -107,7 +107,7 @@ public protocol RMBTClientDelegate {
 open class RMBTClient {
 
     ///
-    fileprivate var testRunner: RMBTTestRunner?
+    open var testRunner: RMBTTestRunner?
 
     ///
     fileprivate var qualityOfServiceTestRunner: QualityOfServiceTest?
