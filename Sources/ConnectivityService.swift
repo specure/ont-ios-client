@@ -144,6 +144,18 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
             self.ipv4Finished = true
             self.callCallback()
         }*/
+        
+        ControlServer.sharedControlServer.getIpv4( success: { response in
+            
+            self.connectivityInfo.ipv4.connectionAvailable = true
+            self.connectivityInfo.ipv4.externalIp = response.ip
+            
+        }, error: { error in
+            self.connectivityInfo.ipv4.connectionAvailable = false
+        })
+        
+        self.ipv4Finished = true
+        self.callCallback()
     }
 
     ///
@@ -185,6 +197,19 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
             self.ipv6Finished = true
             self.callCallback()
         }*/
+        
+        ControlServer.sharedControlServer.getIpv6(success: { response in
+            
+            self.connectivityInfo.ipv6.connectionAvailable = true
+            self.connectivityInfo.ipv6.externalIp = response.ip
+            
+        }, error: { error in
+            self.connectivityInfo.ipv6.connectionAvailable = false
+            
+        })
+        
+        self.ipv6Finished = true
+        self.callCallback()
     }
 
     ///
@@ -257,7 +282,7 @@ extension ConnectivityService {
 
     ///
     fileprivate func getLocalIpAddressesFromSocket() {
-        let udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default))
+        let udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.global(qos: .default))
 
         let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"
 

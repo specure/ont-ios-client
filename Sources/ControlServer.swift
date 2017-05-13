@@ -193,19 +193,22 @@ class ControlServer {
 // MARK: IP
 
     ///
-    func getIpv4(success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(success: successCallback, error: failure) // TODO: ipv4 url
+    func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
+        getIpVersion(baseUrl: RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure) // TODO: ipv4 url
     }
 
     ///
-    func getIpv6(success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(success: successCallback, error: failure) // TODO: ipv6 url
+    func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
+        getIpVersion(baseUrl: RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure) // TODO: ipv6 url
     }
 
     ///
-    func getIpVersion(success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        // request(.post, path: "/ip", requestObject: BasicRequest(), success: successCallback, error: failure)
-        request(.post, path: "/ip", requestObject: BasicRequest(), success: successCallback as! (BasicResponse) -> (), error: failure)
+    func getIpVersion(baseUrl:String, success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
+
+        let infoParams = IPRequest()
+        infoParams.uuid = ControlServer.sharedControlServer.uuid
+        
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: .post, path: "/ip", requestObject: infoParams, success: successCallback , error: failure)
     }
 
 // MARK: Speed measurement

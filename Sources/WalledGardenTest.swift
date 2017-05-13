@@ -41,7 +41,25 @@ open class WalledGardenTest {
                 } else {
                     callback(false) // request failed (probably due to no network connection)
                 }
-            } as! (URLResponse?, Data?, Error?) -> Void)
+            } )
+            
+//            var newRequest = URLRequest(url: url)
+//            newRequest.httpMethod = "GET"
+//            newRequest.timeoutInterval = (WALLED_GARDEN_SOCKET_TIMEOUT_MS / 1_000.0)
+//            newRequest.cachePolicy = .reloadIgnoringLocalCacheData // disable cache
+//            
+//            let task = URLSession().dataTask(with: newRequest, completionHandler: { (data: Data?, response: URLResponse?,  error: Error?) -> Void in
+//                
+//                if let res = response as? HTTPURLResponse {
+//                    let httpResponse = res
+//                    
+//                    callback((httpResponse.statusCode != 204))
+//                } else {
+//                    callback(false) // request failed (probably due to no network connection)
+//                }
+//            })
+//            
+//            task.resume()
         }
     }
 

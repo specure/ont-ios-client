@@ -641,7 +641,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         if duration > 0 {
             progressCompletionHandler = completionHandler
 
-            timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default)) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+            timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default)) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
             // timer.setTimer(start: DispatchTime.now(), interval: UInt64(RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC)), leeway: 50 * NSEC_PER_MSEC)
             // ??????
             timer.scheduleRepeating(deadline: DispatchTime.now(), interval:RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC), leeway: DispatchTimeInterval.nanoseconds(50))

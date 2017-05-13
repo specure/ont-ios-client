@@ -12,6 +12,9 @@
 		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
+		A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
+		A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
+		A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
 		A262CE903656FD3A68DA68E9 /* Pods_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9897BAA8511BE850B3CFCD /* Pods_RMBTClient_tvOS.framework */; };
 		B5CE67017534A5BC5AF486AA /* Pods_All_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */; };
 		E00C20B31D19654400720394 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
@@ -452,6 +455,7 @@
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
+		A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPRequest.swift; sourceTree = "<group>"; };
 		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1162,6 +1166,7 @@
 		E0FC4C4A1D6C82F400D5D236 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */,
 				E0FC4C3D1D6C826C00D5D236 /* BasicRequest.swift */,
 				E0FC4C421D6C82BE00D5D236 /* MapMeasurementRequest.swift */,
 				E0FC4C461D6C82EB00D5D236 /* SettingsRequest.swift */,
@@ -1422,7 +1427,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		186B49F16AD90FF628A92413 /* [CP] Check Pods Manifest.lock */ = {
@@ -1437,7 +1442,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */ = {
@@ -1467,7 +1472,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */ = {
@@ -1524,6 +1529,7 @@
 				E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */,
 				E02D1A081CFC8E90002A02FE /* DNSClient.swift in Sources */,
 				E0FC4C511D6C83C400D5D236 /* SpeedMeasurementRequest.swift in Sources */,
+				A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */,
 				E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */,
 				E0FC4C551D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
@@ -1742,6 +1748,7 @@
 				E0FC4CCD1D6C88C700D5D236 /* CountDownLatch.swift in Sources */,
 				E0FC4CFF1D6D992B00D5D236 /* QOSWebsiteTestExecutor.swift in Sources */,
 				E0FC4CCB1D6C88BB00D5D236 /* CLLocation+RMBTFormat.swift in Sources */,
+				A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E0FC4D151D6DCA2200D5D236 /* RMBTConnectivityTracker.swift in Sources */,
 				E0FC4CC41D6C88A300D5D236 /* UInt+Extensions.swift in Sources */,
 				E0FC4CC71D6C88AE00D5D236 /* String+Extensions.swift in Sources */,
@@ -1878,6 +1885,7 @@
 				E02D1A261CFC9D14002A02FE /* ConnectivityService.swift in Sources */,
 				E0FC4D1F1D6DCDD100D5D236 /* RMBTLocationTracker.swift in Sources */,
 				E0FC4C561D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
+				A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D19781CF5A4E1002A02FE /* RMBTMapOptions.swift in Sources */,
 				E02D19601CF5A455002A02FE /* RTPSequence.swift in Sources */,
 				E02D19891CF5A51E002A02FE /* CountDownLatch.swift in Sources */,

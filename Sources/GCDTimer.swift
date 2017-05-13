@@ -74,9 +74,9 @@ class GCDTimer {
         let nsecPerSec = Double(NSEC_PER_SEC)
         let dt = DispatchTime.now() + Double(Int64(interval * nsecPerSec)) / Double(NSEC_PER_SEC)
         
-        let distantFuture = DispatchTime.distantFuture.uptimeNanoseconds
-        //
-        let zeroInterval = DispatchTimeInterval.seconds(0)
+//        let distantFuture = DispatchTime.distantFuture.uptimeNanoseconds
+//        //
+//        let zeroInterval = DispatchTimeInterval.seconds(0)
 
         //timer.setTimer(start: dt, interval: DispatchTime.distantFuture, leeway: 0)
         timer.scheduleRepeating(deadline: dt, //dt,
@@ -89,7 +89,7 @@ class GCDTimer {
         
         timer.resume()
 
-        return timer as! DispatchSourceTimer
+        return timer 
     }
 
 }
