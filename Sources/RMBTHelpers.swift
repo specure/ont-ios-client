@@ -160,13 +160,21 @@ public func RMBTTimestampWithNSDate(_ date: Date) -> NSNumber {
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
 public func RMBTFormatNumber(_ number: NSNumber) -> String {
     let formatter = NumberFormatter()
+    
+    var signif = 2
+
+    if number.doubleValue < 1 {
+        signif = 1
+    }
 
     // TODO: dispatch_once
     formatter.decimalSeparator = "."
     formatter.usesSignificantDigits = true
-    formatter.minimumSignificantDigits = 2
-    formatter.maximumSignificantDigits = 2
+    formatter.minimumSignificantDigits = signif
+    formatter.maximumSignificantDigits = signif
     //
+    
+    
 
     return formatter.string(from: number)!
 }
