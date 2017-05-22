@@ -55,7 +55,7 @@ class ControlServer {
     fileprivate var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    var baseUrl = "https://netcouch.specure.com/api/v1"
+    var baseUrl = "https://c01.meracinternetu.sk/api/v1"
 
     ///
     fileprivate var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
