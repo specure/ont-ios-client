@@ -19,6 +19,8 @@ import Alamofire
 import AlamofireObjectMapper
 import ObjectMapper
 
+
+
 ///
 public typealias EmptyCallback = () -> ()
 
@@ -79,21 +81,21 @@ class ControlServer {
     deinit {
         alamofireManager.session.invalidateAndCancel()
     }
-
+    
     ///
     func updateWithCurrentSettings() { // TODO: how does app set the control server url? need param?
         // configure control server url
 
-        baseUrl = defaultBaseUrl
+        baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "uuid_\(URL(string: baseUrl)!.host)" // !
 
         if settings.debugUnlocked {
 
             // check for ip version force
             if settings.nerdModeForceIPv6 { // TODO
-                baseUrl = "https://netcouch.specure.com/api/v1"//RMBT_CONTROL_SERVER_IPV6_URL
+                baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL
             } else if settings.nerdModeForceIPv4 { // TODO
-                baseUrl = "https://netcouch.specure.com/api/v1"//RMBT_CONTROL_SERVER_IPV4_URL
+                baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL
             }
 
             // check for custom control server
@@ -115,7 +117,7 @@ class ControlServer {
         logger.info("Control Server base url = \(self.baseUrl)")
 
         // TODO: determine map server url!
-        mapServerBaseUrl = "https://netcouch.specure.com/RMBTMapServer"
+        mapServerBaseUrl = RMBT_MAP_SERVER_URL
 
         //
 
@@ -194,12 +196,12 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure) // TODO: ipv4 url
+        getIpVersion(baseUrl: RMBTConfig().RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure) // TODO: ipv4 url
     }
 
     ///
     func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure) // TODO: ipv6 url
+        getIpVersion(baseUrl: RMBTConfig().RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure) // TODO: ipv6 url
     }
 
     ///

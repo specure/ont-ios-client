@@ -17,6 +17,34 @@
 
 import CoreLocation
 
+// MARK: Test parameters Variables
+
+public class RMBTConfig {
+
+    // MARK: Default control server URLs    
+    var RMBT_CONTROL_SERVER_URL        = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    var RMBT_CONTROL_SERVER_IPV4_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    
+    //
+    public func configNewCS(server:String) {
+        RMBT_CONTROL_SERVER_URL = server
+    }
+    //
+    public func configNewCS_IPv4(server:String) {
+        RMBT_CONTROL_SERVER_IPV4_URL  = server
+    }
+    //
+    public func configNewCS_IPv6(server:String) {
+        RMBT_CONTROL_SERVER_IPV6_URL = server
+    }
+    
+    public init() {}
+    
+    public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
+}
+
+
 // MARK: Fixed test parameters
 
 ///
@@ -54,13 +82,12 @@ let RMBT_TEST_SAMPLING_RESOLUTION_MS = 250
 let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer"
 
 ///
+let RMBT_CONTROL_SERVER_SUFFIX = "/api/v1"
+
+///
 let RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
 
-// MARK: Default control server URLs
 
-let RMBT_CONTROL_SERVER_URL        = "https://nettest.specure.com\(RMBT_CONTROL_SERVER_PATH)"
-let RMBT_CONTROL_SERVER_IPV4_URL   = "https://nettest4.specure.com\(RMBT_CONTROL_SERVER_PATH)"
-let RMBT_CONTROL_SERVER_IPV6_URL   = "https://nettest6.specure.com\(RMBT_CONTROL_SERVER_PATH)"
 
 // MARK:- Other URLs used in the app
 
