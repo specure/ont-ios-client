@@ -117,7 +117,7 @@ class ControlServer {
         logger.info("Control Server base url = \(self.baseUrl)")
 
         // TODO: determine map server url!
-        mapServerBaseUrl = RMBT_MAP_SERVER_URL
+        mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
 
         //
 

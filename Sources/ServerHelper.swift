@@ -157,7 +157,7 @@ class ServerHelper {
                     }
                 case .failure(let error):
                     logger.debug("\(error)") // TODO: error callback
-
+                    debugPrint(response)
                     /*if let responseObj = response.result.value as? String {
                      logger.debug("error msg from server: \(responseObj)")
                      }*/

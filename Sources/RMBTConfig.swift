@@ -25,6 +25,7 @@ public class RMBTConfig {
     var RMBT_CONTROL_SERVER_URL        = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     var RMBT_CONTROL_SERVER_IPV4_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    var RMBT_MAP_SERVER_PATH_URL       = "\(RMBT_URL_HOST)\(RMBT_MAP_SERVER_PATH)"
     
     //
     public func configNewCS(server:String) {
@@ -37,6 +38,11 @@ public class RMBTConfig {
     //
     public func configNewCS_IPv6(server:String) {
         RMBT_CONTROL_SERVER_IPV6_URL = server
+    }
+    
+    //
+    public func configNewMapServer(server:String) {
+        RMBT_MAP_SERVER_PATH_URL = server
     }
     
     public init() {}
@@ -111,7 +117,7 @@ let RMBT_DEVELOPER_URL   = "https://specure.com"
 
 // MARK: Map options
 
-let RMBT_MAP_SERVER_URL = "https://nettest.specure.com\(RMBT_MAP_SERVER_PATH)"
+let RMBT_MAP_SERVER_URL = "\(RMBT_URL_HOST)\(RMBT_MAP_SERVER_PATH)"
 
 /// Initial map center coordinates and zoom level
 let RMBT_MAP_INITIAL_LAT: CLLocationDegrees = 48.209209 // Stephansdom, Wien
