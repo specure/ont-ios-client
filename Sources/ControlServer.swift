@@ -31,6 +31,9 @@ public typealias ErrorCallback = (_ error: Error) -> ()
 public typealias IpResponseSuccessCallback = (_ ipResponse: IpResponse) -> ()
 
 ///
+let secureRequestPrefix = "https://"
+
+///
 class ControlServer {
 
     ///
@@ -55,7 +58,7 @@ class ControlServer {
     fileprivate var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    var baseUrl = "https://c01.meracinternetu.sk/api/v1"
+    var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
     fileprivate var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
@@ -83,41 +86,48 @@ class ControlServer {
     }
     
     ///
-    func updateWithCurrentSettings() { // TODO: how does app set the control server url? need param?
-        // configure control server url
-
+    func updateWithCurrentSettings() {
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "uuid_\(URL(string: baseUrl)!.host)" // !
-
-        if settings.debugUnlocked {
-
-            // check for ip version force
-            if settings.nerdModeForceIPv6 { // TODO
-                baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL
-            } else if settings.nerdModeForceIPv4 { // TODO
-                baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL
-            }
-
-            // check for custom control server
-            if settings.debugControlServerCustomizationEnabled {
-                let scheme = settings.debugControlServerUseSSL ? "https" : "http"
-                var hostname = settings.debugControlServerHostname
-
-                if settings.debugControlServerPort != 0 && settings.debugControlServerPort != 80 {
-                    hostname = "\(hostname):\(settings.debugControlServerPort)"
+        uuidKey = "uuid_\(URL(string: baseUrl)!.host)"
+        
+        // get settings of control server
+        getSettings(success: {
+            // 
+            if self.settings.debugUnlocked {
+                
+                // check for ip version force
+                if self.settings.nerdModeForceIPv6 {
+                    self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL
+                } else if self.settings.nerdModeForceIPv4 {
+                    self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL
                 }
-
-                if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as? URL {
-                    baseUrl = url.absoluteString // !
-                    uuidKey = "uuid_\(url.host)"
+                
+                // check for custom control server
+                if self.settings.debugControlServerCustomizationEnabled {
+                    let scheme = self.settings.debugControlServerUseSSL ? "https" : "http"
+                    var hostname = self.settings.debugControlServerHostname
+                    
+                    if self.settings.debugControlServerPort != 0 && self.settings.debugControlServerPort != 80 {
+                        hostname = "\(hostname):\(self.settings.debugControlServerPort)"
+                    }
+                    
+                    if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as? URL {
+                        self.baseUrl = url.absoluteString // !
+                        self.uuidKey = "uuid_\(url.host)"
+                    }
                 }
             }
+            
+            logger.info("Control Server base url = \(self.baseUrl)")
+            
+            // TODO: determine map server url!
+            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
+            
+        }) { (error) in
+            // TODO: error handling?
         }
 
-        logger.info("Control Server base url = \(self.baseUrl)")
 
-        // TODO: determine map server url!
-        mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
 
         //
 
@@ -134,74 +144,130 @@ class ControlServer {
             })
         }
 
-        // get settings of control server
-        getSettings(success: {
-            // do nothing
-        }) { (error) in
-            // TODO: error handling?
-        }
+
     }
 
 // MARK: Settings
 
     ///
     func getSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        
         let settingsRequest = SettingsRequest()
-
+        
         settingsRequest.client = ClientSettings()
         settingsRequest.client?.clientType = "MOBILE"
         settingsRequest.client?.termsAndConditionsAccepted = true
         settingsRequest.client?.uuid = uuid
-
+        
         let successFunc: (_ response: SettingsReponse) -> () = { response in
             logger.debug("settings: \(response.client)")
-
+            
             // set uuid
             self.uuid = response.client?.uuid
-
+            
             // save uuid
             if let uuidKey = self.uuidKey {
                 UserDefaults.standard.set(self.uuid, forKey: uuidKey)
                 UserDefaults.standard.synchronize()
             }
-
+            
             logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
-
+            
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion
-
+            
             // set qos test type desc
             response.qosMeasurementTypes?.forEach({ measurementType in
                 if let type = measurementType.type {
                     QosMeasurementType.localizedNameDict[type] = measurementType.name
                 }
             })
-
+            
+            // TODO: set history filters
+            
+            if let ipv4Server = response.settings?.controlServerIpv4Host {
+                RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
+            }
+            
+            if let ipv6Server = response.settings?.controlServerIpv6Host {
+                RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+            }
+            
+            if let mapServer = response.settings?.mapServer?.host {
+                RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
+            }
+            
+            
+            successCallback()
+        }
+        
+        let successFuncOld: (_ response: SettingsReponse_Old) -> () = { response in
+            logger.debug("settings: \(response)")
+            
+            // set uuid
+            self.uuid = response.settings?.uuid
+            
+            // save uuid
+            if let uuidKey = self.uuidKey {
+                UserDefaults.standard.set(self.uuid, forKey: uuidKey)
+                UserDefaults.standard.synchronize()
+            }
+            
+            logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
+            
+            // set control server version
+            self.version = response.settings?.versions?.controlServerVersion
+            
+            // set qos test type desc
+            response.settings?.qosMeasurementTypes?.forEach({ measurementType in
+                if let type = measurementType.testType {
+                    // QosMeasurementType.localizedNameDict[type] = measurementType.testDesc
+                }
+            })
+            
             // TODO: set history filters
             // TODO: set ip request urls, set openTestBaseUrl
             // TODO: set map server url
-
+            
             successCallback()
         }
+        
+        
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+        
+            request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
+                logger.debug("settings error")
+                
+                // TODO
+                failure(error)
+            })
 
-        request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
-            logger.debug("settings error")
-
-            // TODO
-            failure(error)
-        })
+        } else {
+        
+            let settingsRequest_Old = SettingsRequest_Old()
+            settingsRequest_Old.termsAndConditionsAccepted = "1"
+            settingsRequest_Old.uuid = uuid
+            
+            request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
+                logger.debug("settings error")
+                
+                // TODO
+                failure(error)
+            })
+        }
     }
 
 // MARK: IP
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig().RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure) // TODO: ipv4 url
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure)
     }
 
     ///
     func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig().RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure) // TODO: ipv6 url
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure)
     }
 
     ///
@@ -209,6 +275,7 @@ class ControlServer {
 
         let infoParams = IPRequest()
         infoParams.uuid = ControlServer.sharedControlServer.uuid
+        infoParams.product = ""
         
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: .post, path: "/ip", requestObject: infoParams, success: successCallback , error: failure)
     }

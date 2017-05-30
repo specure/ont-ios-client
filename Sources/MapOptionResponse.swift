@@ -75,7 +75,7 @@ open class MapOptionResponse: BasicResponse {
             var statisticalMethod: String?
 
             ///
-            var period: Int?
+            var period: String?
 
             ///
             var provider: String?

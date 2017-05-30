@@ -217,7 +217,7 @@ open class ONTTestRunner: NSObject, ONTTestWorkerDelegate, RMBTConnectivityTrack
         connectivityTracker.forceUpdate()
         
         let startInit = {
-            self.startPhase(.Init, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
+            self.startPhase(.Init, withAllWorkers: true, performingSelector: #selector(ONTTestWorker.startDownlinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
         }
         
         if testParams.testWait > 0 {
@@ -261,7 +261,7 @@ open class ONTTestRunner: NSObject, ONTTestWorkerDelegate, RMBTConnectivityTrack
                 
             } else {
                 speedMeasurementResult.startDownloadWithThreadCount(Int(testParams.numThreads))
-                startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
+                startPhase(.latency, withAllWorkers: false, performingSelector: #selector(ONTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
             }
         }
     }
@@ -278,7 +278,7 @@ open class ONTTestRunner: NSObject, ONTTestWorkerDelegate, RMBTConnectivityTrack
         
         if markWorkerAsFinished() {
             // We stopped all but one workers because of slow connection. Proceed to latency with single worker.
-            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
+            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(ONTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
         }
     }
     
@@ -305,7 +305,7 @@ open class ONTTestRunner: NSObject, ONTTestWorkerDelegate, RMBTConnectivityTrack
         assert(!dead, "Invalid state")
         
         if markWorkerAsFinished() {
-            startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+            startPhase(.down, withAllWorkers: true, performingSelector: #selector(ONTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
         }
     }
     

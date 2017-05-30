@@ -23,6 +23,7 @@ class SettingsRequest: BasicRequest {
     ///
     var client: ClientSettings?
 
+
     ///
     override func mapping(map: Map) {
         super.mapping(map: map)
@@ -30,4 +31,32 @@ class SettingsRequest: BasicRequest {
         client <- map["client"]
     }
 
+}
+
+
+///
+class SettingsRequest_Old: BasicRequest {
+    
+    ///
+    var termsAndConditionsAccepted : String?
+    ///
+    var uuid: String?
+    ///
+    var name: String = "RMBT"
+    ///
+    var client: String = "RMBT"
+    ///
+    var type: String = "MOBILE"
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]
+        uuid <- map["uuid"]
+        type <- map["type"]
+        client <- map["client"]
+        name <- map["name"]
+    }
+    
 }

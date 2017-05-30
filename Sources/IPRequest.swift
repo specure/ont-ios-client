@@ -22,3 +22,17 @@ class IPRequest: BasicRequest {
     }
 
 }
+
+class IPRequest_Old: BasicRequest_Old {
+    
+    ///
+    var uuid: String?
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        uuid <- map["uuid"]
+    }
+    
+}

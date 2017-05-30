@@ -45,7 +45,7 @@ class ClientSettings: Mappable, CustomStringConvertible {
     ///
     func mapping(map: Map) {
         clientType <- map["clientType"]
-        termsAndConditionsAccepted <- map["termsAndConditionsAccepted"]
+        termsAndConditionsAccepted <- map["termsAndConditionsAccepted"] // ["terms_and_conditions_accepted": true]
         termsAndConditionsAcceptedVersion <- map["termsAndConditionsAcceptedVersion"]
         uuid <- map["uuid"]
     }

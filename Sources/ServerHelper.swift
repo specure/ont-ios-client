@@ -141,7 +141,20 @@ class ServerHelper {
             .responseObject { (response: DataResponse<T>) in
                 switch response.result {
                 case .success:
-                    if let responseObj: T = response.result.value {
+                    if let responseObj:T = response.result.value {
+                        
+                        //
+                        if let rData = response.data {
+                        
+                            do {
+                                let data = try JSONSerialization.jsonObject(with: rData, options: .allowFragments)
+                                print("more details: ", data)
+                                
+                            } catch {}
+                            
+                        }
+                        // RU workaround
+                        
 
                         logger.debug {
                             debugPrint(response)
