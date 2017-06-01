@@ -74,10 +74,10 @@ class ControlServer {
     fileprivate init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
 
-        if let controlServerBaseUrlArgument = UserDefaults.standard.string(forKey: "controlServerBaseUrl") {
-            defaultBaseUrl = controlServerBaseUrlArgument + "/api/v1"
-            logger.debug("Using control server base url from arguments: \(self.defaultBaseUrl)")
-        }
+//        if let controlServerBaseUrlArgument = UserDefaults.standard.string(forKey: "controlServerBaseUrl") {
+//            defaultBaseUrl = controlServerBaseUrlArgument + "/api/v1"
+//            logger.debug("Using control server base url from arguments: \(self.defaultBaseUrl)")
+//        }
     }
 
     ///
@@ -87,8 +87,23 @@ class ControlServer {
     
     ///
     func updateWithCurrentSettings() {
+        
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "uuid_\(URL(string: baseUrl)!.host)"
+        
+        // load uuid
+        if let key = uuidKey {
+            uuid = UserDefaults.standard.object(forKey: key) as? String
+            
+            logger.debugExec({
+                if let uuid = self.uuid {
+                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
+                } else {
+                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
+                }
+            })
+        }
+        
         
         // get settings of control server
         getSettings(success: {
@@ -130,20 +145,6 @@ class ControlServer {
 
 
         //
-
-        // load uuid
-        if let key = uuidKey {
-            uuid = UserDefaults.standard.object(forKey: key) as? String
-
-            logger.debugExec({
-                if let uuid = self.uuid {
-                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
-                } else {
-                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
-                }
-            })
-        }
-
 
     }
 

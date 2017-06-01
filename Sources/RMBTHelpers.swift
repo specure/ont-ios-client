@@ -32,6 +32,9 @@ func +=<K, V>(left: inout [K: V], right: [K: V]) {
     }
 }
 
+///
+
+
 /// Returns a string containing git commit, branch and commit count from Info.plist fields written by the build script
 public func RMBTBuildInfoString() -> String {
     let info = Bundle.main.infoDictionary!
@@ -58,39 +61,40 @@ public func RMBTVersionString() -> String {
     return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
 }
 
-///
-public func RMBTPreferredLanguage() -> String? {
-    let preferredLanguages = Locale.preferredLanguages
-
-    // logger.debug("\(preferredLanguages)")
-
-    if preferredLanguages.count < 1 {
-        return nil
-    }
-
-    let sep = preferredLanguages[0].components(separatedBy: "-")
-
-    var lang = sep[0] // becuase sometimes (ios9?) there's "en-US" instead of en
-
-    if sep.count > 1 && sep[1] == "Latn" { // add Latn if available, but don't add other country codes
-        lang += "-Latn"
-    }
-
-    return lang
-}
+/////
+// retired 31/05/17
+//public func RMBTPreferredLanguage() -> String? {
+//    let preferredLanguages = Locale.preferredLanguages
+//
+//    logger.debug("\(preferredLanguages)")
+//
+//    if preferredLanguages.count < 1 {
+//        return nil
+//    }
+//
+//    let sep = preferredLanguages[0].components(separatedBy: "-")
+//    
+//    var lang = sep[0] // becuase sometimes (ios9?) there's "en-US" instead of en
+//
+//    if sep.count > 1 && sep[1] == "Latn" { // add Latn if available, but don't add other country codes
+//        lang += "-Latn"
+//    }
+//
+//    return lang
+//}
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
 public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
-    let r = urlString.range(of: "$lang")
+    let r = urlString.range(of: LANGUAGE_PREFIX)
 
     if r.location == NSNotFound {
         return urlString as String // return same string if no $lang was found
     }
 
-    let lang = RMBTPreferredLanguage() ?? "en"
+    let lang = PREFFERED_LANGUAGE
 
-    let replacedURL = urlString.replacingOccurrences(of: "$lang", with: lang)
+    let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
 
     // logger.debug("replaced $lang in string, output: \(replacedURL)")
 

@@ -34,7 +34,8 @@ class ServerHelper {
         // Set user agent
         if let userAgent = UserDefaults.standard.string(forKey: "UserAgent") {
             configuration.httpAdditionalHeaders = [
-                "User-Agent": userAgent
+                "User-Agent": userAgent,
+                "Accept-Language":PREFFERED_LANGUAGE
             ]
         }
 
@@ -148,7 +149,7 @@ class ServerHelper {
                         
                             do {
                                 let data = try JSONSerialization.jsonObject(with: rData, options: .allowFragments)
-                                print("more details: ", data)
+                                // print("more details: ", data)
                                 
                             } catch {}
                             

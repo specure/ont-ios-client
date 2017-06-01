@@ -19,6 +19,13 @@ import CoreLocation
 
 // MARK: Test parameters Variables
 
+//
+public let LANGUAGE_PREFIX = "$lang"
+//
+public let DEFAULT_LANGUAGE = "en"
+//
+public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFAULT_LANGUAGE
+
 public class RMBTConfig {
     
     //
@@ -26,8 +33,11 @@ public class RMBTConfig {
 
     // MARK: Default control server URLs    
     var RMBT_CONTROL_SERVER_URL        = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    //
     var RMBT_CONTROL_SERVER_IPV4_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    //
     var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
     
     //
