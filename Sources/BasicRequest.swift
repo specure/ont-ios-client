@@ -164,9 +164,7 @@ class BasicRequest_Old: Mappable {
     
     ///
     required init?(map: Map) {
-        
-        
-        
+ 
     }
     
     ///
@@ -176,21 +174,19 @@ class BasicRequest_Old: Mappable {
         device              <- map["device"]
         
         language            <- map["language"]
-        // language            <- map["client_language"] // TODO: fix this on server side
         
         model               <- map["model"]
-        osVersion           <- map["os_version"]
+        osVersion           <- map["version"]
         platform            <- map["platform"]
         product             <- map["product"]
-        // previousTestStatus  <- map["previous_test_status"]
         softwareRevision    <- map["softwareRevision"]
         
         softwareVersion     <- map["softwareVersion"]
+        softwareVersionCode <- map["softwareVersionCode"]
         
         clientVersion       <- map["client"] // TODO: fix this on server side
         
-        softwareVersionCode <- map["softwareVersionCode"]
-        softwareVersionName <- map["software_version_name"]
+        
         timezone            <- map["timezone"]
         clientType          <- map["type"]
     }

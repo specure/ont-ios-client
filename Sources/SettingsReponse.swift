@@ -18,16 +18,14 @@ import Foundation
 import ObjectMapper
 
 
-
-
 ///
 class SettingsReponse_Old: BasicResponse {
 
     ///
-    var settings: Settings?
+    var settings: [Settings]?
     
     ///
-    var error: String?
+    var error: [String]?
     
     
     override func mapping(map: Map) {
@@ -48,7 +46,7 @@ class SettingsReponse_Old: BasicResponse {
         var versions: VersionSettings?
         
         ///
-        var advertised_speed_option: String?
+        var advertised_speed_option: [String]?
         
         //
         var qosMeasurementTypes:[QOSTestTypes]?
@@ -74,7 +72,7 @@ class SettingsReponse_Old: BasicResponse {
         
         ///
         func mapping(map: Map) {
-            // advertised_speed_option <- map["advertised_speed_option"]
+            advertised_speed_option <- map["advertised_speed_option"]
             qosMeasurementTypes <- map["qostesttype_desc"]
             urls <- map["urls"]
             versions <- map["versions"]

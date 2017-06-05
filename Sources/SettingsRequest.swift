@@ -38,7 +38,11 @@ class SettingsRequest: BasicRequest {
 class SettingsRequest_Old: BasicRequest {
     
     ///
-    var termsAndConditionsAccepted : String?
+    var termsAndConditionsAccepted = false
+    
+    ///
+    var termsAndConditionsAccepted_Version = 0
+    
     ///
     var uuid: String?
     ///
@@ -53,6 +57,7 @@ class SettingsRequest_Old: BasicRequest {
         super.mapping(map: map)
         
         termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]
+        termsAndConditionsAccepted_Version <- map["terms_and_conditions_accepted_version"]
         uuid <- map["uuid"]
         type <- map["type"]
         client <- map["client"]

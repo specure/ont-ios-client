@@ -206,7 +206,7 @@ class ControlServer {
             logger.debug("settings: \(response)")
             
             // set uuid
-            self.uuid = response.settings?.uuid
+            self.uuid = response.settings?[0].uuid
             
             // save uuid
             if let uuidKey = self.uuidKey {
@@ -217,10 +217,10 @@ class ControlServer {
             logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
             
             // set control server version
-            self.version = response.settings?.versions?.controlServerVersion
+            self.version = response.settings?[0].versions?.controlServerVersion
             
             // set qos test type desc
-            response.settings?.qosMeasurementTypes?.forEach({ measurementType in
+            response.settings?[0].qosMeasurementTypes?.forEach({ measurementType in
                 if let type = measurementType.testType {
                     // QosMeasurementType.localizedNameDict[type] = measurementType.testDesc
                 }
@@ -247,7 +247,8 @@ class ControlServer {
         } else {
         
             let settingsRequest_Old = SettingsRequest_Old()
-            settingsRequest_Old.termsAndConditionsAccepted = "1"
+            settingsRequest_Old.termsAndConditionsAccepted = true
+            settingsRequest_Old.termsAndConditionsAccepted_Version = 1
             settingsRequest_Old.uuid = uuid
             
             request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
