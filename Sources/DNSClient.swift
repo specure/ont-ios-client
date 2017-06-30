@@ -346,7 +346,9 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 //println("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
                 logger.debug("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
 
-                let dd = d.subdata(in: MemoryLayout<DNSQuestion>.size..<d.count /*NSRange(location: MemoryLayout<DNSQuestion>.size, length: d.count - MemoryLayout<DNSQuestion>.size)*/)
+                let dd = d.subdata(in: MemoryLayout<DNSQuestion>.size..<d.count
+                    
+                    /*NSRange(location: MemoryLayout<DNSQuestion>.size, length: d.count - MemoryLayout<DNSQuestion>.size)*/)
 
 //                println("dd: \(dd)")
 

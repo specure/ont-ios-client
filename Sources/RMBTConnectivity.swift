@@ -130,6 +130,13 @@ open class RMBTConnectivity {
                 telephonyNetworkSimCountry = carrier.isoCountryCode
                 telephonyNetworkSimOperator = "\(carrier.mobileCountryCode!)-\(carrier.mobileNetworkCode!)" // TODO: !
             }
+            
+            // action while changing provider
+            netinfo.subscriberCellularProviderDidUpdateNotifier = { carrier in
+                
+                // TODO
+                    
+            }
 
             if netinfo.responds(to: #selector(getter: CTTelephonyNetworkInfo.currentRadioAccessTechnology)) {
                 // iOS 7
