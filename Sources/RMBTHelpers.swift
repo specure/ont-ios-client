@@ -62,26 +62,29 @@ public func RMBTVersionString() -> String {
 }
 
 /////
-// retired 31/05/17
-//public func RMBTPreferredLanguage() -> String? {
-//    let preferredLanguages = Locale.preferredLanguages
-//
-//    logger.debug("\(preferredLanguages)")
-//
-//    if preferredLanguages.count < 1 {
-//        return nil
-//    }
-//
-//    let sep = preferredLanguages[0].components(separatedBy: "-")
-//    
-//    var lang = sep[0] // becuase sometimes (ios9?) there's "en-US" instead of en
-//
-//    if sep.count > 1 && sep[1] == "Latn" { // add Latn if available, but don't add other country codes
-//        lang += "-Latn"
-//    }
-//
-//    return lang
-//}
+// 
+public func RMBTPreferredLanguage() -> String? {
+    let preferredLanguages = Locale.preferredLanguages
+
+    logger.debug("\(preferredLanguages)")
+
+    if preferredLanguages.count < 1 {
+        return nil
+    }
+
+    let sep = preferredLanguages[0].components(separatedBy: "-")
+    
+    var lang = sep[0] // becuase sometimes (ios9?) there's "en-US" instead of en
+
+    if sep.count > 1 && sep[1] == "Latn" { // add Latn if available, but don't add other country codes
+        lang += "-Latn"
+    }
+    
+    // experiment need to test
+    // lang = PREFFERED_LANGUAGE
+
+    return lang
+}
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.

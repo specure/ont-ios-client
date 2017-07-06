@@ -71,7 +71,7 @@ class ServerHelper {
 
         manager
             .request(basePath, method: method, parameters: parameters, encoding: encoding, headers: [:])
-            //.request(method, basePath, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
+ // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             /*.responseString { response in
                 logger.debug {
@@ -79,6 +79,7 @@ class ServerHelper {
                     return "Response for \(path): \n\(response.result.value)"
                 }
             }*/
+            
             .responseArray { (response: DataResponse<[T]>) in
                 switch response.result {
                 case .success:
@@ -117,7 +118,7 @@ class ServerHelper {
         if let reqObj = requestObject {
             BasicRequestBuilder.addBasicRequestValues(reqObj)
 
-            parameters = reqObj.toJSON() as [String : AnyObject]? ///Mapper(). toJSON(reqObj)
+            parameters = reqObj.toJSON() as [String : AnyObject]?
 
             logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
@@ -136,7 +137,7 @@ class ServerHelper {
 
         manager
             .request(url, method: method, parameters: parameters, encoding: encoding, headers: nil)
-//            .request(method, (baseUrl != nil ? baseUrl! : "")+path, parameters: parameters, encoding: encoding) // maybe use alamofire router later? (https://grokswift.com/router/)
+    // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
         
             .responseObject { (response: DataResponse<T>) in
