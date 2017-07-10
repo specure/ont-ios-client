@@ -383,7 +383,25 @@ class ControlServer {
             self.requestArray(.get, path: "/clients/\(uuid)/measurements?timestamp=\(timestamp)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
+    
+// MARK: Synchro
 
+    ///
+    func syncWithCode(code:String, success: @escaping (_ response: HistoryItem) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+    let req = SyncCodeRequest()
+    req.code = code
+            self.request(.post, path: "sync", requestObject: req, success: success, error: failure)
+        }, error: failure)
+    }
+    
+    ///
+    func getSyncCode(success: @escaping (_ response: [HistoryItem]) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            self.requestArray(.get, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
+        }, error: failure)
+    }
+    
 // MARK: Private
 
     ///

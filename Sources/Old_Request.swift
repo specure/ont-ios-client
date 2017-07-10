@@ -7,6 +7,66 @@
 //
 
 import Foundation
+import ObjectMapper
+
+
+///
+class SyncCodeRequest: BasicRequest {
+
+    var code:String!
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        code <- map["sync_code"]
+    }
+}
+
+///
+class IPRequest_Old: BasicRequest {
+    
+    ///
+    var uuid: String?
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        uuid <- map["uuid"]
+    }
+}
+
+///
+class SettingsRequest_Old: BasicRequest {
+    
+    ///
+    var termsAndConditionsAccepted = false
+    
+    ///
+    var termsAndConditionsAccepted_Version = 0
+    
+    ///
+    var uuid: String?
+    ///
+    var name: String = "RMBT"
+    ///
+    var client: String = "RMBT"
+    ///
+    var type: String = "MOBILE"
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]
+        termsAndConditionsAccepted_Version <- map["terms_and_conditions_accepted_version"]
+        uuid <- map["uuid"]
+        type <- map["type"]
+        client <- map["client"]
+        name <- map["name"]
+    }
+}
 
 ///
 class BasicRequest_Old: Mappable {
@@ -94,48 +154,5 @@ class BasicRequest_Old: Mappable {
     }
 }
 
-class IPRequest_Old: BasicRequest_Old {
-    
-    ///
-    var uuid: String?
-    
-    ///
-    override func mapping(map: Map) {
-        super.mapping(map: map)
-        
-        uuid <- map["uuid"]
-    }
-}
-
-///
-class SettingsRequest_Old: BasicRequest {
-    
-    ///
-    var termsAndConditionsAccepted = false
-    
-    ///
-    var termsAndConditionsAccepted_Version = 0
-    
-    ///
-    var uuid: String?
-    ///
-    var name: String = "RMBT"
-    ///
-    var client: String = "RMBT"
-    ///
-    var type: String = "MOBILE"
-    
-    ///
-    override func mapping(map: Map) {
-        super.mapping(map: map)
-        
-        termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]
-        termsAndConditionsAccepted_Version <- map["terms_and_conditions_accepted_version"]
-        uuid <- map["uuid"]
-        type <- map["type"]
-        client <- map["client"]
-        name <- map["name"]
-    }
-}
 
 

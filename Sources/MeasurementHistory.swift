@@ -216,6 +216,11 @@ open class MeasurementHistory {
 
         }, error: failure)
     }
+    
+    ///
+    open func syncGetSyncCodesuccess( _: @escaping (_ response: SpeedMeasurementDisassociateResponse) -> (), error failure: @escaping ErrorCallback) {
+    
+    }
 
 // MARK: Get
 

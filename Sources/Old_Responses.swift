@@ -34,6 +34,47 @@ open class IpResponse_Old: BasicResponse {
 }
 
 ///
+///
+class SyncCodeResponse: BasicResponse {
+    
+    //
+    var codes:Result?
+    
+    ///
+    override func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        codes <- map["sync"]
+    }
+    
+    class Result: Mappable {
+        
+        //
+        var results:[[String:Any?]] = []
+        
+        //
+        var isSynchronize:Bool = false
+        
+        
+        ///
+        init() {
+            
+        }
+        
+        ///
+        required init?(map: Map) {
+            
+        }
+        
+        ///
+        func mapping(map: Map) {
+            results <- map["success"]
+        }
+        
+    }
+}
+
+///
 class SettingsReponse_Old: BasicResponse {
     
     ///
