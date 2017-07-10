@@ -38,25 +38,3 @@ open class IpResponse: BasicResponse {
         return "ip: \(ip), version: \(version)"
     }
 }
-
-///
-open class IpResponse_Old: BasicResponse {
-    
-    ///
-    var ip: String = ""
-    
-    ///
-    var version: String = ""
-    
-    ///
-    override open func mapping(map: Map) {
-        super.mapping(map: map)
-        
-        ip <- map["ip"]
-        version <- map["v"]
-    }
-    
-    override open var description: String {
-        return "ip: \(ip), version: \(version)"
-    }
-}

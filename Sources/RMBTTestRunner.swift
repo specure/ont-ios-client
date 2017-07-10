@@ -802,16 +802,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         switch reason {
-        case .userRequested:
-            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Aborted.rawValue
-        case .appBackgrounded:
-            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorBackgrounded.rawValue
-        case .errorFetchingTestingParams:
-            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorFetching.rawValue
-        case .errorSubmittingTestResult:
-            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorSubmitting.rawValue
-        default:
-            RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Error.rawValue
+            case .userRequested: RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Aborted.rawValue
+            case .appBackgrounded: RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorBackgrounded.rawValue
+            case .errorFetchingTestingParams: RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorFetching.rawValue
+            case .errorSubmittingTestResult: RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.ErrorSubmitting.rawValue
+        default: RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Error.rawValue
         }
 
         phase = .none

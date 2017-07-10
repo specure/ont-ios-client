@@ -24,6 +24,9 @@
 
 namespace realm {
 
+SyncUserContextFactory SyncUser::s_binding_context_factory;
+std::mutex SyncUser::s_binding_context_factory_mutex;
+
 SyncUser::SyncUser(std::string refresh_token, std::string identity,
                    util::Optional<std::string> server_url, TokenType token_type)
 : m_state(State::Active)
@@ -32,6 +35,12 @@ SyncUser::SyncUser(std::string refresh_token, std::string identity,
 , m_refresh_token(std::move(refresh_token))
 , m_identity(std::move(identity))
 {
+    {
+        std::lock_guard<std::mutex> lock(s_binding_context_factory_mutex);
+        if (s_binding_context_factory) {
+            m_binding_context = s_binding_context_factory();
+        }
+    }
     if (token_type == TokenType::Normal) {
         SyncManager::shared().perform_metadata_update([this, server_url=std::move(server_url)](const auto& manager) {
             auto metadata = SyncUserMetadata(manager, m_identity);
@@ -85,6 +94,12 @@ void SyncUser::update_refresh_token(std::string token)
     std::vector<std::shared_ptr<SyncSession>> sessions_to_revive;
     {
         std::unique_lock<std::mutex> lock(m_mutex);
+        if (auto session = m_management_session.lock())
+            sessions_to_revive.emplace_back(std::move(session));
+
+        if (auto session = m_permission_session.lock())
+            sessions_to_revive.emplace_back(std::move(session));
+
         switch (m_state) {
             case State::Error:
                 return;
@@ -141,6 +156,13 @@ void SyncUser::log_out()
         }
     }
     m_sessions.clear();
+    // Deactivate the sessions for the management and admin Realms.
+    if (auto session = m_management_session.lock())
+        session->log_out();
+
+    if (auto session = m_permission_session.lock())
+        session->log_out();
+
     // Mark the user as 'dead' in the persisted metadata Realm.
     SyncManager::shared().perform_metadata_update([=](const auto& manager) {
         auto metadata = SyncUserMetadata(manager, m_identity, false);
@@ -200,6 +222,30 @@ void SyncUser::register_session(std::shared_ptr<SyncSession> session)
         case State::Error:
             break;
     }
+}
+
+void SyncUser::set_binding_context_factory(SyncUserContextFactory factory)
+{
+    std::lock_guard<std::mutex> lock(s_binding_context_factory_mutex);
+    s_binding_context_factory = std::move(factory);
+}
+
+void SyncUser::register_management_session(const std::string& path)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (m_management_session.lock() || m_state == State::Error)
+        return;
+
+    m_management_session = SyncManager::shared().get_existing_session(path);
+}
+
+void SyncUser::register_permission_session(const std::string& path)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (m_permission_session.lock() || m_state == State::Error)
+        return;
+
+    m_permission_session = SyncManager::shared().get_existing_session(path);
 }
 
 }

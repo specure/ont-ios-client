@@ -85,11 +85,12 @@ public:
     void set_client_should_reconnect_immediately(bool reconnect_immediately);
     bool client_should_reconnect_immediately() const noexcept;
 
-    /// Control whether the sync client validates SSL certificates. Should *always* be `true` in production use.
-    void set_client_should_validate_ssl(bool validate_ssl);
-    bool client_should_validate_ssl() const noexcept;
-    
-    /// Force sync client to reconnect immediately if the connection was lost.
+    /// Ask all valid sync sessions to perform whatever tasks might be necessary to
+    /// re-establish connectivity with the Realm Object Server. It is presumed that
+    /// the caller knows that network connectivity has been restored.
+    ///
+    /// Refer to `SyncSession::handle_reconnect()` to see what sort of work is done
+    /// on a per-session basis.
     void reconnect();
 
     util::Logger::Level log_level() const noexcept;
@@ -148,7 +149,6 @@ private:
     util::Logger::Level m_log_level = util::Logger::Level::info;
     SyncLoggerFactory* m_logger_factory = nullptr;
     ReconnectMode m_client_reconnect_mode = ReconnectMode::normal;
-    bool m_client_validate_ssl = true;
 
     bool run_file_action(const SyncFileActionMetadata&);
 

@@ -12,6 +12,8 @@
 		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
+		A1D44AFF1F137D1A00DE9E2D /* Old_Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */; };
+		A1D44B011F137D9500DE9E2D /* Old_Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D44B001F137D9500DE9E2D /* Old_Request.swift */; };
 		A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
 		A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
 		A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
@@ -455,6 +457,8 @@
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
+		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
+		A1D44B001F137D9500DE9E2D /* Old_Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Request.swift; sourceTree = "<group>"; };
 		A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPRequest.swift; sourceTree = "<group>"; };
 		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -1174,6 +1178,7 @@
 				E0FC4C6D1D6C84DA00D5D236 /* SpeedMeasurementResult.swift */,
 				E0FC4C711D6C850D00D5D236 /* QosMeasurementRequest.swift */,
 				E0FC4C751D6C852600D5D236 /* QosMeasurementResultRequest.swift */,
+				A1D44B001F137D9500DE9E2D /* Old_Request.swift */,
 			);
 			name = Request;
 			sourceTree = "<group>";
@@ -1195,6 +1200,7 @@
 				E0FC4CA51D6C867400D5D236 /* QosMeasurementSubmitResponse.swift */,
 				E0FC4CA91D6C868D00D5D236 /* QosMeasurementResultResponse.swift */,
 				E0FC4CAD1D6C86B200D5D236 /* HistoryItem.swift */,
+				A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */,
 			);
 			name = Response;
 			sourceTree = "<group>";
@@ -1554,6 +1560,7 @@
 				E02D18A01CF59262002A02FE /* QOSTestExecutorProtocol.swift in Sources */,
 				E02D19A01CF5AAB8002A02FE /* ConnectivityServiceDelegate.swift in Sources */,
 				E02D19041CF59262002A02FE /* UDPStreamReceiver.swift in Sources */,
+				A1D44B011F137D9500DE9E2D /* Old_Request.swift in Sources */,
 				E02D18A61CF59262002A02FE /* QOSUDPTest.swift in Sources */,
 				E02D18921CF59262002A02FE /* QOSControlConnectionDelegate.swift in Sources */,
 				E02D18F81CF59262002A02FE /* RTPControlData.swift in Sources */,
@@ -1617,6 +1624,7 @@
 				E02D187D1CF59262002A02FE /* GCDTimer.swift in Sources */,
 				E0FC4CA61D6C867400D5D236 /* QosMeasurementSubmitResponse.swift in Sources */,
 				E0FC4C7E1D6C856300D5D236 /* IpResponse.swift in Sources */,
+				A1D44AFF1F137D1A00DE9E2D /* Old_Responses.swift in Sources */,
 				E02D199C1CF5AA93002A02FE /* PingUtilDelegateBridge.swift in Sources */,
 				E08EA6A01D7DC6E5000F916A /* MeasurementHistory.swift in Sources */,
 				E0FC4C9E1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
