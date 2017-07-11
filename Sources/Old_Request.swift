@@ -9,14 +9,48 @@
 import Foundation
 import ObjectMapper
 
+///
+///
+open class HistoryWithFiltersRequest: BasicRequest {
+    
+    var uuid:String?
+    var resultOffset:NSNumber?
+    var resultLimit:NSNumber?
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        uuid <- map["uuid"]
+        
+        resultOffset <- map["result_offset"]
+        resultLimit <- map["result_limit"]
+    }
+    
+}
+
 
 ///
-class SyncCodeRequest: BasicRequest {
+open class GetSyncCodeRequest: BasicRequest {
+    
+    var uuid:String?
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        uuid <- map["uuid"]
+    }
+
+}
+
+///
+open class SyncCodeRequest: BasicRequest {
 
     var code:String!
     
     ///
-    override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
         
         code <- map["sync_code"]
@@ -24,21 +58,47 @@ class SyncCodeRequest: BasicRequest {
 }
 
 ///
-class IPRequest_Old: BasicRequest {
+open class IPRequest_Old: BasicRequest {
     
     ///
     var uuid: String?
     
     ///
-    override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
         
         uuid <- map["uuid"]
     }
 }
+///
+///
+open class ServerSettingsRequest_Old: BasicRequest {
+    
+    ///
+    var time:UInt64?
+    ///
+    var uuid: String?
+    ///
+    var name: String = "RMBT"
+    ///
+    var client: String = "RMBT"
+    ///
+    var type: String = "MOBILE"
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        time <- map["time"]
+        uuid <- map["uuid"]
+        type <- map["type"]
+        client <- map["client"]
+        name <- map["name"]
+    }
+}
 
 ///
-class SettingsRequest_Old: BasicRequest {
+open class SettingsRequest_Old: BasicRequest {
     
     ///
     var termsAndConditionsAccepted = false
@@ -56,7 +116,7 @@ class SettingsRequest_Old: BasicRequest {
     var type: String = "MOBILE"
     
     ///
-    override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
         
         termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]

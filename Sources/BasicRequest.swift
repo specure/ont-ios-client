@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 
 ///
-class BasicRequest: Mappable {
+open class BasicRequest: Mappable {
 
     ///
     var apiLevel: String?
@@ -74,12 +74,12 @@ class BasicRequest: Mappable {
     }
 
     ///
-    required init?(map: Map) {
+    required public init?(map: Map) {
 
     }
 
     ///
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         apiLevel            <- map["api_level"]
         clientName          <- map["client_name"]
         device              <- map["device"]

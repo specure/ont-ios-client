@@ -471,7 +471,6 @@ open class ONTTestRunner: NSObject, ONTTestWorkerDelegate, RMBTConnectivityTrack
             
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 self.workerQueue.async {
-                    //self.phase = .None
                     self.setPhase(.none)
                     self.dead = true
                     

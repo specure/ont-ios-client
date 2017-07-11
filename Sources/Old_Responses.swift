@@ -10,15 +10,30 @@ import Foundation
 import ObjectMapper
 //
 
+open class HistoryWithFiltersResponse: BasicResponse {
+
+    ///
+    open var records: [[String:Any?]]?
+    open var error: [String]?
+
+    
+    ///
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        records <- map["history"]
+        error <- map["error"]
+    }
+}
 
 ///
 open class IpResponse_Old: BasicResponse {
     
     ///
-    var ip: String = ""
+    open var ip: String = ""
     
     ///
-    var version: String = ""
+    open var version: String = ""
     
     ///
     override open func mapping(map: Map) {
@@ -34,14 +49,56 @@ open class IpResponse_Old: BasicResponse {
 }
 
 ///
+open class GetSyncCodeResponse: BasicResponse {
+
+    //
+    open var codes:[Result]?
+    
+    ///
+    open var error: [String]?
+    
+    ///
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        codes <- map["sync"]
+        error <- map["error"]
+    }
+    
+    open class Result: Mappable {
+        
+        //
+        open var code:String?
+        
+        
+        ///
+        init() {
+            
+        }
+        
+        ///
+        required public init?(map: Map) {
+            
+        }
+        
+        ///
+        public func mapping(map: Map) {
+            code <- map["sync_code"]
+        }
+        
+    }
+}
 ///
-class SyncCodeResponse: BasicResponse {
+open class SyncCodeResponse: BasicResponse {
     
     //
     var codes:Result?
     
     ///
-    override func mapping(map: Map) {
+    var error: [String]?
+    
+    ///
+    override open func mapping(map: Map) {
         super.mapping(map: map)
         
         codes <- map["sync"]
@@ -75,7 +132,7 @@ class SyncCodeResponse: BasicResponse {
 }
 
 ///
-class SettingsReponse_Old: BasicResponse {
+open class SettingsReponse_Old: BasicResponse {
     
     ///
     var settings: [Settings]?
@@ -84,7 +141,7 @@ class SettingsReponse_Old: BasicResponse {
     var error: [String]?
     
     
-    override func mapping(map: Map) {
+    override open func mapping(map: Map) {
         super.mapping(map: map)
         
         settings <- map["settings"]

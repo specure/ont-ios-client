@@ -217,9 +217,21 @@ open class MeasurementHistory {
         }, error: failure)
     }
     
-    ///
-    open func syncGetSyncCodesuccess( _: @escaping (_ response: SpeedMeasurementDisassociateResponse) -> (), error failure: @escaping ErrorCallback) {
+    /// OLD history
+    open func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.getHistoryWithFilters(filters: filters, length: length, offset: offset, success: success, error: errorCallback)
+    }
     
+    ///
+    open func syncDevicesWith(code:String, success : @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.syncWithCode(code: code, success: success, error: failure)
+    
+    }
+    
+    ///
+    open func getSyncCode(success : @escaping (_ response: GetSyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.synchGetCode(success: success, error: failure)
+        
     }
 
 // MARK: Get

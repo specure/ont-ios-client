@@ -194,16 +194,31 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         let controlServer = ControlServer.sharedControlServer
-        controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
-            self.workerQueue.async {
-                self.continueWithTestParams(response)
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            
+            controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
+                self.workerQueue.async {
+                    self.continueWithTestParams(response)
+                }
+            }) { error in
+                self.workerQueue.async {
+                    self.cancelWithReason(.errorFetchingTestingParams)
+                }
             }
-        }) { error in
-            self.workerQueue.async {
-                self.cancelWithReason(.errorFetchingTestingParams)
+        } else {
+        
+            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequest, success: { response in
+                self.workerQueue.async {
+                    self.continueWithTestParams(response)
+                }
+            }) { error in
+                self.workerQueue.async {
+                    self.cancelWithReason(.errorFetchingTestingParams)
+                }
             }
         }
-
+        
         ////////////////
 
         // Notice that we post previous counter (the test before this one) when requesting the params
@@ -500,7 +515,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                 self.workerQueue.async {
-                    //self.phase = .None
                     self.setPhase(.none)
                     self.dead = true
 

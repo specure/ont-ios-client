@@ -299,6 +299,36 @@ class ControlServer {
             self.request(.post, path: "/measurements/speed", requestObject: speedMeasurementRequest, success: success, error: failure)
         }, error: failure)
     }
+    
+    ///
+    func requestSpeedMeasurement_Old(_ speedMeasurementRequest: SpeedMeasurementRequest, success: @escaping (_ response: SpeedMeasurementResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            let requestParams: NSMutableDictionary = NSMutableDictionary(dictionary: [
+                "ndt": false,
+                "time": RMBTTimestampWithNSDate(NSDate() as Date)
+                ])
+            
+            let req = SpeedMeasurementRequest()
+            req.uuid = uuid
+            req.time = RMBTTimestampWithNSDate(NSDate() as Date) as! UInt64
+            
+
+                
+//            self.requestWithMethod(method: "POST", path: "", params: requestParams, success: { response in
+//                
+//                // TODO: check "error" in json
+//                
+//                let tp = RMBTTestParams(response: response as! [NSObject: AnyObject])
+//                success(response: tp)
+//                
+//            }, error: { error, info in
+//                // RMBTLog("Fetching test parameters failed with err=%@, response=%@", error, info)
+//                failure
+//            })
+            
+            self.request(.post, path: "", requestObject: speedMeasurementRequest, success: success, error: failure)
+        }, error: failure)
+    }
 
     ///
     func submitSpeedMeasurementResult(_ speedMeasurementResult: SpeedMeasurementResult, success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
@@ -306,6 +336,19 @@ class ControlServer {
             if let measurementUuid = speedMeasurementResult.uuid {
                 speedMeasurementResult.clientUuid = uuid
 
+                self.request(.put, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
+            } else {
+                failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
+            }
+        }, error: failure)
+    }
+    
+    ///
+    func submitSpeedMeasurementResult_Old(_ speedMeasurementResult: SpeedMeasurementResult, success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            if let measurementUuid = speedMeasurementResult.uuid {
+                speedMeasurementResult.clientUuid = uuid
+                
                 self.request(.put, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
@@ -384,21 +427,44 @@ class ControlServer {
         }, error: failure)
     }
     
+    // OLD
+    ///
+    func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        let params: NSMutableDictionary = NSMutableDictionary(dictionary: [
+            "result_offset": NSNumber(value: offset),
+            "result_limit": NSNumber(value: length)
+            ])
+        
+        if filters != nil {
+            params.addEntries(from: filters! as [NSObject: AnyObject])
+        }
+        
+        ensureClientUuid(success: { uuid in
+            let req = HistoryWithFiltersRequest()
+            req.uuid = uuid
+            req.resultLimit = NSNumber(value: length)
+            req.resultOffset = NSNumber(value: offset)
+            self.request(.post, path: "/history", requestObject: req, success: success, error: errorCallback)
+        }, error: errorCallback)
+    }
+    
 // MARK: Synchro
 
     ///
-    func syncWithCode(code:String, success: @escaping (_ response: HistoryItem) -> (), error failure: @escaping ErrorCallback) {
+    func syncWithCode(code:String, success: @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-    let req = SyncCodeRequest()
-    req.code = code
-            self.request(.post, path: "sync", requestObject: req, success: success, error: failure)
+        let req = SyncCodeRequest()
+        req.code = code
+            self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
         }, error: failure)
     }
     
     ///
-    func getSyncCode(success: @escaping (_ response: [HistoryItem]) -> (), error failure: @escaping ErrorCallback) {
+    func synchGetCode(success: @escaping (_ response: GetSyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-            self.requestArray(.get, path: "/clients/\(uuid)/measurements", requestObject: nil, success: success, error: failure)
+            let req = GetSyncCodeRequest()
+            req.uuid = uuid
+            self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
         }, error: failure)
     }
     
