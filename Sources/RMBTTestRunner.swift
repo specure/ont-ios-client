@@ -2,7 +2,7 @@
  * Copyright 2013 appscape gmbh
  * Copyright 2014-2016 SPECURE GmbH
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache Lvarnse, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -208,9 +208,23 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             }
         } else {
         
-            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequest, success: { response in
+            // workaround - nasty :(
+            controlServer.requestSpeedMeasurement_Old(nil, success: { response in
                 self.workerQueue.async {
-                    self.continueWithTestParams(response)
+                    
+                    let r = SpeedMeasurementResponse()
+                    r.clientRemoteIp = response.clientRemoteIp
+                    r.duration = response.duration
+                    r.pretestDuration = response.pretestDuration
+                    r.measurementServer?.port = Int(response.port!)
+                    r.measurementServer?.address = response.serverAddress
+                    r.measurementServer?.name = response.serverName
+                    r.numPings = Int(response.numPings)
+                    r.numThreads = Int(response.numThreads)
+                    r.testToken = response.testToken
+                    r.testUuid = response.testUuid
+                        
+                    self.continueWithTestParams(r)
                 }
             }) { error in
                 self.workerQueue.async {

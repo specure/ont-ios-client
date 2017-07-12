@@ -24,6 +24,9 @@ open class BasicResponse: Mappable, CustomStringConvertible {
     open var description: String {
         return "<empty BasicResponse>"
     }
+    
+    ///
+    var error: [String]?
 
     ///
     public init() {
@@ -37,6 +40,8 @@ open class BasicResponse: Mappable, CustomStringConvertible {
 
     ///
     open func mapping(map: Map) {
+        
+        error <- map["error"]
 
     }
 }

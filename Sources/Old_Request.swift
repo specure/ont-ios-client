@@ -13,7 +13,6 @@ import ObjectMapper
 ///
 open class HistoryWithFiltersRequest: BasicRequest {
     
-    var uuid:String?
     var resultOffset:NSNumber?
     var resultLimit:NSNumber?
     
@@ -21,7 +20,6 @@ open class HistoryWithFiltersRequest: BasicRequest {
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        uuid <- map["uuid"]
         
         resultOffset <- map["result_offset"]
         resultLimit <- map["result_limit"]
@@ -33,13 +31,13 @@ open class HistoryWithFiltersRequest: BasicRequest {
 ///
 open class GetSyncCodeRequest: BasicRequest {
     
-    var uuid:String?
+    
     
     ///
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        uuid <- map["uuid"]
+        
     }
 
 }
@@ -60,40 +58,69 @@ open class SyncCodeRequest: BasicRequest {
 ///
 open class IPRequest_Old: BasicRequest {
     
+    
     ///
-    var uuid: String?
+    var software_Version_Code: String = "666"
+    var plattform:String = ""
     
     ///
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        uuid <- map["uuid"]
+        software_Version_Code <- map["softwareVersionCode"]
+        plattform <- map["plattform"]
+        
     }
 }
 ///
 ///
-open class ServerSettingsRequest_Old: BasicRequest {
+class SpeedMeasurementRequest_Old: BasicRequest {
+    
     
     ///
-    var time:UInt64?
-    ///
-    var uuid: String?
-    ///
-    var name: String = "RMBT"
-    ///
-    var client: String = "RMBT"
-    ///
-    var type: String = "MOBILE"
+    var ndt = false
     
     ///
-    override public func mapping(map: Map) {
+    var anonymous = false
+    
+    ///
+    var time: UInt64?
+    
+    ///
+    var version: String = "0.3"
+    
+    ///
+    var testCounter: UInt?
+    
+    ///
+    var geoLocation: GeoLocation?
+    
+    ///
+    var name = "RMBT"
+    
+    ///
+    var type = "MOBILE"
+    
+    ///
+    var client = "RMBT"
+    
+    ///
+    override func mapping(map: Map) {
         super.mapping(map: map)
         
+        
+        ndt         <- map["ndt"]
+        anonymous   <- map["anonymous"]
+        version     <- map["version"]
+        testCounter <- map["test_counter"]
+        
+        geoLocation <- map["geo_location"]
+        
         time <- map["time"]
-        uuid <- map["uuid"]
+        name <- map["name"]
         type <- map["type"]
         client <- map["client"]
-        name <- map["name"]
+
     }
 }
 
@@ -107,8 +134,6 @@ open class SettingsRequest_Old: BasicRequest {
     var termsAndConditionsAccepted_Version = 0
     
     ///
-    var uuid: String?
-    ///
     var name: String = "RMBT"
     ///
     var client: String = "RMBT"
@@ -121,7 +146,7 @@ open class SettingsRequest_Old: BasicRequest {
         
         termsAndConditionsAccepted <- map["terms_and_conditions_accepted"]
         termsAndConditionsAccepted_Version <- map["terms_and_conditions_accepted_version"]
-        uuid <- map["uuid"]
+
         type <- map["type"]
         client <- map["client"]
         name <- map["name"]

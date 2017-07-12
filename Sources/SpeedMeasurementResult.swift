@@ -34,8 +34,6 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 ///
 class SpeedMeasurementResult: BasicRequest {
 
-    ///
-    var uuid: String?
 
     ///
     var clientUuid: String?
@@ -518,7 +516,6 @@ class SpeedMeasurementResult: BasicRequest {
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        uuid                    <- map["uuid"]
         clientUuid              <- map["client_uuid"]
         extendedTestStat        <- map["extended_test_stat"]
         geoLocations            <- map["geo_locations"]

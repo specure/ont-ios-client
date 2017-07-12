@@ -21,9 +21,6 @@ import ObjectMapper
 class SpeedMeasurementRequest: BasicRequest {
 
     ///
-    var uuid: String?
-
-    ///
     var ndt = false
 
     ///
@@ -45,7 +42,6 @@ class SpeedMeasurementRequest: BasicRequest {
     override func mapping(map: Map) {
         super.mapping(map: map)
 
-        uuid        <- map["uuid"]
         ndt         <- map["ndt"]
         anonymous   <- map["anonymous"]
         time        <- (map["time"], UInt64NSNumberTransformOf)

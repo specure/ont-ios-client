@@ -13,8 +13,7 @@ import ObjectMapper
 open class HistoryWithFiltersResponse: BasicResponse {
 
     ///
-    open var records: [[String:Any?]]?
-    open var error: [String]?
+    open var records: [[String:Any?]] = []
 
     
     ///
@@ -22,7 +21,6 @@ open class HistoryWithFiltersResponse: BasicResponse {
         super.mapping(map: map)
         
         records <- map["history"]
-        error <- map["error"]
     }
 }
 
@@ -34,6 +32,7 @@ open class IpResponse_Old: BasicResponse {
     
     ///
     open var version: String = ""
+    
     
     ///
     override open func mapping(map: Map) {
@@ -55,21 +54,16 @@ open class GetSyncCodeResponse: BasicResponse {
     open var codes:[Result]?
     
     ///
-    open var error: [String]?
-    
-    ///
     override open func mapping(map: Map) {
         super.mapping(map: map)
         
         codes <- map["sync"]
-        error <- map["error"]
     }
     
     open class Result: Mappable {
         
         //
         open var code:String?
-        
         
         ///
         init() {
@@ -93,9 +87,6 @@ open class SyncCodeResponse: BasicResponse {
     
     //
     var codes:Result?
-    
-    ///
-    var error: [String]?
     
     ///
     override open func mapping(map: Map) {
@@ -131,21 +122,90 @@ open class SyncCodeResponse: BasicResponse {
     }
 }
 
+open class SpeedMeasurementResponse_Old: BasicResponse {
+    
+    ///
+    open var testToken: String?
+    
+    ///
+    open var testUuid: String?
+    
+    ///
+    open var clientRemoteIp: String?
+    
+    ///
+    var duration: Double = 7 // TODO: int instead of double?
+    
+    ///
+    var pretestDuration: Double = RMBT_TEST_PRETEST_DURATION_S // TODO: int instead of double?
+    
+    ///
+    var pretestMinChunkCountForMultithreading: Int = RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST
+    
+    ///
+    var numThreads: Int = 3
+    
+    ///
+    var numPings: Int = 10
+    
+    ///
+    var testWait: Double = 0 // TODO: int instead of double?
+    
+    ///
+    open var port:NSNumber?
+    
+    ///
+    open var serverAddress:String?
+    
+    ///
+    open var serverEncryption:Bool = false
+    
+    ///
+    open var serverName:String?
+    
+    ///
+    open var resultURLString:String?
+    
+    ///
+    open var waitDuration:Int?
+    
+    ///
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        testToken           <- map["test_token"]
+        testUuid            <- map["test_uuid"]
+        
+        clientRemoteIp      <- map["client_remote_ip"]
+        duration            <- map["duration"]
+        pretestDuration     <- map["duration_pretest"]
+        numThreads          <- map["test_numthreads"]
+        numPings            <- map["num_pings"]
+        testWait            <- map["test_wait"]
+        port                <- map["test_server_port"]
+        
+        serverAddress       <- map["test_server_address"]
+        serverEncryption    <- map["test_server_encryption"]
+        serverName          <- map["test_server_name"]
+
+        
+        resultURLString <- map["result_url"]
+        waitDuration <- map["test_wait"]
+        
+    }
+}
+
 ///
 open class SettingsReponse_Old: BasicResponse {
     
     ///
     var settings: [Settings]?
     
-    ///
-    var error: [String]?
-    
     
     override open func mapping(map: Map) {
         super.mapping(map: map)
         
         settings <- map["settings"]
-        error <- map["error"]
     }
     
     

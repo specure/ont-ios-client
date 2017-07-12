@@ -28,7 +28,7 @@ public typealias EmptyCallback = () -> ()
 public typealias ErrorCallback = (_ error: Error) -> ()
 
 ///
-public typealias IpResponseSuccessCallback = (_ ipResponse: IpResponse) -> ()
+public typealias IpResponseSuccessCallback = (_ ipResponse: IpResponse_Old) -> ()
 
 ///
 let secureRequestPrefix = "https://"
@@ -249,7 +249,7 @@ class ControlServer {
             let settingsRequest_Old = SettingsRequest_Old()
             settingsRequest_Old.termsAndConditionsAccepted = true
             settingsRequest_Old.termsAndConditionsAccepted_Version = 1
-            settingsRequest_Old.uuid = uuid
+            settingsRequest_Old.uuid = self.uuid
             
             request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
                 logger.debug("settings error")
@@ -275,9 +275,9 @@ class ControlServer {
     ///
     func getIpVersion(baseUrl:String, success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
 
-        let infoParams = IPRequest()
-        infoParams.uuid = ControlServer.sharedControlServer.uuid
-        infoParams.product = ""
+        let infoParams = IPRequest_Old()
+        infoParams.uuid = self.uuid
+        infoParams.plattform = "iOS"
         
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: .post, path: "/ip", requestObject: infoParams, success: successCallback , error: failure)
     }
@@ -301,32 +301,14 @@ class ControlServer {
     }
     
     ///
-    func requestSpeedMeasurement_Old(_ speedMeasurementRequest: SpeedMeasurementRequest, success: @escaping (_ response: SpeedMeasurementResponse) -> (), error failure: @escaping ErrorCallback) {
+    func requestSpeedMeasurement_Old(_ speedMeasurementRequest: SpeedMeasurementRequest_Old?, success: @escaping (_ response: SpeedMeasurementResponse_Old) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-            let requestParams: NSMutableDictionary = NSMutableDictionary(dictionary: [
-                "ndt": false,
-                "time": RMBTTimestampWithNSDate(NSDate() as Date)
-                ])
-            
-            let req = SpeedMeasurementRequest()
+            let req = SpeedMeasurementRequest_Old()
             req.uuid = uuid
+            req.ndt = false
             req.time = RMBTTimestampWithNSDate(NSDate() as Date) as! UInt64
             
-
-                
-//            self.requestWithMethod(method: "POST", path: "", params: requestParams, success: { response in
-//                
-//                // TODO: check "error" in json
-//                
-//                let tp = RMBTTestParams(response: response as! [NSObject: AnyObject])
-//                success(response: tp)
-//                
-//            }, error: { error, info in
-//                // RMBTLog("Fetching test parameters failed with err=%@, response=%@", error, info)
-//                failure
-//            })
-            
-            self.request(.post, path: "", requestObject: speedMeasurementRequest, success: success, error: failure)
+            self.request(.post, path: "/", requestObject: req, success: success, error: failure)
         }, error: failure)
     }
 
@@ -455,6 +437,7 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
         let req = SyncCodeRequest()
         req.code = code
+            req.uuid = uuid
             self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
         }, error: failure)
     }

@@ -19,6 +19,9 @@ import ObjectMapper
 
 ///
 open class BasicRequest: Mappable {
+    
+    /// for compatibility reasons delete when needed
+    var uuid:String?
 
     ///
     var apiLevel: String?
@@ -80,6 +83,9 @@ open class BasicRequest: Mappable {
 
     ///
     public func mapping(map: Map) {
+        //
+        uuid            <- map["uuid"]
+        //
         apiLevel            <- map["api_level"]
         clientName          <- map["client_name"]
         device              <- map["device"]
