@@ -110,13 +110,13 @@ open class RMBTClient {
     open var testRunner: RMBTTestRunner?
 
     ///
-    fileprivate var qualityOfServiceTestRunner: QualityOfServiceTest?
+    private var qualityOfServiceTestRunner: QualityOfServiceTest?
 
     ///
     open var delegate: RMBTClientDelegate?
 
     ///
-    fileprivate var resultUuid: String?
+    var resultUuid: String?
 
     ///
     open var running: Bool {
@@ -126,16 +126,16 @@ open class RMBTClient {
     }
 
     ///
-    fileprivate var _running = false
+    var _running = false
 
     /// used for updating cpu and memory usage
-    fileprivate var hardwareUsageTimer: Timer?
+    private var hardwareUsageTimer: Timer?
 
     ///
-    fileprivate let cpuMonitor = RMBTCPUMonitor()
+    private let cpuMonitor = RMBTCPUMonitor()
 
     ///
-    fileprivate let ramMonitor = RMBTRAMMonitor()
+    private let ramMonitor = RMBTRAMMonitor()
 
     ///
     public init() {
@@ -156,7 +156,7 @@ open class RMBTClient {
     }
 
     ///
-    fileprivate func startSpeedMeasurement() {
+    private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.start()
 
@@ -166,7 +166,7 @@ open class RMBTClient {
     }
 
     ///
-    fileprivate func startQosMeasurement() {
+    func startQosMeasurement() {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
@@ -180,7 +180,7 @@ open class RMBTClient {
     }
 
     ///
-    fileprivate func finishMeasurement() {
+    func finishMeasurement() {
         _running = false
 
         if let uuid = self.resultUuid {
