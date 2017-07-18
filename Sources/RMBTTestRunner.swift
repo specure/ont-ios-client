@@ -195,6 +195,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         let controlServer = ControlServer.sharedControlServer
         
+        /////??????
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
             
             controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
@@ -216,13 +217,20 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     r.clientRemoteIp = response.clientRemoteIp
                     r.duration = response.duration
                     r.pretestDuration = response.pretestDuration
-                    r.measurementServer?.port = Int(response.port!)
-                    r.measurementServer?.address = response.serverAddress
-                    r.measurementServer?.name = response.serverName
-                    r.numPings = Int(response.numPings)
-                    r.numThreads = Int(response.numThreads)
+                    r.numPings = Int(response.numPings)!
+                    r.numThreads = Int(response.numThreads)!
                     r.testToken = response.testToken
                     r.testUuid = response.testUuid
+                    
+                    let measure = TargetMeasurementServer()
+                    measure.port = response.port?.intValue
+                    measure.address = response.serverAddress
+                    measure.name = response.serverName
+                    measure.encrypted = response.serverEncryption
+                    measure.uuid = response.testUuid
+                    
+                    r.add(details:measure)
+                
                         
                     self.continueWithTestParams(r)
                 }

@@ -143,10 +143,10 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
     var pretestMinChunkCountForMultithreading: Int = RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST
     
     ///
-    var numThreads: Int = 3
+    var numThreads = "3"
     
     ///
-    var numPings: Int = 10
+    var numPings = "10"
     
     ///
     var testWait: Double = 0 // TODO: int instead of double?
@@ -177,10 +177,10 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
         testUuid            <- map["test_uuid"]
         
         clientRemoteIp      <- map["client_remote_ip"]
-        duration            <- map["duration"]
-        pretestDuration     <- map["duration_pretest"]
+        duration            <- map["test_duration"]
+
         numThreads          <- map["test_numthreads"]
-        numPings            <- map["num_pings"]
+        numPings            <- map["test_numpings"]
         testWait            <- map["test_wait"]
         port                <- map["test_server_port"]
         

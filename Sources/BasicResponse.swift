@@ -25,7 +25,7 @@ open class BasicResponse: Mappable, CustomStringConvertible {
         return "<empty BasicResponse>"
     }
     
-    ///
+    /// For old solution
     var error: [String]?
 
     ///

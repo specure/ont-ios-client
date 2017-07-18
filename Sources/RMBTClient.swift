@@ -196,7 +196,11 @@ open class RMBTClient {
 
     ///
     func startHardwareUsageTimer() {
-        hardwareUsageTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hardwareUsageTimerFired), userInfo: nil, repeats: true)
+        hardwareUsageTimer = Timer.scheduledTimer(timeInterval: 1,
+                                                  target: self,
+                                                  selector: #selector(hardwareUsageTimerFired),
+                                                  userInfo: nil,
+                                                  repeats: true)
     }
 
     ///

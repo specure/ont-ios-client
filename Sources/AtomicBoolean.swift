@@ -20,7 +20,7 @@ import Foundation
 open class AtomicBoolean {
 
     ///
-    fileprivate var value: UInt8 = 0
+    private var value: UInt8 = 0
 
     ///
     public init() {

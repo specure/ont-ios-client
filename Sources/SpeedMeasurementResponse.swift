@@ -49,6 +49,11 @@ open class SpeedMeasurementResponse: BasicResponse {
 
     ///
     open var measurementServer: TargetMeasurementServer?
+    
+    ///
+    open func add(details:TargetMeasurementServer) {
+        self.measurementServer = details
+    }
 
     ///
     override open func mapping(map: Map) {
@@ -71,46 +76,46 @@ open class SpeedMeasurementResponse: BasicResponse {
     override open var description: String {
         return "SpeedMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), clientRemoteIp: \n\(clientRemoteIp)"
     }
+}
 
+///
+open class TargetMeasurementServer: Mappable {
+    
     ///
-    open class TargetMeasurementServer: Mappable {
-
-        ///
-        var address: String?
-
-        ///
-        var encrypted = false
-
-        ///
-        open var name: String?
-
-        ///
-        var port: Int?
-
-        ///
-        var uuid: String?
-
-        ///
-        var ip: String? // TODO: drop this?
-
-        ///
-        init() {
-
-        }
-
-        ///
-        required public init?(map: Map) {
-
-        }
-
-        ///
-        open func mapping(map: Map) {
-            address     <- map["address"]
-            encrypted   <- map["is_encrypted"]
-            name        <- map["name"]
-            port        <- map["port"]
-            uuid        <- map["uuid"]
-            ip          <- map["ip"]
-        }
+    var address: String?
+    
+    ///
+    var encrypted = false
+    
+    ///
+    open var name: String?
+    
+    ///
+    var port: Int?
+    
+    ///
+    var uuid: String?
+    
+    ///
+    var ip: String? // TODO: drop this?
+    
+    ///
+    init() {
+        
+    }
+    
+    ///
+    required public init?(map: Map) {
+        
+    }
+    
+    ///
+    open func mapping(map: Map) {
+        address     <- map["address"]
+        encrypted   <- map["is_encrypted"]
+        name        <- map["name"]
+        port        <- map["port"]
+        uuid        <- map["uuid"]
+        ip          <- map["ip"]
     }
 }
