@@ -21,21 +21,17 @@ import Foundation
 open class RMBTTOS: NSObject {
 
     ///
-    fileprivate let TOS_VERSION_KEY = "tos_version"
-
-    ///
     open dynamic var lastAcceptedVersion: Int
 
     ///
-    open var currentVersion: Int
+    open let currentVersion: Int = RMBT_TOS_VERSION
 
     ///
     open static let sharedTOS = RMBTTOS()
 
     ///
     override public init() {
-        lastAcceptedVersion = UserDefaults.standard.integer(forKey: TOS_VERSION_KEY) 
-        currentVersion = RMBT_TOS_VERSION
+        lastAcceptedVersion = UserDefaults.getTOSVersion()
     }
 
     ///
@@ -46,16 +42,12 @@ open class RMBTTOS: NSObject {
     ///
     open func acceptCurrentVersion() {
         lastAcceptedVersion = currentVersion
-
-        UserDefaults.standard.set(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
-        UserDefaults.standard.synchronize()
+        UserDefaults.storeTOSVersion(lastAcceptedVersion:lastAcceptedVersion)
     }
 
     ///
     open func declineCurrentVersion() {
         lastAcceptedVersion = currentVersion > 0 ? currentVersion - 1 : 0 // go to previous version or 0 if not accepted
-
-        UserDefaults.standard.set(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
-        UserDefaults.standard.synchronize()
+        UserDefaults.storeTOSVersion(lastAcceptedVersion:lastAcceptedVersion)
     }
 }

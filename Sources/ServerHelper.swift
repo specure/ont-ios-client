@@ -32,7 +32,7 @@ class ServerHelper {
         configuration.httpShouldUsePipelining = true
 
         // Set user agent
-        if let userAgent = UserDefaults.standard.string(forKey: "UserAgent") {
+        if let userAgent = UserDefaults.getRequestUserAgent() { //standard.string(forKey: "UserAgent") {
             configuration.httpAdditionalHeaders = [
                 "User-Agent": userAgent,
                 "Accept-Language":PREFFERED_LANGUAGE

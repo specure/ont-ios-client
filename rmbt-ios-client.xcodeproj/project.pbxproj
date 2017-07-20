@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
 		85E45CEC145A7A4CB2D1F4F3 /* Pods_RMBTClient_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */; };
+		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
+		A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
+		A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
@@ -456,6 +459,7 @@
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
 		A1D44B001F137D9500DE9E2D /* Old_Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Request.swift; sourceTree = "<group>"; };
@@ -738,6 +742,7 @@
 		A1720F0B1DD48EFF000AB71D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */,
 				A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */,
 			);
 			name = Extensions;
@@ -1636,6 +1641,7 @@
 				E02D1A0B1CFC8EA4002A02FE /* QOSDNSTestExecutor.swift in Sources */,
 				E0FC4C6A1D6C84B100D5D236 /* WifiInfo.swift in Sources */,
 				E02D187B1CF59262002A02FE /* DNSRecordClass.swift in Sources */,
+				A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */,
 				E0FC4CA21D6C865F00D5D236 /* QosMeasurmentResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1758,6 +1764,7 @@
 				E0FC4CCB1D6C88BB00D5D236 /* CLLocation+RMBTFormat.swift in Sources */,
 				A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E0FC4D151D6DCA2200D5D236 /* RMBTConnectivityTracker.swift in Sources */,
+				A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */,
 				E0FC4CC41D6C88A300D5D236 /* UInt+Extensions.swift in Sources */,
 				E0FC4CC71D6C88AE00D5D236 /* String+Extensions.swift in Sources */,
 				E0FC4CD91D6C891700D5D236 /* TrafficClassification.swift in Sources */,
@@ -1895,6 +1902,7 @@
 				E0FC4C561D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D19781CF5A4E1002A02FE /* RMBTMapOptions.swift in Sources */,
+				A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */,
 				E02D19601CF5A455002A02FE /* RTPSequence.swift in Sources */,
 				E02D19891CF5A51E002A02FE /* CountDownLatch.swift in Sources */,
 				E0FC4D0E1D6D99AC00D5D236 /* QualityOfServiceTestDelegate.swift in Sources */,

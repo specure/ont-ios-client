@@ -73,11 +73,6 @@ class ControlServer {
     ///
     fileprivate init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
-
-//        if let controlServerBaseUrlArgument = UserDefaults.standard.string(forKey: "controlServerBaseUrl") {
-//            defaultBaseUrl = controlServerBaseUrlArgument + "/api/v1"
-//            logger.debug("Using control server base url from arguments: \(self.defaultBaseUrl)")
-//        }
     }
 
     ///
@@ -91,18 +86,7 @@ class ControlServer {
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "uuid_\(URL(string: baseUrl)!.host)"
         
-        // load uuid
-        if let key = uuidKey {
-            uuid = UserDefaults.standard.object(forKey: key) as? String
-            
-            logger.debugExec({
-                if let uuid = self.uuid {
-                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
-                } else {
-                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
-                }
-            })
-        }
+        uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
         
         
         // get settings of control server
@@ -167,12 +151,9 @@ class ControlServer {
             self.uuid = response.client?.uuid
             
             // save uuid
-            if let uuidKey = self.uuidKey {
-                UserDefaults.standard.set(self.uuid, forKey: uuidKey)
-                UserDefaults.standard.synchronize()
+            if let uuidKey = self.uuidKey, let u = self.uuid {
+                UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
             }
-            
-            logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
             
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion
@@ -209,12 +190,11 @@ class ControlServer {
             self.uuid = response.settings?[0].uuid
             
             // save uuid
-            if let uuidKey = self.uuidKey {
-                UserDefaults.standard.set(self.uuid, forKey: uuidKey)
-                UserDefaults.standard.synchronize()
+            if let uuidKey = self.uuidKey, let u = self.uuid {
+                UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
             }
             
-            logger.debug("UUID: uuid is now: \(self.uuid) for key '\(self.uuidKey)'")
+            
             
             // set control server version
             self.version = response.settings?[0].versions?.controlServerVersion

@@ -78,7 +78,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
             var additonalHeaderFields = [String: AnyObject]()
 
             // Set user agent
-            if let userAgent = UserDefaults.standard.string(forKey: "UserAgent") {
+            if let userAgent = UserDefaults.getRequestUserAgent() { //.standard.string(forKey: "UserAgent") {
                 additonalHeaderFields["User-Agent"] = userAgent as AnyObject?
             }
 
