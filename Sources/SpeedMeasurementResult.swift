@@ -515,49 +515,99 @@ class SpeedMeasurementResult: BasicRequest {
     ///
     override func mapping(map: Map) {
         super.mapping(map: map)
-
-        clientUuid              <- map["client_uuid"]
-        extendedTestStat        <- map["extended_test_stat"]
-        geoLocations            <- map["geo_locations"]
-        networkType             <- map["network_type"]
-        pings                   <- map["pings"]
-
-        speedDetail             <- map["speed_detail"]
-        bytesDownload           <- (map["bytes_download"], UInt64NSNumberTransformOf)
-        bytesUpload             <- (map["bytes_upload"], UInt64NSNumberTransformOf)
-        encryption              <- map["encryption"]
-        ipLocal                 <- map["ip_local"]
-        ipServer                <- map["ip_server"]
-        durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
-        durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
-        numThreads              <- map["num_threads"]
-        numThreadsUl            <- map["num_threads_ul"]
-        pingShortest            <- map["ping_shortest"]
-        portRemote              <- map["port_remote"]
-        speedDownload           <- (map["speed_download"], UInt64NSNumberTransformOf)
-        speedUpload             <- (map["speed_upload"], UInt64NSNumberTransformOf)
-
-        token                   <- map["token"]
-        totalBytesDownload      <- map["total_bytes_download"]
-        totalBytesUpload        <- map["total_bytes_upload"]
-        interfaceTotalBytesDownload  <- map["interface_total_bytes_download"]
-        interfaceTotalBytesUpload    <- map["interface_total_bytes_upload"]
-        interfaceDltestBytesDownload <- map["interface_dltest_bytes_download"]
-        interfaceDltestBytesUpload   <- map["interface_dltest_bytes_upload"]
-        interfaceUltestBytesDownload <- map["interface_ultest_bytes_download"]
-        interfaceUltestBytesUpload   <- map["interface_ultest_bytes_upload"]
-
-        time              <- map["time"]
-        relativeTimeDlNs  <- map["relative_time_dl_ns"]
-        relativeTimeUlNs  <- map["relative_time_ul_ns"]
-
-        publishPublicData <- map["publish_public_data"]
-
-        #if os(iOS)
-        signals       <- map["signals"]
-        telephonyInfo <- map["telephony_info"]
-        wifiInfo      <- map["wifi_info"]
-        //cellLocations   <- map["cell_locations"]
-        #endif
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            
+            clientUuid              <- map["client_uuid"]
+            extendedTestStat        <- map["extended_test_stat"]
+            geoLocations            <- map["geo_locations"]
+            networkType             <- map["network_type"]
+            pings                   <- map["pings"]
+            
+            speedDetail             <- map["speed_detail"]
+            bytesDownload           <- (map["bytes_download"], UInt64NSNumberTransformOf)
+            bytesUpload             <- (map["bytes_upload"], UInt64NSNumberTransformOf)
+            encryption              <- map["encryption"]
+            ipLocal                 <- map["ip_local"]
+            ipServer                <- map["ip_server"]
+            durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
+            durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
+            numThreads              <- map["num_threads"]
+            numThreadsUl            <- map["num_threads_ul"]
+            pingShortest            <- map["ping_shortest"]
+            portRemote              <- map["port_remote"]
+            speedDownload           <- (map["speed_download"], UInt64NSNumberTransformOf)
+            speedUpload             <- (map["speed_upload"], UInt64NSNumberTransformOf)
+            
+            token                   <- map["token"]
+            totalBytesDownload      <- map["total_bytes_download"]
+            totalBytesUpload        <- map["total_bytes_upload"]
+            interfaceTotalBytesDownload  <- map["interface_total_bytes_download"]
+            interfaceTotalBytesUpload    <- map["interface_total_bytes_upload"]
+            interfaceDltestBytesDownload <- map["interface_dltest_bytes_download"]
+            interfaceDltestBytesUpload   <- map["interface_dltest_bytes_upload"]
+            interfaceUltestBytesDownload <- map["interface_ultest_bytes_download"]
+            interfaceUltestBytesUpload   <- map["interface_ultest_bytes_upload"]
+            
+            time              <- map["time"]
+            relativeTimeDlNs  <- map["relative_time_dl_ns"]
+            relativeTimeUlNs  <- map["relative_time_ul_ns"]
+            
+            publishPublicData <- map["publish_public_data"]
+            
+            #if os(iOS)
+                signals       <- map["signals"]
+                telephonyInfo <- map["telephony_info"]
+                wifiInfo      <- map["wifi_info"]
+                //cellLocations   <- map["cell_locations"]
+            #endif
+        
+        } else {
+        
+            clientUuid              <- map["client_uuid"]
+            extendedTestStat        <- map["extended_test_stat"]
+            geoLocations            <- map["geo_locations"]
+            networkType             <- map["network_type"]
+            pings                   <- map["pings"]
+            
+            speedDetail             <- map["speed_detail"]
+            bytesDownload           <- (map["test_bytes_download"], UInt64NSNumberTransformOf)
+            bytesUpload             <- (map["test_bytes_upload"], UInt64NSNumberTransformOf)
+            encryption              <- map["test_encryption"]
+            ipLocal                 <- map["test_ip_local"]
+            ipServer                <- map["ip_server"]
+            durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
+            durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
+            numThreads              <- map["test_num_threads"]
+            numThreadsUl            <- map["num_threads_ul"]
+            pingShortest            <- map["test_ping_shortest"]
+            portRemote              <- map["port_remote"]
+            speedDownload           <- (map["test_speed_download"], UInt64NSNumberTransformOf)
+            speedUpload             <- (map["test_speed_upload"], UInt64NSNumberTransformOf)
+            
+            token                   <- map["test_token"]
+            totalBytesDownload      <- map["test_total_bytes_download"]
+            totalBytesUpload        <- map["test_total_bytes_upload"]
+            interfaceTotalBytesDownload  <- map["test_if_bytes_download"]
+            interfaceTotalBytesUpload    <- map["test_if_bytes_upload"]
+            interfaceDltestBytesDownload <- map["testdl_if_bytes_download"]
+            interfaceDltestBytesUpload   <- map["testdl_if_bytes_upload"]
+            interfaceUltestBytesDownload <- map["testul_if_bytes_download"]
+            interfaceUltestBytesUpload   <- map["testul_if_bytes_upload"]
+            
+            time              <- map["time"]
+            relativeTimeDlNs  <- map["test_nsec_download"]
+            relativeTimeUlNs  <- map["test_nsec_upload"]
+            
+            publishPublicData <- map["publish_public_data"]
+            
+            #if os(iOS)
+                signals       <- map["signals"]
+                telephonyInfo <- map["telephony_info"]
+                wifiInfo      <- map["wifi_info"]
+                //cellLocations   <- map["cell_locations"]
+            #endif
+        
+        }
     }
 }

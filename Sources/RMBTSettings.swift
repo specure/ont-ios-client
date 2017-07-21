@@ -172,7 +172,7 @@ open class RMBTSettings: NSObject {
     ///
     fileprivate func bindKeyPaths(_ keyPaths: [String]) {
         for keyPath in keyPaths {
-            if let value = UserDefaults.standard.object(forKey: keyPath) {
+            if let value = UserDefaults.getDataFor(key: keyPath) {
                 setValue(value, forKey: keyPath)
             }
 
@@ -185,12 +185,11 @@ open class RMBTSettings: NSObject {
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let newValue = change?[NSKeyValueChangeKey.newKey], let kp = keyPath {
             logger.debugExec() {
-                let oldValue = UserDefaults.standard.object(forKey: kp)
+                let oldValue = UserDefaults.getDataFor(key: kp)
                 logger.debug("Settings changed for keyPath '\(keyPath)' from '\(oldValue)' to '\(newValue)'")
             }
 
-            UserDefaults.standard.set(newValue, forKey: kp)
-            UserDefaults.standard.synchronize()
+            UserDefaults.storeDataFor(key: kp, obj: newValue)
         }
     }
 }

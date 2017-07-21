@@ -171,6 +171,7 @@ class ControlServer {
                 RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
             }
             
+            // bullshit - no NAT upon IPv6
             if let ipv6Server = response.settings?.controlServerIpv6Host {
                 RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
             }
@@ -187,7 +188,9 @@ class ControlServer {
             logger.debug("settings: \(response)")
             
             // set uuid
-            self.uuid = response.settings?[0].uuid
+            if let newUUID = response.settings?[0].uuid {
+                self.uuid = newUUID
+            }
             
             // save uuid
             if let uuidKey = self.uuidKey, let u = self.uuid {
@@ -247,10 +250,10 @@ class ControlServer {
         getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure)
     }
 
-    ///
-    func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure)
-    }
+    /// no NAT
+//    func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
+//        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure)
+//    }
 
     ///
     func getIpVersion(baseUrl:String, success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
@@ -311,7 +314,7 @@ class ControlServer {
             if let measurementUuid = speedMeasurementResult.uuid {
                 speedMeasurementResult.clientUuid = uuid
                 
-                self.request(.put, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
+                self.request(.post, path: "/result", requestObject: speedMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
             }
@@ -359,6 +362,19 @@ class ControlServer {
             if let measurementUuid = qosMeasurementResult.measurementUuid {
                 qosMeasurementResult.clientUuid = uuid
 
+                self.request(.put, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/measurements/qos/\(measurementUuid)":"/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
+            } else {
+                failure(NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
+            }
+        }, error: failure)
+    }
+    
+    ///
+    func submitQosMeasurementResult_Old(_ qosMeasurementResult: QosMeasurementResultRequest, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            if let measurementUuid = qosMeasurementResult.measurementUuid {
+                qosMeasurementResult.clientUuid = uuid
+                
                 self.request(.put, path: "/measurements/qos/\(measurementUuid)", requestObject: qosMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
@@ -371,6 +387,19 @@ class ControlServer {
         ensureClientUuid(success: { _ in
             self.request(.get, path: "/measurements/qos/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
+    }
+    
+    /// OLD solution
+    func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        ensureClientUuid(success: { _ in
+            
+//["test_uuid": testUuid]
+            
+            self.request(.post, path: "/qosTestResult", requestObject: nil, success: success, error: errorCallback)
+            
+        }, error: { error in
+            errorCallback(error)
+        })
     }
 
 // MARK: History

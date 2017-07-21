@@ -26,6 +26,7 @@ public struct IPInfo: CustomStringConvertible {
 
     ///
     public var nat: Bool {
+
         return internalIp != externalIp
     }
 
@@ -61,11 +62,6 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
     public typealias ConnectivityInfoCallback = (_ connectivityInfo: ConnectivityInfo) -> ()
 
-    //
-
-    ///
-    //let manager: AFHTTPRequestOperationManager
-
     ///
     var callback: ConnectivityInfoCallback?
 
@@ -79,17 +75,6 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
     var ipv6Finished = false
 
     ///
-    public override init() { // TODO: USE ALAMOFIRE -> use control server class for this!!
-        /*manager = AFHTTPRequestOperationManager(baseURL: NSURL(string: ControlServerNew.sharedControlServer.baseUrl))
-
-        manager.requestSerializer = AFJSONRequestSerializer()
-        manager.responseSerializer = AFJSONResponseSerializer()
-
-        manager.requestSerializer.timeoutInterval = 5 // 5 sec
-        manager.requestSerializer.cachePolicy = .ReloadIgnoringLocalAndRemoteCacheData*/
-    }
-
-    ///
     open func checkConnectivity(_ callback: @escaping ConnectivityInfoCallback) {
         if self.callback != nil { // don't allow multiple concurrent executions
             return
@@ -100,120 +85,43 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
         getLocalIpAddressesFromSocket()
 
-        ipv4Finished = false
-        ipv6Finished = false
-
         checkIPV4()
         checkIPV6()
     }
 
     ///
-    fileprivate func checkIPV4() { // TODO: rewrite with ControlServerNew
-        /*let ipv4Url = ControlServer.sharedControlServer.ipv4RequestUrl
-
-        var infoParams = ControlServer.sharedControlServer.systemInfoParams()
-        infoParams["uuid"] = ControlServer.sharedControlServer.uuid
-
-        // TODO: move this request to control server class
-        manager.POST(ipv4Url, parameters: infoParams, success: { (operation: AFHTTPRequestOperation!, responseObject: AnyObject!) in
-
-            logger.debug("\(responseObject)")
-
-            if operation.response.statusCode == 200 {
-
-                let ip = responseObject["ip"]
-                let v = responseObject["v"]
-
-                logger.debug("IP: \(ip), version: \(v)")
-
-                self.connectivityInfo.ipv4.connectionAvailable = true
-                self.connectivityInfo.ipv4.externalIp = (ip as? String)
-            } else {
-                // TODO: ?
-            }
-
-            self.ipv4Finished = true
-            self.callCallback()
-
-        }) { (operation: AFHTTPRequestOperation?, error: NSError!) in
-            // logger.debug("ERROR \(error?)")
-            logger.debug("ipv4 request ERROR")
-
-            self.connectivityInfo.ipv4.connectionAvailable = false
-
-            self.ipv4Finished = true
-            self.callCallback()
-        }*/
+    private func checkIPV4() {
         
         ControlServer.sharedControlServer.getIpv4( success: { response in
             
             self.connectivityInfo.ipv4.connectionAvailable = true
             self.connectivityInfo.ipv4.externalIp = response.ip
             
+            self.finishIPv4Check()
+            
         }, error: { error in
             self.connectivityInfo.ipv4.connectionAvailable = false
+            
+            self.finishIPv4Check()
         })
-        
+    }
+    
+    private func finishIPv4Check() {
         self.ipv4Finished = true
         self.callCallback()
     }
 
     ///
-    fileprivate func checkIPV6() { // TODO: rewrite with ControlServerNew
-        /*let ipv6Url = ControlServer.sharedControlServer.ipv6RequestUrl
-
-        var infoParams = ControlServer.sharedControlServer.systemInfoParams()
-        infoParams["uuid"] = ControlServer.sharedControlServer.uuid
-
-        // TODO: move this request to control server class
-        manager.POST(ipv6Url, parameters: infoParams, success: { (operation: AFHTTPRequestOperation!, responseObject: AnyObject!) -> Void in
-
-            if operation.response.statusCode == 200 {
-                let ip = responseObject["ip"]
-                let v = responseObject["v"]
-
-                if ("\(ip)" as NSString).isValidIPv6() {
-                    logger.debug("IPv6: \(ip), version: \(v)")
-
-                    self.connectivityInfo.ipv6.connectionAvailable = true
-                    self.connectivityInfo.ipv6.externalIp = (ip as? String)
-                } else {
-                    logger.debug("IPv6: \(ip), version: \(v), NOT VALID")
-                }
-
-            } else {
-                // TODO: ?
-            }
-
-            self.ipv6Finished = true
-            self.callCallback()
-
-        }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
-            // logger.debug("ERROR \(error?)")
-            logger.debug("ipv6 request ERROR")
-
-            self.connectivityInfo.ipv6.connectionAvailable = false
-
-            self.ipv6Finished = true
-            self.callCallback()
-        }*/
+    private func checkIPV6() {
         
-        ControlServer.sharedControlServer.getIpv6(success: { response in
-            
-            self.connectivityInfo.ipv6.connectionAvailable = true
-            self.connectivityInfo.ipv6.externalIp = response.ip
-            
-        }, error: { error in
-            self.connectivityInfo.ipv6.connectionAvailable = false
-            
-        })
+        self.connectivityInfo.ipv6.connectionAvailable = (self.connectivityInfo.ipv6.internalIp != nil)
         
         self.ipv6Finished = true
         self.callCallback()
     }
 
     ///
-    fileprivate func callCallback() {
+    private func callCallback() {
         objc_sync_enter(self)
 
         if !(ipv4Finished && ipv6Finished) {
@@ -266,6 +174,7 @@ extension ConnectivityService {
                                 } else if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp == nil {
                                         self.connectivityInfo.ipv6.internalIp = address
+                                        self.connectivityInfo.ipv6.externalIp = address
                                         logger.debug("local ipv6 address from getifaddrs: \(address)")
                                     }
                                 }
@@ -305,6 +214,7 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
     public func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
         connectivityInfo.ipv4.internalIp = sock.localHost_IPv4()
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
+        connectivityInfo.ipv6.externalIp = sock.localHost_IPv6()
 
         logger.debug("local ipv4 address from socket: \(self.connectivityInfo.ipv4.internalIp)")
         logger.debug("local ipv6 address from socket: \(self.connectivityInfo.ipv6.internalIp)")

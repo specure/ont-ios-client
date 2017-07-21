@@ -11,7 +11,26 @@ import Foundation
 ///
 let TOS_VERSION_KEY = "tos_version"
 
+let UserStandard = UserDefaults.standard
+
 extension UserDefaults {
+    
+    /// Generic function
+    open class func storeDataFor(key:String, obj:Any) {
+    
+        UserDefaults.standard.set(obj, forKey: key)
+        UserDefaults.standard.synchronize()
+    }
+    
+    ///
+    open class func getDataFor(key:String) -> Any? {
+    
+        guard let result = UserStandard.object(forKey: key) else {
+            return nil
+        }
+        
+        return result
+    }
     
     ///
     open class func storeTOSVersion(lastAcceptedVersion:Int) {
@@ -42,14 +61,14 @@ extension UserDefaults {
             uuid = UserDefaults.standard.object(forKey: key) as? String
             
             logger.debugExec({
-                if let theUuid = uuid {
-                    logger.debug("UUID: Found uuid \"\(theUuid)\" in user defaults for key '\(key)'")
+                if uuid != nil {
+                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
                 } else {
                     logger.debug("UUID: Uuid was not found in user defaults for key '\(uuid)'")
                 }
             })
             
-            if (uuid != nil) { return uuid }
+            if uuid != nil { return uuid }
         }
         return nil
     }
