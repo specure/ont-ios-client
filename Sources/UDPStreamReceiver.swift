@@ -144,7 +144,7 @@ extension UDPStreamReceiver: GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
-        logger.debug("didNotConnect: \(error)")
+        logger.debug("didNotConnect: \(String(describing: error))")
     }
 
     ///
@@ -154,7 +154,7 @@ extension UDPStreamReceiver: GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: Error?) {
-        logger.debug("didNotSendDataWithTag: \(error)")
+        logger.debug("didNotSendDataWithTag: \(String(describing: error))")
     }
 
     ///
@@ -168,7 +168,7 @@ extension UDPStreamReceiver: GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) {
-        logger.debug("udpSocketDidClose: \(error)")
+        logger.debug("udpSocketDidClose: \(String(describing: error))")
     }
 
 }

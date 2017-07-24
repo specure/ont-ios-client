@@ -62,7 +62,7 @@ class DNSRecordClass: CustomStringConvertible {
             return addr
         }
 
-        return "\(ipAddress)"
+        return "\(String(describing: ipAddress))"
     }
 
     //

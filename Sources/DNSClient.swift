@@ -244,7 +244,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     ///
     @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
         //println("didNotConnect: \(error)")
-        logger.debug("didNotConnect: \(error)")
+        logger.debug("didNotConnect: \(String(describing: error))")
     }
 
     ///
@@ -256,7 +256,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: Error?) {
         //println("didNotSendDataWithTag: \(error)")
-        logger.debug("didNotSendDataWithTag: \(error)")
+        logger.debug("didNotSendDataWithTag: \(String(describing: error))")
     }
 
     ///
@@ -397,7 +397,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                 let strType = DNSServiceTypeIntToStr[Int(dnsResourceRecord.dnsType)]
                 //println("rr is of type \(strType)")
-                logger.debug("rr is of type \(strType)")
+                logger.debug("rr is of type \(String(describing: strType))")
 
                 //
 
@@ -530,7 +530,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
-        logger.debug("udpSocketDidClose: \(error)")
+        logger.debug("udpSocketDidClose: \(String(describing: error))")
     }
     
 

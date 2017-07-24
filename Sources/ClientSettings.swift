@@ -52,6 +52,6 @@ class ClientSettings: Mappable, CustomStringConvertible {
 
     ///
     var description: String {
-        return "clientType: \(clientType), uuid: \(uuid)"
+        return "clientType: \(clientType), uuid: \(String(describing: uuid))"
     }
 }

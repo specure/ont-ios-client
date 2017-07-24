@@ -31,7 +31,7 @@ class QOSTCPTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [portOut: \(portOut), portIn: \(portIn)]"
+        return super.description + ", [portOut: \(String(describing: portOut)), portIn: \(String(describing: portIn))]"
     }
 
     //

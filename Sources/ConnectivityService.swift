@@ -38,7 +38,7 @@ public struct IPInfo: CustomStringConvertible {
 
     ///
     public var description: String {
-        return "IPInfo: connectionAvailable: \(connectionAvailable), nat: \(nat), internalIp: \(internalIp), externalIp: \(externalIp)"
+        return "IPInfo: connectionAvailable: \(connectionAvailable), nat: \(nat), internalIp: \(String(describing: internalIp)), externalIp: \(String(describing: externalIp))"
     }
 }
 
@@ -216,22 +216,22 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
         connectivityInfo.ipv6.internalIp = sock.localHost_IPv6()
         connectivityInfo.ipv6.externalIp = sock.localHost_IPv6()
 
-        logger.debug("local ipv4 address from socket: \(self.connectivityInfo.ipv4.internalIp)")
-        logger.debug("local ipv6 address from socket: \(self.connectivityInfo.ipv6.internalIp)")
+        logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")
+        logger.debug("local ipv6 address from socket: \(String(describing: self.connectivityInfo.ipv6.internalIp))")
 
         sock.close()
     }
 
     ///
     @nonobjc public func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
-        logger.debug("didNotConnect: \(error)")
+        logger.debug("didNotConnect: \(String(describing: error))")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
     @nonobjc public func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: NSError?) {
-        logger.debug("udpSocketDidClose: \(error)")
+        logger.debug("udpSocketDidClose: \(String(describing: error))")
 
         getLocalIpAddresses() // fallback
     }

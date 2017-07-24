@@ -408,7 +408,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     ///
     open func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         if err != nil {
-            logger.debug("Socket disconnected with error \(err)")
+            logger.debug("Socket disconnected with error \(String(describing: err))")
             fail()
         } else {
             if state == .downlinkTestStarted {
@@ -809,7 +809,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     fileprivate func logData(_ data: Data) {
-        logger.debug("RX: \(String(data: data, encoding: String.Encoding.ascii))")
+        logger.debug("RX: \(String(describing: String(data: data, encoding: String.Encoding.ascii)))")
     }
 
     ///

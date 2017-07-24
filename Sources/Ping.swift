@@ -53,6 +53,6 @@ open class Ping: Mappable, CustomStringConvertible {
     ///
     open var description: String {
         //return String(format: "RMBTPing (server=%" PRIu64 ", client=%" PRIu64 ")", serverNanos, clientNanos)
-        return "RMBTPing  (server = \(serverNanos), client = \(clientNanos))"
+        return "RMBTPing  (server = \(String(describing: serverNanos)), client = \(String(describing: clientNanos)))"
     }
 }

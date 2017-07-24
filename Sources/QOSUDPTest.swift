@@ -41,7 +41,7 @@ class QOSUDPTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [packetCountOut: \(packetCountOut), packetCountIn: \(packetCountIn), portOut: \(portOut), portIn: \(portIn), delay: \(delay)]"
+        return super.description + ", [packetCountOut: \(String(describing: packetCountOut)), packetCountIn: \(String(describing: packetCountIn)), portOut: \(String(describing: portOut)), portIn: \(String(describing: portIn)), delay: \(delay)]"
     }
 
     //

@@ -84,7 +84,7 @@ class ControlServer {
     func updateWithCurrentSettings() {
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "uuid_\(URL(string: baseUrl)!.host)"
+        uuidKey = "uuid_\(String(describing: URL(string: baseUrl)!.host))"
         
         uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
         
@@ -107,12 +107,12 @@ class ControlServer {
                     var hostname = self.settings.debugControlServerHostname
                     
                     if self.settings.debugControlServerPort != 0 && self.settings.debugControlServerPort != 80 {
-                        hostname = "\(hostname):\(self.settings.debugControlServerPort)"
+                        hostname = "\(String(describing: hostname)):\(self.settings.debugControlServerPort)"
                     }
                     
-                    if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as? URL {
+                    if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as URL? {
                         self.baseUrl = url.absoluteString // !
-                        self.uuidKey = "uuid_\(url.host)"
+                        self.uuidKey = "uuid_\(String(describing: url.host))"
                     }
                 }
             }
@@ -145,7 +145,7 @@ class ControlServer {
         settingsRequest.client?.uuid = uuid
         
         let successFunc: (_ response: SettingsReponse) -> () = { response in
-            logger.debug("settings: \(response.client)")
+            logger.debug("settings: \(String(describing: response.client))")
             
             // set uuid
             self.uuid = response.client?.uuid
@@ -204,7 +204,7 @@ class ControlServer {
             
             // set qos test type desc
             response.settings?[0].qosMeasurementTypes?.forEach({ measurementType in
-                if let type = measurementType.testType {
+                if measurementType.testType != nil {
                     // QosMeasurementType.localizedNameDict[type] = measurementType.testDesc
                 }
             })
@@ -289,7 +289,7 @@ class ControlServer {
             let req = SpeedMeasurementRequest_Old()
             req.uuid = uuid
             req.ndt = false
-            req.time = RMBTTimestampWithNSDate(NSDate() as Date) as! UInt64
+            req.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
             
             self.request(.post, path: "/", requestObject: req, success: success, error: failure)
         }, error: failure)
@@ -390,7 +390,7 @@ class ControlServer {
     }
     
     /// OLD solution
-    func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+    func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error errorCallback: @escaping ErrorCallback) {
         ensureClientUuid(success: { _ in
             
 //["test_uuid": testUuid]
@@ -437,6 +437,23 @@ class ControlServer {
             req.resultOffset = NSNumber(value: offset)
             self.request(.post, path: "/history", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
+    }
+    
+    //
+    ///
+    func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        let key = fullDetails ? "testresultdetail" : "testresult"
+        
+        ensureClientUuid(success: { uuid in
+            
+            self.request(.post, path: key, requestObject: nil, success: success, error: errorCallback)
+            
+        }, error: { error in
+            logger.debug("wfewfwfwef3")
+            logger.debug("\(error)")
+            
+            errorCallback(error)
+        })
     }
     
 // MARK: Synchro

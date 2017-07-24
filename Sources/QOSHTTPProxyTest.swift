@@ -43,7 +43,7 @@ class QOSHTTPProxyTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [downloadTimeout: \(downloadTimeout), connectionTimeout: \(connectionTimeout), url: \(url), range: \(range)]"
+        return super.description + ", [downloadTimeout: \(downloadTimeout), connectionTimeout: \(connectionTimeout), url: \(String(describing: url)), range: \(String(describing: range))]"
     }
 
     //

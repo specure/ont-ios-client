@@ -37,7 +37,7 @@ class QOSTracerouteTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [host: \(host), maxHops: \(maxHops), noResponseTimeout: \(noResponseTimeout), bytesPerPackage: \(bytesPerPackage), triesPerTTL: \(triesPerTTL)]"
+        return super.description + ", [host: \(String(describing: host)), maxHops: \(maxHops), noResponseTimeout: \(noResponseTimeout), bytesPerPackage: \(bytesPerPackage), triesPerTTL: \(triesPerTTL)]"
     }
 
     //

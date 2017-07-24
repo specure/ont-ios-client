@@ -446,7 +446,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
             return // if the server closed the connection error is nil (this happens after sending QUIT to the server)
         }
 
-        logger.debug("QOS CC: disconnected with error \(err)")
+        logger.debug("QOS CC: disconnected with error \(String(describing: err))")
         // TODO: fail!
     }
 

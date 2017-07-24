@@ -41,6 +41,6 @@ class QosMeasurmentResponse: BasicResponse {
 
     ///
     override var description: String {
-        return "QosMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), objectives: \n\(objectives)"
+        return "QosMeasurmentResponse: testToken: \(String(describing: testToken)), testUuid: \(String(describing: testUuid)), objectives: \n\(String(describing: objectives))"
     }
 }

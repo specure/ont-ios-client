@@ -30,7 +30,7 @@ class QOSWebsiteTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [url: \(url)]"
+        return super.description + ", [url: \(String(describing: url))]"
     }
 
     //

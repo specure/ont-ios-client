@@ -401,8 +401,8 @@ open class MeasurementHistory {
             query = query.sorted(byKeyPath: "timestamp", ascending: false)
             
             return query.flatMap({ storedItem in
-                logger.debug("\(storedItem.model)")
-                logger.debug("\(storedItem.networkType)")
+                logger.debug("\(String(describing: storedItem.model))")
+                logger.debug("\(String(describing: storedItem.networkType))")
                 
                 return Mapper<HistoryItem>().map(JSONString:storedItem.jsonData!)
             })

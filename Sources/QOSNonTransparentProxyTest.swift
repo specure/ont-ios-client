@@ -34,7 +34,7 @@ class QOSNonTransparentProxyTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [request: \(request), port: \(port)]"
+        return super.description + ", [request: \(String(describing: request)), port: \(String(describing: port))]"
     }
 
     //

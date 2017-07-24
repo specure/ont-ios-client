@@ -19,9 +19,9 @@ import Foundation
 ///
 class QOSDNSTest: QOSTest {
 
-    fileprivate let PARAM_HOST = "host"
-    fileprivate let PARAM_RESOLVER = "resolver"
-    fileprivate let PARAM_RECORD = "record"
+    private let PARAM_HOST = "host"
+    private let PARAM_RESOLVER = "resolver"
+    private let PARAM_RECORD = "record"
 
     //
 
@@ -38,7 +38,7 @@ class QOSDNSTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [host: \(host), resolver: \(resolver), record: \(record)]"
+        return super.description + ", [host: \(String(describing: host)), resolver: \(String(describing: resolver)), record: \(String(describing: record))]"
     }
 
     //

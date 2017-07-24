@@ -74,7 +74,7 @@ open class SpeedMeasurementResponse: BasicResponse {
 
     ///
     override open var description: String {
-        return "SpeedMeasurmentResponse: testToken: \(testToken), testUuid: \(testUuid), clientRemoteIp: \n\(clientRemoteIp)"
+        return "SpeedMeasurmentResponse: testToken: \(String(describing: testToken)), testUuid: \(String(describing: testUuid)), clientRemoteIp: \n\(String(describing: clientRemoteIp))"
     }
 }
 

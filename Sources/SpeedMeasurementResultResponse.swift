@@ -96,7 +96,7 @@ open class SpeedMeasurementResultResponse: BasicResponse {
 
     ///
     override open var description: String {
-        return "SpeedMeasurementResultResponse [\(openTestUuid),\(latitude),\(longitude)]"
+        return "SpeedMeasurementResultResponse [\(String(describing: openTestUuid)),\(String(describing: latitude)),\(String(describing: longitude))]"
     }
 
     ///

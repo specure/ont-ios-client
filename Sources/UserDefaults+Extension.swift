@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 ///
 let TOS_VERSION_KEY = "tos_version"
@@ -18,8 +19,8 @@ extension UserDefaults {
     /// Generic function
     open class func storeDataFor(key:String, obj:Any) {
     
-        UserDefaults.standard.set(obj, forKey: key)
-        UserDefaults.standard.synchronize()
+        UserStandard.set(obj, forKey: key)
+        UserStandard.synchronize()
     }
     
     ///
@@ -34,20 +35,18 @@ extension UserDefaults {
     
     ///
     open class func storeTOSVersion(lastAcceptedVersion:Int) {
-        UserDefaults.standard.set(lastAcceptedVersion, forKey: TOS_VERSION_KEY)
-        UserDefaults.standard.synchronize()
+        storeDataFor(key: TOS_VERSION_KEY, obj: lastAcceptedVersion)
     }
     
     ///
     open class func getTOSVersion() -> Int {
-        return UserDefaults.standard.integer(forKey: TOS_VERSION_KEY)
+        return UserStandard.integer(forKey: TOS_VERSION_KEY)
     }
     
     ///
     open class func storeNewUUID(uuidKey:String, uuid:String) {
     
-        UserDefaults.standard.set(uuid, forKey: uuidKey)
-        UserDefaults.standard.synchronize()
+        storeDataFor(key: uuidKey, obj: uuid)
         
         logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
     }
@@ -58,13 +57,13 @@ extension UserDefaults {
         let uuid:String?
         // load uuid
         if let key = uuidKey {
-            uuid = UserDefaults.standard.object(forKey: key) as? String
+            uuid = UserStandard.object(forKey: key) as? String
             
             logger.debugExec({
                 if uuid != nil {
-                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
+                    logger.debug("UUID: Found uuid \"\(String(describing: uuid))\" in user defaults for key '\(key)'")
                 } else {
-                    logger.debug("UUID: Uuid was not found in user defaults for key '\(uuid)'")
+                    logger.debug("UUID: Uuid was not found in user defaults for key '\(String(describing: uuid))'")
                 }
             })
             
@@ -101,7 +100,7 @@ extension UserDefaults {
     
     ///
     open class func getRequestUserAgent() -> String? {
-        guard let user = UserDefaults.standard.string(forKey: "UserAgent") else {
+        guard let user = UserStandard.string(forKey: "UserAgent") else {
             return nil
         }
         
@@ -110,21 +109,20 @@ extension UserDefaults {
 
     ///
     open class func checkFirstLaunch() {
-        let userDefaults = UserDefaults.standard
         
-        if !userDefaults.bool(forKey: "was_launched_once") {
+        if !UserStandard.bool(forKey: "was_launched_once") {
             logger.info("FIRST LAUNCH OF APP")
             
-            userDefaults.set(true, forKey: "was_launched_once")
+            UserStandard.set(true, forKey: "was_launched_once")
             
-            firstLaunch(userDefaults)
+            firstLaunch(UserStandard)
             
-            userDefaults.synchronize()
+            UserStandard.synchronize()
         }
     }
     
     ///
-    class func firstLaunch(_ userDefaults: UserDefaults) {
+    private class func firstLaunch(_ userDefaults: UserDefaults) {
         if TEST_USE_PERSONAL_DATA_FUZZING {
             RMBTSettings.sharedSettings.publishPublicData = true
             logger.debug("setting publishPublicData to true")

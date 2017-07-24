@@ -149,7 +149,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                             // timeout
                             self.testDidTimeout()
                         default:
-                            logger.debug("error msg from server: \(response.result.value)")
+                            logger.debug("error msg from server: \(String(describing: response.result.value))")
                             
                             //to get JSON return value
                             if let result = response.result.value {
@@ -157,7 +157,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                                 print(JSON)
                                 
                                 self.qosLog.debug("GET FAILURE")
-                                self.qosLog.debug("\(response.error)")
+                                self.qosLog.debug("\(String(describing: response.error))")
 
                                 self.testDidFail()
                             }

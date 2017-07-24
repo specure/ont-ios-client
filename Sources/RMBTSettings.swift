@@ -186,7 +186,7 @@ open class RMBTSettings: NSObject {
         if let newValue = change?[NSKeyValueChangeKey.newKey], let kp = keyPath {
             logger.debugExec() {
                 let oldValue = UserDefaults.getDataFor(key: kp)
-                logger.debug("Settings changed for keyPath '\(keyPath)' from '\(oldValue)' to '\(newValue)'")
+                logger.debug("Settings changed for keyPath '\(String(describing: keyPath))' from '\(String(describing: oldValue))' to '\(newValue)'")
             }
 
             UserDefaults.storeDataFor(key: kp, obj: newValue)

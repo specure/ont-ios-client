@@ -54,7 +54,7 @@ class QOSTest: CustomStringConvertible { /* TODO: declarations in extensions can
 
     ///
     var description: String {
-        return "QOSTest(\(getType()?.rawValue)) [id: \(qosTestId), concurrencyGroup: \(concurrencyGroup), serverAddress: \(serverAddress), serverPort: \(serverPort), timeout: \(timeout)]"
+        return "QOSTest(\(String(describing: getType()?.rawValue))) [id: \(qosTestId), concurrencyGroup: \(concurrencyGroup), serverAddress: \(serverAddress), serverPort: \(serverPort), timeout: \(timeout)]"
     }
 
     //

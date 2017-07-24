@@ -44,7 +44,7 @@ class QOSVOIPTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [outgoingPort: \(portOut), incomingPort: \(portIn), callDuration: \(callDuration), delay: \(delay), sampleRate: \(sampleRate), bitsPerSample: \(bitsPerSample)]"
+        return super.description + ", [outgoingPort: \(String(describing: portOut)), incomingPort: \(String(describing: portIn)), callDuration: \(callDuration), delay: \(delay), sampleRate: \(sampleRate), bitsPerSample: \(bitsPerSample)]"
     }
 
     //

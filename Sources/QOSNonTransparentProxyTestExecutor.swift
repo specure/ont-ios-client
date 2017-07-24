@@ -136,7 +136,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
         if sock == ntpTestSocket {
-            qosLog.debug("will send \(testObject.request) to the server")
+            qosLog.debug("will send \(String(describing: testObject.request)) to the server")
 
             // write request message and read response
             SocketUtils.writeLine(ntpTestSocket, line: testObject.request!, withTimeout: timeoutInSec, tag: TAG_NTPTEST_REQUEST) // TODO: what if request is nil?
@@ -152,7 +152,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
                 gotReply = true
 
-                qosLog.debug("\(String(data: data, encoding: String.Encoding.ascii))")
+                qosLog.debug("\(String(describing: String(data: data, encoding: String.Encoding.ascii)))")
 
                 if let response = SocketUtils.parseResponseToString(data) {
                     qosLog.debug("response: \(response)")
@@ -177,7 +177,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
         // if (err != nil && err.code == GCDAsyncSocketConnectTimeoutError) { //check for timeout
         //    return testDidTimeout()
         // }
-        qosLog.debug("DID DISC gotreply (before?): \(gotReply), error: \(err)")
+        qosLog.debug("DID DISC gotreply (before?): \(gotReply), error: \(String(describing: err))")
         if !gotReply {
             testDidFail()
         }

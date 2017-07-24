@@ -353,7 +353,7 @@ open class QualityOfServiceTest {
             return
         }
 
-        logger.debug("qos test finished with result: \(testResult)")
+        logger.debug("qos test finished with result: \(String(describing: testResult))")
 
         if let testResult = testResult {
 
