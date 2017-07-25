@@ -17,7 +17,7 @@
 import Foundation
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+private func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
     return l < r
@@ -41,52 +41,52 @@ open class QualityOfServiceTest {
     //
 
     ///
-    fileprivate let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue", attributes: DispatchQueue.Attributes.concurrent)
+    private let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    fileprivate let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
+    private let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    fileprivate let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
+    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
 
     ///
     open var delegate: QualityOfServiceTestDelegate?
 
     ///
-    fileprivate let testToken: String
+    private let testToken: String
 
     ///
-    fileprivate let measurementUuid: String
+    private let measurementUuid: String
 
     ///
-    fileprivate let speedtestStartTime: UInt64
+    private let speedtestStartTime: UInt64
 
     ///
-    fileprivate var testCount: UInt16 = 0
+    private var testCount: UInt16 = 0
 
     ///
-    fileprivate var currentTestCount: UInt16 = 0
+    private var currentTestCount: UInt16 = 0
 
     ///
-    fileprivate var activeTestsInConcurrencyGroup = 0
+    private var activeTestsInConcurrencyGroup = 0
 
     ///
-    fileprivate var controlConnectionMap = [String: QOSControlConnection]()
+    private var controlConnectionMap = [String: QOSControlConnection]()
 
     ///
-    fileprivate var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
+    private var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
 
     ///
-    fileprivate var testTypeCountMap = [QosMeasurementType: UInt16]()
+    private var testTypeCountMap = [QosMeasurementType: UInt16]()
 
     ///
-    fileprivate var sortedConcurrencyGroups = [ConcurrencyGroup]()
+    private var sortedConcurrencyGroups = [ConcurrencyGroup]()
 
     ///
-    fileprivate var resultArray = [QOSTestResult]()
+    private var resultArray = [QOSTestResult]()
 
     ///
-    fileprivate var stopped = false
+    private var stopped = false
 
     //
 
@@ -129,7 +129,7 @@ open class QualityOfServiceTest {
     //
 
     ///
-    fileprivate func fetchQOSTestParameters() {
+    private func fetchQOSTestParameters() {
         if stopped {
             return
         }
@@ -148,7 +148,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func continueWithQOSParameters(_ responseObject: QosMeasurmentResponse) {
+    private func continueWithQOSParameters(_ responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
@@ -166,7 +166,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func parseRequestResult(_ responseObject: QosMeasurmentResponse) {
+    private func parseRequestResult(_ responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
@@ -216,7 +216,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func createTestTypeCountMap() {
+    private func createTestTypeCountMap() {
         if stopped {
             return
         }
@@ -261,7 +261,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func runQOSTests() {
+    private func runQOSTests() {
         logger.debug("RUN QOS TESTS (stopped: \(self.stopped))")
 
         if stopped {
@@ -273,7 +273,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func runTestsOfNextConcurrencyGroup() {
+    private func runTestsOfNextConcurrencyGroup() {
         if stopped {
             return
         }
@@ -348,7 +348,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func qosTestFinishedWithResult(_ testType: QosMeasurementType, withTestResult testResult: QOSTestResult?) {
+    private func qosTestFinishedWithResult(_ testType: QosMeasurementType, withTestResult testResult: QOSTestResult?) {
         if stopped {
             return
         }
@@ -375,7 +375,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func checkProgress() {
+    private func checkProgress() {
         if stopped {
             return
         }
@@ -396,7 +396,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func checkTypeCount(_ testType: QosMeasurementType) {
+    private func checkTypeCount(_ testType: QosMeasurementType) {
         if stopped {
             return
         }
@@ -415,7 +415,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func checkTestState() {
+    private func checkTestState() {
         if stopped {
             return
         }
@@ -442,7 +442,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func finalizeQOSTests() {
+    private func finalizeQOSTests() {
         if stopped {
             return
         }
@@ -456,7 +456,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
+    private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
         // determine control connection
         let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)"
 
@@ -494,7 +494,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func openAllControlConnections() {
+    private func openAllControlConnections() {
         logger.info("opening all control connections")
 
         for concurrencyGroup in self.sortedConcurrencyGroups {
@@ -510,7 +510,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func closeAllControlConnections() {
+    private func closeAllControlConnections() {
         logger.info("closing all control connections")
 
         // TODO: if everything is done: close all control connections
@@ -523,7 +523,7 @@ open class QualityOfServiceTest {
     ///////////////
 
     ///
-    fileprivate func fail(_ error: NSError?) {
+    private func fail(_ error: NSError?) {
         if stopped {
             return
         }
@@ -537,7 +537,7 @@ open class QualityOfServiceTest {
     }
 
     ///
-    fileprivate func success() {
+    private func success() {
         if stopped {
             return
         }
@@ -551,7 +551,7 @@ open class QualityOfServiceTest {
     ////////////////////////////////////////////
 
     ///
-    fileprivate func submitQOSTestResults() {
+    private func submitQOSTestResults() {
         if stopped {
             return
         }

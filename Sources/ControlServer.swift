@@ -361,6 +361,7 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
             if let measurementUuid = qosMeasurementResult.measurementUuid {
                 qosMeasurementResult.clientUuid = uuid
+                // qosMeasurementResult.measurementUuid = measurementUuid
 
                 self.request(.put, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/measurements/qos/\(measurementUuid)":"/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
             } else {

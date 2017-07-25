@@ -59,7 +59,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     let timeoutInSec: Double
 
     ///
-    fileprivate let timer = GCDTimer()
+    private let timer = GCDTimer()
 
     ///
     var testToken: String!
@@ -71,10 +71,10 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 //    private let timeoutCountDownLatch: CountDownLatch = CountDownLatch()
 
     ///
-    fileprivate var timeoutDuration: UInt64!
+    private var timeoutDuration: UInt64!
 
     ///
-    fileprivate let speedtestStartTime: UInt64
+    private let speedtestStartTime: UInt64
 
     //
 

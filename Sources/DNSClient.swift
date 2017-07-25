@@ -27,23 +27,23 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     //
 
     ///
-    fileprivate let delegateQueue = DispatchQueue(label: "com.specure.dns.client", attributes: DispatchQueue.Attributes.concurrent)
+    private let delegateQueue = DispatchQueue(label: "com.specure.dns.client", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    fileprivate var udpSocket: GCDAsyncUdpSocket!
+    private var udpSocket: GCDAsyncUdpSocket!
 
     //
 
-    fileprivate var callbackSuccessMap = [String: DNSQuerySuccessCallback]()
-    fileprivate var callbackFailureMap = [String: DNSQueryFailureCallback]()
+    private var callbackSuccessMap = [String: DNSQuerySuccessCallback]()
+    private var callbackFailureMap = [String: DNSQueryFailureCallback]()
 
     //
 
     ///
-    fileprivate let dnsServer: String
+    private let dnsServer: String
 
     ///
-    fileprivate let dnsPort: UInt16
+    private let dnsPort: UInt16
 
     ///
     override convenience init() {
@@ -211,7 +211,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
         // qname
 
-        let qname_data = parseQNameToNSData(qname)
+        let qname_data = parseQNameToData(qname)
 
         // question
 
@@ -220,17 +220,21 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
         requestDNSQuestion.dnsType = /*CFSwapInt16HostToBig(*/recordType.bigEndian/*)*/
         requestDNSQuestion.dnsClass = /*CFSwapInt16HostToBig(*/UInt16(kDNSServiceClass_IN).bigEndian/*)*/
 
-        let request2BodyData =  Data(buffer: UnsafeBufferPointer(start: &requestDNSHeader, count: 1)) // Data(bytes: UnsafePointer<UInt8>(&requestDNSQuestion), count: sizeof(DNSQuestion))
+        let request2BodyData =  Data(buffer: UnsafeBufferPointer(start: &requestDNSQuestion, count: 1)) // Data(bytes: UnsafePointer<UInt8>(&requestDNSQuestion), count: sizeof(DNSQuestion))
 
         //
 
-        let data: NSMutableData = NSMutableData()
-        data.append(requestHeaderData)
-        data.append(qname_data)
-        data.append(request2BodyData)
+//        let data: NSMutableData = NSMutableData()
+//        data.append(requestHeaderData)
+//        data.append(qname_data)
+//        data.append(request2BodyData)
+        
+        var data = Data()
+            data.append(requestHeaderData)
+            data.append(qname_data)
+            data.append(request2BodyData)
 
-        //println(data)
-        logger.debug("\(data)")
+        logger.debug("\(data as NSData)")
 
         return data as Data
     }
@@ -259,28 +263,25 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
         logger.debug("didNotSendDataWithTag: \(String(describing: error))")
     }
 
+    
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
 
-        // DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high).sync { // needed because otherwise println's would merge strangely, TODO: remove this later
-
-            var dnsRecordClass: DNSRecordClass!
-
-//            println("didReceiveData: \(data)")
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high).sync { // needed because otherwise println's would merge strangely, TODO: remove this later
+        
+            logger.debug("address: \(address.base64EncodedString())")
 
         //// ??????
-        // let range = NSRange(location: 0, length: MemoryLayout<DNSHeader>.size)
-        let newRange: Range<Int> = 0..<MemoryLayout<DNSHeader>.size
+            let range = NSRange(location: 0, length: MemoryLayout<DNSHeader>.size)
+            // let newRange: Range<Int> = 0..<MemoryLayout<DNSHeader>.size
 
-            let subdata = data.subdata(in: newRange)
-//            println("subdata: \(subdata)")
+            let subdata = (data as NSData).subdata(with: range)
 
-            //var dnsHeaderPointer: UnsafeMutablePointer<DNSHeader> = UnsafeMutablePointer<DNSHeader>.alloc(sizeof(DNSHeader))
+            //logger.debug("\(subdata.base64EncodedString())")
+//////////////
             var dnsHeader: DNSHeader = DNSHeader()
 
             /*data*/(subdata as NSData).getBytes(&dnsHeader, length: MemoryLayout<DNSHeader>.size) /*dnsHeaderPointer*/
-
-            //var dnsHeader: DNSHeader = dnsHeaderPointer.move()
 
             dnsHeader.id = CFSwapInt16BigToHost(dnsHeader.id)
             dnsHeader.flags = CFSwapInt16BigToHost(dnsHeader.flags)
@@ -289,39 +290,37 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             dnsHeader.nsCount = CFSwapInt16BigToHost(dnsHeader.nsCount)
             dnsHeader.arCount = CFSwapInt16BigToHost(dnsHeader.arCount)
 
-//            println(dnsHeader)
-
+            print(dnsHeader)
+        
             // get rcode
             let rcode = UInt8(dnsHeader.flags & 0x000F)
-            //print("!!!!!!!!!!!!!!!!!!! RCODE: \(rcode) !!!!!!!!!!!!!")
+            print("!!!!!!!!!!!!!!!!!!! RCODE: \(rcode) !!!!!!!!!!!!!")
 
             ////
 
-            // let subdata2 = data.subdata(in: NSRange(location: MemoryLayout<DNSHeader>.size, length: data.count - MemoryLayout<DNSHeader>.size))
-        let subdata2 = data.subdata(in: MemoryLayout<DNSHeader>.size..<data.count)
+            let subdata2 = (data as NSData).subdata(with: NSRange(location: MemoryLayout<DNSHeader>.size, length: (data.count - MemoryLayout<DNSHeader>.size)))
+            // let subdata2 = data.subdata(in: MemoryLayout<DNSHeader>.size..<data.count)
 //            println("subdata2: \(subdata2)")
+            logger.debug("\(subdata2.base64EncodedString())")
 
             // reconstruct qname
-
             let qname = self.parseNameFromData(subdata2, data: data, nameOffset: 0)
-//            println("qname \(qname)")
-
-            //var (qname, array) = self.parseQnameDataToString(subdata2)
-            //println("qname: \(qname), array: \(array)")
+            print("qname \(qname)")
 
             /////
 
             var zeroByte = [UInt8](repeating: 0, count: 1)
-            let zeroByteData = Data(UnsafeBufferPointer(start: &zeroByte, count: 1)) // Data(bytes: UnsafePointer<UInt8>(&zeroByte), count: MemoryLayout<UInt8>.size)
+            let zeroByteData = NSData(bytes: &zeroByte, length: MemoryLayout<UInt8>.size) //Data(UnsafeBufferPointer(start: &zeroByte, count: 1)) // Data(bytes: UnsafePointer<UInt8>(&zeroByte), count: MemoryLayout<UInt8>.size)
 
-            let d_new_range = subdata2.range(of: zeroByteData, options: [], in: 0..<subdata2.count /*NSRange(location: 0, length: subdata2.count)*/)
+            //let d_new_range = subdata2.range(of: zeroByteData, options: [], in: 0..<subdata2.count /*NSRange(location: 0, length: subdata2.count)*/)
+            let d_new_range = (subdata2 as NSData).range(of: zeroByteData as Data, options: [], in: NSRange(location: 0, length: subdata2.count))
 
 //            println("d_new_range: \(d_new_range)")
 
-        let newLocation = d_new_range?.count
-            let d: Data = subdata2.subdata(in: newLocation! + 1..<subdata2.count /*NSRange(location: d_new_range.location + 1, length: subdata2.count - (d_new_range.location + 1))*/)
+        // let newLocation = d_new_range.count
+            // let d: Data = subdata2.subdata(in: newLocation! + 1..<subdata2.count /*NSRange(location: d_new_range.location + 1, length: subdata2.count - (d_new_range.location + 1))*/)
+            let d: NSData = (subdata2 as NSData).subdata(with: NSRange(location: d_new_range.location + 1, length: (subdata2.count - (d_new_range.location + 1)))) as NSData
 
-            //let d: NSData = NSData(bytes: &array, length: array.count)
 
 //            println("d: \(d)")
             //println("d_new: \(d_new)")
@@ -339,16 +338,14 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             ///
             let callbackKey = "\(qname)_\(dnsQuestion.dnsType)"
             ///
-
+            var dnsRecordClass: DNSRecordClass!
             ////////
 
             if dnsHeader.anCount > 0 {
                 //println("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
                 logger.debug("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
 
-                let dd = d.subdata(in: MemoryLayout<DNSQuestion>.size..<d.count
-                    
-                    /*NSRange(location: MemoryLayout<DNSQuestion>.size, length: d.count - MemoryLayout<DNSQuestion>.size)*/)
+                let dd = (d as NSData).subdata(with: NSRange(location: MemoryLayout<DNSQuestion>.size, length: d.length - MemoryLayout<DNSQuestion>.size)) //d.subdata(in: MemoryLayout<DNSQuestion>.size..<d.count
 
 //                println("dd: \(dd)")
 
@@ -359,25 +356,25 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 // 16 bit => data length
                 // data-length * 8 bit => data
 
-                // let ddr = dd.subdata(with: NSRange(location: 0, length: MemoryLayout<DNSResourceRecord>.size))
+                let ddr = (dd as NSData).subdata(with: NSRange(location: 0, length: MemoryLayout<DNSResourceRecord>.size))
                 
-                let ddr = dd.subdata(in: 0..<MemoryLayout<DNSResourceRecord>.size)
+                //let ddr = dd.subdata(in: 0..<MemoryLayout<DNSResourceRecord>.size)
 
-//                println("ddr: \(ddr)")
+                print("ddr: \(ddr.base64EncodedString())")
 
-                var dnsResourceRecord: DNSResourceRecord = DNSResourceRecord()
+                var dnsResourceRecord = DNSResourceRecord()
 
                 /*dd*/(ddr as NSData).getBytes(&dnsResourceRecord, length: 2+2+2)
 
                 dnsResourceRecord.namePointer = CFSwapInt16BigToHost(dnsResourceRecord.namePointer)
                 dnsResourceRecord.dnsType = CFSwapInt16BigToHost(dnsResourceRecord.dnsType)
                 dnsResourceRecord.dnsClass = CFSwapInt16BigToHost(dnsResourceRecord.dnsClass)
-
+                //
                 var ttlBytes: UInt32 = 0
                 (ddr as NSData).getBytes(&ttlBytes, range: NSRange(location: 2+2+2, length: MemoryLayout<UInt32>.size))
 
                 dnsResourceRecord.ttl = CFSwapInt32BigToHost(ttlBytes)
-
+                //
                 var dataLengthBytes: UInt16 = 0
                 (ddr as NSData).getBytes(&dataLengthBytes, range: NSRange(location: 2+2+2+MemoryLayout<UInt32>.size, length: MemoryLayout<UInt16>.size))
 
@@ -391,12 +388,14 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 logger.debug("\(dnsResourceRecord)")
 
                 // let rdata = dd.subdata(with: NSRange(location: 2+2+2+4+2, length: Int(dnsResourceRecord.dataLength)))
-                let rdata = dd.subdata(in: 2+2+2+4+2..<Int(dnsResourceRecord.dataLength))
+                //let rdata = dd.subdata(in: 2+2+2+4+2..<2+2+2+4+2+Int(dnsResourceRecord.dataLength))
+                
+                let rdata = (dd as NSData).subdata(with: NSRange(location: 2+2+2+4+2, length: Int(dnsResourceRecord.dataLength)))
 
                 ///
 
                 let strType = DNSServiceTypeIntToStr[Int(dnsResourceRecord.dnsType)]
-                //println("rr is of type \(strType)")
+
                 logger.debug("rr is of type \(String(describing: strType))")
 
                 //
@@ -482,8 +481,6 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                     //ipStr = "UNKNOWN"
                 }
-
-                //println("GOT DNS REPLY WITH IP: \(ipStr)")
                 logger.debug("GOT DNS REPLY WITH IP: \(ipStr)")
 
                 //self.stop() // TODO: when to close socket?
@@ -512,7 +509,6 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 //                )
 
             } else {
-                //println("there are no rr")
                 logger.debug("there are no rr")
 
                 //self.stop() // TODO: when to close socket?
@@ -525,7 +521,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
             // call callback
             self.callbackSuccessMap[callbackKey]?(dnsRecordClass)
-        //}
+        }
     }
 
     ///
@@ -539,7 +535,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 // MARK: Helper methods
 
     ///
-    fileprivate func parseNameFromData(_ subData: Data, data: Data, nameOffset: UInt) -> String {
+    private func parseNameFromData(_ subData: Data, data: Data, nameOffset: UInt) -> String {
         //println("____--____")
 
         var name: String = ""
@@ -601,7 +597,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     }
 
     ///
-    fileprivate func parseQNameToNSData(_ qname: String) -> Data {
+    private func parseQNameToData(_ qname: String) -> Data {
         let splitted_qname = qname.components(separatedBy: ".")//split(qname) { $0 == "." }
 
         print(splitted_qname)

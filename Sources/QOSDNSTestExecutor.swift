@@ -23,18 +23,18 @@ typealias DNSTestExecutor = QOSDNSTestExecutor<QOSDNSTest>
 ///
 class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
-    fileprivate let RESULT_DNS_STATUS           = "dns_result_status"
-    fileprivate let RESULT_DNS_ENTRY            = "dns_result_entries"
-    fileprivate let RESULT_DNS_TTL              = "dns_result_ttl"
-    fileprivate let RESULT_DNS_ADDRESS          = "dns_result_address"
-    fileprivate let RESULT_DNS_PRIORITY         = "dns_result_priority"
-    fileprivate let RESULT_DNS_DURATION         = "dns_result_duration"
-    fileprivate let RESULT_DNS_QUERY            = "dns_result_info"
-    fileprivate let RESULT_DNS_RESOLVER         = "dns_objective_resolver"
-    fileprivate let RESULT_DNS_HOST             = "dns_objective_host"
-    fileprivate let RESULT_DNS_RECORD           = "dns_objective_dns_record"
-    fileprivate let RESULT_DNS_ENTRIES_FOUND    = "dns_result_entries_found"
-    fileprivate let RESULT_DNS_TIMEOUT          = "dns_objective_timeout"
+    private let RESULT_DNS_STATUS           = "dns_result_status"
+    private let RESULT_DNS_ENTRY            = "dns_result_entries"
+    private let RESULT_DNS_TTL              = "dns_result_ttl"
+    private let RESULT_DNS_ADDRESS          = "dns_result_address"
+    private let RESULT_DNS_PRIORITY         = "dns_result_priority"
+    private let RESULT_DNS_DURATION         = "dns_result_duration"
+    private let RESULT_DNS_QUERY            = "dns_result_info"
+    private let RESULT_DNS_RESOLVER         = "dns_objective_resolver"
+    private let RESULT_DNS_HOST             = "dns_objective_host"
+    private let RESULT_DNS_RECORD           = "dns_objective_dns_record"
+    private let RESULT_DNS_ENTRIES_FOUND    = "dns_result_entries_found"
+    private let RESULT_DNS_TIMEOUT          = "dns_objective_timeout"
 
     //
 
@@ -87,7 +87,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
     }
 
     ///
-    fileprivate func try_afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?, error: NSError?) {
+    private func try_afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?, error: NSError?) {
         do {
             try afterDNSResolution(startTimeTicks, responseObj: responseObj)
         } catch {
@@ -96,7 +96,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
     }
 
     ///
-    fileprivate func afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?) throws {
+    private func afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?) throws {
 
         self.testResult.set(self.RESULT_DNS_DURATION, number: getTimeDifferenceInNanoSeconds(startTimeTicks))
 
@@ -134,7 +134,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
                             qosLog.debug("unknown result record type \(response.qType), skipping")
                     }
 
-                    resultRecord[RESULT_DNS_TTL] = "\(response.ttl)" as AnyObject?
+                    resultRecord[RESULT_DNS_TTL] = "\(response.ttl!)" as AnyObject
 
                     resourceRecordArray.append(resultRecord)
                 }
