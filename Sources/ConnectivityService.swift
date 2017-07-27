@@ -92,6 +92,8 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
     ///
     private func checkIPV4() {
         
+        self.ipv4Finished = false
+        
         ControlServer.sharedControlServer.getIpv4( success: { response in
             
             self.connectivityInfo.ipv4.connectionAvailable = true

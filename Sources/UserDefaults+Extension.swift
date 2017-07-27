@@ -47,12 +47,22 @@ extension UserDefaults {
     open class func storeNewUUID(uuidKey:String, uuid:String) {
     
         storeDataFor(key: uuidKey, obj: uuid)
-        
         logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
     }
     
     ///
     open class func checkStoredUUID(uuidKey:String?) -> String? {
+        
+        //NKOM reconciliation can be deleted after another distant future release
+
+        var reconHost:String?
+        reconHost = uuidKey?.replacingOccurrences(of: "uuid_", with: "") //"netcouch.specure.com"
+        let reconKey = "uuid_\(reconHost)"
+        if let reconUUID = UserStandard.object(forKey: reconKey) {
+            logger.debug("UUID: Found old uuid \"\(reconUUID)\" in user defaults for key '\(reconKey)'")
+            return reconUUID as! String
+        }
+        ///////////////////////////////////////////////////////////////////////////
     
         let uuid:String?
         // load uuid
@@ -61,13 +71,13 @@ extension UserDefaults {
             
             logger.debugExec({
                 if uuid != nil {
-                    logger.debug("UUID: Found uuid \"\(String(describing: uuid))\" in user defaults for key '\(key)'")
+                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
                 } else {
-                    logger.debug("UUID: Uuid was not found in user defaults for key '\(String(describing: uuid))'")
+                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
                 }
             })
             
-            if uuid != nil { return uuid }
+            if uuid != nil { return uuid! }
         }
         return nil
     }
@@ -76,7 +86,6 @@ extension UserDefaults {
     open class func storeRequestUserAgent() {
     
         let info = Bundle.main.infoDictionary!
-        let userDefaults = UserDefaults.standard
         
         let bundleName = (info["CFBundleName"] as! String).replacingOccurrences(of: " ", with: "")
         let bundleVersion = info["CFBundleShortVersionString"] as! String
@@ -92,8 +101,8 @@ extension UserDefaults {
         
         // set global user agent
         let specureUserAgent = "SpecureNetTest/2.0 (iOS; \(locale); \(iosVersion)) \(bundleName)/\(bundleVersion)"
-        userDefaults.register(defaults: ["UserAgent": specureUserAgent])
-        userDefaults.synchronize()
+        UserStandard.register(defaults: ["UserAgent": specureUserAgent])
+        UserStandard.synchronize()
         
         logger.info("USER AGENT: \(specureUserAgent)")
     }

@@ -11,6 +11,18 @@ import ObjectMapper
 import CoreLocation
 
 ///
+
+open class HistoryWithQOS: BasicRequest {
+
+    var testUUID:String?
+    
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        
+        testUUID <- map["test_uuid"]
+    }
+}
 ///
 open class HistoryWithFiltersRequest: BasicRequest {
     

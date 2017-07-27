@@ -101,57 +101,57 @@ public protocol RMBTTestRunnerDelegate {
 open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
 
     ///
-    fileprivate let workerQueue: DispatchQueue // We perform all work on this background queue. Workers also callback onto this queue.
+    private let workerQueue: DispatchQueue // We perform all work on this background queue. Workers also callback onto this queue.
 
     ///
-    fileprivate var timer: DispatchSource!
+    private var timer: DispatchSource!
 
     ///
-    fileprivate var workers = [RMBTTestWorker]()
+    private var workers = [RMBTTestWorker]()
 
     ///
-    fileprivate let delegate: RMBTTestRunnerDelegate
+    private let delegate: RMBTTestRunnerDelegate
 
     ///
-    fileprivate var phase: RMBTTestRunnerPhase = .none
+    private var phase: RMBTTestRunnerPhase = .none
 
     ///
-    fileprivate var dead = false
+    private var dead = false
 
     /// Flag indicating that downlink pretest in one of the workers was too slow and we need to
     /// continue with a single thread only
-    fileprivate var singleThreaded = false
+    private var singleThreaded = false
 
     ///
     open var testParams: SpeedMeasurementResponse!
 
     ///
-    fileprivate let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
+    private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
-    fileprivate var connectivityTracker: RMBTConnectivityTracker!
+    private var connectivityTracker: RMBTConnectivityTracker!
 
     /// Snapshots of the network interface byte counts at a given phase
-    fileprivate var startInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    fileprivate var uplinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    fileprivate var uplinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    fileprivate var downlinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
-    fileprivate var downlinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    private var startInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    private var uplinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    private var uplinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    private var downlinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    private var downlinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
 
     ///
-    fileprivate var finishedWorkers: UInt = 0
-    fileprivate var activeWorkers: UInt = 0
+    private var finishedWorkers: UInt = 0
+    private var activeWorkers: UInt = 0
 
     ///
-    fileprivate var progressStartedAtNanos: UInt64 = 0
-    fileprivate var progressDurationNanos: UInt64 = 0
+    private var progressStartedAtNanos: UInt64 = 0
+    private var progressDurationNanos: UInt64 = 0
 
     ///
-    fileprivate var progressCompletionHandler: EmptyCallback!
+    private var progressCompletionHandler: EmptyCallback!
 
     ///
-    fileprivate var downlinkTestStartedAtNanos: UInt64 = 0
-    fileprivate var uplinkTestStartedAtNanos: UInt64 = 0
+    private var downlinkTestStartedAtNanos: UInt64 = 0
+    private var uplinkTestStartedAtNanos: UInt64 = 0
 
     ///
     public init(delegate: RMBTTestRunnerDelegate) {
@@ -248,7 +248,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    fileprivate func continueWithTestParams(_ testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
+    private func continueWithTestParams(_ testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
         //ASSERT_ON_WORKER_QUEUE();
         assert(phase == .fetchingTestParams || phase == .none, "Invalid state")
 
@@ -505,7 +505,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 }
             }
 
-            //self.phase = .SubmittingTestResult
             setPhase(.submittingTestResult)
 
             submitResult()
@@ -523,7 +522,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 ///////
 
     ///
-    fileprivate func submitResult() {
+    private func submitResult() {
         workerQueue.async {
             if self.dead {
                 return
@@ -589,7 +588,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    fileprivate func resultObject() -> SpeedMeasurementResult {
+    private func resultObject() -> SpeedMeasurementResult {
         speedMeasurementResult.token = testParams.testToken
         speedMeasurementResult.uuid = testParams.testUuid
 
@@ -664,7 +663,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 // MARK: Utility methods
 
     ///
-    fileprivate func setPhase(_ phase: RMBTTestRunnerPhase) {
+    private func setPhase(_ phase: RMBTTestRunnerPhase) {
         if self.phase != .none {
             let oldPhase = self.phase
 
@@ -683,7 +682,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    fileprivate func startPhase(_ phase: RMBTTestRunnerPhase, withAllWorkers allWorkers: Bool, performingSelector selector: Selector!,
+    private func startPhase(_ phase: RMBTTestRunnerPhase, withAllWorkers allWorkers: Bool, performingSelector selector: Selector!,
                             expectedDuration duration: TimeInterval, completion completionHandler: EmptyCallback!) {
 
         //ASSERT_ON_WORKER_QUEUE();
@@ -758,7 +757,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    fileprivate func markWorkerAsFinished() -> Bool {
+    private func markWorkerAsFinished() -> Bool {
         finishedWorkers += 1
         return finishedWorkers == activeWorkers
     }
@@ -854,7 +853,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    fileprivate func cancelWithReason(_ reason: RMBTTestRunnerCancelReason) {
+    private func cancelWithReason(_ reason: RMBTTestRunnerCancelReason) {
         //ASSERT_ON_WORKER_QUEUE();
 
         logger.debug("REASON: \(reason)")

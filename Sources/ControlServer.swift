@@ -82,9 +82,9 @@ class ControlServer {
     
     ///
     func updateWithCurrentSettings() {
-        
+        print(UserDefaults.standard.dictionaryRepresentation().keys)
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "uuid_\(String(describing: URL(string: baseUrl)!.host))"
+        uuidKey = "uuid_\(URL(string: baseUrl)!.host!)"
         
         uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
         
@@ -112,7 +112,7 @@ class ControlServer {
                     
                     if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as URL? {
                         self.baseUrl = url.absoluteString // !
-                        self.uuidKey = "uuid_\(String(describing: url.host))"
+                        self.uuidKey = "uuid_\(url.host!)"
                     }
                 }
             }
@@ -352,9 +352,25 @@ class ControlServer {
             qosMeasurementRequest.clientUuid = uuid
             qosMeasurementRequest.measurementUuid = measurementUuid
 
-            self.request(.post, path: "/measurements/qos", requestObject: qosMeasurementRequest, success: success, error: failure)
+            self.request(.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ?
+                "/measurements/qos"
+                :
+                "/qosTestRequest"
+                , requestObject: qosMeasurementRequest, success: success, error: failure)
         }, error: failure)
     }
+    
+//    ///
+//    func requestQosMeasurement_Old(_ measurementUuid: String?, success: @escaping (_ response: QosMeasurmentResponse) -> (), error failure: @escaping ErrorCallback) {
+//        ensureClientUuid(success: { uuid in
+//            let qosMeasurementRequest = QosMeasurementRequest()
+//            
+//            qosMeasurementRequest.clientUuid = uuid
+//            qosMeasurementRequest.measurementUuid = measurementUuid
+//            
+//            self.request(.post, path: "/qosTestRequest", requestObject: qosMeasurementRequest, success: success, error: failure)
+//        }, error: failure)
+//    }
 
     ///
     func submitQosMeasurementResult(_ qosMeasurementResult: QosMeasurementResultRequest, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
@@ -363,7 +379,7 @@ class ControlServer {
                 qosMeasurementResult.clientUuid = uuid
                 // qosMeasurementResult.measurementUuid = measurementUuid
 
-                self.request(.put, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/measurements/qos/\(measurementUuid)":"/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
+                self.request(RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? .put:.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/measurements/qos/\(measurementUuid)":"/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
             }
@@ -391,16 +407,16 @@ class ControlServer {
     }
     
     /// OLD solution
-    func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+    func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { _ in
             
-//["test_uuid": testUuid]
+            let r = HistoryWithQOS()
+            r.testUUID = testUuid
+
+            self.request(.post, path: "/qosTestResult", requestObject: r, success: success, error: failure)
             
-            self.request(.post, path: "/qosTestResult", requestObject: nil, success: success, error: errorCallback)
-            
-        }, error: { error in
-            errorCallback(error)
-        })
+        }, error: failure)
+        
     }
 
 // MARK: History
