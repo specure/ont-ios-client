@@ -50,10 +50,13 @@ open class QosMeasurementResultResponse: BasicResponse {
     open class MeasurementQosResult: Mappable {
 
         ///
-        open var objectiveId: Int?
+        open var objectiveId: Int = 0
 
         ///
         open var type: QosMeasurementType?
+        
+        ///
+        open var reconType:String?
 
         ///
         open var successCount: Int?
@@ -86,7 +89,9 @@ open class QosMeasurementResultResponse: BasicResponse {
         ///
         open func mapping(map: Map) {
             objectiveId <- map["objectiveId"]
-            type <- map["test_type"]
+            //type <- map["test_type"]
+            reconType <- map["test_type"]
+            type = QosMeasurementType(rawValue: (reconType?.lowercased())!)
             successCount <- map["success_count"]
             failureCount <- map["failure_count"]
             result <- map["result"]
@@ -145,6 +150,9 @@ open class QosMeasurementResultResponse: BasicResponse {
 
         ///
         open var description: String?
+        
+        /// can be deleted when consolidated
+        var reconType:String?
 
         ///
         public init() {
@@ -159,7 +167,11 @@ open class QosMeasurementResultResponse: BasicResponse {
         ///
         open func mapping(map: Map) {
             name <- map["name"]
-            type <- map["test_type"]
+            // type <- map["test_type"]
+            ///
+            reconType <- map["test_type"]
+            type = QosMeasurementType(rawValue: (reconType?.lowercased())!)
+            ///
             description <- map["desc"]
         }
     }

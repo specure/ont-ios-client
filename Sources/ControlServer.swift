@@ -458,12 +458,15 @@ class ControlServer {
     
     //
     ///
-    func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
-        let key = fullDetails ? "testresultdetail" : "testresult"
+    func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error errorCallback: @escaping ErrorCallback) {
+        let key = fullDetails ? "/testresultdetail" : "/testresult"
         
-        ensureClientUuid(success: { uuid in
+        ensureClientUuid(success: { theUuid in
             
-            self.request(.post, path: key, requestObject: nil, success: success, error: errorCallback)
+            let r = HistoryWithQOS()
+            r.testUUID = uuid
+            
+            self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
             logger.debug("wfewfwfwef3")

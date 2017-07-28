@@ -26,7 +26,7 @@ open class BasicResponse: Mappable, CustomStringConvertible {
     }
     
     /// For old solution
-    var error: [String]?
+    open var error: [String]?
 
     ///
     public init() {

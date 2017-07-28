@@ -165,10 +165,24 @@ open class MeasurementHistory {
     }
     
     ///
-    open func getHistoryOld(uuid:String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
+    open func getQOSHistoryOld(uuid:String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
     
         ControlServer.sharedControlServer.getQOSHistoryResultWithUUID(testUuid: uuid, success: { response in
             
+            
+            
+            success(response)
+        }, error: failure)
+    }
+    
+    ///
+    open func getMeasurementDetails_Old(_ uuid: String, full:Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error failure: @escaping ErrorCallback) {
+
+        
+        
+        logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
+        
+        ControlServer.sharedControlServer.getHistoryResultWithUUID(uuid: uuid, fullDetails:full,  success: { response in
             
             
             success(response)
