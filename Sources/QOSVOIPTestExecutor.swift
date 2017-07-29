@@ -22,63 +22,63 @@ typealias VOIPTestExecutor = QOSVOIPTestExecutor<QOSVOIPTest>
 ///
 class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSenderDelegate {
 
-    fileprivate let RESULT_VOIP_PREFIX          = "voip_result"
-    fileprivate let RESULT_VOIP_PREFIX_INCOMING = "_in_"
-    fileprivate let RESULT_VOIP_PREFIX_OUTGOING = "_out_"
+    private let RESULT_VOIP_PREFIX          = "voip_result"
+    private let RESULT_VOIP_PREFIX_INCOMING = "_in_"
+    private let RESULT_VOIP_PREFIX_OUTGOING = "_out_"
 
     ///
 
-    fileprivate let RESULT_VOIP_PAYLOAD             = "voip_objective_payload"
-    fileprivate let RESULT_VOIP_IN_PORT             = "voip_objective_in_port"
-    fileprivate let RESULT_VOIP_OUT_PORT            = "voip_objective_out_port"
-    fileprivate let RESULT_VOIP_CALL_DURATION       = "voip_objective_call_duration"
-    fileprivate let RESULT_VOIP_BITS_PER_SAMPLE     = "voip_objective_bits_per_sample"
-    fileprivate let RESULT_VOIP_SAMPLE_RATE         = "voip_objective_sample_rate"
-    fileprivate let RESULT_VOIP_DELAY               = "voip_objective_delay"
-    fileprivate let RESULT_VOIP_STATUS              = "voip_result_status"
-    fileprivate let RESULT_VOIP_VOIP_PREFIX         = "voip_result"
-    fileprivate let RESULT_VOIP_INCOMING_PREFIX     = "_in_"
-    fileprivate let RESULT_VOIP_OUTGOING_PREFIX     = "_out_"
-    fileprivate let RESULT_VOIP_SHORT_SEQUENTIAL    = "short_seq"
-    fileprivate let RESULT_VOIP_LONG_SEQUENTIAL     = "long_seq"
-    fileprivate let RESULT_VOIP_MAX_JITTER          = "max_jitter"
-    fileprivate let RESULT_VOIP_MEAN_JITTER         = "mean_jitter"
-    fileprivate let RESULT_VOIP_MAX_DELTA           = "max_delta"
-    fileprivate let RESULT_VOIP_SKEW                = "skew"
-    fileprivate let RESULT_VOIP_NUM_PACKETS         = "num_packets"
-    fileprivate let RESULT_VOIP_SEQUENCE_ERRORS     = "sequence_error"
-    fileprivate let RESULT_VOIP_TIMEOUT             = "voip_objective_timeout"
+    private let RESULT_VOIP_PAYLOAD             = "voip_objective_payload"
+    private let RESULT_VOIP_IN_PORT             = "voip_objective_in_port"
+    private let RESULT_VOIP_OUT_PORT            = "voip_objective_out_port"
+    private let RESULT_VOIP_CALL_DURATION       = "voip_objective_call_duration"
+    private let RESULT_VOIP_BITS_PER_SAMPLE     = "voip_objective_bits_per_sample"
+    private let RESULT_VOIP_SAMPLE_RATE         = "voip_objective_sample_rate"
+    private let RESULT_VOIP_DELAY               = "voip_objective_delay"
+    private let RESULT_VOIP_STATUS              = "voip_result_status"
+    private let RESULT_VOIP_VOIP_PREFIX         = "voip_result"
+    private let RESULT_VOIP_INCOMING_PREFIX     = "_in_"
+    private let RESULT_VOIP_OUTGOING_PREFIX     = "_out_"
+    private let RESULT_VOIP_SHORT_SEQUENTIAL    = "short_seq"
+    private let RESULT_VOIP_LONG_SEQUENTIAL     = "long_seq"
+    private let RESULT_VOIP_MAX_JITTER          = "max_jitter"
+    private let RESULT_VOIP_MEAN_JITTER         = "mean_jitter"
+    private let RESULT_VOIP_MAX_DELTA           = "max_delta"
+    private let RESULT_VOIP_SKEW                = "skew"
+    private let RESULT_VOIP_NUM_PACKETS         = "num_packets"
+    private let RESULT_VOIP_SEQUENCE_ERRORS     = "sequence_error"
+    private let RESULT_VOIP_TIMEOUT             = "voip_objective_timeout"
 
     //
 
-    fileprivate let TAG_TASK_VOIPTEST = 4001
-    fileprivate let TAG_TASK_VOIPRESULT = 4002
+    private let TAG_TASK_VOIPTEST = 4001
+    private let TAG_TASK_VOIPRESULT = 4002
 
     //
 
     ///
-    fileprivate var udpStreamSender: UDPStreamSender!
+    private var udpStreamSender: UDPStreamSender!
 
     ///
-    fileprivate var initialSequenceNumber: UInt16!
+    private var initialSequenceNumber: UInt16!
 
     ///
-    fileprivate var ssrc: UInt32!
+    private var ssrc: UInt32!
 
     ///
-    fileprivate var initialRTPPacket: RTPPacket!
+    private var initialRTPPacket: RTPPacket!
 
     ///
-    fileprivate var rtpControlDataList = [UInt16: RTPControlData]()
+    private var rtpControlDataList = [UInt16: RTPControlData]()
 
     ///
-    fileprivate var payloadSize: Int!
+    private var payloadSize: Int!
 
     ///
-    fileprivate var payloadTimestamp: UInt32!
+    private var payloadTimestamp: UInt32!
 
     ///
-    fileprivate var cdl: CountDownLatch!
+    private var cdl: CountDownLatch!
 
     //
 
@@ -170,7 +170,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: test methods
 
     ///
-    fileprivate func startOutgoingTest() {
+    private func startOutgoingTest() {
 
         let dDelay          = Double(testObject.delay / NSEC_PER_MSEC)
         let dSampleRate     = Double(testObject.sampleRate)
@@ -249,7 +249,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     ///
-    fileprivate func finishOutgoingTest() {
+    private func finishOutgoingTest() {
         qosLog.debug("FINISH OUTGOING VOIP TEST")
 
         let prefix = RESULT_VOIP_PREFIX + RESULT_VOIP_PREFIX_INCOMING
@@ -291,7 +291,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 // MARK: calculate qos
 
     ///
-    fileprivate func calculateQOS() -> RTPResult? {
+    private func calculateQOS() -> RTPResult? {
 
         if rtpControlDataList.count <= 0 {
             return nil
@@ -407,7 +407,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     ///
-    fileprivate func calculateDelta(_ i: RTPControlData, _ j: RTPControlData, _ sampleRate: UInt16) -> Int64 {
+    private func calculateDelta(_ i: RTPControlData, _ j: RTPControlData, _ sampleRate: UInt16) -> Int64 {
         let msDiff: Int64 = Int64(j.receivedNS) - Int64(i.receivedNS)
         let tsDiff: Int64 = Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(sampleRate) * 1000) * Double(NSEC_PER_MSEC))
 

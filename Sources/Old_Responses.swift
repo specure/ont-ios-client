@@ -10,6 +10,21 @@ import Foundation
 import ObjectMapper
 //
 
+///
+open class ResultItem: BasicResponse {
+    
+    ///
+    open var value: String?
+    ///
+    open var title: String?
+    
+    ///
+    open override func mapping(map: Map) {
+        value <- map["value"]
+        title <- map["title"]
+    }
+}
+
 open class HistoryWithFiltersResponse: BasicResponse {
 
     ///

@@ -53,6 +53,9 @@ class ControlServer {
 
     ///
     var uuid: String?
+    
+    ///
+    var historyFilters:[String: [String]]?
 
     ///
     fileprivate var uuidKey: String? // TODO: unique for each control server?
@@ -210,6 +213,9 @@ class ControlServer {
             })
             
             // TODO: set history filters
+            
+            self.historyFilters = response.settings?[0].history
+            
             // TODO: set ip request urls, set openTestBaseUrl
             // TODO: set map server url
             
@@ -467,6 +473,25 @@ class ControlServer {
             r.testUUID = uuid
             
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
+            
+        }, error: { error in
+            logger.debug("wfewfwfwef3")
+            logger.debug("\(error)")
+            
+            errorCallback(error)
+        })
+    }
+    
+    ///
+    func getHistoryResultWithUUID_Full(uuid: String, success: @escaping (_ response: [ResultItem]) -> (), error errorCallback: @escaping ErrorCallback) {
+        let key = "/testresultdetail"
+        
+        ensureClientUuid(success: { theUuid in
+            
+            let r = HistoryWithQOS()
+            r.testUUID = uuid
+            
+            self.requestArray(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
             logger.debug("wfewfwfwef3")

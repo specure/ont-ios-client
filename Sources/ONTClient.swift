@@ -79,16 +79,16 @@ public protocol ONTClientDelegate {
 open class ONTClient {
     
     ///
-    fileprivate var testRunner: ONTTestRunner?
+    internal var testRunner: ONTTestRunner?
     
     ///
-    fileprivate var qualityOfServiceTestRunner: QualityOfServiceTest?
+    internal var qualityOfServiceTestRunner: QualityOfServiceTest?
     
     ///
     open var delegate: ONTClientDelegate?
     
     ///
-    fileprivate var resultUuid: String?
+    internal var resultUuid: String?
     
     ///
     open var running: Bool {
@@ -98,16 +98,16 @@ open class ONTClient {
     }
     
     ///
-    fileprivate var _running = false
+    internal var _running = false
     
     /// used for updating cpu and memory usage
-    fileprivate var hardwareUsageTimer: Timer?
+    internal var hardwareUsageTimer: Timer?
     
     ///
-    fileprivate let cpuMonitor = RMBTCPUMonitor()
+    internal let cpuMonitor = RMBTCPUMonitor()
     
     ///
-    fileprivate let ramMonitor = RMBTRAMMonitor()
+    internal let ramMonitor = RMBTRAMMonitor()
     
     ///
     public init() {
@@ -116,7 +116,12 @@ open class ONTClient {
     
     ///
     open func startMeasurement() {
-        startSpeedMeasurement()
+        testRunner = ONTTestRunner(delegate: self)
+        testRunner?.start()
+        
+        _running = true
+        
+        // startHardwareUsageTimer() // start cpu and memory usage timer // NO need for NKOM
     }
     
     ///
@@ -128,17 +133,7 @@ open class ONTClient {
     }
     
     ///
-    fileprivate func startSpeedMeasurement() {
-        testRunner = ONTTestRunner(delegate: self)
-        testRunner?.start()
-        
-        _running = true
-        
-        // startHardwareUsageTimer() // start cpu and memory usage timer // NO need for NKOM
-    }
-    
-    ///
-    fileprivate func finishMeasurement() {
+    internal func finishMeasurement() {
         _running = false
         
         if let uuid = self.resultUuid {
