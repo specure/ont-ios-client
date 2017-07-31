@@ -483,7 +483,7 @@ class ControlServer {
     }
     
     ///
-    func getHistoryResultWithUUID_Full(uuid: String, success: @escaping (_ response: [ResultItem]) -> (), error errorCallback: @escaping ErrorCallback) {
+    func getHistoryResultWithUUID_Full(uuid: String, success: @escaping (_ response: SpeedMeasurementDetailResultResponse) -> (), error errorCallback: @escaping ErrorCallback) {
         let key = "/testresultdetail"
         
         ensureClientUuid(success: { theUuid in
@@ -491,7 +491,7 @@ class ControlServer {
             let r = HistoryWithQOS()
             r.testUUID = uuid
             
-            self.requestArray(.post, path: key, requestObject: r, success: success, error: errorCallback)
+            self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
             logger.debug("wfewfwfwef3")

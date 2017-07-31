@@ -124,10 +124,10 @@ open class RMBTHistoryResult {
     //
     
     ///
-    fileprivate var currentYearFormatter = DateFormatter()
+    private var currentYearFormatter = DateFormatter()
     
     ///
-    fileprivate var previousYearFormatter = DateFormatter()
+    private var previousYearFormatter = DateFormatter()
     
     //
     
@@ -183,140 +183,72 @@ open class RMBTHistoryResult {
             success()
         } else {
             
-            if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            MeasurementHistory.sharedMeasurementHistory.getMeasurementDetails_Old(uuid, full: false, success: { response in
                 
-                ControlServer.sharedControlServer.getSpeedMeasurement(uuid, success: { response in
+                self.networkType = response.measurements![0].networkType.map { RMBTNetworkType(rawValue: $0) }!
+                //
+                self.shareText = nil
+                
+                self.shareText = response.measurements?[0].shareText
+                
+                do {
+                    let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
                     
-                    if let nt = response.networkType {
-                        self.networkType = RMBTNetworkTypeMake(nt) // RMBTNetworkType(rawValue: networkType.integerValue)!
-                    }
+                    let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.characters.count))
                     
-                    self.shareURL = nil
-                    if let shareText = response.shareText {
-                        // http://stackoverflow.com/questions/14226300/i-am-getting-an-implicit-conversion-from-enumeration-type-warning-in-xcode-for
-                        // TODO: verify if fixed on iOS7
+                    if matches.count > 0 {
+                        let r = matches.last!
                         
-                        do {
-                            let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-                            
-                            let matches = linkDetector.matches(in: shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: shareText.characters.count))
-                            
-                            if matches.count > 0 {
-                                let r = matches.last!
-                                
-                                assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
-                                
-                                self.shareText = (shareText as NSString).replacingCharacters(in: r.range, with: "")
-                                self.shareURL = r.url
-                            }
-                            
-                        } catch {
-                            // ignore
-                        }
-                    }
-                    
-                    if let networkDetailList = response.networkDetailList {
-                        let resultItems = networkDetailList.map({ item -> RMBTHistoryResultItem in
-                            return RMBTHistoryResultItem(withResultItem: item)
-                        })
+                        assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
                         
-                        self.netItems.append(contentsOf: resultItems)
+                        self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
+                        self.shareURL = (r.url! as NSURL) as URL!
                     }
                     
-                    if let classifiedMeasurementDataList = response.classifiedMeasurementDataList {
-                        let resultItems = classifiedMeasurementDataList.map({ item -> RMBTHistoryResultItem in
-                            return RMBTHistoryResultItem(withClassifiedResultItem: item)
-                        })
-                        
-                        self.measurementItems.append(contentsOf: resultItems)
-                    }
+                } catch {
                     
-                    if let geoLat = response.latitude, let geoLon = response.longitude {
+                }
+                
+                for r in (response.measurements?[0].networkDetailList)! {
+                    
+                    let i=SpeedMeasurementResultResponse.ResultItem()
+                    i.title = r.title
+                    i.value = r.value
+                    
+                    self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
+                }
+                
+                for r in (response.measurements?[0].classifiedMeasurementDataList)! {
+                    
+                    let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    i.classification = r.classification
+                    i.title = r.title
+                    i.value = r.value
+                    
+                    //self.measurementItems.append(RMBTHistoryResultItem(response: r))
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
+                }
+                
+                // TODO: rewrite with double if-let statement when using swift 1.2
+                if let geoLat = response.measurements?[0].latitude{
+                    if let geoLon = response.measurements?[0].longitude {
                         self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
                     }
-                    
-                    self.timeString = response.timeString ?? ""
-                    self.locationString = response.location
-                    
-                    self.dataState = .basic
-                    
-                    success()
-                    
-                }, error: { error in
-                    // TODO: handle error
-                })
-            
-            } else {
-            
-                MeasurementHistory.sharedMeasurementHistory.getMeasurementDetails_Old(uuid, full: false, success: { response in
-                    
-                    self.networkType = response.measurements![0].networkType.map { RMBTNetworkType(rawValue: $0) }!
-                    //
-                    self.shareText = nil
-                    
-                    self.shareText = response.measurements?[0].shareText
-                    
-                    do {
-                        let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-                        
-                        let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.characters.count))
-                        
-                        if matches.count > 0 {
-                            let r = matches.last!
-                            
-                            assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
-                            
-                            self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
-                            self.shareURL = (r.url! as NSURL) as URL!
-                        }
-                        
-                    } catch {
-                        
-                    }
-                    
-                    for r in (response.measurements?[0].networkDetailList)! {
-                        
-                        let i=SpeedMeasurementResultResponse.ResultItem()
-                        i.title = r.title
-                        i.value = r.value
-                        
-                        self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
-                    }
-                    
-                    for r in (response.measurements?[0].classifiedMeasurementDataList)! {
-                        
-                        let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        i.classification = r.classification
-                        i.title = r.title
-                        i.value = r.value
-                        
-                        //self.measurementItems.append(RMBTHistoryResultItem(response: r))
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
-                    }
-                    
-                    // TODO: rewrite with double if-let statement when using swift 1.2
-                    if let geoLat = response.measurements?[0].latitude{
-                        if let geoLon = response.measurements?[0].longitude {
-                            self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
-                        }
-                    }
-                    
-                    if let timeString = response.measurements?[0].timeString {
-                        self.timeString = timeString
-                    }
-                    
-                    self.locationString = response.measurements?[0].location
-                    
-                    self.dataState = .basic
-                    
-                    success()
-                    
-                }, error: { error in
-                    
-                })
-            }
-            
-
+                }
+                
+                if let timeString = response.measurements?[0].timeString {
+                    self.timeString = timeString
+                }
+                
+                self.locationString = response.measurements?[0].location
+                
+                self.dataState = .basic
+                
+                success()
+                
+            }, error: { error in
+                
+            })
         }
     }
     
@@ -326,11 +258,9 @@ open class RMBTHistoryResult {
             success()
         } else {
             
-            ControlServer.sharedControlServer.getSpeedMeasurementDetails(uuid, success: { response in
-                
-                // TODO:
-                
-                if let speedMeasurementResultDetailList = response.speedMeasurementResultDetailList {
+            ControlServer.sharedControlServer.getHistoryResultWithUUID_Full(uuid: uuid, success: { respose in
+            
+                if let speedMeasurementResultDetailList = respose.speedMeasurementResultDetailList {
                     let resultItems = speedMeasurementResultDetailList.map({ item -> RMBTHistoryResultItem in
                         return RMBTHistoryResultItem(withSpeedMeasurementDetailItem: item)
                     })
@@ -341,11 +271,10 @@ open class RMBTHistoryResult {
                 self.dataState = .full
                 
                 success()
-                
-            }, error: { error in
-                // TODO: handle error
+            
+            }, error: { _ in
+            
             })
         }
     }
-    
 }
