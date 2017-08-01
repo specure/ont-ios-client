@@ -99,6 +99,12 @@ public protocol RMBTClientDelegate {
 
     ///
     func qosMeasurementDidUpdateProgress(_ client: RMBTClient, progress: Float)
+    
+    /// new
+    func qosMeasurementList(_ client: RMBTClient, list: [QosMeasurementType])
+    
+    ///
+    func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
 }
 
 /////////////
@@ -357,11 +363,13 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
+        delegate?.qosMeasurementList(self, list: testTypes)
     }
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
+        self.delegate?.qosMeasurementFinished(self, type: testType)
     }
 
     ///
