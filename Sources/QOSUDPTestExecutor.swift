@@ -50,46 +50,46 @@ typealias UDPTestExecutor = QOSUDPTestExecutor<QOSUDPTest>
 ///
 class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSenderDelegate, UDPStreamReceiverDelegate { /*swift compiler segfault if moved to extension*/
 
-    fileprivate let RESULT_UDP_OUTGOING_PACKETS                 = "udp_result_out_num_packets"
-    fileprivate let RESULT_UDP_INCOMING_PACKETS                 = "udp_result_in_num_packets"
-    fileprivate let RESULT_UDP_OUTGOING_PLR                     = "udp_result_out_packet_loss_rate"
-    fileprivate let RESULT_UDP_NUM_PACKETS_OUTGOING_RESPONSE    = "udp_result_out_response_num_packets"
-    fileprivate let RESULT_UDP_INCOMING_PLR                     = "udp_result_in_packet_loss_rate"
-    fileprivate let RESULT_UDP_NUM_PACKETS_INCOMING_RESPONSE    = "udp_result_in_response_num_packets"
-    fileprivate let RESULT_UDP_PORT_OUTGOING                    = "udp_objective_out_port"
-    fileprivate let RESULT_UDP_PORT_INCOMING                    = "udp_objective_in_port"
-    fileprivate let RESULT_UDP_NUM_PACKETS_OUTGOING             = "udp_objective_out_num_packets"
-    fileprivate let RESULT_UDP_NUM_PACKETS_INCOMING             = "udp_objective_in_num_packets"
-    fileprivate let RESULT_UDP_DELAY                            = "udp_objective_delay"
-    fileprivate let RESULT_UDP_TIMEOUT                          = "udp_objective_timeout"
+    private let RESULT_UDP_OUTGOING_PACKETS                 = "udp_result_out_num_packets"
+    private let RESULT_UDP_INCOMING_PACKETS                 = "udp_result_in_num_packets"
+    private let RESULT_UDP_OUTGOING_PLR                     = "udp_result_out_packet_loss_rate"
+    private let RESULT_UDP_NUM_PACKETS_OUTGOING_RESPONSE    = "udp_result_out_response_num_packets"
+    private let RESULT_UDP_INCOMING_PLR                     = "udp_result_in_packet_loss_rate"
+    private let RESULT_UDP_NUM_PACKETS_INCOMING_RESPONSE    = "udp_result_in_response_num_packets"
+    private let RESULT_UDP_PORT_OUTGOING                    = "udp_objective_out_port"
+    private let RESULT_UDP_PORT_INCOMING                    = "udp_objective_in_port"
+    private let RESULT_UDP_NUM_PACKETS_OUTGOING             = "udp_objective_out_num_packets"
+    private let RESULT_UDP_NUM_PACKETS_INCOMING             = "udp_objective_in_num_packets"
+    private let RESULT_UDP_DELAY                            = "udp_objective_delay"
+    private let RESULT_UDP_TIMEOUT                          = "udp_objective_timeout"
 
     //
 
     /// have to be var to be used in withUsafe*Pointer
-    fileprivate var FLAG_UDP_TEST_ONE_DIRECTION: UInt8 = 1
-    fileprivate var FLAG_UDP_TEST_RESPONSE: UInt8 = 2
-    fileprivate var FLAG_UDP_TEST_AWAIT_RESPONSE: UInt8 = 3
+    private var FLAG_UDP_TEST_ONE_DIRECTION: UInt8 = 1
+    private var FLAG_UDP_TEST_RESPONSE: UInt8 = 2
+    private var FLAG_UDP_TEST_AWAIT_RESPONSE: UInt8 = 3
 
     //
 
-    fileprivate let TAG_TASK_UDPTEST_OUT = 3001
-    fileprivate let TAG_TASK_GET_UDPPORT = 3002
-    fileprivate let TAG_TASK_UDPTEST_IN = 3003
-    fileprivate let TAG_TASK_UDPRESULT_OUT = 3004
+    private let TAG_TASK_UDPTEST_OUT = 3001
+    private let TAG_TASK_GET_UDPPORT = 3002
+    private let TAG_TASK_UDPTEST_IN = 3003
+    private let TAG_TASK_UDPRESULT_OUT = 3004
 
     //
 
     ///
-    fileprivate var udpStreamSender: UDPStreamSender!
+    private var udpStreamSender: UDPStreamSender!
 
     ///
-    fileprivate var udpStreamReceiver: UDPStreamReceiver!
+    private var udpStreamReceiver: UDPStreamReceiver!
 
     //
-    fileprivate var packetsReceived = [UInt8]()
-    fileprivate var packetsDuplicate = [UInt8]()
+    private var packetsReceived = [UInt8]()
+    private var packetsDuplicate = [UInt8]()
 
-    fileprivate var resultPacketData = UDPPacketData()
+    private var resultPacketData = UDPPacketData()
 
     //
 
@@ -164,7 +164,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
 // MARK: test methods
 
     ///
-    fileprivate func announceOutgoingTest(_ portOut: UInt16, _ packetCountOut: UInt16) {
+    private func announceOutgoingTest(_ portOut: UInt16, _ packetCountOut: UInt16) {
         qosLog.debug("announceOutgoingTest \(portOut), \(packetCountOut)")
 
         testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING, number: testObject.packetCountOut!)
@@ -174,7 +174,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     ///
-    fileprivate func announceIncomingTest(_ portIn: UInt16, _ packetCountIn: UInt16) {
+    private func announceIncomingTest(_ portIn: UInt16, _ packetCountIn: UInt16) {
         qosLog.debug("announceIncomingTest \(portIn), \(packetCountIn)")
 
         testResult.set(RESULT_UDP_NUM_PACKETS_INCOMING, number: testObject.packetCountIn!)
@@ -184,7 +184,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     ///
-    fileprivate func startOutgoingTest() {
+    private func startOutgoingTest() {
         let settings = UDPStreamSenderSettings(
             host: testObject.serverAddress,
             port: testObject.portOut!,
@@ -218,7 +218,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     ///
-    fileprivate func finishOutgoingTest() {
+    private func finishOutgoingTest() {
         testResult.set(RESULT_UDP_OUTGOING_PACKETS,                 value: resultPacketData.rcvServerResponse as AnyObject?)
         testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING_RESPONSE,    value: resultPacketData.numPackets as AnyObject?)
 
@@ -243,7 +243,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     ///
-    fileprivate func startIncomingTest() {
+    private func startIncomingTest() {
         let settings = UDPStreamReceiverSettings(
             port: testObject.portIn!,
             delegateQueue: delegateQueue,
@@ -263,7 +263,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     ///
-    fileprivate func finishIncomingTest() {
+    private func finishIncomingTest() {
         // TODO
     }
 
@@ -340,7 +340,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     } */
 
     ///
-    fileprivate func appendPacketData(_ data: inout NSMutableData, flag: UInt8, packetNumber: UInt16) {
+    private func appendPacketData(_ data: inout NSMutableData, flag: UInt8, packetNumber: UInt16) {
 
         // write flag
         data.appendValue(flag)

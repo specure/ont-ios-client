@@ -118,7 +118,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // announce voip test
         var voipCommand = "VOIPTEST \(testObject.portOut!) \(testObject.portIn!) \(testObject.sampleRate) \(testObject.bitsPerSample) "
         voipCommand += "\(testObject.delay / NSEC_PER_MSEC) \(testObject.callDuration / NSEC_PER_MSEC) "
-        voipCommand += "\(initialSequenceNumber) \(testObject.payloadType)"
+        voipCommand += "\(initialSequenceNumber!) \(testObject.payloadType)"
 
         sendTaskCommand(voipCommand, withTimeout: timeoutInSec, tag: TAG_TASK_VOIPTEST)
 
@@ -198,7 +198,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         initialRTPPacket.header.payloadType = testObject.payloadType
         initialRTPPacket.header.ssrc = ssrc
-        initialRTPPacket.header.sequenceNumber = initialSequenceNumber
+        initialRTPPacket.header.sequenceNumber = initialSequenceNumber!
 
         //
 
@@ -243,7 +243,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
         usleep(100000) /* 100 * 1000 */
 
-        controlConnection.sendTaskCommand("GET VOIPRESULT \(ssrc)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
+        controlConnection.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
         cdlTimeout(500, forTag: "TAG_TASK_VOIPRESULT")
     }
