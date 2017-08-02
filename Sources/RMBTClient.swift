@@ -82,9 +82,13 @@ public protocol RMBTClientDelegate {
     func measurementDidFail(_ client: RMBTClient, withReason reason: RMBTClientCancelReason)
 
 // MARK: Speed
-
+    
     ///
-    func speedMeasurementDidMeasureSpeed(_ kbps: Int, inPhase phase: SpeedMeasurementPhase)
+    func speedMeasurementDidUpdateWith(progress: Float, inPhase phase: SpeedMeasurementPhase)
+
+    /// testRunnerDidMeasureThroughputs
+    // func speedMeasurementDidMeasureSpeed(_ kbps: Int, inPhase phase: SpeedMeasurementPhase)
+    func speedMeasurementDidMeasureSpeed(throughputs: [RMBTThroughput], inPhase phase: SpeedMeasurementPhase)
 
     ///
     func speedMeasurementDidStartPhase(_ phase: SpeedMeasurementPhase)
@@ -99,6 +103,8 @@ public protocol RMBTClientDelegate {
 
     ///
     func qosMeasurementDidUpdateProgress(_ client: RMBTClient, progress: Float)
+    
+    
     
     /// new
     func qosMeasurementList(_ client: RMBTClient, list: [QosMeasurementType])
@@ -136,6 +142,7 @@ open class RMBTClient {
 
     /// used for updating cpu and memory usage
     private var hardwareUsageTimer: Timer?
+    
 
     ///
     private let cpuMonitor = RMBTCPUMonitor()
@@ -168,7 +175,7 @@ open class RMBTClient {
 
         _running = true
 
-        // startHardwareUsageTimer() // start cpu and memory usage timer // NO need for NKOM
+        startHardwareUsageTimer()
     }
 
     ///
@@ -295,16 +302,20 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     ///
     public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
         //logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
+        self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase) )
+        
+        
     }
 
     ///
     public func testRunnerDidMeasureThroughputs(_ throughputs: NSArray, inPhase phase: RMBTTestRunnerPhase) {
         // TODO: use same logic as in android app? (RMBTClient.java:646)
 
-        if let throughputs = throughputs as? [RMBTThroughput], let throughput = throughputs.last { // last?
-            let kbps = throughput.kilobitsPerSecond()
-            delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
-        }
+//        if let throughputs = throughputs as? [RMBTThroughput], let throughput = throughputs.last { // last?
+//            let kbps = throughput.kilobitsPerSecond()
+//            delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
+//        }
+        delegate?.speedMeasurementDidMeasureSpeed(throughputs: (throughputs as? [RMBTThroughput])!, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
     }
 
     ///
