@@ -302,7 +302,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     ///
     public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
         //logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
-        self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase) )
+        self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
         
         
     }

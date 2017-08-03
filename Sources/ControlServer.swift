@@ -146,7 +146,7 @@ class ControlServer {
         settingsRequest.client?.clientType = "MOBILE"
         settingsRequest.client?.termsAndConditionsAccepted = true
         settingsRequest.client?.uuid = uuid
-        
+        ////
         let successFunc: (_ response: SettingsReponse) -> () = { response in
             logger.debug("settings: \(String(describing: response.client))")
             
@@ -186,7 +186,7 @@ class ControlServer {
             
             successCallback()
         }
-        
+        ////
         let successFuncOld: (_ response: SettingsReponse_Old) -> () = { response in
             logger.debug("settings: \(response)")
             
@@ -207,8 +207,10 @@ class ControlServer {
             
             // set qos test type desc
             response.settings?[0].qosMeasurementTypes?.forEach({ measurementType in
-                if measurementType.testType != nil {
-                    // QosMeasurementType.localizedNameDict[type] = measurementType.testDesc
+                if let theType = measurementType.testType, let theDesc = measurementType.testDesc {
+                    if let type = QosMeasurementType(rawValue: theType.lowercased()) {
+                        QosMeasurementType.localizedNameDict.updateValue(theDesc, forKey:type)
+                    }
                 }
             })
             
