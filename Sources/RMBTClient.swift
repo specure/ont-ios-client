@@ -53,18 +53,12 @@ public enum RMBTClientCancelReason: Int {
     ///
     public static func mapFromSpeedMesurementCancelReason(_ cancelReason: RMBTTestRunnerCancelReason) -> RMBTClientCancelReason { // TODO: improve
         switch cancelReason {
-        case .userRequested:
-            return .userRequested
-        case .appBackgrounded:
-            return .appBackgrounded
-        case .mixedConnectivity:
-            return .mixedConnectivity
-        case .noConnection:
-            return .noConnection
-        case .errorFetchingTestingParams:
-            return .errorFetchingSpeedMeasurementParams
-        case .errorSubmittingTestResult:
-            return .errorSubmittingSpeedMeasurement
+        case .userRequested: return .userRequested
+        case .appBackgrounded: return .appBackgrounded
+        case .mixedConnectivity: return .mixedConnectivity
+        case .noConnection: return .noConnection
+        case .errorFetchingTestingParams: return .errorFetchingSpeedMeasurementParams
+        case .errorSubmittingTestResult: return .errorSubmittingSpeedMeasurement
         }
     }
 }
