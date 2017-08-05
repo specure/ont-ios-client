@@ -48,6 +48,13 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     private let RESULT_VOIP_NUM_PACKETS         = "num_packets"
     private let RESULT_VOIP_SEQUENCE_ERRORS     = "sequence_error"
     private let RESULT_VOIP_TIMEOUT             = "voip_objective_timeout"
+    //
+    //ONT
+    private let RESULT_VOIP_IN_SHORT_SEQ        = "voip_result_in_short_seq"
+    private let RESULT_VOIP_IN_NUM_PACKETS        = "voip_result_in_num_packets"
+    private let RESULT_VOIP_IN_MAX_JITTER        = "voip_result_in_max_jitter"
+    private let RESULT_VOIP_OUT_SKEW        = "voip_result_out_skew"
+    
 
     //
 

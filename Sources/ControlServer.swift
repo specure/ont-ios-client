@@ -308,8 +308,10 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
             if let measurementUuid = speedMeasurementResult.uuid {
                 speedMeasurementResult.clientUuid = uuid
-
+                RMBTConfig.sharedInstance.RMBT_VERSION_NEW ?
                 self.request(.put, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
+                :
+                self.request(.post, path: "/result", requestObject: speedMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
             }
@@ -368,18 +370,6 @@ class ControlServer {
         }, error: failure)
     }
     
-//    ///
-//    func requestQosMeasurement_Old(_ measurementUuid: String?, success: @escaping (_ response: QosMeasurmentResponse) -> (), error failure: @escaping ErrorCallback) {
-//        ensureClientUuid(success: { uuid in
-//            let qosMeasurementRequest = QosMeasurementRequest()
-//            
-//            qosMeasurementRequest.clientUuid = uuid
-//            qosMeasurementRequest.measurementUuid = measurementUuid
-//            
-//            self.request(.post, path: "/qosTestRequest", requestObject: qosMeasurementRequest, success: success, error: failure)
-//        }, error: failure)
-//    }
-
     ///
     func submitQosMeasurementResult(_ qosMeasurementResult: QosMeasurementResultRequest, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in

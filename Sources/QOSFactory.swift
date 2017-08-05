@@ -20,7 +20,7 @@ import Foundation
 class QOSFactory {
 
     ///
-    fileprivate init() {
+    private init() {
 
     }
 
@@ -133,7 +133,7 @@ class QOSFactory {
     }
 
     ///
-    fileprivate class func getTypeIfEnabled(_ type: QosMeasurementType?) -> QosMeasurementType? {
+    private class func getTypeIfEnabled(_ type: QosMeasurementType?) -> QosMeasurementType? {
         if type != nil && !isEnabled(type!) {
             return nil
         }
@@ -142,7 +142,7 @@ class QOSFactory {
     }
 
     ///
-    fileprivate class func isEnabled(_ type: QosMeasurementType) -> Bool {
+    private class func isEnabled(_ type: QosMeasurementType) -> Bool {
         return QOS_ENABLED_TESTS.contains(type)
     }
 }

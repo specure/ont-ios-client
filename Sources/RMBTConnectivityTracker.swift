@@ -48,31 +48,31 @@ open class RMBTConnectivityTracker: NSObject {
 
     /// GCNetworkReachability is not made to be multiply instantiated, so we create a global
     /// singleton first time a RMBTConnectivityTracker is instatiated
-    fileprivate static let sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
+    private static let sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
 
     /// According to http://www.objc.io/issue-5/iOS7-hidden-gems-and-workarounds.html one should
     /// keep a reference to CTTelephonyNetworkInfo live if we want to receive radio changed notifications (?)
-    fileprivate static let sharedNetworkInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
+    private static let sharedNetworkInfo: CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
 
     #endif
 
     ///
-    fileprivate let queue = DispatchQueue(label: "com.specure.nettest.connectivitytracker", attributes: [])
+    private let queue = DispatchQueue(label: "com.specure.nettest.connectivitytracker", attributes: [])
 
     ///
-    fileprivate let delegate: RMBTConnectivityTrackerDelegate
+    private let delegate: RMBTConnectivityTrackerDelegate
 
     ///
-    fileprivate var lastConnectivity: RMBTConnectivity!
+    private var lastConnectivity: RMBTConnectivity!
 
     ///
-    fileprivate var stopOnMixed = false
+    private var stopOnMixed = false
 
     ///
-    fileprivate var started = false
+    private var started = false
 
     ///
-    fileprivate var lastRadioAccessTechnology: String!
+    private var lastRadioAccessTechnology: String!
 
     ///
     struct Static {
@@ -172,7 +172,7 @@ open class RMBTConnectivityTracker: NSObject {
     #if os(iOS)
 
     ///
-    fileprivate func reachabilityDidChangeToStatus(_ status: GCNetworkReachabilityStatus) {
+    private func reachabilityDidChangeToStatus(_ status: GCNetworkReachabilityStatus) {
         let networkType: RMBTNetworkType
 
         if status == GCNetworkReachabilityStatusNotReachable {

@@ -19,15 +19,15 @@ import CocoaAsyncSocket
 
 class QOSControlConnection: NSObject {
 
-    fileprivate let TAG_GREETING = -1
-    fileprivate let TAG_FIRST_ACCEPT = -2
-    fileprivate let TAG_TOKEN = -3
-    //private let TAG_OK = -4
-    fileprivate let TAG_SECOND_ACCEPT = -4
+    internal let TAG_GREETING = -1
+    internal let TAG_FIRST_ACCEPT = -2
+    internal let TAG_TOKEN = -3
+    //internal let TAG_OK = -4
+    internal let TAG_SECOND_ACCEPT = -4
 
-    fileprivate let TAG_SET_TIMEOUT = -10
+    internal let TAG_SET_TIMEOUT = -10
 
-    fileprivate let TAG_TASK_COMMAND = -100
+    internal let TAG_TASK_COMMAND = -100
 
     //
 
@@ -38,23 +38,23 @@ class QOSControlConnection: NSObject {
     var connected = false
 
     ///
-    fileprivate let testToken: String
+    internal let testToken: String
 
     ///
-    fileprivate let connectCountDownLatch = CountDownLatch()
+    internal let connectCountDownLatch = CountDownLatch()
 
     ///
-    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    fileprivate var qosControlConnectionSocket: GCDAsyncSocket!
+    internal var qosControlConnectionSocket: GCDAsyncSocket!
 
     ///
-    fileprivate var taskDelegateDictionary = [UInt: QOSControlConnectionTaskDelegate]()
+    internal var taskDelegateDictionary = [UInt: QOSControlConnectionTaskDelegate]()
 
     ///
-    fileprivate var pendingTimeout: Double = 0
-    fileprivate var currentTimeout: Double = 0
+    internal var pendingTimeout: Double = 0
+    internal var currentTimeout: Double = 0
 
     //
 
@@ -172,19 +172,19 @@ class QOSControlConnection: NSObject {
 // MARK: convenience methods
 
     ///
-    fileprivate func writeLine(_ line: String, withTimeout timeout: TimeInterval, tag: Int) {
+    internal func writeLine(_ line: String, withTimeout timeout: TimeInterval, tag: Int) {
         SocketUtils.writeLine(qosControlConnectionSocket, line: line, withTimeout: timeout, tag: tag)
     }
 
     ///
-    fileprivate func readLine(_ tag: Int, withTimeout timeout: TimeInterval) {
+    internal func readLine(_ tag: Int, withTimeout timeout: TimeInterval) {
         SocketUtils.readLine(qosControlConnectionSocket, tag: tag, withTimeout: timeout)
     }
 
 // MARK: other methods
 
     ///
-    fileprivate func createTaskCommandTag(forTaskId taskId: UInt, tag: Int) -> Int {
+    internal func createTaskCommandTag(forTaskId taskId: UInt, tag: Int) -> Int {
         // bitfield: 0111|aaaa_aaaa_aaaa|bbbb_bbbb_bbbb_bbbb
 
         var bitfield: UInt32 = 0x7
@@ -204,7 +204,7 @@ class QOSControlConnection: NSObject {
     }
 
     ///
-    fileprivate func parseTaskCommandTag(taskCommandTag commandTag: Int) -> (taskId: UInt, tag: Int)? {
+    internal func parseTaskCommandTag(taskCommandTag commandTag: Int) -> (taskId: UInt, tag: Int)? {
         let _commandTag = UInt(commandTag)
 
         if !isTaskCommandTag(taskCommandTag: commandTag) {
@@ -220,7 +220,7 @@ class QOSControlConnection: NSObject {
     }
 
     ///
-    fileprivate func isTaskCommandTag(taskCommandTag commandTag: Int) -> Bool {
+    internal func isTaskCommandTag(taskCommandTag commandTag: Int) -> Bool {
         if commandTag < 0 {
             return false
         }
@@ -229,7 +229,7 @@ class QOSControlConnection: NSObject {
     }
 
     ///
-    fileprivate func matchAndGetTestIdFromResponse(_ response: String) -> UInt? {
+    internal func matchAndGetTestIdFromResponse(_ response: String) -> UInt? {
         do {
             let regex = try NSRegularExpression(pattern: "\\+ID(\\d*)", options: [])
 

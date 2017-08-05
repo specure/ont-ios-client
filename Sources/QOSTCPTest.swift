@@ -19,8 +19,8 @@ import Foundation
 ///
 class QOSTCPTest: QOSTest {
 
-    fileprivate let PARAM_PORT_OUT = "out_port"
-    fileprivate let PARAM_PORT_IN = "in_port"
+    private let PARAM_PORT_OUT = "out_port"
+    private let PARAM_PORT_IN = "in_port"
 
     //
 

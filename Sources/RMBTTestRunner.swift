@@ -53,6 +53,8 @@ public enum RMBTTestRunnerPhase: Int {
     case down
     case initUp
     case up
+    case jitter
+    case packLoss
     case submittingTestResult
 }
 
@@ -97,6 +99,12 @@ public protocol RMBTTestRunnerDelegate {
     func testRunnerDidFinishInit(_ time: UInt64)
 }
 
+protocol RMBTMainTestExtendedDelegate {
+    
+    func runVOIPTest()
+
+}
+
 ///
 open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
 
@@ -117,6 +125,25 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     private var dead = false
+    
+    ///////////////////////////////////
+     var del:RMBTMainTestExtendedDelegate?
+    
+    ////
+    var jpl:[String:Any]? {
+        
+        didSet {
+            resultObject().jpl = jpl
+            submitResult()
+        }
+    
+    }
+    
+    ///
+    internal var jitterFinalValue : UInt64?
+    
+    ///
+    internal var packLossFinalValue : UInt64?
 
     /// Flag indicating that downlink pretest in one of the workers was too slow and we need to
     /// continue with a single thread only
@@ -137,6 +164,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var uplinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
     private var downlinkStartInterfaceInfo: RMBTConnectivityInterfaceInfo?
     private var downlinkEndInterfaceInfo: RMBTConnectivityInterfaceInfo?
+    
 
     ///
     private var finishedWorkers: UInt = 0
@@ -152,6 +180,9 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     ///
     private var downlinkTestStartedAtNanos: UInt64 = 0
     private var uplinkTestStartedAtNanos: UInt64 = 0
+    
+    ///
+    open var isNewVersion = false
 
     ///
     public init(delegate: RMBTTestRunnerDelegate) {
@@ -195,7 +226,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         let controlServer = ControlServer.sharedControlServer
         
-        /////??????
+        /////!!!!!!!!!!!??????
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
             
             controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
@@ -504,10 +535,17 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .up)
                 }
             }
+            
+            /// ONT added
+            if isNewVersion {
+            
+                ///////////
+                del?.runVOIPTest()
+                
+            } else {
+                submitResult()
+            }
 
-            setPhase(.submittingTestResult)
-
-            submitResult()
         }
     }
 
@@ -536,7 +574,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
 
             
-            if RMBTConfig.sharedInstance.RMBT_VERSION_NEW{
+            //if RMBTConfig.sharedInstance.RMBT_VERSION_NEW{
                 controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
                     self.workerQueue.async {
                         self.setPhase(.none)
@@ -559,31 +597,31 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                         self.cancelWithReason(.errorSubmittingTestResult)
                     }
                 })
-            } else {
-                
-                controlServer.submitSpeedMeasurementResult_Old(speedMeasurementResultRequest, success: { response in
-                    self.workerQueue.async {
-                        self.setPhase(.none)
-                        self.dead = true
-                        
-                        RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
-                        
-                        if let uuid = self.testParams.testUuid {
-                            DispatchQueue.main.async {
-                                self.delegate.testRunnerDidCompleteWithResult(uuid)
-                            }
-                        } else {
-                            self.workerQueue.async {
-                                self.cancelWithReason(.errorSubmittingTestResult) // TODO
-                            }
-                        }
-                    }
-                }, error: { error in
-                    self.workerQueue.async {
-                        self.cancelWithReason(.errorSubmittingTestResult)
-                    }
-                })
-            }
+//            } else {
+//                
+//                controlServer.submitSpeedMeasurementResult_Old(speedMeasurementResultRequest, success: { response in
+//                    self.workerQueue.async {
+//                        self.setPhase(.none)
+//                        self.dead = true
+//                        
+//                        RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
+//                        
+//                        if let uuid = self.testParams.testUuid {
+//                            DispatchQueue.main.async {
+//                                self.delegate.testRunnerDidCompleteWithResult(uuid)
+//                            }
+//                        } else {
+//                            self.workerQueue.async {
+//                                self.cancelWithReason(.errorSubmittingTestResult) // TODO
+//                            }
+//                        }
+//                    }
+//                }, error: { error in
+//                    self.workerQueue.async {
+//                        self.cancelWithReason(.errorSubmittingTestResult)
+//                    }
+//                })
+//            }
         }
     }
 
@@ -617,6 +655,17 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             speedMeasurementResult.ipLocal = firstWorker.localIp
             speedMeasurementResult.ipServer = firstWorker.serverIp
         }
+        ////////////// 
+        // Ont
+        /////////////
+        
+        
+        
+        
+        
+        
+        
+        
 
         /////////////////////////// SOMETIMES SOME OF THESE VALUES ARE NOT SENT TO THE SERVER?
 
@@ -687,7 +736,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         //ASSERT_ON_WORKER_QUEUE();
 
-        //self.phase = phase
+
         setPhase(phase)
 
         finishedWorkers = 0
@@ -907,6 +956,16 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     ///
     open func uploadKilobitsPerSecond() -> Int {
         return Int(speedMeasurementResult.totalUploadHistory.totalThroughput.kilobitsPerSecond())
+    }
+    
+    ///
+    open func meanJitterNanos() -> Int {
+        return 30000
+    }
+    
+    ///
+    open func packetLossPercentage() -> Int {
+        return 3
     }
 
     ///

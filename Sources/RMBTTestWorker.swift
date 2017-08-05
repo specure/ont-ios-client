@@ -128,67 +128,67 @@ public protocol RMBTTestWorkerDelegate {
 open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     // Test parameters
-    fileprivate var params: SpeedMeasurementResponse
+    private var params: SpeedMeasurementResponse
 
     /// Weak reference to the delegate
-    fileprivate let delegate: RMBTTestWorkerDelegate
+    private let delegate: RMBTTestWorkerDelegate
 
     /// Current state of the worker
-    fileprivate var state: RMBTTestWorkerState = .initialized
+    private var state: RMBTTestWorkerState = .initialized
 
     ///
-    fileprivate var socket: GCDAsyncSocket!
+    private var socket: GCDAsyncSocket!
 
     /// CHUNKSIZE received from server
-    fileprivate var chunksize: UInt = 0
+    private var chunksize: UInt = 0
 
     /// One chunk of data cached from the downlink phase, to be used as upload data
-    fileprivate var chunkData: Data!
+    private var chunkData: Data!
 
     /// In pretest, we first request or send 1 chunk at once, then 2, 4, 8 etc.
     /// Number of chunks to request/send in this iteration
-    fileprivate var pretestChunksCount: UInt = 0
+    private var pretestChunksCount: UInt = 0
 
     /// Uplink pretest: number of chunks sent so far in this iteration
-    fileprivate var pretestChunksSent: UInt = 0
+    private var pretestChunksSent: UInt = 0
 
     /// Download pretest: length received so far
-    fileprivate var pretestLengthReceived: UInt64 = 0
+    private var pretestLengthReceived: UInt64 = 0
 
     /// Nanoseconds at which we started pretest
-    fileprivate var pretestStartNanos: UInt64 = 0
+    private var pretestStartNanos: UInt64 = 0
 
     /// Nanoseconds at which we sent the PING
-    fileprivate var pingStartNanos: UInt64 = 0
+    private var pingStartNanos: UInt64 = 0
 
     /// Nanoseconds at which we received PONG
-    fileprivate var pingPongNanos: UInt64 = 0
+    private var pingPongNanos: UInt64 = 0
 
     /// Current ping sequence number (0.._params.pingCount-1)
-    fileprivate var pingSeq: UInt = 0
+    private var pingSeq: UInt = 0
 
     /// Nanoseconds at which test started. Used for both up/down tests.
-    fileprivate var testStartNanos: UInt64 = 0
+    private var testStartNanos: UInt64 = 0
 
     /// Download buffer for capturing bytes for _chunkData
-    fileprivate var testDownloadedData: Data!
+    private var testDownloadedData: Data!
 
     /// How many nanoseconds is this thread behind the first thread that started upload test
-    fileprivate var testUploadOffsetNanos: UInt64 = 0
+    private var testUploadOffsetNanos: UInt64 = 0
 
     /// Local timestamps after which we'll start discarding server reports and finalize the upload test
-    fileprivate var testUploadEnoughClientNanos: UInt64 = 0
-    fileprivate var testUploadMaxWaitReachedClientNanos: UInt64 = 0
+    private var testUploadEnoughClientNanos: UInt64 = 0
+    private var testUploadMaxWaitReachedClientNanos: UInt64 = 0
 
     // Server timestamp after which it is considered that we have enough upload
-    fileprivate var testUploadEnoughServerNanos: UInt64 = 0
+    private var testUploadEnoughServerNanos: UInt64 = 0
 
     /// Flag indicating that last uplink packet has been sent. After last chunk has been sent, we'll wait upto X sec to
     /// collect statistics, then terminate the test.
-    fileprivate var testUploadLastChunkSent = false
+    private var testUploadLastChunkSent = false
 
     /// Server reports total number of bytes received. We need to track last amount reported so we can calculate relative amounts.
-    fileprivate var testUploadLastUploadLength: UInt64 = 0
+    private var testUploadLastUploadLength: UInt64 = 0
 
     ///
     open var index: UInt
@@ -284,7 +284,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
 // MARK: ...
 
-    fileprivate func tryDNSLookup(_ serverName: String) -> String? {
+    private func tryDNSLookup(_ serverName: String) -> String? {
         let host = CFHostCreateWithName(nil, serverName as CFString).takeRetainedValue()
         CFHostStartInfoResolution(host, .addresses, nil)
         var success: DarwinBoolean = false
@@ -790,30 +790,30 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: Socket helpers
 
     ///
-    fileprivate func readLineWithTag(_ tag: RMBTTestTag) {
+    private func readLineWithTag(_ tag: RMBTTestTag) {
         if let data = "\n".data(using: String.Encoding.ascii) {
             socket.readData(to: data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
         }
     }
 
     ///
-    fileprivate func writeLine(_ line: String, withTag tag: RMBTTestTag) {
+    private func writeLine(_ line: String, withTag tag: RMBTTestTag) {
         writeData((line + "\n").data(using: String.Encoding.ascii)!, withTag: tag) // !
     }
 
     ///
-    fileprivate func writeData(_ data: Data, withTag tag: RMBTTestTag) {
+    private func writeData(_ data: Data, withTag tag: RMBTTestTag) {
         totalBytesUploaded += UInt64(data.count)
         socket.write(data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
     }
 
     ///
-    fileprivate func logData(_ data: Data) {
+    private func logData(_ data: Data) {
         logger.debug("RX: \(String(describing: String(data: data, encoding: String.Encoding.ascii)))")
     }
 
     ///
-    fileprivate func isLastChunk(_ data: Data) -> Bool {
+    private func isLastChunk(_ data: Data) -> Bool {
         var bytes = [UInt8](repeating: 0, count: (data.count / MemoryLayout<UInt8>.size)) // TODO: better way?
         (data as NSData).getBytes(&bytes, length: bytes.count) // TODO: better way?
         //data.getBytes(&bytes,) // TODO: better way?
@@ -824,7 +824,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    fileprivate func updateLastChunkFlagToValue(_ lastChunk: Bool) {
+    private func updateLastChunkFlagToValue(_ lastChunk: Bool) {
         var lastByte: UInt8 = lastChunk ? 0xff : 0x00
         
         let lastByteData = Data(buffer: UnsafeBufferPointer(start: &lastByte, count: 1)) //Data(bytes: &lastByte, count: 1)

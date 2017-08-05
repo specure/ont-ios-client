@@ -27,6 +27,8 @@ public enum SpeedMeasurementPhase: Int {
     case down
     case initUp
     case up
+    case jitter
+    case packLoss
     case submittingTestResult
 
     ///
@@ -107,16 +109,31 @@ public protocol RMBTClientDelegate {
     func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
 }
 
+public enum RMBTClientType {
+    case original
+    case standard
+    case nkom
+}
+
 /////////////
 
 ///
-open class RMBTClient {
+open class RMBTClient: RMBTMainTestExtendedDelegate {
+    
+    // RMBTMainTestExtendedDelegate
+    func runVOIPTest() {
+        
+        startQosMeasurement(main:true)
+    }
 
     ///
     open var testRunner: RMBTTestRunner?
+    
+    /// init
+    open var clientType:RMBTClientType = .standard
 
     ///
-    private var qualityOfServiceTestRunner: QualityOfServiceTest?
+    internal var qualityOfServiceTestRunner: QualityOfServiceTest?
 
     ///
     open var delegate: RMBTClientDelegate?
@@ -126,9 +143,7 @@ open class RMBTClient {
 
     ///
     open var running: Bool {
-        get {
-            return _running
-        }
+        get { return _running }
     }
 
     ///
@@ -152,6 +167,7 @@ open class RMBTClient {
     ///
     open func startMeasurement() {
         startSpeedMeasurement()
+        testRunner?.del = self
     }
 
     ///
@@ -166,6 +182,10 @@ open class RMBTClient {
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.start()
+        
+        if clientType == .standard {
+            testRunner?.isNewVersion = true
+        }
 
         _running = true
 
@@ -173,12 +193,12 @@ open class RMBTClient {
     }
 
     ///
-    func startQosMeasurement() {
+    func startQosMeasurement(main:Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
 
-            qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos)
+            qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos, isVOIPincluded: main)
 
             qualityOfServiceTestRunner?.delegate = self
 
@@ -280,6 +300,16 @@ extension RMBTClient: RMBTTestRunnerDelegate {
             if let r = testRunner?.uploadKilobitsPerSecond() {
                 result = Int(r)
             }
+        case .jitter:
+            if let r = testRunner?.meanJitterNanos() {
+                result = Int(r)
+            }
+            
+        case .packLoss:
+            if let r = testRunner?.packetLossPercentage() {
+                result = Int(r)
+            }
+            
         default:
             break
         }
@@ -319,7 +349,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         self.resultUuid = uuid
 
         if RMBTSettings.sharedSettings.nerdModeEnabled && RMBTSettings.sharedSettings.nerdModeQosEnabled {
-            startQosMeasurement() // continue with qos measurement
+            startQosMeasurement(main: false) // continue with qos measurement
         } else {
             finishMeasurement()
         }
@@ -343,7 +373,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTestDidStart(_ test: QualityOfServiceTest) {
-        delegate?.qosMeasurementDidStart(self)
+        if clientType == .standard {
+            delegate?.qosMeasurementDidStart(self)
+        }
+        
     }
 
     ///
@@ -355,7 +388,15 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
         // TODO: stop location tracker!
 
-        finishMeasurement()
+        if (self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
+            
+            // delegate to runner to submit VOIP results
+            self.testRunner?.jpl = results[0].resultDictionary
+        
+        } else {
+            finishMeasurement()
+        }
+        
     }
 
     ///

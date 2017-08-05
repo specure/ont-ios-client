@@ -51,6 +51,9 @@ open class QualityOfServiceTest {
 
     ///
     open var delegate: QualityOfServiceTestDelegate?
+    
+    ///
+    var isPartOfMainTest = false
 
     ///
     private let testToken: String
@@ -91,10 +94,11 @@ open class QualityOfServiceTest {
     //
 
     ///
-    public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64) {
+    public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isVOIPincluded: Bool) {
         self.testToken = testToken
         self.measurementUuid = measurementUuid
         self.speedtestStartTime = speedtestStartTime
+        self.isPartOfMainTest = isVOIPincluded
 
         logger.debug("QualityOfServiceTest initialized with test token: \(testToken) at start time \(speedtestStartTime)")
     }
@@ -186,19 +190,45 @@ open class QualityOfServiceTest {
 
                     // try to create qos test object from params
                     if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams) {
-
-                        logger.debug("created qos test: \(qosTest)")
-
-                        var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                        if concurrencyGroupArray == nil {
-                            concurrencyGroupArray = [QOSTest]()
+                        ///////////// ONT
+                        if isPartOfMainTest {
+                            
+                            if let type = QosMeasurementType(rawValue: objectiveType) {
+                                
+                                if type == .VOIP {
+                                
+                                    logger.debug("created VOIP test as the main test: \(qosTest)")
+                                    
+                                    var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+                                    if concurrencyGroupArray == nil {
+                                        concurrencyGroupArray = [QOSTest]()
+                                    }
+                                    
+                                    concurrencyGroupArray!.append(qosTest)
+                                    qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+                                    
+                                    // increase test count
+                                    testCount += 1
+                                }
+                            }
+                        
+                        } else {
+                        
+                            logger.debug("created qos test: \(qosTest)")
+                            
+                            var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+                            if concurrencyGroupArray == nil {
+                                concurrencyGroupArray = [QOSTest]()
+                            }
+                            
+                            concurrencyGroupArray!.append(qosTest)
+                            qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+                            
+                            // increase test count
+                            testCount += 1
                         }
 
-                        concurrencyGroupArray!.append(qosTest)
-                        qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-
-                        // increase test count
-                        testCount += 1
+                        
 
                     } else {
                         logger.debug("unimplemented/unknown qos type: \(objectiveType)")
@@ -564,8 +594,8 @@ open class QualityOfServiceTest {
             }
         }
 
-        // don't send results if all results are empty (e.g. only tcp tests and no control connection)
-        if _testResultArray.isEmpty {
+        // don't send results if all results are empty (e.g. only tcp tests and no control connection) or added additional test as part of the main test group
+        if _testResultArray.isEmpty || self.isPartOfMainTest {
             // inform delegate
             success()
 

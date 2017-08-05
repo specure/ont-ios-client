@@ -34,6 +34,8 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 ///
 class SpeedMeasurementResult: BasicRequest {
 
+    ///
+    var jpl:[String:Any]?
 
     ///
     var clientUuid: String?
@@ -563,6 +565,8 @@ class SpeedMeasurementResult: BasicRequest {
             #endif
         
         } else {
+            
+            jpl                        <- map["jpl"]
         
             clientUuid              <- map["client_uuid"]
             extendedTestStat        <- map["extended_test_stat"]
