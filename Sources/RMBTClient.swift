@@ -69,7 +69,10 @@ public enum RMBTClientCancelReason: Int {
 public protocol RMBTClientDelegate {
 
     ///
-    //func measurementDidStart(client: RMBTClient)
+    func measurementDidStart(client: RMBTClient)
+    
+    ///
+    func measurementDidCompleteVoip(_ client: RMBTClient, withResult: [String:Any])
 
     ///
     func measurementDidComplete(_ client: RMBTClient, withResult result: String)
@@ -373,7 +376,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTestDidStart(_ test: QualityOfServiceTest) {
-        if clientType == .standard {
+        if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             delegate?.qosMeasurementDidStart(self)
         }
         
@@ -392,6 +395,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
             
             // delegate to runner to submit VOIP results
             self.testRunner?.jpl = results[0].resultDictionary
+            delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
         
         } else {
             finishMeasurement()
@@ -409,18 +413,25 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
-        delegate?.qosMeasurementList(self, list: testTypes)
+        if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
+            delegate?.qosMeasurementList(self, list: testTypes)
+        }
+        
     }
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
-        self.delegate?.qosMeasurementFinished(self, type: testType)
+        if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
+            self.delegate?.qosMeasurementFinished(self, type: testType)
+                }
     }
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
+        if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
         delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+        }
     }
 
 }

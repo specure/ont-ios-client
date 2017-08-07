@@ -40,13 +40,13 @@ class ControlServer {
     static let sharedControlServer = ControlServer()
 
     ///
-    fileprivate let alamofireManager: Alamofire.SessionManager
+    private let alamofireManager: Alamofire.SessionManager
 
     ///
-    fileprivate let settings = RMBTSettings.sharedSettings
+    private let settings = RMBTSettings.sharedSettings
 
     ///
-    fileprivate var uuidQueue = DispatchQueue(label: "com.specure.nettest.uuid_queue", attributes: [])
+    private var uuidQueue = DispatchQueue(label: "com.specure.nettest.uuid_queue", attributes: [])
 
     ///
     var version: String?
@@ -58,13 +58,13 @@ class ControlServer {
     var historyFilters:[String: [String]]?
 
     ///
-    fileprivate var uuidKey: String? // TODO: unique for each control server?
+    private var uuidKey: String? // TODO: unique for each control server?
 
     ///
     var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
-    fileprivate var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
+    private var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
 
     // TODO: HTTP/2, NGINX, IOS PROBLEM! http://stackoverflow.com/questions/36907767/nsurlerrordomain-code-1004-for-few-seconds-after-app-start-up
 
@@ -74,7 +74,7 @@ class ControlServer {
     var mapServerBaseUrl: String?
 
     ///
-    fileprivate init() {
+    private init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
     }
 
@@ -517,7 +517,7 @@ class ControlServer {
 // MARK: Private
 
     ///
-    fileprivate func ensureClientUuid(success successCallback: @escaping (_ uuid: String) -> (), error errorCallback: @escaping ErrorCallback) {
+    private func ensureClientUuid(success successCallback: @escaping (_ uuid: String) -> (), error errorCallback: @escaping ErrorCallback) {
         uuidQueue.async {
             if let uuid = self.uuid {
                 successCallback(uuid)
@@ -541,12 +541,12 @@ class ControlServer {
     }
 
     ///
-    fileprivate func requestArray<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
+    private func requestArray<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.requestArray(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 
     ///
-    fileprivate func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+    private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 

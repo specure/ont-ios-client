@@ -36,7 +36,7 @@ import CoreLocation
     }
     
     ///
-    init(withResultItem item: SpeedMeasurementResultResponse.ResultItem) {
+    public init(withResultItem item: SpeedMeasurementResultResponse.ResultItem) {
         self.title = item.title
         self.value = item.value
     }
@@ -87,6 +87,17 @@ open class RMBTHistoryResult {
     
     ///
     open var uploadSpeedMbpsString: String!
+    
+    ////
+    ///
+    open var jitterMsString: String!
+    
+    ///
+    open var packetLossPercentageString: String!
+    
+    open var jpl = [String:Any]()
+    
+    
     
     ///
     open var shortestPingMillisString: String!
@@ -153,6 +164,14 @@ open class RMBTHistoryResult {
         }
         
         coordinate = kCLLocationCoordinate2DInvalid
+        
+        if let theJpl = response["jpl"] as? [String:Any] {
+        
+            jitterMsString = theJpl["voip_result_jitter"] as! String
+            packetLossPercentageString = theJpl["voip_result_packet_loss"] as! String
+            
+            jpl = theJpl
+        }
         
         //
         
