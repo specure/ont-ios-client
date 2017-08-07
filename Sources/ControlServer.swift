@@ -292,14 +292,13 @@ class ControlServer {
     }
     
     ///
-    func requestSpeedMeasurement_Old(_ speedMeasurementRequest: SpeedMeasurementRequest_Old?, success: @escaping (_ response: SpeedMeasurementResponse_Old) -> (), error failure: @escaping ErrorCallback) {
+    func requestSpeedMeasurement_Old(_ speedMeasurementRequest: SpeedMeasurementRequest_Old, success: @escaping (_ response: SpeedMeasurementResponse_Old) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-            let req = SpeedMeasurementRequest_Old()
-            req.uuid = uuid
-            req.ndt = false
-            req.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
+            speedMeasurementRequest.uuid = uuid
+            speedMeasurementRequest.ndt = false
+            speedMeasurementRequest.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
             
-            self.request(.post, path: "/", requestObject: req, success: success, error: failure)
+            self.request(.post, path: "/", requestObject: speedMeasurementRequest, success: success, error: failure)
         }, error: failure)
     }
 

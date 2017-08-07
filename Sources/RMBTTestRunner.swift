@@ -240,8 +240,19 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             }
         } else {
         
+            let speedMeasurementRequestOld = SpeedMeasurementRequest_Old()
+            
+            speedMeasurementRequestOld.testCounter = RMBTSettings.sharedSettings.testCounter
+            
+            if let l = RMBTLocationTracker.sharedTracker.location {
+                let geoLocation = GeoLocation(location: l)
+                
+                speedMeasurementRequestOld.geoLocation = geoLocation
+            }
+            
+            
             // workaround - nasty :(
-            controlServer.requestSpeedMeasurement_Old(nil, success: { response in
+            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { response in
                 self.workerQueue.async {
                     
                     let r = SpeedMeasurementResponse()

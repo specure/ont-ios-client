@@ -45,6 +45,9 @@ class SpeedMeasurementResult: BasicRequest {
 
     ///
     var geoLocations = [GeoLocation]()
+    
+    /// stupid must be for ONT
+    var geoLocationsDump = [String: [GeoLocation]]()
 
     ///
     var networkType: Int?
@@ -429,6 +432,7 @@ class SpeedMeasurementResult: BasicRequest {
         let geoLocation = GeoLocation(location: location)
         //geoLocation.relativeTimeNs =
         geoLocations.append(geoLocation)
+        geoLocationsDump = ["geoLocations":geoLocations]
     }
 
     ///
@@ -566,11 +570,18 @@ class SpeedMeasurementResult: BasicRequest {
         
         } else {
             
+        
             jpl                        <- map["jpl"]
         
             clientUuid              <- map["client_uuid"]
             extendedTestStat        <- map["extended_test_stat"]
-            geoLocations            <- map["geo_locations"]
+            //
+            geoLocations            <- map["geoLocations"]
+            //
+            
+            //geoLocationsDump <- map["geoLocations"]
+
+            
             networkType             <- map["network_type"]
             pings                   <- map["pings"]
             

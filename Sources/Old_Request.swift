@@ -125,9 +125,9 @@ class SpeedMeasurementRequest_Old: BasicRequest {
         ndt         <- map["ndt"]
         anonymous   <- map["anonymous"]
         version     <- map["version"]
-        testCounter <- map["test_counter"]
+        testCounter <- map["testCounter"]
         
-        geoLocation <- map["geo_location"]
+        geoLocation <- map["location"]
         
         time <- map["time"]
         name <- map["name"]

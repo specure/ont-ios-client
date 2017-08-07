@@ -47,7 +47,9 @@ class SpeedMeasurementRequest: BasicRequest {
         time        <- (map["time"], UInt64NSNumberTransformOf)
         version     <- map["version"]
         testCounter <- map["test_counter"]
-
-        geoLocation <- map["geo_location"]
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {geoLocation <- map["geo_location"]} else {
+            geoLocation <- map["location"]
+        }
+        
     }
 }

@@ -46,7 +46,7 @@ class GeoLocation: Mappable {
     var relativeTimeNs: Int?
 
     ///
-    var time: Date?
+    var time: NSNumber? //Date?
 
     ///
     init() {
@@ -69,7 +69,8 @@ class GeoLocation: Mappable {
         #endif
 
         relativeTimeNs  = 0 // TODO?
-        time            = location.timestamp
+//        time            = location.timestamp
+        time = RMBTTimestampWithNSDate(location.timestamp as Date)
     }
 
     ///
@@ -79,15 +80,39 @@ class GeoLocation: Mappable {
 
     ///
     func mapping(map: Map) {
-        latitude        <- map["latitude"]
-        longitude       <- map["longitude"]
-        accuracy        <- map["accuracy"]
-        altitude        <- map["altitude"]
-        heading         <- map["heading"]
-        speed           <- map["speed"]
-        provider        <- map["provider"]
-        time            <- map["time"]
-        relativeTimeNs  <- map["relative_time_ns"]
+        
+        if !RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            latitude        <- map["geo_lat"]
+            longitude       <- map["geo_long"]
+            accuracy        <- map["accuracy"]
+            altitude        <- map["altitude"]
+            heading         <- map["heading"]
+            speed           <- map["speed"]
+            provider        <- map["provider"]
+            time            <- map["tstamp"]
+            relativeTimeNs  <- map["time_ns"]
+            
+//            latitude        <- map["lat"]
+//            longitude       <- map["long"]
+//            accuracy        <- map["accuracy"]
+//            altitude        <- map["altitude"]
+//            heading         <- map["heading"]
+//            speed           <- map["speed"]
+//            provider        <- map["provider"]
+//            time            <- map["time"]
+//            relativeTimeNs  <- map["time_ns"]
+            
+        } else {
+            latitude        <- map["latitude"]
+            longitude       <- map["longitude"]
+            accuracy        <- map["accuracy"]
+            altitude        <- map["altitude"]
+            heading         <- map["heading"]
+            speed           <- map["speed"]
+            provider        <- map["provider"]
+            time            <- map["time"]
+            relativeTimeNs  <- map["relative_time_ns"]
+        }
     }
 
 }
