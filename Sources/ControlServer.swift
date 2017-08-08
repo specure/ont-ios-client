@@ -85,7 +85,9 @@ class ControlServer {
     
     ///
     func updateWithCurrentSettings() {
+        
         print(UserDefaults.standard.dictionaryRepresentation().keys)
+        
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "uuid_\(URL(string: baseUrl)!.host!)"
         
@@ -121,8 +123,7 @@ class ControlServer {
             }
             
             logger.info("Control Server base url = \(self.baseUrl)")
-            
-            // TODO: determine map server url!
+
             self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
         }) { (error) in

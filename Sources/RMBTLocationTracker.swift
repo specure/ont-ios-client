@@ -43,7 +43,7 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     }
 
     ///
-    override fileprivate init() {
+    override private init() {
         locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = 3.0

@@ -56,7 +56,7 @@ open class RMBTSettings: NSObject {
     open dynamic var nerdModeForceIPv6 = false
 
     ///
-    open dynamic var nerdModeQosEnabled = false // nkom: qos disabled by default
+    open dynamic var nerdModeQosEnabled = false // Enable QoS
 
 // MARK: Debug properties
 
@@ -108,7 +108,7 @@ open class RMBTSettings: NSObject {
     open dynamic var debugLoggingEnabled = false
 
     ///
-    fileprivate override init() {
+    private override init() {
         mapOptionsSelection = RMBTMapOptionsSelection()
 
         super.init()
