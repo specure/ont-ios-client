@@ -27,18 +27,18 @@ open class MapServer {
     open static let sharedMapServer = MapServer()
 
     ///
-    fileprivate let alamofireManager: Alamofire.SessionManager
+    private let alamofireManager: Alamofire.SessionManager
 
     ///
-    fileprivate let settings = RMBTSettings.sharedSettings
+    private let settings = RMBTSettings.sharedSettings
 
     ///
-    fileprivate var baseUrl: String? {
+    private var baseUrl: String? {
         return ControlServer.sharedControlServer.mapServerBaseUrl // don't store in variable, could be changed in settings
     }
 
     ///
-    fileprivate init() {
+    private init() {
         alamofireManager = ServerHelper.configureAlamofireManager()
     }
 

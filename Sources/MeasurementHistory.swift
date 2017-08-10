@@ -19,8 +19,6 @@ import RealmSwift
 import ObjectMapper
 
 ///
-/// data type alias for filters
-typealias HistoryFilters = [String: [String]]
 
 ///
 open class MeasurementHistory {
@@ -29,13 +27,13 @@ open class MeasurementHistory {
     open static let sharedMeasurementHistory = MeasurementHistory()
 
     ///
-    fileprivate let serialQueue = DispatchQueue(label: "DefaultHistoryQueue", attributes: [])
+    private let serialQueue = DispatchQueue(label: "DefaultHistoryQueue", attributes: [])
 
     /// Set dirty to true if the history should be reloaded
     var dirty = true // dirty is true on app start // TODO: set this also after sync
     
     ///
-    fileprivate init() {
+    private init() {
         // TODO: remove realm test code
         // TODO: add migrations? at least look at how they work
         //_ = try? NSFileManager.defaultManager().removeItemAtURL(Realm.Configuration.defaultConfiguration.fileURL!) // delete db before during development

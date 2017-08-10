@@ -24,8 +24,8 @@ open class RMBTThroughput: CustomStringConvertible {
     var length: UInt64
 
     ///
-    fileprivate var _startNanos: UInt64 // nasty hack to get around endless loop with didSet
-    var startNanos: UInt64 {
+    private var _startNanos: UInt64 // nasty hack to get around endless loop with didSet
+    open var startNanos: UInt64 {
         get {
             return _startNanos
         }
@@ -38,8 +38,8 @@ open class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    fileprivate var _endNanos: UInt64 // nasty hack to get around endless loop with didSet
-    var endNanos: UInt64 {
+    private var _endNanos: UInt64 // nasty hack to get around endless loop with didSet
+    open var endNanos: UInt64 {
         get {
             return _endNanos
         }
@@ -52,8 +52,8 @@ open class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    fileprivate var _durationNanos: UInt64 // nasty hack to get around endless loop with didSet
-    var durationNanos: UInt64 {
+    private var _durationNanos: UInt64 // nasty hack to get around endless loop with didSet
+    open var durationNanos: UInt64 {
         get {
             return _durationNanos
         }

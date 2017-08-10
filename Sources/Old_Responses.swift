@@ -10,6 +10,56 @@ import Foundation
 import ObjectMapper
 //
 
+open class MeasurementServerInfoResponse: BasicResponse {
+    
+    ///
+    open var servers: [Servers]?
+    
+    
+    ///
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        servers <- map["servers"]
+    }
+    
+    ///
+    open class Servers: Mappable {
+        
+        ///
+        open var address: String?
+        
+        ///
+        open var port: String?
+        
+        ///
+        open var name: String?
+        
+        ///
+        open var id: NSNumber?
+
+        
+        ///
+        init() {
+            
+        }
+        
+        ///
+        required public init?(map: Map) {
+            
+        }
+        
+        ///
+        public func mapping(map: Map) {
+            address     <- map["address"]
+            port     <- map["port"]
+            name     <- map["name"]
+            id     <- map["id"]
+        }
+    }
+}
+
+///
 open class HistoryWithFiltersResponse: BasicResponse {
 
     ///
@@ -239,13 +289,14 @@ open class SettingsReponse_Old: BasicResponse {
         var qosMeasurementTypes:[QOSTestTypes]?
         
         ///
-        var map_server: String?
+        var map_server: MapServerSettings?
         
         ///
         var uuid: String?
         
         ///
         var history: [String: [String]]?
+        
         
         ///
         init() {

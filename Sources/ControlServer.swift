@@ -19,7 +19,14 @@ import Alamofire
 import AlamofireObjectMapper
 import ObjectMapper
 
+// ONT 
+public func getMeasurementServerInfo(success: @escaping (_ response: MeasurementServerInfoResponse) -> (), error failure: @escaping ErrorCallback) {
+    
+    ControlServer.sharedControlServer.getMeasurementServerDetails(success: success, error: failure)
+}
 
+/// data type alias for filters
+public typealias HistoryFilters = [String: [String]]
 
 ///
 public typealias EmptyCallback = () -> ()
@@ -135,6 +142,14 @@ class ControlServer {
         //
 
     }
+    
+    //
+    func getMeasurementServerDetails(success: @escaping (_ response: MeasurementServerInfoResponse) -> (), error failure: @escaping ErrorCallback) {
+        
+        let req = MeasurementServerInfoRequest()
+        
+        self.request(.post, path: "/measurementServer", requestObject: req, success: success, error: failure)
+    }
 
 // MARK: Settings
 
@@ -215,12 +230,26 @@ class ControlServer {
                 }
             })
             
-            // TODO: set history filters
-            
             self.historyFilters = response.settings?[0].history
             
             // TODO: set ip request urls, set openTestBaseUrl
-            // TODO: set map server url
+            
+            
+            // check for map server from settings
+            if let mapServer = response.settings?[0].map_server as? MapServerSettings {
+                let host = mapServer.host
+                let scheme = mapServer.useTls ? "https" : "http"
+                //
+                var port = (mapServer.port as! NSNumber).stringValue
+                if (port == "80" || port == "443") {
+                    port = ""
+                } else {
+                    port = ":\(port)"
+                }
+                
+                self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
+                logger.debug("setting map server url to \(self.mapServerBaseUrl) from settings request")
+            }
             
             successCallback()
         }

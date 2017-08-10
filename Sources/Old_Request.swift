@@ -8,10 +8,27 @@
 
 import Foundation
 import ObjectMapper
+
+
+
 import CoreLocation
+
 
 ///
 
+open class MeasurementServerInfoRequest: BasicRequest {
+    
+    var client:String = "RMBT"
+    
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        
+        client <- map["client"]
+    }
+}
+
+///
 open class HistoryWithQOS: BasicRequest {
 
     var testUUID:String?

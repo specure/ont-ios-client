@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 
 ///
-class SettingsReponse: BasicResponse {
+open class SettingsReponse: BasicResponse {
 
     ///
     var settings: Settings?
@@ -30,7 +30,7 @@ class SettingsReponse: BasicResponse {
     var qosMeasurementTypes: [QosMeasurementResultResponse.MeasurementQosResultDetailTestDescription]? // TODO: shorten class names
 
     ///
-    override func mapping(map: Map) {
+    override open func mapping(map: Map) {
         super.mapping(map: map)
 
         settings <- map["settings"]
@@ -213,35 +213,7 @@ class SettingsReponse: BasicResponse {
             }
         }
 
-        ///
-        class MapServerSettings: Mappable {
 
-            ///
-            var host: String?
-
-            ///
-            var port: Int?
-
-            ///
-            var useTls = true
-
-            ///
-            init() {
-
-            }
-
-            ///
-            required init?(map: Map) {
-
-            }
-
-            ///
-            func mapping(map: Map) {
-                host    <- map["host"]
-                port    <- map["port"]
-                useTls  <- map["useSsl"]
-            }
-        }
         
         class VersionSettings: Mappable {
             
@@ -263,6 +235,36 @@ class SettingsReponse: BasicResponse {
                 controlServerVersion <- map["controlServerVersion"]
             }
         }
+    }
+}
+
+///
+open class MapServerSettings: Mappable {
+    
+    ///
+    var host: String?
+    
+    ///
+    var port: Int?
+    
+    ///
+    var useTls = true
+    
+    ///
+    public init() {
+        
+    }
+    
+    ///
+    required public init?(map: Map) {
+        
+    }
+    
+    ///
+    public func mapping(map: Map) {
+        host    <- map["host"]
+        port    <- map["port"]
+        useTls  <- map["useSsl"]
     }
 }
 
