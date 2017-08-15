@@ -126,7 +126,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     // RMBTMainTestExtendedDelegate
     func runVOIPTest() {
         
-        startQosMeasurement(main:true)
+        startQosMeasurement(inMain:true)
     }
 
     ///
@@ -196,12 +196,12 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     }
 
     ///
-    func startQosMeasurement(main:Bool) {
+    func startQosMeasurement(inMain:Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
 
-            qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos, isVOIPincluded: main)
+            qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos, isPartOfMainTest: inMain)
 
             qualityOfServiceTestRunner?.delegate = self
 
@@ -352,7 +352,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         self.resultUuid = uuid
 
         if RMBTSettings.sharedSettings.nerdModeEnabled && RMBTSettings.sharedSettings.nerdModeQosEnabled {
-            startQosMeasurement(main: false) // continue with qos measurement
+            startQosMeasurement(inMain: false) // continue with qos measurement
         } else {
             finishMeasurement()
         }
@@ -393,9 +393,25 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
         if (self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             
-            // delegate to runner to submit VOIP results
-            self.testRunner?.jpl = results[0].resultDictionary
-            delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
+            if 0 < results.count {
+            
+                let result = results[0].resultDictionary
+                
+                if let r = result["voip_result_status"] as? String, r == "TIMEOUT" {
+                    
+                    delegate?.measurementDidFail(self, withReason: .unknownError)
+                    ///
+                    return
+                }
+                
+                // delegate to runner to submit VOIP results
+                self.testRunner?.jpl = result
+                delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
+            } else {
+                delegate?.measurementDidFail(self, withReason: .unknownError)
+            }
+            
+
         
         } else {
             finishMeasurement()
@@ -414,7 +430,14 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
-            delegate?.qosMeasurementList(self, list: testTypes)
+            
+            if testTypes.count > 0 {
+                delegate?.qosMeasurementList(self, list: testTypes)
+            } else {
+            
+                //
+                delegate?.measurementDidFail(self, withReason: .errorFetchingQosMeasurementParams)
+            }
         }
         
     }
@@ -424,13 +447,13 @@ extension RMBTClient: QualityOfServiceTestDelegate {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             self.delegate?.qosMeasurementFinished(self, type: testType)
-                }
+        }
     }
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
-        delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+            delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
         }
     }
 

@@ -583,56 +583,28 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
             let controlServer = ControlServer.sharedControlServer
 
-
-            
-            //if RMBTConfig.sharedInstance.RMBT_VERSION_NEW{
-                controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
-                    self.workerQueue.async {
-                        self.setPhase(.none)
-                        self.dead = true
-                        
-                        RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
-                        
-                        if let uuid = self.testParams.testUuid {
-                            DispatchQueue.main.async {
-                                self.delegate.testRunnerDidCompleteWithResult(uuid)
-                            }
-                        } else {
-                            self.workerQueue.async {
-                                self.cancelWithReason(.errorSubmittingTestResult) // TODO
-                            }
+            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
+                self.workerQueue.async {
+                    self.setPhase(.none)
+                    self.dead = true
+                    
+                    RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
+                    
+                    if let uuid = self.testParams.testUuid {
+                        DispatchQueue.main.async {
+                            self.delegate.testRunnerDidCompleteWithResult(uuid)
+                        }
+                    } else {
+                        self.workerQueue.async {
+                            self.cancelWithReason(.errorSubmittingTestResult) // TODO
                         }
                     }
-                }, error: { error in
-                    self.workerQueue.async {
-                        self.cancelWithReason(.errorSubmittingTestResult)
-                    }
-                })
-//            } else {
-//                
-//                controlServer.submitSpeedMeasurementResult_Old(speedMeasurementResultRequest, success: { response in
-//                    self.workerQueue.async {
-//                        self.setPhase(.none)
-//                        self.dead = true
-//                        
-//                        RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
-//                        
-//                        if let uuid = self.testParams.testUuid {
-//                            DispatchQueue.main.async {
-//                                self.delegate.testRunnerDidCompleteWithResult(uuid)
-//                            }
-//                        } else {
-//                            self.workerQueue.async {
-//                                self.cancelWithReason(.errorSubmittingTestResult) // TODO
-//                            }
-//                        }
-//                    }
-//                }, error: { error in
-//                    self.workerQueue.async {
-//                        self.cancelWithReason(.errorSubmittingTestResult)
-//                    }
-//                })
-//            }
+                }
+            }, error: { error in
+                self.workerQueue.async {
+                    self.cancelWithReason(.errorSubmittingTestResult)
+                }
+            })
         }
     }
 

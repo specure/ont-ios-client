@@ -94,11 +94,11 @@ open class QualityOfServiceTest {
     //
 
     ///
-    public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isVOIPincluded: Bool) {
+    public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isPartOfMainTest: Bool) {
         self.testToken = testToken
         self.measurementUuid = measurementUuid
         self.speedtestStartTime = speedtestStartTime
-        self.isPartOfMainTest = isVOIPincluded
+        self.isPartOfMainTest = isPartOfMainTest
 
         logger.debug("QualityOfServiceTest initialized with test token: \(testToken) at start time \(speedtestStartTime)")
     }

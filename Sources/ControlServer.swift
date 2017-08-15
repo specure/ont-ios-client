@@ -19,14 +19,35 @@ import Alamofire
 import AlamofireObjectMapper
 import ObjectMapper
 
+//
+public func getHistoryFilter(success: @escaping (_ filter: HistoryFilterType) -> (),
+                             error failure: @escaping ErrorCallback) {
+    
+    
+    
+    ControlServer.sharedControlServer.getSettings(success: {_ in
+    
+
+        return
+        
+    }, error: failure )
+}
+
+//
+//
+public func getHistoryFilter()-> HistoryFilterType? {
+    return ControlServer.sharedControlServer.historyFilter
+}
+
 // ONT 
-public func getMeasurementServerInfo(success: @escaping (_ response: MeasurementServerInfoResponse) -> (), error failure: @escaping ErrorCallback) {
+public func getMeasurementServerInfo(success: @escaping (_ response: MeasurementServerInfoResponse) -> (),
+                                     error failure: @escaping ErrorCallback) {
     
     ControlServer.sharedControlServer.getMeasurementServerDetails(success: success, error: failure)
 }
 
 /// data type alias for filters
-public typealias HistoryFilters = [String: [String]]
+public typealias HistoryFilterType = [String: [String]]
 
 ///
 public typealias EmptyCallback = () -> ()
@@ -62,7 +83,7 @@ class ControlServer {
     var uuid: String?
     
     ///
-    var historyFilters:[String: [String]]?
+    var historyFilter:HistoryFilterType?
 
     ///
     private var uuidKey: String? // TODO: unique for each control server?
@@ -230,7 +251,7 @@ class ControlServer {
                 }
             })
             
-            self.historyFilters = response.settings?[0].history
+            self.historyFilter = response.settings?[0].history
             
             // TODO: set ip request urls, set openTestBaseUrl
             

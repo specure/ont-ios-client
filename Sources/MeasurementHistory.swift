@@ -409,7 +409,7 @@ open class MeasurementHistory {
     }
     
     ///
-    fileprivate func getHistoryItems(_ filters: HistoryFilters) -> [HistoryItem]? {
+    fileprivate func getHistoryItems(_ filters: HistoryFilterType) -> [HistoryItem]? {
         if let realm = try? Realm() {
             var query = realm.objects(StoredHistoryItem.self)
             
