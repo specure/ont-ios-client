@@ -23,9 +23,7 @@ import ObjectMapper
 public func getHistoryFilter(success: @escaping (_ filter: HistoryFilterType) -> (),
                              error failure: @escaping ErrorCallback) {
     
-    
-    
-    ControlServer.sharedControlServer.getSettings(success: {_ in
+    ControlServer.sharedControlServer.getSettings(success: { _ in
     
 
         return
@@ -410,6 +408,7 @@ class ControlServer {
             let qosMeasurementRequest = QosMeasurementRequest()
 
             qosMeasurementRequest.clientUuid = uuid
+            qosMeasurementRequest.uuid = uuid
             qosMeasurementRequest.measurementUuid = measurementUuid
 
             self.request(.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ?

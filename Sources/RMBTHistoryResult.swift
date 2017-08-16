@@ -95,9 +95,8 @@ open class RMBTHistoryResult {
     ///
     open var packetLossPercentageString: String!
     
-    open var jpl = [String:Any]()
-    
-    
+    ///
+    open var jpl = VoipTest()
     
     ///
     open var shortestPingMillisString: String!
@@ -143,32 +142,32 @@ open class RMBTHistoryResult {
     //
     
     ///
-    public init(response: [String: AnyObject]) { // this methods takes only ["test_uuid": ...] after a new test...
-        downloadSpeedMbpsString = response["speed_download"] as? String
-        uploadSpeedMbpsString = response["speed_upload"] as? String
-        shortestPingMillisString = response["ping_shortest"] as? String
+    public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
+        downloadSpeedMbpsString = response.speedDownload as? String
+        uploadSpeedMbpsString = response.speedUpload as? String
+        shortestPingMillisString = response.pingShortest as? String
         
         // Note: here network_type is a string with full description (i.e. "WLAN") and in the basic details response it's a numeric code
-        networkTypeServerDescription = response["network_type"] as? String
-        uuid = response["test_uuid"] as? String
+        networkTypeServerDescription = response.networkType as? String
+        uuid = response.testUuid  as? String
         
-        if let model = response["model"] as? String {
+        if let model = response.model as? String {
             self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(model)
         }/* else {
          self.deviceModel = "Unknown" // TODO: translate?
          } */
         
-        if let time = response["time"] as? NSNumber {
+        if let time = response.time as? NSNumber {
             let t: TimeInterval = time.doubleValue / 1000.0
             self.timestamp = Date(timeIntervalSince1970: t)
         }
         
         coordinate = kCLLocationCoordinate2DInvalid
         
-        if let theJpl = response["jpl"] as? [String:Any] {
+        if let theJpl = response.jpl as? VoipTest {
         
-            jitterMsString = theJpl["voip_result_jitter"] as! String
-            packetLossPercentageString = theJpl["voip_result_packet_loss"] as! String
+            jitterMsString = theJpl.voip_result_jitter
+            packetLossPercentageString = theJpl.voip_result_packet_loss
             
             jpl = theJpl
         }

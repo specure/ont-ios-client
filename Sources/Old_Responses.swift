@@ -63,7 +63,7 @@ open class MeasurementServerInfoResponse: BasicResponse {
 open class HistoryWithFiltersResponse: BasicResponse {
 
     ///
-    open var records: [[String:Any?]] = []
+    open var records: [HistoryItem] = []
 
     
     ///

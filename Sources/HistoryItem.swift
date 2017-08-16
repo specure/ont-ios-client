@@ -19,6 +19,9 @@ import ObjectMapper
 
 ///
 open class HistoryItem: BasicResponse {
+    
+    /// ONT
+    open var jpl:VoipTest?
 
     ///
     open var testUuid: String?
@@ -68,6 +71,9 @@ open class HistoryItem: BasicResponse {
     ///
     override open func mapping(map: Map) {
         super.mapping(map: map)
+        //
+        jpl           <- map["jpl"]
+        //
 
         testUuid           <- map["test_uuid"]
         time               <- (map["time"], UInt64NSNumberTransformOf)
