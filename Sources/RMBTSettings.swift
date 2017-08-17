@@ -170,7 +170,7 @@ open class RMBTSettings: NSObject {
     }
 
     ///
-    fileprivate func bindKeyPaths(_ keyPaths: [String]) {
+    private func bindKeyPaths(_ keyPaths: [String]) {
         for keyPath in keyPaths {
             if let value = UserDefaults.getDataFor(key: keyPath) {
                 setValue(value, forKey: keyPath)

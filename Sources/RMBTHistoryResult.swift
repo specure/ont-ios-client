@@ -96,7 +96,7 @@ open class RMBTHistoryResult {
     open var packetLossPercentageString: String!
     
     ///
-    open var jpl = VoipTest()
+    open var jpl:VoipTest?
     
     ///
     open var shortestPingMillisString: String!
@@ -143,15 +143,16 @@ open class RMBTHistoryResult {
     
     ///
     public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
-        downloadSpeedMbpsString = response.speedDownload as? String
-        uploadSpeedMbpsString = response.speedUpload as? String
-        shortestPingMillisString = response.pingShortest as? String
+        
+        downloadSpeedMbpsString = response.speedDownload
+        uploadSpeedMbpsString = response.speedUpload
+        shortestPingMillisString = response.pingShortest
         
         // Note: here network_type is a string with full description (i.e. "WLAN") and in the basic details response it's a numeric code
-        networkTypeServerDescription = response.networkType as? String
-        uuid = response.testUuid  as? String
+        networkTypeServerDescription = response.networkType
+        uuid = response.testUuid
         
-        if let model = response.model as? String {
+        if let model = response.model {
             self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(model)
         }/* else {
          self.deviceModel = "Unknown" // TODO: translate?
@@ -164,7 +165,7 @@ open class RMBTHistoryResult {
         
         coordinate = kCLLocationCoordinate2DInvalid
         
-        if let theJpl = response.jpl as? VoipTest {
+        if let theJpl = response.jpl {
         
             jitterMsString = theJpl.voip_result_jitter
             packetLossPercentageString = theJpl.voip_result_packet_loss
@@ -227,6 +228,7 @@ open class RMBTHistoryResult {
                     
                 }
                 
+                // Add items 
                 for r in (response.measurements?[0].networkDetailList)! {
                     
                     let i=SpeedMeasurementResultResponse.ResultItem()
@@ -246,6 +248,51 @@ open class RMBTHistoryResult {
                     //self.measurementItems.append(RMBTHistoryResultItem(response: r))
                     self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
                 }
+                
+                if let theJpl = response.measurements?[0].jpl {
+                
+                    //
+                    let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    itemJitter.classification = theJpl.classification_jitter as? Int
+                    itemJitter.title = NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")
+                    itemJitter.value = theJpl.voip_result_jitter?.addMsString()
+                    
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemJitter))
+                    
+                    //
+                    let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    itemPacketLoss.classification = response.measurements?[0].jpl?.classification_packet_loss as? Int
+                    itemPacketLoss.title = NSLocalizedString("RBMT-BASE-PACKETLOSS", comment: "Packet loss")
+                    itemPacketLoss.value = theJpl.voip_result_packet_loss?.addPercentageString()
+                    
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
+                }
+                
+
+                
+                
+//                if let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem(
+//                    JSON: ["title":L("RBMT-BASE-JITTER"),
+//                           "value":historyResult.jitterMsString.addMsString(),
+//                           "classification":historyResult.jpl?.classification_jitter ?? 0]) {
+//                    
+//                    let jitter = RMBTHistoryResultItem(withResultItem: itemJitter)
+//                    
+//                    historyResult.measurementItems.append(jitter)
+//                    
+//                }
+//                
+//                if let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem(
+//                    JSON: ["title":L("RBMT-BASE-PACKETLOSS"),
+//                           "value":historyResult.packetLossPercentageString.addPercentageString(),
+//                           "classification":historyResult.jpl?.classification_packet_loss ?? 0]) {
+//                    
+//                    let packetLoss = RMBTHistoryResultItem(withResultItem: itemPacketLoss)
+//                    
+//                    historyResult.measurementItems.append(packetLoss)
+//                    
+//                }
+                
                 
                 // TODO: rewrite with double if-let statement when using swift 1.2
                 if let geoLat = response.measurements?[0].latitude{

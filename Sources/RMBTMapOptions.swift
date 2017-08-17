@@ -132,7 +132,7 @@ open class RMBTMapOptions {
 
         info[RMBTMapOptionsToastInfoTitle] = [String(format: "%@ %@", activeSubtype.type.title, activeSubtype.title)]
 
-        keys.append("Overlay")
+        keys.append(NSLocalizedString("map.options.filter.overlay", comment: "overlay"))
         values.append(activeOverlay.localizedDescription)
 
         for f in activeSubtype.type.filters {

@@ -33,5 +33,11 @@ extension String {
     public func stringByRemovingLastNewline() -> String { // TODO: improve...
         return self.replacingOccurrences(of: "\n", with: "", options: .backwards, range: self.characters.index(self.endIndex, offsetBy: -2)..<self.endIndex)
     }
+    
+    // add ms
+    public mutating func addMsString() -> String { return self + " ms"}
+    
+    // add Kbps
+    public mutating func addPercentageString() -> String { return self + " %"}
 
 }

@@ -571,21 +571,18 @@ class SpeedMeasurementResult: BasicRequest {
         } else {
             
         
-            jpl                        <- map["jpl"]
-        
+            jpl                     <- map["jpl"]
+        //
             clientUuid              <- map["client_uuid"]
             extendedTestStat        <- map["extended_test_stat"]
-            //
-            geoLocations            <- map["geoLocations"]
-            //
-            
-            //geoLocationsDump <- map["geoLocations"]
 
-            
+            geoLocations            <- map["geoLocations"]
             networkType             <- map["network_type"]
             pings                   <- map["pings"]
             
             speedDetail             <- map["speed_detail"]
+            
+            //
             bytesDownload           <- (map["test_bytes_download"], UInt64NSNumberTransformOf)
             bytesUpload             <- (map["test_bytes_upload"], UInt64NSNumberTransformOf)
             encryption              <- map["test_encryption"]
