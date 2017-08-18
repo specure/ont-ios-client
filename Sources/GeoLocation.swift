@@ -45,8 +45,8 @@ class GeoLocation: Mappable {
     ///
     var relativeTimeNs: Int?
 
-    ///
-    var time: NSNumber? //Date?
+    /// NKOM uses  Date, the old solution NSNumber
+    var time: Date? //NSNumber? //
 
     ///
     init() {
@@ -69,8 +69,8 @@ class GeoLocation: Mappable {
         #endif
 
         relativeTimeNs  = 0 // TODO?
-//        time            = location.timestamp
-        time = RMBTTimestampWithNSDate(location.timestamp as Date)
+        time            = location.timestamp
+//        time = RMBTTimestampWithNSDate(location.timestamp as Date)
     }
 
     ///
