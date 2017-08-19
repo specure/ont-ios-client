@@ -268,33 +268,7 @@ open class RMBTHistoryResult {
                     self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
                 }
                 
-
                 
-                
-//                if let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem(
-//                    JSON: ["title":L("RBMT-BASE-JITTER"),
-//                           "value":historyResult.jitterMsString.addMsString(),
-//                           "classification":historyResult.jpl?.classification_jitter ?? 0]) {
-//                    
-//                    let jitter = RMBTHistoryResultItem(withResultItem: itemJitter)
-//                    
-//                    historyResult.measurementItems.append(jitter)
-//                    
-//                }
-//                
-//                if let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem(
-//                    JSON: ["title":L("RBMT-BASE-PACKETLOSS"),
-//                           "value":historyResult.packetLossPercentageString.addPercentageString(),
-//                           "classification":historyResult.jpl?.classification_packet_loss ?? 0]) {
-//                    
-//                    let packetLoss = RMBTHistoryResultItem(withResultItem: itemPacketLoss)
-//                    
-//                    historyResult.measurementItems.append(packetLoss)
-//                    
-//                }
-                
-                
-                // TODO: rewrite with double if-let statement when using swift 1.2
                 if let geoLat = response.measurements?[0].latitude{
                     if let geoLon = response.measurements?[0].longitude {
                         self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
