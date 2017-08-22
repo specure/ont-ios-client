@@ -18,6 +18,11 @@
 import Foundation
 import CoreLocation
 
+enum locationCountry {
+    
+    case sk, si, cz
+}
+
 ///
 public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 
@@ -32,6 +37,16 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     open var authorizationCallback: EmptyCallback?
+    
+    ///
+    open var locationsCountry:String? {
+        
+        set {
+
+        }
+        
+        get { return locationsCountry }
+    }
 
     ///
     open var location: CLLocation? {
@@ -83,7 +98,7 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     open func startAfterDeterminingAuthorizationStatus(_ callback: @escaping EmptyCallback) {
         if startIfAuthorized() {
             callback()
-        } else if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.notDetermined {
+        } else if CLLocationManager.authorizationStatus() == .notDetermined {
             // Not determined yet
             authorizationCallback = callback
 
@@ -102,7 +117,9 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        NotificationCenter.default.post(name: Notification.Name(rawValue: RMBTLocationTrackerNotification), object: self, userInfo:["locations": locations])
+        NotificationCenter.default.post(name: Notification.Name(rawValue: RMBTLocationTrackerNotification),
+                                        object: self,
+                                        userInfo:["locations": locations])
     }
 
     #endif
@@ -129,5 +146,17 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     open func forceUpdate() {
         stop()
         _ = startIfAuthorized()
+    }
+    
+    ///
+    private func fetchCountryAndCity(location: CLLocation, completion: @escaping (String, String) -> ()) {
+        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
+            if let error = error {
+                print(error)
+            } else if let country = placemarks?.first?.country,
+                let city = placemarks?.first?.locality {
+                completion(country, city)
+            }
+        }
     }
 }

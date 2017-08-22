@@ -164,6 +164,11 @@ public func RMBTTimestampWithNSDate(_ date: Date) -> NSNumber {
     return NSNumber(value: UInt64(date.timeIntervalSince1970) * 1000 as UInt64)
 }
 
+///
+public func NKOMTimestampWithNSDate(_ date: Date) -> NSNumber {
+    return NSNumber(value: UInt64(date.timeIntervalSince1970) as UInt64)
+}
+
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
 public func RMBTFormatNumber(_ number: NSNumber) -> String {
     let formatter = NumberFormatter()

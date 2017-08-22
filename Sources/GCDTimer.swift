@@ -68,7 +68,7 @@ class GCDTimer {
     }
 
     ///
-    fileprivate func createTimer(_ interval: Double, timerQueue: DispatchQueue, block: @escaping ()->()) -> DispatchSourceTimer {
+    private func createTimer(_ interval: Double, timerQueue: DispatchQueue, block: @escaping ()->()) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(/*flags: DispatchSource.TimerFlags(rawValue: 0),*/ queue: timerQueue)
 
         let nsecPerSec = Double(NSEC_PER_SEC)

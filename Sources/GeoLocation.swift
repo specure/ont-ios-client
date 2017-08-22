@@ -46,7 +46,7 @@ class GeoLocation: Mappable {
     var relativeTimeNs: Int?
 
     /// NKOM uses  Date, the old solution NSNumber
-    var time: Date? //NSNumber? //
+    var time:  NSNumber? // Date? //
 
     ///
     init() {
@@ -69,8 +69,11 @@ class GeoLocation: Mappable {
         #endif
 
         relativeTimeNs  = 0 // TODO?
-        time            = location.timestamp
-//        time = RMBTTimestampWithNSDate(location.timestamp as Date)
+//        time            = location.timestamp
+        
+        if !RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            time = RMBTTimestampWithNSDate(location.timestamp as Date)
+        }
     }
 
     ///
@@ -114,5 +117,4 @@ class GeoLocation: Mappable {
             relativeTimeNs  <- map["relative_time_ns"]
         }
     }
-
 }

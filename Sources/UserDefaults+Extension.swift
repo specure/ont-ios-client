@@ -125,7 +125,6 @@ extension UserDefaults {
             UserStandard.set(true, forKey: "was_launched_once")
             
             firstLaunch(UserStandard)
-            
             UserStandard.synchronize()
         }
     }

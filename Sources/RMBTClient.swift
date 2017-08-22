@@ -351,7 +351,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
         self.resultUuid = uuid
 
-        if RMBTSettings.sharedSettings.nerdModeEnabled && RMBTSettings.sharedSettings.nerdModeQosEnabled {
+        if RMBTSettings.sharedSettings.nerdModeQosEnabled {
             startQosMeasurement(inMain: false) // continue with qos measurement
         } else {
             finishMeasurement()
@@ -391,30 +391,28 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishWithResults results: [QOSTestResult]) {
         // TODO: stop location tracker!
 
-        if (self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
+        if let mainTest = self.qualityOfServiceTestRunner?.isPartOfMainTest, mainTest {
             
-            if 0 < results.count {
-            
-                let result = results[0].resultDictionary
+            if let result = results.first?.resultDictionary {
                 
-                if let r = result["voip_result_status"] as? String, r == "TIMEOUT" {
-                    
-                    delegate?.measurementDidFail(self, withReason: .unknownError)
-                    ///
-                    return
-                }
+                // should pass even it fails
+                //                if let r = result["voip_result_status"] as? String, r == "TIMEOUT" {
+                //
+                //                    delegate?.measurementDidFail(self, withReason: .unknownError)
+                //                    ///
+                //                    return
+                //                }
                 
                 // delegate to runner to submit VOIP results
                 self.testRunner?.jpl = result
-                delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
+                self.delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
+                
             } else {
-                delegate?.measurementDidFail(self, withReason: .unknownError)
+                self.delegate?.measurementDidFail(self, withReason: .unknownError)
             }
             
-
-        
         } else {
-            finishMeasurement()
+            self.finishMeasurement()
         }
         
     }

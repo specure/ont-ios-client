@@ -19,7 +19,7 @@ import Alamofire
 import AlamofireObjectMapper
 import ObjectMapper
 
-//
+// TODO !!!!!
 public func getHistoryFilter(success: @escaping (_ filter: HistoryFilterType) -> (),
                              error failure: @escaping ErrorCallback) {
     
@@ -41,7 +41,13 @@ public func getHistoryFilter()-> HistoryFilterType? {
 public func getMeasurementServerInfo(success: @escaping (_ response: MeasurementServerInfoResponse) -> (),
                                      error failure: @escaping ErrorCallback) {
     
-    ControlServer.sharedControlServer.getMeasurementServerDetails(success: success, error: failure)
+    ControlServer.sharedControlServer.getMeasurementServerDetails(success: { servers in
+        
+        success(servers)
+        // store
+        RMBTConfig.sharedInstance.measurementServers = servers
+    
+    }, error: failure)
 }
 
 /// data type alias for filters
@@ -98,6 +104,10 @@ class ControlServer {
 
     ///
     var mapServerBaseUrl: String?
+    
+    //
+    
+    let storeUUIDKey = "uuid_"
 
     ///
     private init() {
@@ -115,7 +125,7 @@ class ControlServer {
         print(UserDefaults.standard.dictionaryRepresentation().keys)
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "uuid_\(URL(string: baseUrl)!.host!)"
+        uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
         
         uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
         
@@ -143,7 +153,7 @@ class ControlServer {
                     
                     if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as URL? {
                         self.baseUrl = url.absoluteString // !
-                        self.uuidKey = "uuid_\(url.host!)"
+                        self.uuidKey = "\(self.storeUUIDKey)\(url.host!)"
                     }
                 }
             }
@@ -163,7 +173,8 @@ class ControlServer {
     }
     
     //
-    func getMeasurementServerDetails(success: @escaping (_ response: MeasurementServerInfoResponse) -> (), error failure: @escaping ErrorCallback) {
+    func getMeasurementServerDetails(success: @escaping (_ response: MeasurementServerInfoResponse) -> (),
+                                     error failure: @escaping ErrorCallback) {
         
         let req = MeasurementServerInfoRequest()
         

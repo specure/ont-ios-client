@@ -112,7 +112,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private let workerQueue: DispatchQueue // We perform all work on this background queue. Workers also callback onto this queue.
 
     ///
-    private var timer: DispatchSource!
+    private var timer: DispatchSourceTimer!
 
     ///
     private var workers = [RMBTTestWorker]()
@@ -736,12 +736,16 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         if duration > 0 {
             progressCompletionHandler = completionHandler
 
-            timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default)) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+            timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default))
             // timer.setTimer(start: DispatchTime.now(), interval: UInt64(RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC)), leeway: 50 * NSEC_PER_MSEC)
             // ??????
-            timer.scheduleRepeating(deadline: DispatchTime.now(), interval:RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC), leeway: DispatchTimeInterval.nanoseconds(50))
+            timer.scheduleRepeating(deadline: DispatchTime.now(),
+                                    interval:RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC),
+                                    leeway: DispatchTimeInterval.nanoseconds(50))
+            
             timer.setEventHandler {
                 let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
+                
                 if elapsedNanos > self.progressDurationNanos {
                     // We've reached end of interval...
                     // ..send 1.0 progress one last time..

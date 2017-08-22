@@ -45,9 +45,6 @@ class SpeedMeasurementResult: BasicRequest {
 
     ///
     var geoLocations = [GeoLocation]()
-    
-    /// stupid must be for ONT
-    var geoLocationsDump = [String: [GeoLocation]]()
 
     ///
     var networkType: Int?
@@ -432,7 +429,6 @@ class SpeedMeasurementResult: BasicRequest {
         let geoLocation = GeoLocation(location: location)
         //geoLocation.relativeTimeNs =
         geoLocations.append(geoLocation)
-        geoLocationsDump = ["geoLocations":geoLocations]
     }
 
     ///

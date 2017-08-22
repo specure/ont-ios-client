@@ -90,10 +90,10 @@ open class RMBTHistoryResult {
     
     ////
     ///
-    open var jitterMsString: String!
+    open var jitterMsString: String = "-"
     
     ///
-    open var packetLossPercentageString: String!
+    open var packetLossPercentageString: String = "-"
     
     ///
     open var jpl:VoipTest?
@@ -166,9 +166,14 @@ open class RMBTHistoryResult {
         coordinate = kCLLocationCoordinate2DInvalid
         
         if let theJpl = response.jpl {
+            
+            if let resultJitter = theJpl.voip_result_jitter {
+                jitterMsString = resultJitter
+            }
         
-            jitterMsString = theJpl.voip_result_jitter
-            packetLossPercentageString = theJpl.voip_result_packet_loss
+            if let resultPackeLoss = theJpl.voip_result_packet_loss {
+                packetLossPercentageString = resultPackeLoss
+            }
             
             jpl = theJpl
         }

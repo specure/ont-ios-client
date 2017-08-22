@@ -61,13 +61,9 @@ open class HistoryWithFiltersRequest: BasicRequest {
 ///
 open class GetSyncCodeRequest: BasicRequest {
     
-    
-    
     ///
     override public func mapping(map: Map) {
         super.mapping(map: map)
-        
-        
     }
 
 }
@@ -88,9 +84,8 @@ open class SyncCodeRequest: BasicRequest {
 ///
 open class IPRequest_Old: BasicRequest {
     
-    
     ///
-    var software_Version_Code: String = "666"
+    var software_Version_Code: String = "6666" // and more than that
     var plattform:String = ""
     
     ///
@@ -182,91 +177,3 @@ open class SettingsRequest_Old: BasicRequest {
         name <- map["name"]
     }
 }
-
-///
-class BasicRequest_Old: Mappable {
-    
-    ///
-    var apiLevel: String = ""
-    
-    ///
-    var clientName: String?
-    
-    ///
-    var device: String?
-    
-    ///
-    var language: String?
-    
-    ///
-    var model: String?
-    
-    ///
-    var osVersion: String?
-    
-    ///
-    var platform: String?
-    
-    ///
-    var product: String = ""
-    
-    ///
-    var previousTestStatus: String?
-    
-    ///
-    var softwareRevision: String?
-    
-    ///
-    var softwareVersion: String?
-    
-    ///
-    var clientVersion: String? // TODO: fix this on server side
-    
-    ///
-    var softwareVersionCode: Int?
-    
-    ///
-    var softwareVersionName: String?
-    
-    ///
-    var timezone: String?
-    
-    ///
-    var clientType: String? // ClientType enum
-    
-    ///
-    init() {
-        
-    }
-    
-    ///
-    required init?(map: Map) {
-        
-    }
-    
-    ///
-    func mapping(map: Map) {
-        apiLevel            <- map["api_level"]
-        clientName          <- map["name"]
-        device              <- map["device"]
-        
-        language            <- map["language"]
-        
-        model               <- map["model"]
-        osVersion           <- map["version"]
-        platform            <- map["platform"]
-        product             <- map["product"]
-        softwareRevision    <- map["softwareRevision"]
-        
-        softwareVersion     <- map["softwareVersion"]
-        softwareVersionCode <- map["softwareVersionCode"]
-        
-        clientVersion       <- map["client"] // TODO: fix this on server side
-        
-        
-        timezone            <- map["timezone"]
-        clientType          <- map["type"]
-    }
-}
-
-

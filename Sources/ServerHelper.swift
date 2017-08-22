@@ -24,7 +24,7 @@ class ServerHelper {
 
     ///
     class func configureAlamofireManager() -> Alamofire.SessionManager {
-        let configuration = URLSessionConfiguration.ephemeral //defaultSessionConfiguration()
+        let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 30 // seconds
         configuration.timeoutIntervalForResource = 30
 
@@ -32,12 +32,14 @@ class ServerHelper {
         configuration.httpShouldUsePipelining = true
 
         // Set user agent
-        if let userAgent = UserDefaults.getRequestUserAgent() { //standard.string(forKey: "UserAgent") {
+        if let userAgent = UserDefaults.getRequestUserAgent() {
             configuration.httpAdditionalHeaders = [
                 "User-Agent": userAgent,
                 "Accept-Language":PREFFERED_LANGUAGE
             ]
         }
+        
+        // print(Bundle.main.preferredLocalizations)
 
         return Alamofire.SessionManager(configuration: configuration)
     }
@@ -128,13 +130,14 @@ class ServerHelper {
                 return "Requesting \(path) with object: <json serialization failed>"
             }
         }
+        
 
         var encoding: ParameterEncoding = JSONEncoding.default
         if method == .get || method == .delete { // GET and DELETE request don't support JSON bodies...
             encoding = URLEncoding.default
         }
         let url = (baseUrl != nil ? baseUrl! : "") + path
-
+        
         manager
             .request(url, method: method, parameters: parameters, encoding: encoding, headers: nil)
     // maybe use alamofire router later? (https://grokswift.com/router/)

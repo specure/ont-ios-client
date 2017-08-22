@@ -18,7 +18,6 @@
 import CoreLocation
 
 // MARK: Test parameters Variables
-
 //
 public let LANGUAGE_PREFIX = "$lang"
 //
@@ -39,6 +38,9 @@ public class RMBTConfig {
     var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
+    
+    //
+    public var measurementServers: MeasurementServerInfoResponse?
     
     //
     public var RMBT_VERSION_NEW = true
@@ -64,6 +66,11 @@ public class RMBTConfig {
             :
             RMBT_MAP_SERVER_PATH_URL + RMBT_MAP_SERVER_PATH
         
+    }
+    
+    public static func updateSettings() {
+    
+        ControlServer.sharedControlServer.updateWithCurrentSettings()
     }
     
     //
