@@ -56,21 +56,27 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
         
             qosLog.debug("EXECUTING WEBSITE TEST")
             
-            if let testURL = URL(string: url) {
-                do {
-                    requestStartTimeTicks = getCurrentTimeTicks()
-                    guard let theUrlData = try? Data(contentsOf: testURL) else { return }
-                    
-                    let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
-                    self.testResult.resultDictionary[self.RESULT_WEBSITE_DURATION] = NSNumber(value: durationInNanoseconds)
-                    
-                    self.callFinishCallback()
-                    
-                } catch {
+            let request: URLRequest = URLRequest(url: NSURL(string: url) as! URL)
+            let session = URLSession.shared
+            
+            requestStartTimeTicks = getCurrentTimeTicks()
+            
+            session.dataTask(with: request, completionHandler: {(data, response, error) in
+                print(data)
+                print(response)
+                print(error)
                 
+                let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
+                self.testResult.resultDictionary[self.RESULT_WEBSITE_DURATION] = NSNumber(value: durationInNanoseconds)
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    let status = httpResponse.statusCode
+                    self.testResult.resultDictionary[self.RESULT_WEBSITE_STATUS] = String(status)
                 }
                 
-            }
+                self.callFinishCallback()
+                
+            }).resume()
             
         }
     }
