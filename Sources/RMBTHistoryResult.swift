@@ -250,12 +250,15 @@ open class RMBTHistoryResult {
                         i.classification = r.classification
                         i.title = r.title
                         i.value = r.value
-                        
-                        //self.measurementItems.append(RMBTHistoryResultItem(response: r))
+                
                         self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
                     }
                     
-                    if let theJpl = res.jpl {
+                    let jitter = res.classifiedMeasurementDataList?.filter({ item in
+                        return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER" )}).first
+                    // TODO
+                    // delete after new server version comes alive
+                    if let theJpl = res.jpl, jitter == nil {
                         
                         //
                         let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
@@ -273,7 +276,7 @@ open class RMBTHistoryResult {
                         
                         self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
                     }
-                    
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////
                     
                     if let geoLat = res.latitude{
                         if let geoLon = response.measurements?[0].longitude {

@@ -50,9 +50,9 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
     override func startTest() {
         super.startTest()
 
-        testResult.set(RESULT_HTTP_PROXY_RANGE, value: testObject.range as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_URL, value: testObject.url as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_DURATION, value: -1 as AnyObject?)
+        testResult.set(RESULT_HTTP_PROXY_RANGE, value: testObject.range)
+        testResult.set(RESULT_HTTP_PROXY_URL, value: testObject.url)
+        testResult.set(RESULT_HTTP_PROXY_DURATION, value: -1)
     }
 
     ///
@@ -78,7 +78,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
             var additonalHeaderFields = [String: AnyObject]()
 
             // Set user agent
-            if let userAgent = UserDefaults.getRequestUserAgent() { //.standard.string(forKey: "UserAgent") {
+            if let userAgent = UserDefaults.getRequestUserAgent() {
                 additonalHeaderFields["User-Agent"] = userAgent as AnyObject?
             }
 
@@ -113,7 +113,8 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                     //to get status code
                     if let status = response.response?.statusCode {
                         switch status {
-                            case 200, 201:
+                            // Added 206 by TB 30.08.17
+                            case 200, 201, 206:
                                 debugPrint(response)
                                 
                                 self.qosLog.debug("GET SUCCESS")
@@ -165,7 +166,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                     }
                     
                     
-                    
+// Original solution
 //                .validate()
 //                .responseData { (response: DataResponse<Data>) in
 //                    switch response.result {
@@ -219,22 +220,22 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
 
     ///
     override func testDidTimeout() {
-        testResult.set(RESULT_HTTP_PROXY_HASH, value: "TIMEOUT" as AnyObject?)
+        testResult.set(RESULT_HTTP_PROXY_HASH, value: "TIMEOUT" as String?)
 
-        testResult.set(RESULT_HTTP_PROXY_STATUS, value: "" as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0 as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_HEADER, value: "" as AnyObject?)
+        testResult.set(RESULT_HTTP_PROXY_STATUS, value: "")
+        testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0)
+        testResult.set(RESULT_HTTP_PROXY_HEADER, value: "")
 
         super.testDidTimeout()
     }
 
     ///
     override func testDidFail() {
-        testResult.set(RESULT_HTTP_PROXY_HASH, value: "ERROR" as AnyObject?)
+        testResult.set(RESULT_HTTP_PROXY_HASH, value: "ERROR")
 
-        testResult.set(RESULT_HTTP_PROXY_STATUS, value: "" as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0 as AnyObject?)
-        testResult.set(RESULT_HTTP_PROXY_HEADER, value: "" as AnyObject?)
+        testResult.set(RESULT_HTTP_PROXY_STATUS, value: "")
+        testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0)
+        testResult.set(RESULT_HTTP_PROXY_HEADER, value: "")
 
         super.testDidFail()
     }

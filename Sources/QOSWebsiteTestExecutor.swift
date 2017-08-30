@@ -22,6 +22,7 @@ typealias WebsiteTestExecutor = QOSWebsiteTestExecutor<QOSWebsiteTest>
 ///
 class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
 
+    //
     private let RESULT_WEBSITE_URL      = "website_objective_url"
     private let RESULT_WEBSITE_TIMEOUT  = "website_objective_timeout"
     private let RESULT_WEBSITE_DURATION = "website_result_duration"
@@ -33,9 +34,6 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
     //
     private var requestStartTimeTicks: UInt64 = 0
     
-
-    //
-
     ///
     override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
@@ -77,7 +75,6 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
                 self.callFinishCallback()
                 
             }).resume()
-            
         }
     }
 
