@@ -243,6 +243,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             let speedMeasurementRequestOld = SpeedMeasurementRequest_Old()
             
             speedMeasurementRequestOld.testCounter = RMBTSettings.sharedSettings.testCounter
+            //
+            if let serverId = RMBTConfig.sharedInstance.measurementServer?.id as? UInt64{
+                speedMeasurementRequestOld.measurementServerId = serverId
+            } else {
+                speedMeasurementRequestOld.measurementServerId = RMBTConfig.sharedInstance.defaultServer.id as! UInt64
+            }
+            
             
             if let l = RMBTLocationTracker.sharedTracker.location {
                 let geoLocation = GeoLocation(location: l)
@@ -736,12 +743,15 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         if duration > 0 {
             progressCompletionHandler = completionHandler
 
+            if (timer != nil) {
+                timer.cancel()
+            }
+            
             timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default))
-            // timer.setTimer(start: DispatchTime.now(), interval: UInt64(RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC)), leeway: 50 * NSEC_PER_MSEC)
-            // ??????
+            
             timer.scheduleRepeating(deadline: DispatchTime.now(),
-                                    interval:RMBTTestRunnerProgressUpdateInterval * Double(NSEC_PER_SEC),
-                                    leeway: DispatchTimeInterval.nanoseconds(50))
+                                    interval: RMBTTestRunnerProgressUpdateInterval,
+                                    leeway: DispatchTimeInterval.seconds(50))
             
             timer.setEventHandler {
                 let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
@@ -851,7 +861,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     open func locationsDidChange(_ notification: Notification) {
         var lastLocation: CLLocation?
 
-        for l in (notification.userInfo as! [String: AnyObject])["locations"] as! [CLLocation] { // !
+        for l in notification.userInfo?["locations"] as! [CLLocation] { // !
             if CLLocationCoordinate2DIsValid(l.coordinate) {
                 lastLocation = l
                 speedMeasurementResult.addLocation(l)

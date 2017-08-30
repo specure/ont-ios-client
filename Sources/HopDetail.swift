@@ -47,9 +47,9 @@ open class HopDetail: NSObject { /* struct */
     }
 
     ///
-    open func getAsDictionary() -> [String: AnyObject] {
+    open func getAsDictionary() -> [String: Any] {
         return [
-            "host": jsonValueOrNull(fromIp as AnyObject) ,
+            "host": jsonValueOrNull(fromIp as Any) ,
             "time": NSNumber(value: time as UInt64)
         ]
     }

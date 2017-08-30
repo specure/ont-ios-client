@@ -18,11 +18,6 @@
 import Foundation
 import CoreLocation
 
-enum locationCountry {
-    
-    case sk, si, cz
-}
-
 ///
 public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 
@@ -38,16 +33,6 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     ///
     open var authorizationCallback: EmptyCallback?
     
-    ///
-    open var locationsCountry:String? {
-        
-        set {
-
-        }
-        
-        get { return locationsCountry }
-    }
-
     ///
     open var location: CLLocation? {
         if let result = locationManager.location, CLLocationCoordinate2DIsValid(result.coordinate) {
@@ -67,6 +52,10 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
         super.init()
 
         locationManager.delegate = self
+    }
+    
+    deinit {
+        stop()
     }
 
     ///
@@ -147,13 +136,16 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
         stop()
         _ = startIfAuthorized()
     }
-    
+}
+
+extension CLLocation {
     ///
-    private func fetchCountryAndCity(location: CLLocation, completion: @escaping (String, String) -> ()) {
-        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
+    open func fetchCountryAndCity(completion: @escaping (String?, String?) -> ()) {
+        CLGeocoder().reverseGeocodeLocation(self) { placemarks, error in
             if let error = error {
                 print(error)
-            } else if let country = placemarks?.first?.country,
+                completion(nil, nil)
+            } else if let country = placemarks?.first?.isoCountryCode,
                 let city = placemarks?.first?.locality {
                 completion(country, city)
             }

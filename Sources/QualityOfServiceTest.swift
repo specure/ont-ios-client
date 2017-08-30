@@ -36,7 +36,7 @@ open class QualityOfServiceTest {
     public typealias ConcurrencyGroup = UInt
 
     ///
-    public typealias JsonObjectivesType = [String: [[String: AnyObject]]]
+    public typealias JsonObjectivesType = [String: [[String: Any]]]
 
     //
 

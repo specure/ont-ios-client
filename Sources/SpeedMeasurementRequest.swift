@@ -37,6 +37,9 @@ class SpeedMeasurementRequest: BasicRequest {
 
     ///
     var geoLocation: GeoLocation?
+    
+    ///
+    var measurementServerId: UInt64?
 
     ///
     override func mapping(map: Map) {
@@ -50,6 +53,8 @@ class SpeedMeasurementRequest: BasicRequest {
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {geoLocation <- map["geo_location"]} else {
             geoLocation <- map["location"]
         }
+        //
+        measurementServerId <- map["measurement_server_id"]
         
     }
 }

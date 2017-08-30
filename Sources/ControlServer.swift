@@ -45,7 +45,7 @@ public func getMeasurementServerInfo(success: @escaping (_ response: Measurement
         
         success(servers)
         // store
-        RMBTConfig.sharedInstance.measurementServers = servers
+        RMBTConfig.sharedInstance.measurementServer = servers.servers?.first
     
     }, error: failure)
 }
@@ -236,50 +236,54 @@ class ControlServer {
         let successFuncOld: (_ response: SettingsReponse_Old) -> () = { response in
             logger.debug("settings: \(response)")
             
-            // set uuid
-            if let newUUID = response.settings?[0].uuid {
-                self.uuid = newUUID
-            }
-            
-            // save uuid
-            if let uuidKey = self.uuidKey, let u = self.uuid {
-                UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
-            }
-            
-            
-            
-            // set control server version
-            self.version = response.settings?[0].versions?.controlServerVersion
-            
-            // set qos test type desc
-            response.settings?[0].qosMeasurementTypes?.forEach({ measurementType in
-                if let theType = measurementType.testType, let theDesc = measurementType.testDesc {
-                    if let type = QosMeasurementType(rawValue: theType.lowercased()) {
-                        QosMeasurementType.localizedNameDict.updateValue(theDesc, forKey:type)
-                    }
-                }
-            })
-            
-            self.historyFilter = response.settings?[0].history
-            
-            // TODO: set ip request urls, set openTestBaseUrl
-            
-            
-            // check for map server from settings
-            if let mapServer = response.settings?[0].map_server as? MapServerSettings {
-                let host = mapServer.host
-                let scheme = mapServer.useTls ? "https" : "http"
-                //
-                var port = (mapServer.port as! NSNumber).stringValue
-                if (port == "80" || port == "443") {
-                    port = ""
-                } else {
-                    port = ":\(port)"
+            if let set = response.settings?.first {
+                // set uuid
+                if let newUUID = set.uuid {
+                    self.uuid = newUUID
                 }
                 
-                self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
-                logger.debug("setting map server url to \(self.mapServerBaseUrl) from settings request")
+                // save uuid
+                if let uuidKey = self.uuidKey, let u = self.uuid {
+                    UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
+                }
+                
+                
+                
+                // set control server version
+                self.version = set.versions?.controlServerVersion
+                
+                // set qos test type desc
+                set.qosMeasurementTypes?.forEach({ measurementType in
+                    if let theType = measurementType.testType, let theDesc = measurementType.testDesc {
+                        if let type = QosMeasurementType(rawValue: theType.lowercased()) {
+                            QosMeasurementType.localizedNameDict.updateValue(theDesc, forKey:type)
+                        }
+                    }
+                })
+                
+                self.historyFilter = set.history
+                
+                // TODO: set ip request urls, set openTestBaseUrl
+                
+                
+                // check for map server from settings
+                if let mapServer = set.map_server as? MapServerSettings {
+                    let host = mapServer.host
+                    let scheme = mapServer.useTls ? "https" : "http"
+                    //
+                    var port = (mapServer.port as! NSNumber).stringValue
+                    if (port == "80" || port == "443") {
+                        port = ""
+                    } else {
+                        port = ":\(port)"
+                    }
+                    
+                    self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
+                    logger.debug("setting map server url to \(self.mapServerBaseUrl) from settings request")
+                }
             }
+            
+
             
             successCallback()
         }

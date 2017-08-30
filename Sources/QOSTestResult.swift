@@ -37,7 +37,7 @@ open class QOSTestResult {
     public init(type: QosMeasurementType) {
         self.testType = type
 
-        resultDictionary["test_type"] = type.rawValue as AnyObject?
+        resultDictionary["test_type"] = type.rawValue as Any?
     }
 
     ///
@@ -71,7 +71,7 @@ extension QOSTestResult {
     ///
     public func set(_ key: String, value: Any?) {
         if !readOnly {
-            resultDictionary[key] = jsonValueOrNull(value as AnyObject?)
+            resultDictionary[key] = jsonValueOrNull(value as Any?)
         }
     }
 

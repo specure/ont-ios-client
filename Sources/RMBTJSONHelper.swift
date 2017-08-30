@@ -17,8 +17,8 @@
 import Foundation
 
 ///
-func jsonValueOrNull(_ obj: AnyObject?) -> AnyObject {
-    return obj != nil ? obj as AnyObject:NSNull()
+func jsonValueOrNull(_ obj: Any?) -> Any {
+    return obj != nil ? obj as Any:NSNull()
 }
 
 /* func jsonValueOrNull<T : AnyObject>(obj: T?) -> T {

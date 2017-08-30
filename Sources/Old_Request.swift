@@ -130,6 +130,10 @@ class SpeedMeasurementRequest_Old: BasicRequest {
     var client = "RMBT"
     
     ///
+    var measurementServerId: UInt64?
+    
+    
+    ///
     override func mapping(map: Map) {
         super.mapping(map: map)
         
@@ -145,6 +149,9 @@ class SpeedMeasurementRequest_Old: BasicRequest {
         name <- map["name"]
         type <- map["type"]
         client <- map["client"]
+        
+        //
+        measurementServerId <- map["measurement_server_id"]
 
     }
 }

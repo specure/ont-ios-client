@@ -106,13 +106,13 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
         //
 
-        var resourceRecordArray = [[String: AnyObject]]()
+        var resourceRecordArray = [[String: Any]]()
 
         if let response = responseObj {
 
             // for response.resultRecords {
 
-                var resultRecord = [String: AnyObject]()
+                var resultRecord = [String: Any]()
 
                 testResult.set(RESULT_DNS_STATUS, value: response.rcodeString())
 
@@ -122,14 +122,14 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
                     switch Int(qType) {
                         case kDNSServiceType_A:
-                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String? as AnyObject?) 
+                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                         case kDNSServiceType_CNAME:
-                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as AnyObject?)
+                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                         case kDNSServiceType_MX:
-                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as AnyObject?)
+                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                             resultRecord[RESULT_DNS_PRIORITY] = "\(response.mxPreference!)" as AnyObject?
                         case kDNSServiceType_AAAA:
-                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as AnyObject?)
+                            resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                         default:
                             qosLog.debug("unknown result record type \(response.qType), skipping")
                     }

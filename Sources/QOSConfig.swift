@@ -74,7 +74,7 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 let QOS_ENABLED_TESTS: [QosMeasurementType] = [
     .HttpProxy,
     .NonTransparentProxy,
-    //.WEBSITE,
+    .WEBSITE,
     .DNS,
     .TCP,
     .UDP,

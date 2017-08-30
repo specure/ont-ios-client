@@ -209,84 +209,87 @@ open class RMBTHistoryResult {
             
             MeasurementHistory.sharedMeasurementHistory.getMeasurementDetails_Old(uuid, full: false, success: { response in
                 
-                self.networkType = response.measurements![0].networkType.map { RMBTNetworkType(rawValue: $0) }!
-                //
-                self.shareText = nil
-                
-                self.shareText = response.measurements?[0].shareText
-                
-                do {
-                    let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+                if let res = response.measurements?.first{
+                    self.networkType = res.networkType.map { RMBTNetworkType(rawValue: $0) }!
+                    //
+                    self.shareText = nil
                     
-                    let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.characters.count))
+                    self.shareText = res.shareText
                     
-                    if matches.count > 0 {
-                        let r = matches.last!
+                    do {
+                        let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
                         
-                        assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
+                        let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.characters.count))
                         
-                        self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
-                        self.shareURL = (r.url! as NSURL) as URL!
+                        if matches.count > 0 {
+                            let r = matches.last!
+                            
+                            assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
+                            
+                            self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
+                            self.shareURL = (r.url! as NSURL) as URL!
+                        }
+                        
+                    } catch {
+                        
                     }
                     
-                } catch {
-                    
-                }
-                
-                // Add items 
-                for r in (response.measurements?[0].networkDetailList)! {
-                    
-                    let i=SpeedMeasurementResultResponse.ResultItem()
-                    i.title = r.title
-                    i.value = r.value
-                    
-                    self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
-                }
-                
-                for r in (response.measurements?[0].classifiedMeasurementDataList)! {
-                    
-                    let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                    i.classification = r.classification
-                    i.title = r.title
-                    i.value = r.value
-                    
-                    //self.measurementItems.append(RMBTHistoryResultItem(response: r))
-                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
-                }
-                
-                if let theJpl = response.measurements?[0].jpl {
-                
-                    //
-                    let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                    itemJitter.classification = theJpl.classification_jitter as? Int
-                    itemJitter.title = NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")
-                    itemJitter.value = theJpl.voip_result_jitter?.addMsString()
-                    
-                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemJitter))
-                    
-                    //
-                    let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                    itemPacketLoss.classification = response.measurements?[0].jpl?.classification_packet_loss as? Int
-                    itemPacketLoss.title = NSLocalizedString("RBMT-BASE-PACKETLOSS", comment: "Packet loss")
-                    itemPacketLoss.value = theJpl.voip_result_packet_loss?.addPercentageString()
-                    
-                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
-                }
-                
-                
-                if let geoLat = response.measurements?[0].latitude{
-                    if let geoLon = response.measurements?[0].longitude {
-                        self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
+                    // Add items
+                    for r in res.networkDetailList! {
+                        
+                        let i=SpeedMeasurementResultResponse.ResultItem()
+                        i.title = r.title
+                        i.value = r.value
+                        
+                        self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
                     }
+                    
+                    for r in (res.classifiedMeasurementDataList)! {
+                        
+                        let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        i.classification = r.classification
+                        i.title = r.title
+                        i.value = r.value
+                        
+                        //self.measurementItems.append(RMBTHistoryResultItem(response: r))
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
+                    }
+                    
+                    if let theJpl = res.jpl {
+                        
+                        //
+                        let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        itemJitter.classification = theJpl.classification_jitter as? Int
+                        itemJitter.title = NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")
+                        itemJitter.value = theJpl.voip_result_jitter?.addMsString()
+                        
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemJitter))
+                        
+                        //
+                        let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        itemPacketLoss.classification = response.measurements?[0].jpl?.classification_packet_loss as? Int
+                        itemPacketLoss.title = NSLocalizedString("RBMT-BASE-PACKETLOSS", comment: "Packet loss")
+                        itemPacketLoss.value = theJpl.voip_result_packet_loss?.addPercentageString()
+                        
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
+                    }
+                    
+                    
+                    if let geoLat = res.latitude{
+                        if let geoLon = response.measurements?[0].longitude {
+                            self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
+                        }
+                    }
+                    
+                    if let timeString = res.timeString {
+                        self.timeString = timeString
+                    }
+                    
+                    self.locationString = res.location
+                    
+                    self.dataState = .basic
                 }
-                
-                if let timeString = response.measurements?[0].timeString {
-                    self.timeString = timeString
-                }
-                
-                self.locationString = response.measurements?[0].location
-                
-                self.dataState = .basic
+
                 
                 success()
                 

@@ -28,6 +28,14 @@ public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFA
 public class RMBTConfig {
     
     //
+    var defaultServer:MeasurementServerInfoResponse.Servers {
+    
+        let dms = MeasurementServerInfoResponse.Servers()
+        dms.id = 1
+        return dms
+    }
+    
+    //
     public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
 
     // MARK: Default control server URLs    
@@ -39,8 +47,8 @@ public class RMBTConfig {
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
     
-    //
-    public var measurementServers: MeasurementServerInfoResponse?
+    // Server to be used for a measurement
+    public var measurementServer: MeasurementServerInfoResponse.Servers?
     
     //
     public var RMBT_VERSION_NEW = true

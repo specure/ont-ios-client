@@ -47,7 +47,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
     fileprivate var ttlCurrentTry: UInt8 = 0
 
     ///
-    fileprivate var hopDetailArray = [[String: AnyObject]]()
+    fileprivate var hopDetailArray = [[String: Any]]()
 
     ///
     fileprivate var currentHopDetail = HopDetail()
