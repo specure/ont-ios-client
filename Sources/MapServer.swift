@@ -128,15 +128,18 @@ open class MapServer {
 
     ///
     open func getOpenTestUrl(_ openTestUuid: String, success successCallback: (_ response: String?) -> ()) {
-        //ControlServer.sharedControlServer.openTest
-        // TODO
+        if let url = ControlServer.sharedControlServer.openTestBaseURL {
+            let theURL = url+openTestUuid
+            successCallback(theURL)
+        }
+
         successCallback(nil)
     }
 
 // MARK: Private
 
     ///
-    fileprivate func opentestURLForApp(_ openTestBaseURL: String) -> String {
+    private func opentestURLForApp(_ openTestBaseURL: String) -> String {
         // hardcoded because @lb doesn't want to provide a good solution
 
         let r = openTestBaseURL.startIndex..<openTestBaseURL.endIndex
@@ -146,12 +149,12 @@ open class MapServer {
     }
 
     ///
-    fileprivate func requestArray<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
+    private func requestArray<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.requestArray(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 
     ///
-    fileprivate func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+    private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
 }

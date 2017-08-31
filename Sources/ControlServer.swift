@@ -90,6 +90,9 @@ class ControlServer {
     var historyFilter:HistoryFilterType?
 
     ///
+    var openTestBaseURL: String?
+    
+    ///
     private var uuidKey: String? // TODO: unique for each control server?
 
     ///
@@ -216,15 +219,18 @@ class ControlServer {
             
             // TODO: set history filters
             
+            
+            //
             if let ipv4Server = response.settings?.controlServerIpv4Host {
                 RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
             }
             
-            // bullshit - no NAT upon IPv6
+            //
             if let ipv6Server = response.settings?.controlServerIpv6Host {
                 RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
             }
             
+            //
             if let mapServer = response.settings?.mapServer?.host {
                 RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
             }
@@ -263,7 +269,21 @@ class ControlServer {
                 
                 self.historyFilter = set.history
                 
-                // TODO: set ip request urls, set openTestBaseUrl
+                // TODO: set ip request urls
+                //
+                if let ipv4Server = set.urls?.ipv4IpOnly {
+                    RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
+                }
+                
+                //
+                if let ipv6Server = set.urls?.ipv6IpOnly {
+                    RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+                }
+                
+                //
+                if let theOpenTestBase = set.urls?.opendataPrefix {
+                    self.openTestBaseURL = theOpenTestBase
+                }
                 
                 
                 // check for map server from settings
