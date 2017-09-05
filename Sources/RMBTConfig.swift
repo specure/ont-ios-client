@@ -46,6 +46,8 @@ public class RMBTConfig {
     var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
+    //
+    var RMBT_CHECK_IPV4_ULR            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
     
     // Server to be used for a measurement
     public var measurementServer: MeasurementServerInfoResponse.Servers?

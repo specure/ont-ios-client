@@ -236,6 +236,8 @@ class ControlServer {
             }
             
             
+            
+            
             successCallback()
         }
         ////
@@ -283,6 +285,11 @@ class ControlServer {
                 //
                 if let theOpenTestBase = set.urls?.opendataPrefix {
                     self.openTestBaseURL = theOpenTestBase
+                }
+                
+                //
+                if let checkip4 = set.urls?.ipv4IpCheck {
+                    RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR = checkip4
                 }
                 
                 
@@ -339,7 +346,7 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL, success: successCallback, error: failure)
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR, success: successCallback, error: failure)
     }
 
     /// no NAT
@@ -354,7 +361,7 @@ class ControlServer {
         infoParams.uuid = self.uuid
         infoParams.plattform = "iOS"
         
-        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: .post, path: "/ip", requestObject: infoParams, success: successCallback , error: failure)
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: .post, path: "", requestObject: infoParams, success: successCallback , error: failure)
     }
 
 // MARK: Speed measurement

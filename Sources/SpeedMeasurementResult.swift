@@ -604,8 +604,8 @@ class SpeedMeasurementResult: BasicRequest {
             interfaceUltestBytesUpload   <- map["testul_if_bytes_upload"]
             
             time              <- map["time"]
-            relativeTimeDlNs  <- map["test_nsec_download"]
-            relativeTimeUlNs  <- map["test_nsec_upload"]
+            relativeTimeDlNs  <- map["test_dl_ns"]
+            relativeTimeUlNs  <- map["test_ul_ns"]
             
             publishPublicData <- map["publish_public_data"]
             

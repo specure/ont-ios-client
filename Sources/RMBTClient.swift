@@ -112,9 +112,13 @@ public protocol RMBTClientDelegate {
     func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
 }
 
+//
 public enum RMBTClientType {
+    // delay, down, up + QoS
     case original
+    // delay, down, up, jitter, packet loss + QoS
     case standard
+    // delay, down, up + QoS
     case nkom
 }
 
@@ -383,8 +387,8 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTestDidStop(_ test: QualityOfServiceTest) { // TODO: what is stop, when is it executed? is this necessary?
-        delegate?.measurementDidFail(self, withReason: .unknownError) // TODO: better errors
+    public func qualityOfServiceTestDidStop(_ test: QualityOfServiceTest) {
+        //delegate?.measurementDidFail(self, withReason: .unknownError) // TODO: better errors
     }
 
     ///
@@ -405,7 +409,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 
                 // delegate to runner to submit VOIP results
                 self.testRunner?.jpl = result
-                self.delegate?.measurementDidCompleteVoip(self, withResult: results[0].resultDictionary)
+                self.delegate?.measurementDidCompleteVoip(self, withResult: result)
                 
             } else {
                 self.delegate?.measurementDidFail(self, withReason: .unknownError)

@@ -93,6 +93,7 @@ open class IPRequest_Old: BasicRequest {
         super.mapping(map: map)
         
         software_Version_Code <- map["softwareVersionCode"]
+        // there is a bug on the server side that's why double t !!!
         plattform <- map["plattform"]
         
     }

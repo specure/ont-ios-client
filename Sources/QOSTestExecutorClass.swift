@@ -204,9 +204,9 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         }
         hasFinished = true
 
-        //let singleQueue = dispatch_queue_create("dwqdqw", DISPATCH_QUEUE_SERIAL)
-        //dispatch_sync(singleQueue) {
-
+        let serialQueue = DispatchQueue(label: "test-executor-queue")
+        serialQueue.sync {
+            
             self.stopTimer()
 
             // call endTest method
@@ -225,7 +225,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
             // call finish callback saved in finishCallback variable
             qosLog.debug("calling finish callback")
             self.finishCallback(self.testResult) // TODO: run this in delegate queue?
-        //}
+        }
         objc_sync_exit(self)
     }
 
