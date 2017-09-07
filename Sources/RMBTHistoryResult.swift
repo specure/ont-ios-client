@@ -18,6 +18,22 @@
 import Foundation
 import CoreLocation
 
+// Would not be needed when all details remains as Strings as it is in the NKOM project
+extension RMBTHistoryResultItem {
+    
+    ///
+    open func convertValueToString() -> String {
+        
+        if let stringItemValue = self.value as? String {
+            return stringItemValue
+        } else if let numberItemValue = self.value as? NSNumber {
+            return String(describing: numberItemValue)
+        }
+        
+        return ""
+    }
+}
+
 ///
 /*@available(*, deprecated=1.0) */open class RMBTHistoryResultItem {
     
@@ -25,7 +41,7 @@ import CoreLocation
     open var title: String?
     
     ///
-    open var value: String?
+    open var value: Any?
     
     ///
     open var classification: Int?
@@ -209,7 +225,7 @@ open class RMBTHistoryResult {
             
             MeasurementHistory.sharedMeasurementHistory.getMeasurementDetails_Old(uuid, full: false, success: { response in
                 
-                if let res = response.measurements?.first{
+                if let res = response.measurements?.first {
                     self.networkType = res.networkType.map { RMBTNetworkType(rawValue: $0) }!
                     //
                     self.shareText = nil
@@ -237,7 +253,7 @@ open class RMBTHistoryResult {
                     // Add items
                     for r in res.networkDetailList! {
                         
-                        let i=SpeedMeasurementResultResponse.ResultItem()
+                        let i = SpeedMeasurementResultResponse.ResultItem()
                         i.title = r.title
                         i.value = r.value
                         
@@ -255,9 +271,9 @@ open class RMBTHistoryResult {
                     }
                     
                     let jitter = res.classifiedMeasurementDataList?.filter({ item in
-                        return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER" )}).first
+                        return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")}).first
                     // TODO
-                    // delete after new server version comes alive
+                    // delete after the new server version that has jpl in the loop above comes alive
                     if let theJpl = res.jpl, jitter == nil {
                         
                         //

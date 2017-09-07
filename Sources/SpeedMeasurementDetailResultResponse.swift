@@ -37,7 +37,7 @@ open class SpeedMeasurementDetailResultResponse: BasicResponse {
         open var key: String?
 
         ///
-        open var value: String?
+        open var value: Any?
 
         ///
         open var title: String?

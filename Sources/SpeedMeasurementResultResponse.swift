@@ -104,6 +104,9 @@ open class SpeedMeasurementResultResponse: BasicResponse {
     
     /// ONT
     open var jpl:VoipTest?
+    
+    ///
+    open var device:[ResultItem]?
 
     ///
     open var classifiedMeasurementDataList: [ClassifiedResultItem]?
@@ -159,6 +162,7 @@ open class SpeedMeasurementResultResponse: BasicResponse {
         super.mapping(map: map)
         
         jpl <- map["jpl"]
+        device <- map["device"]
 
         classifiedMeasurementDataList <- map["measurement"]
         networkDetailList <- map["net"]
