@@ -37,7 +37,10 @@ extension String {
     // add ms
     public mutating func addMsString() -> String { return self + " ms"}
     
-    // add Kbps
+    // %
     public mutating func addPercentageString() -> String { return self + " %"}
+    
+    // add Mbps
+    public mutating func addMbpsString() -> String { return self + " " + "Mbps"}
 
 }

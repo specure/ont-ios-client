@@ -216,10 +216,8 @@ class ControlServer {
                     QosMeasurementType.localizedNameDict[type] = measurementType.name
                 }
             })
-            
-            // TODO: set history filters
-            
-            
+            ///
+            // No synchro = No filters
             //
             if let ipv4Server = response.settings?.controlServerIpv4Host {
                 RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
@@ -234,9 +232,6 @@ class ControlServer {
             if let mapServer = response.settings?.mapServer?.host {
                 RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
             }
-            
-            
-            
             
             successCallback()
         }
@@ -268,10 +263,9 @@ class ControlServer {
                         }
                     }
                 })
-                
+                // get history filters
                 self.historyFilter = set.history
                 
-                // TODO: set ip request urls
                 //
                 if let ipv4Server = set.urls?.ipv4IpOnly {
                     RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
@@ -310,13 +304,9 @@ class ControlServer {
                 }
             }
             
-
-            
             successCallback()
         }
-        
-        
-        
+
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
         
             request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
@@ -526,21 +516,27 @@ class ControlServer {
     
     // OLD
     ///
-    func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
-        let params: NSMutableDictionary = NSMutableDictionary(dictionary: [
-            "result_offset": NSNumber(value: offset),
-            "result_limit": NSNumber(value: length)
-            ])
-        
-        if filters != nil {
-            params.addEntries(from: filters! as [NSObject: AnyObject])
-        }
-        
+    func getHistoryWithFilters(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+
         ensureClientUuid(success: { uuid in
             let req = HistoryWithFiltersRequest()
             req.uuid = uuid
             req.resultLimit = NSNumber(value: length)
             req.resultOffset = NSNumber(value: offset)
+            //
+            if let theFilters = filters {
+                for filter in theFilters {
+                    //
+                    if filter.key == "devices" {
+                      req.devices = filter.value
+                    }
+                    //
+                    if filter.key == "networks" {
+                        req.networks = filter.value
+                    }
+                }
+            }
+            
             self.request(.post, path: "/history", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }

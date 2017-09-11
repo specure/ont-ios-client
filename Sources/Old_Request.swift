@@ -8,14 +8,9 @@
 
 import Foundation
 import ObjectMapper
-
-
-
 import CoreLocation
 
-
 ///
-
 open class MeasurementServerInfoRequest: BasicRequest {
     
     var client:String = "RMBT"
@@ -42,19 +37,24 @@ open class HistoryWithQOS: BasicRequest {
 }
 ///
 open class HistoryWithFiltersRequest: BasicRequest {
-    
+    //
     var resultOffset:NSNumber?
+    //
     var resultLimit:NSNumber?
+    //
+    var networks:[String]?
+    //
+    var devices: [String]?
     
     ///
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        
         resultOffset <- map["result_offset"]
         resultLimit <- map["result_limit"]
+        networks <- map["networks"]
+        devices <- map["devices"]
     }
-    
 }
 
 

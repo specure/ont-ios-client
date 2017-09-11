@@ -76,7 +76,7 @@ open class MeasurementHistory {
     }
 
     ///
-    open func getHistoryList(_ filters: [String: [String]], success: @escaping (_ response: [HistoryItem]) -> (), error failure: @escaping ErrorCallback) {
+    open func getHistoryList(_ filters: HistoryFilterType, success: @escaping (_ response: [HistoryItem]) -> (), error failure: @escaping ErrorCallback) {
         if !dirty { // return cached elements if not dirty
             // load items to view
             if let historyItems = self.getHistoryItems(filters) {
@@ -241,7 +241,7 @@ open class MeasurementHistory {
     }
     
     /// OLD history
-    open func getHistoryWithFilters(filters: NSDictionary?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+    open func getHistoryWithFilters(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.getHistoryWithFilters(filters: filters, length: length, offset: offset, success: success, error: errorCallback)
     }
     

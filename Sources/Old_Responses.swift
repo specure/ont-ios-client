@@ -295,7 +295,7 @@ open class SettingsReponse_Old: BasicResponse {
         var uuid: String?
         
         ///
-        var history: [String: [String]]?
+        var history: HistoryFilterType?
         
         
         ///
@@ -411,9 +411,9 @@ open class SettingsReponse_Old: BasicResponse {
             }
             
             //            ///
-            //            var description: String {
-            //                return "Test Type: \(testType), with Description: \(testDesc)"
-            //            }
+            var description: String {
+                return "Test Type: \(testType), with Description: \(testDesc)"
+            }
         }
     }
 }
