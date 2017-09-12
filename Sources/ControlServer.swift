@@ -123,9 +123,7 @@ class ControlServer {
     }
     
     ///
-    func updateWithCurrentSettings() {
-        
-        print(UserDefaults.standard.dictionaryRepresentation().keys)
+    func updateWithCurrentSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
@@ -165,14 +163,12 @@ class ControlServer {
 
             self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
-        }) { (error) in
-            // TODO: error handling?
+            successCallback()
+            
+        }) { error in
+            
+            failure(error)
         }
-
-
-
-        //
-
     }
     
     //
@@ -195,7 +191,9 @@ class ControlServer {
         settingsRequest.client?.clientType = "MOBILE"
         settingsRequest.client?.termsAndConditionsAccepted = true
         settingsRequest.client?.uuid = uuid
+        
         ////
+        // NKOM solution
         let successFunc: (_ response: SettingsReponse) -> () = { response in
             logger.debug("settings: \(String(describing: response.client))")
             
@@ -236,6 +234,7 @@ class ControlServer {
             successCallback()
         }
         ////
+        // ONT and all other project solution
         let successFuncOld: (_ response: SettingsReponse_Old) -> () = { response in
             logger.debug("settings: \(response)")
             
@@ -312,7 +311,6 @@ class ControlServer {
             request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
                 logger.debug("settings error")
                 
-                // TODO
                 failure(error)
             })
 
@@ -326,7 +324,6 @@ class ControlServer {
             request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
                 logger.debug("settings error")
                 
-                // TODO
                 failure(error)
             })
         }

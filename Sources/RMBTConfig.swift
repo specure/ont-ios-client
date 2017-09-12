@@ -75,12 +75,16 @@ public class RMBTConfig {
             RMBT_MAP_SERVER_PATH_URL
             :
             RMBT_MAP_SERVER_PATH_URL + RMBT_MAP_SERVER_PATH
-        
     }
     
-    public static func updateSettings() {
+    public static func updateSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
     
-        ControlServer.sharedControlServer.updateWithCurrentSettings()
+        ControlServer.sharedControlServer.updateWithCurrentSettings(success: {
+            successCallback()
+        }, error: { error in
+            
+            failure(error)
+        })
     }
     
     //

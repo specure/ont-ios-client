@@ -469,7 +469,11 @@ extension RMBTClient {
     ///
     public class func refreshSettings() {
         MeasurementHistory.sharedMeasurementHistory.dirty = true // set history to dirty for changed control servers
-        ControlServer.sharedControlServer.updateWithCurrentSettings()
+        RMBTConfig.updateSettings(success: {
+        
+        }, error: { error in
+        
+        })
     }
 
     ///
