@@ -226,7 +226,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         let controlServer = ControlServer.sharedControlServer
         
-        /////!!!!!!!!!!!??????
+        /////!!!!!!!!!!!
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
             
             controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
