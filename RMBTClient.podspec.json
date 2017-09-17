@@ -1,0 +1,85 @@
+{
+    "name": "RMBTClient",
+    "version": "0.0.3",
+    "summary": "RMBTClient libary for iOS, OS X and tvOS.",
+    "homepage": "https://github.com/specure/...",
+    "license": {
+        "type": "TODO: Apache v2"
+    },
+    "source": {
+        "git": "https://github.com/specure/...",
+        "tag": "0.0.3"
+    },
+    "authors": "Specure GmbH",
+    "platforms": {
+        "ios": "9.0",
+        "osx": "10.9",
+        "tvos": "9.0"
+    },
+    "source_files": [
+        "Sources/**/*.swift",
+        "Sources/RMBTTrafficCounter.{h,m}",
+        "Sources/RMBTRAMMonitor.{h,m}",
+        "Sources/RMBTCPUMonitor.{h,m}",
+        "Sources/GetDNSIP.{h,m}",
+        "Sources/NSString+IPAddress.{h,m}",
+        "Sources/PingUtil.{h,m}"
+    ],
+    "ios": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_OSX.swift",
+            "Sources/BasicRequestBuilder_tvOS.swift"
+        ],
+        "dependencies": {
+            "GCNetworkReachability": ["~> 1.3.2"]
+        }
+    },
+    "osx": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_iOS.swift",
+            "Sources/BasicRequestBuilder_tvOS.swift"
+        ],
+        "dependencies": {
+            "GCNetworkReachability": ["~> 1.3.2"]
+        }
+    },
+    "tvos": {
+        "exclude_files": [
+            "Sources/BasicRequestBuilder_iOS.swift",
+            "Sources/BasicRequestBuilder_OSX.swift"
+        ]
+    },
+    "___public_header_files": [
+        "Sources/RMBTTrafficCounter.h",
+        "Sources/RMBTRAMMonitor.h",
+        "Sources/RMBTCPUMonitor.h",
+        "Sources/GetDNSIP.h",
+        "Sources/NSString+IPAddress.h",
+        "Sources/PingUtil.h"
+    ],
+    "dependencies": {
+        "Alamofire": [],
+        "AlamofireObjectMapper": [],
+        "RealmSwift": [],
+        "CocoaAsyncSocket": [],
+        "XCGLogger": []
+    },
+    "frameworks": [
+       "Foundation",
+       "CoreLocation",
+       "SystemConfiguration"
+    ],
+    "libraries": [
+        "resolv"
+    ],
+    "requires_arc": true,
+    "xcconfig": {
+        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
+        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator",
+        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx",
+        "SWIFT_INCLUDE_PATHS[sdk=appletvos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/tvos",
+        "SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/appletvsimulator"
+    },
+    "preserve_paths": [ "RMBTClientPrivate/*" ],
+    "prepare_command": "RMBTClientPrivate/injectXcodePath.sh"
+}
