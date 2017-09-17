@@ -267,7 +267,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
 
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high).sync { // needed because otherwise println's would merge strangely, TODO: remove this later
+        DispatchQueue.global(qos: .default).sync{ // needed because otherwise println's would merge strangely, TODO: remove this later
         
             logger.debug("address: \(address.base64EncodedString())")
 

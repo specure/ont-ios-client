@@ -152,10 +152,18 @@ class ControlServer {
                         hostname = "\(String(describing: hostname)):\(self.settings.debugControlServerPort)"
                     }
                     
-                    if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as URL? {
-                        self.baseUrl = url.absoluteString // !
-                        self.uuidKey = "\(self.storeUUIDKey)\(url.host!)"
-                    }
+//                    if let url = NSURL(scheme: scheme, host: hostname, path: "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/) as URL? {
+//                        self.baseUrl = url.absoluteString // !
+//                        self.uuidKey = "\(self.storeUUIDKey)\(url.host!)"
+//                    }
+                    
+                    let theUrl = NSURLComponents()
+                    theUrl.host = hostname
+                    theUrl.scheme = scheme
+                    theUrl.path = "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/
+                    
+                    self.baseUrl = (theUrl.url?.absoluteString)! // !
+                    self.uuidKey = "\(self.storeUUIDKey)\(theUrl.host!)"
                 }
             }
             
@@ -287,11 +295,11 @@ class ControlServer {
                 
                 
                 // check for map server from settings
-                if let mapServer = set.map_server as? MapServerSettings {
+                if let mapServer = set.map_server {
                     let host = mapServer.host
                     let scheme = mapServer.useTls ? "https" : "http"
                     //
-                    var port = (mapServer.port as! NSNumber).stringValue
+                    var port = (mapServer.port! as NSNumber).stringValue
                     if (port == "80" || port == "443") {
                         port = ""
                     } else {
@@ -299,7 +307,7 @@ class ControlServer {
                     }
                     
                     self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
-                    logger.debug("setting map server url to \(self.mapServerBaseUrl) from settings request")
+                    logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
                 }
             }
             
@@ -398,7 +406,7 @@ class ControlServer {
     ///
     func submitSpeedMeasurementResult_Old(_ speedMeasurementResult: SpeedMeasurementResult, success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-            if let measurementUuid = speedMeasurementResult.uuid {
+            if speedMeasurementResult.uuid != nil {
                 speedMeasurementResult.clientUuid = uuid
                 
                 self.request(.post, path: "/result", requestObject: speedMeasurementResult, success: success, error: failure)

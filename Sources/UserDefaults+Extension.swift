@@ -57,10 +57,10 @@ extension UserDefaults {
 
         var reconHost:String?
         reconHost = uuidKey?.replacingOccurrences(of: "uuid_", with: "") //"netcouch.specure.com"
-        let reconKey = "uuid_\(reconHost)"
+        let reconKey = "uuid_\(String(describing: reconHost))"
         if let reconUUID = UserStandard.object(forKey: reconKey) {
             logger.debug("UUID: Found old uuid \"\(reconUUID)\" in user defaults for key '\(reconKey)'")
-            return reconUUID as! String
+            return reconUUID as? String
         }
         ///////////////////////////////////////////////////////////////////////////
     
@@ -71,7 +71,7 @@ extension UserDefaults {
             
             logger.debugExec({
                 if uuid != nil {
-                    logger.debug("UUID: Found uuid \"\(uuid)\" in user defaults for key '\(key)'")
+                    logger.debug("UUID: Found uuid \"\(String(describing: uuid))\" in user defaults for key '\(key)'")
                 } else {
                     logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
                 }

@@ -32,34 +32,36 @@ open class WalledGardenTest {
             request.timeoutInterval = (WALLED_GARDEN_SOCKET_TIMEOUT_MS / 1_000.0)
             request.cachePolicy = .reloadIgnoringLocalCacheData // disable cache
 
-            // send async request // TODO: or send sync request?
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue(), completionHandler: { (response: URLResponse?, data: Data?, error: Error?) -> Void in
-                if let res = response as? HTTPURLResponse {
-                    let httpResponse = res
-
-                    callback((httpResponse.statusCode != 204))
-                } else {
-                    callback(false) // request failed (probably due to no network connection)
-                }
-            } )
+// Original solution 
             
-//            var newRequest = URLRequest(url: url)
-//            newRequest.httpMethod = "GET"
-//            newRequest.timeoutInterval = (WALLED_GARDEN_SOCKET_TIMEOUT_MS / 1_000.0)
-//            newRequest.cachePolicy = .reloadIgnoringLocalCacheData // disable cache
-//            
-//            let task = URLSession().dataTask(with: newRequest, completionHandler: { (data: Data?, response: URLResponse?,  error: Error?) -> Void in
-//                
+            // send async request // TODO: or send sync request?
+//            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue(), completionHandler: { (response: URLResponse?, data: Data?, error: Error?) -> Void in
 //                if let res = response as? HTTPURLResponse {
 //                    let httpResponse = res
-//                    
+//
 //                    callback((httpResponse.statusCode != 204))
 //                } else {
 //                    callback(false) // request failed (probably due to no network connection)
 //                }
-//            })
-//            
-//            task.resume()
+//            } )
+            
+            var newRequest = URLRequest(url: url)
+            newRequest.httpMethod = "GET"
+            newRequest.timeoutInterval = (WALLED_GARDEN_SOCKET_TIMEOUT_MS / 1_000.0)
+            newRequest.cachePolicy = .reloadIgnoringLocalCacheData // disable cache
+            
+            let task = URLSession().dataTask(with: newRequest, completionHandler: { (data: Data?, response: URLResponse?,  error: Error?) -> Void in
+                
+                if let res = response as? HTTPURLResponse {
+                    let httpResponse = res
+                    
+                    callback((httpResponse.statusCode != 204))
+                } else {
+                    callback(false) // request failed (probably due to no network connection)
+                }
+            })
+            
+            task.resume()
         }
     }
 

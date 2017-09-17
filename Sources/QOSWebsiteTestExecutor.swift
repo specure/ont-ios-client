@@ -54,15 +54,15 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
         
             qosLog.debug("EXECUTING WEBSITE TEST")
             
-            let request: URLRequest = URLRequest(url: NSURL(string: url) as! URL)
+            let request: URLRequest = URLRequest(url: NSURL(string: url)! as URL)
             let session = URLSession.shared
             
             requestStartTimeTicks = getCurrentTimeTicks()
             
             session.dataTask(with: request, completionHandler: {(data, response, error) in
-                print(data)
-                print(response)
-                print(error)
+//                print(data as Any)
+//                print(response as Any)
+//                print(error as Any)
                 
                 let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
                 self.testResult.resultDictionary[self.RESULT_WEBSITE_DURATION] = NSNumber(value: durationInNanoseconds)

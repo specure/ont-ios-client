@@ -412,7 +412,7 @@ open class SettingsReponse_Old: BasicResponse {
             
             //            ///
             var description: String {
-                return "Test Type: \(testType), with Description: \(testDesc)"
+                return "Test Type: \(String(describing: testType)), with Description: \(String(describing: testDesc))"
             }
         }
     }

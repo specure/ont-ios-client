@@ -74,20 +74,10 @@ class GCDTimer {
         let nsecPerSec = Double(NSEC_PER_SEC)
         let dt = DispatchTime.now() + Double(Int64(interval * nsecPerSec)) / Double(NSEC_PER_SEC)
         
-        let distantFuture = DispatchTime.distantFuture.uptimeNanoseconds
+        //let distantFuture = DispatchTime.distantFuture.uptimeNanoseconds
 //        //
         let zeroInterval = DispatchTimeInterval.seconds(0)
 
-        //timer.setTimer(start: dt, interval: DispatchTime.distantFuture, leeway: 0)
-//        timer.scheduleRepeating(deadline: dt, //dt,
-//                                interval: .seconds(2), //,
-//                                leeway: .seconds(0))
-        
-        
-        // timer.scheduleOneshot(deadline: dt, leeway: zeroInterval)
-        
-        // dispatch_source_set_timer(timer as! DispatchSource, dt.rawValue, DispatchTime.distantFuture.uptimeNanoseconds, 0)
-        
         timer.scheduleOneshot(deadline: dt, leeway: zeroInterval)
         
 
@@ -96,6 +86,8 @@ class GCDTimer {
         }
         
         timer.resume()
+        
+// Original solution 
         
 //        let timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue)
 //        

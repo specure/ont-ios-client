@@ -174,7 +174,7 @@ open class RMBTHistoryResult {
          self.deviceModel = "Unknown" // TODO: translate?
          } */
         
-        if let time = response.time as? NSNumber {
+        if let time = response.time as NSNumber? {
             let t: TimeInterval = time.doubleValue / 1000.0
             self.timestamp = Date(timeIntervalSince1970: t)
         }
