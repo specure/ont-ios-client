@@ -27,23 +27,21 @@ public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFA
 
 public class RMBTConfig {
     
-    //
-    var defaultServer:MeasurementServerInfoResponse.Servers {
-    
-        let dms = MeasurementServerInfoResponse.Servers()
-        dms.id = 1
-        return dms
-    }
+    // ID = 1 is a Server placed in Nurmberg
+    var defaultMeasurementServerId:UInt64 = 1
     
     //
     public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
+    
+    //
+    public init() {}
 
-    // MARK: Default control server URLs    
-    var RMBT_CONTROL_SERVER_URL        = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    // MARK: Default control server URLs   // CouchDB as Default disabled 
+    var RMBT_CONTROL_SERVER_URL        = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
-    var RMBT_CONTROL_SERVER_IPV4_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    var RMBT_CONTROL_SERVER_IPV4_URL   = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
-    var RMBT_CONTROL_SERVER_IPV6_URL   = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    var RMBT_CONTROL_SERVER_IPV6_URL   = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)"// "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
     //
@@ -86,9 +84,6 @@ public class RMBTConfig {
             failure(error)
         })
     }
-    
-    //
-    public init() {}
 }
 
 
@@ -138,7 +133,7 @@ let RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
 
 // MARK:- Other URLs used in the app
 
-let RMBT_URL_HOST = "https://nettest.specure.com"
+let RMBT_URL_HOST = "https://ont.specure.com"
 
 /// Note: $lang will be replaced by the device language (de, en, sl, etc.)
 let RMBT_STATS_URL       = "\(RMBT_URL_HOST)/$lang/statistics"
