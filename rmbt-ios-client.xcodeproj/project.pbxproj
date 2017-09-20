@@ -9,6 +9,19 @@
 /* Begin PBXBuildFile section */
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
 		85E45CEC145A7A4CB2D1F4F3 /* Pods_RMBTClient_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */; };
+		A149A17A1F72560200D14546 /* Info-iOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = A149A1771F72560200D14546 /* Info-iOS.plist */; };
+		A149A17B1F72560200D14546 /* Info-OSX.plist in Resources */ = {isa = PBXBuildFile; fileRef = A149A1781F72560200D14546 /* Info-OSX.plist */; };
+		A149A17C1F72560200D14546 /* Info-tvOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = A149A1791F72560200D14546 /* Info-tvOS.plist */; };
+		A149A17E1F72564400D14546 /* RMBTClient_Shared.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */; };
+		A149A1821F72575700D14546 /* RMBTClient_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A17F1F72575700D14546 /* RMBTClient_Beta.xcconfig */; };
+		A149A1831F72575700D14546 /* RMBTClient_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */; };
+		A149A1841F72575700D14546 /* RMBTClient_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */; };
+		A149A1881F72576600D14546 /* RMBTClient_macos_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */; };
+		A149A1891F72576600D14546 /* RMBTClient_macos_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */; };
+		A149A18A1F72576600D14546 /* RMBTClient_macos_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */; };
+		A149A18E1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */; };
+		A149A18F1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */; };
+		A149A1901F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */; };
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
@@ -459,6 +472,19 @@
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
+		A149A1781F72560200D14546 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OSX.plist"; path = "Configuration/Info-OSX.plist"; sourceTree = "<group>"; };
+		A149A1791F72560200D14546 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "Configuration/Info-tvOS.plist"; sourceTree = "<group>"; };
+		A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Shared.xcconfig; path = Configuration/RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
+		A149A17F1F72575700D14546 /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
+		A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Debug.xcconfig; path = Configuration/iOS/RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
+		A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Release.xcconfig; path = Configuration/iOS/RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
+		A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Beta.xcconfig; path = Configuration/macOS/RMBTClient_macos_Beta.xcconfig; sourceTree = "<group>"; };
+		A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Debug.xcconfig; path = Configuration/macOS/RMBTClient_macos_Debug.xcconfig; sourceTree = "<group>"; };
+		A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Release.xcconfig; path = Configuration/macOS/RMBTClient_macos_Release.xcconfig; sourceTree = "<group>"; };
+		A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Beta.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Beta.xcconfig; sourceTree = "<group>"; };
+		A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Debug.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Debug.xcconfig; sourceTree = "<group>"; };
+		A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Release.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Release.xcconfig; sourceTree = "<group>"; };
 		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
@@ -574,15 +600,11 @@
 		E02D19471CF5A3BE002A02FE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		E02D19491CF5A3D2002A02FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E02D194B1CF5A3D7002A02FE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		E02D19BA1CF5CA20002A02FE /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
 		E02D19FD1CFC80B1002A02FE /* RMBTClient.podspec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = RMBTClient.podspec.json; sourceTree = "<group>"; };
 		E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = injectXcodePath.sh; sourceTree = "<group>"; };
 		E02D1A4A1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E02D1A4C1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E02D1A4E1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		E02D1A501CFD7E42002A02FE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
-		E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
-		E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
 		E02D1A561CFD882D002A02FE /* ControlServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlServer.swift; sourceTree = "<group>"; };
 		E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_iOS.swift; sourceTree = "<group>"; };
 		E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractBasicRequestBuilder.swift; sourceTree = "<group>"; };
@@ -596,9 +618,6 @@
 		E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0B1C8071CF4AEFC00F19282 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Sources/Info-iOS.plist"; sourceTree = "<group>"; };
-		E0B1C8081CF4AEFC00F19282 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OSX.plist"; path = "Sources/Info-OSX.plist"; sourceTree = "<group>"; };
-		E0B1C8091CF4AEFC00F19282 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "Sources/Info-tvOS.plist"; sourceTree = "<group>"; };
 		E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RMBTClient.h; path = Sources/RMBTClient.h; sourceTree = "<group>"; };
 		E0B1C81C1CF4B37800F19282 /* README.adoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.adoc; sourceTree = "<group>"; };
 		E0B1C8201CF4B38800F19282 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -606,12 +625,6 @@
 		E0B1C8241CF4B5A200F19282 /* Speed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speed.swift; sourceTree = "<group>"; };
 		E0B1C8271CF4B5C200F19282 /* RMBTHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTHelpers.swift; sourceTree = "<group>"; };
 		E0B1C82E1CF4B63700F19282 /* Ping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ping.swift; sourceTree = "<group>"; };
-		E0FC4C0F1D6C78B100D5D236 /* RMBTClient_macos_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_macos_Release.xcconfig; sourceTree = "<group>"; };
-		E0FC4C111D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_macos_Debug.xcconfig; sourceTree = "<group>"; };
-		E0FC4C131D6C792700D5D236 /* RMBTClient_macos_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_macos_Beta.xcconfig; sourceTree = "<group>"; };
-		E0FC4C1B1D6C7A6100D5D236 /* RMBTClient_tvOS_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_tvOS_Beta.xcconfig; sourceTree = "<group>"; };
-		E0FC4C1D1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_tvOS_Debug.xcconfig; sourceTree = "<group>"; };
-		E0FC4C1F1D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = RMBTClient_tvOS_Release.xcconfig; sourceTree = "<group>"; };
 		E0FC4C221D6C7F0700D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = RMBTClientPrivate/tvos/module.modulemap; sourceTree = SOURCE_ROOT; };
 		E0FC4C241D6C7F8600D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = appletvsimulator/module.modulemap; sourceTree = "<group>"; };
 		E0FC4C311D6C815B00D5D236 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
@@ -1084,10 +1097,10 @@
 		E0FC4C151D6C795B00D5D236 /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				E02D19BA1CF5CA20002A02FE /* RMBTClient_Shared.xcconfig */,
-				E0B1C8071CF4AEFC00F19282 /* Info-iOS.plist */,
-				E0B1C8081CF4AEFC00F19282 /* Info-OSX.plist */,
-				E0B1C8091CF4AEFC00F19282 /* Info-tvOS.plist */,
+				A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */,
+				A149A1771F72560200D14546 /* Info-iOS.plist */,
+				A149A1781F72560200D14546 /* Info-OSX.plist */,
+				A149A1791F72560200D14546 /* Info-tvOS.plist */,
 				E0FC4C1A1D6C7A4600D5D236 /* tvOS */,
 				E0FC4C171D6C796E00D5D236 /* macos */,
 				E0FC4C161D6C796700D5D236 /* iOS */,
@@ -1098,9 +1111,9 @@
 		E0FC4C161D6C796700D5D236 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */,
-				E02D1A501CFD7E42002A02FE /* RMBTClient_Beta.xcconfig */,
-				E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */,
+				A149A17F1F72575700D14546 /* RMBTClient_Beta.xcconfig */,
+				A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */,
+				A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -1108,9 +1121,9 @@
 		E0FC4C171D6C796E00D5D236 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				E0FC4C111D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig */,
-				E0FC4C131D6C792700D5D236 /* RMBTClient_macos_Beta.xcconfig */,
-				E0FC4C0F1D6C78B100D5D236 /* RMBTClient_macos_Release.xcconfig */,
+				A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */,
+				A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */,
+				A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */,
 			);
 			name = macos;
 			sourceTree = "<group>";
@@ -1118,9 +1131,9 @@
 		E0FC4C1A1D6C7A4600D5D236 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				E0FC4C1D1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig */,
-				E0FC4C1B1D6C7A6100D5D236 /* RMBTClient_tvOS_Beta.xcconfig */,
-				E0FC4C1F1D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig */,
+				A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */,
+				A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */,
+				A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */,
 			);
 			name = tvOS;
 			sourceTree = "<group>";
@@ -1391,7 +1404,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A149A1891F72576600D14546 /* RMBTClient_macos_Debug.xcconfig in Resources */,
+				A149A18F1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig in Resources */,
+				A149A1831F72575700D14546 /* RMBTClient_Debug.xcconfig in Resources */,
+				A149A1821F72575700D14546 /* RMBTClient_Beta.xcconfig in Resources */,
+				A149A17A1F72560200D14546 /* Info-iOS.plist in Resources */,
+				A149A17E1F72564400D14546 /* RMBTClient_Shared.xcconfig in Resources */,
 				E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */,
+				A149A17C1F72560200D14546 /* Info-tvOS.plist in Resources */,
+				A149A1841F72575700D14546 /* RMBTClient_Release.xcconfig in Resources */,
+				A149A18A1F72576600D14546 /* RMBTClient_macos_Release.xcconfig in Resources */,
+				A149A17B1F72560200D14546 /* Info-OSX.plist in Resources */,
+				A149A18E1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig in Resources */,
+				A149A1901F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig in Resources */,
+				A149A1881F72576600D14546 /* RMBTClient_macos_Beta.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1985,7 +2011,6 @@
 		};
 		E0B1C7E51CF4ADBA00F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E02D1A511CFD7E42002A02FE /* RMBTClient_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2051,7 +2076,6 @@
 		};
 		E0B1C7E61CF4ADBA00F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E02D1A521CFD7E42002A02FE /* RMBTClient_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2111,7 +2135,6 @@
 		};
 		E0B1C7F21CF4ADF100F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0FC4C1D1D6C7A7100D5D236 /* RMBTClient_tvOS_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2177,7 +2200,6 @@
 		};
 		E0B1C7F31CF4ADF100F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0FC4C1F1D6C7A8200D5D236 /* RMBTClient_tvOS_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2236,7 +2258,6 @@
 		};
 		E0B1C7FF1CF4AE1100F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0FC4C111D6C790900D5D236 /* RMBTClient_macos_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2303,7 +2324,6 @@
 		};
 		E0B1C8001CF4AE1100F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0FC4C0F1D6C78B100D5D236 /* RMBTClient_macos_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
