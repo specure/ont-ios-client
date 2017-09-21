@@ -1,14 +1,14 @@
 {
     "name": "RMBTClient",
-    "version": "0.0.3",
+    "version": "0.0.1",
     "summary": "RMBTClient libary for iOS, OS X and tvOS.",
-    "homepage": "https://github.com/specure/...",
+    "homepage": "https://github.com/SPECURE/",
     "license": {
         "type": "TODO: Apache v2"
     },
     "source": {
-        "git": "https://github.com/specure/...",
-        "tag": "0.0.3"
+        "git": "https://github.com/specure/rmbt-ios-client.git",
+        "tag": "0.0.1"
     },
     "authors": "Specure GmbH",
     "platforms": {
