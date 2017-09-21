@@ -464,7 +464,6 @@
 		A149A1781F72560200D14546 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OSX.plist"; path = "Configuration/Info-OSX.plist"; sourceTree = "<group>"; };
 		A149A1791F72560200D14546 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "Configuration/Info-tvOS.plist"; sourceTree = "<group>"; };
 		A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Shared.xcconfig; path = Configuration/RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
-		A149A17F1F72575700D14546 /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Debug.xcconfig; path = Configuration/iOS/RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
 		A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Release.xcconfig; path = Configuration/iOS/RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
 		A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Beta.xcconfig; path = Configuration/macOS/RMBTClient_macos_Beta.xcconfig; sourceTree = "<group>"; };
@@ -473,6 +472,7 @@
 		A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Beta.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Beta.xcconfig; sourceTree = "<group>"; };
 		A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Debug.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Debug.xcconfig; sourceTree = "<group>"; };
 		A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Release.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Release.xcconfig; sourceTree = "<group>"; };
+		A157909A1F73EE1E0035ADBE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
@@ -1106,7 +1106,7 @@
 		E0FC4C161D6C796700D5D236 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				A149A17F1F72575700D14546 /* RMBTClient_Beta.xcconfig */,
+				A157909A1F73EE1E0035ADBE /* RMBTClient_Beta.xcconfig */,
 				A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */,
 				A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */,
 			);
@@ -1447,7 +1447,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		186B49F16AD90FF628A92413 /* [CP] Check Pods Manifest.lock */ = {
@@ -1462,7 +1462,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */ = {
@@ -1492,7 +1492,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */ = {
@@ -1993,7 +1993,7 @@
 		};
 		E0B1C7E51CF4ADBA00F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */;
+			baseConfigurationReference = A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2023,6 +2023,18 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/AlamofireObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-iOS\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjcExceptionBridging\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Realm\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RealmSwift\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/XCGLogger\"",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2059,7 +2071,7 @@
 		};
 		E0B1C7E61CF4ADBA00F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */;
+			baseConfigurationReference = A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2119,7 +2131,7 @@
 		};
 		E0B1C7F21CF4ADF100F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD808C3CAF41A276AE936F3B /* Pods-RMBTClient_tvOS.debug.xcconfig */;
+			baseConfigurationReference = A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2163,7 +2175,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Sources/Info-tvOS.plist";
+				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_PRIVATE_FILE = "";
@@ -2185,7 +2197,7 @@
 		};
 		E0B1C7F31CF4ADF100F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A7DB7992695054FA738EA381 /* Pods-RMBTClient_tvOS.release.xcconfig */;
+			baseConfigurationReference = A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2223,7 +2235,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Sources/Info-tvOS.plist";
+				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_PRIVATE_FILE = "";
@@ -2244,7 +2256,7 @@
 		};
 		E0B1C7FF1CF4AE1100F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B03940E4BC0B0DDC64682982 /* Pods-RMBTClient_OSX.debug.xcconfig */;
+			baseConfigurationReference = A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2275,6 +2287,18 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/AlamofireObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-OSX\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjcExceptionBridging\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Realm\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/RealmSwift\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/XCGLogger\"",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2290,7 +2314,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Sources/Info-OSX.plist";
+				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -2311,7 +2335,7 @@
 		};
 		E0B1C8001CF4AE1100F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4ACAE1081DE1D0CF4B433C3C /* Pods-RMBTClient_OSX.release.xcconfig */;
+			baseConfigurationReference = A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2351,7 +2375,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Sources/Info-OSX.plist";
+				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
