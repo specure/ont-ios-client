@@ -162,37 +162,21 @@
 /* Begin PBXFileReference section */
 		1C9897BAA8511BE850B3CFCD /* Pods_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4ACAE1081DE1D0CF4B433C3C /* Pods-RMBTClient_OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX.release.xcconfig"; sourceTree = "<group>"; };
-		5DBA602526102FBD1D7593EA /* Pods-All-RMBTClient_tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6A4DF91DB63F6FC518D3C78B /* Pods-All-RMBTClient_OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.release.xcconfig"; sourceTree = "<group>"; };
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
-		A149A1781F72560200D14546 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OSX.plist"; path = "Configuration/Info-OSX.plist"; sourceTree = "<group>"; };
-		A149A1791F72560200D14546 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "Configuration/Info-tvOS.plist"; sourceTree = "<group>"; };
 		A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Shared.xcconfig; path = Configuration/RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
 		A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Debug.xcconfig; path = Configuration/iOS/RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
 		A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Release.xcconfig; path = Configuration/iOS/RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
-		A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Beta.xcconfig; path = Configuration/macOS/RMBTClient_macos_Beta.xcconfig; sourceTree = "<group>"; };
-		A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Debug.xcconfig; path = Configuration/macOS/RMBTClient_macos_Debug.xcconfig; sourceTree = "<group>"; };
-		A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_macos_Release.xcconfig; path = Configuration/macOS/RMBTClient_macos_Release.xcconfig; sourceTree = "<group>"; };
-		A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Beta.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Beta.xcconfig; sourceTree = "<group>"; };
-		A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Debug.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Debug.xcconfig; sourceTree = "<group>"; };
-		A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Release.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Release.xcconfig; sourceTree = "<group>"; };
 		A157909A1F73EE1E0035ADBE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
 		A1D44B001F137D9500DE9E2D /* Old_Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Request.swift; sourceTree = "<group>"; };
 		A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPRequest.swift; sourceTree = "<group>"; };
-		A7DB7992695054FA738EA381 /* Pods-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B03940E4BC0B0DDC64682982 /* Pods-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
-		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
-		BD808C3CAF41A276AE936F3B /* Pods-RMBTClient_tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		E00C20B21D19654400720394 /* RMBTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTClient.swift; sourceTree = "<group>"; };
 		E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementDisassociateResponse.swift; sourceTree = "<group>"; };
 		E021304A1D786FA80034C378 /* StoredMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredMeasurement.swift; sourceTree = "<group>"; };
@@ -411,16 +395,8 @@
 		396D510CBBF7097CD1BAC7F4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */,
-				6A4DF91DB63F6FC518D3C78B /* Pods-All-RMBTClient_OSX.release.xcconfig */,
 				7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */,
 				91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */,
-				5DBA602526102FBD1D7593EA /* Pods-All-RMBTClient_tvOS.debug.xcconfig */,
-				B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */,
-				B03940E4BC0B0DDC64682982 /* Pods-RMBTClient_OSX.debug.xcconfig */,
-				4ACAE1081DE1D0CF4B433C3C /* Pods-RMBTClient_OSX.release.xcconfig */,
-				BD808C3CAF41A276AE936F3B /* Pods-RMBTClient_tvOS.debug.xcconfig */,
-				A7DB7992695054FA738EA381 /* Pods-RMBTClient_tvOS.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -770,10 +746,6 @@
 			children = (
 				A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */,
 				A149A1771F72560200D14546 /* Info-iOS.plist */,
-				A149A1781F72560200D14546 /* Info-OSX.plist */,
-				A149A1791F72560200D14546 /* Info-tvOS.plist */,
-				E0FC4C1A1D6C7A4600D5D236 /* tvOS */,
-				E0FC4C171D6C796E00D5D236 /* macos */,
 				E0FC4C161D6C796700D5D236 /* iOS */,
 			);
 			name = Configurations;
@@ -787,26 +759,6 @@
 				A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */,
 			);
 			name = iOS;
-			sourceTree = "<group>";
-		};
-		E0FC4C171D6C796E00D5D236 /* macos */ = {
-			isa = PBXGroup;
-			children = (
-				A149A1851F72576600D14546 /* RMBTClient_macos_Beta.xcconfig */,
-				A149A1861F72576600D14546 /* RMBTClient_macos_Debug.xcconfig */,
-				A149A1871F72576600D14546 /* RMBTClient_macos_Release.xcconfig */,
-			);
-			name = macos;
-			sourceTree = "<group>";
-		};
-		E0FC4C1A1D6C7A4600D5D236 /* tvOS */ = {
-			isa = PBXGroup;
-			children = (
-				A149A18B1F72577A00D14546 /* RMBTClient_tvOS_Beta.xcconfig */,
-				A149A18C1F72577A00D14546 /* RMBTClient_tvOS_Debug.xcconfig */,
-				A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */,
-			);
-			name = tvOS;
 			sourceTree = "<group>";
 		};
 		E0FC4C211D6C7EDD00D5D236 /* tvos */ = {

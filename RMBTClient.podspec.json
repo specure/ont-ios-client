@@ -34,21 +34,6 @@
             "GCNetworkReachability": ["~> 1.3.2"]
         }
     },
-    "osx": {
-        "exclude_files": [
-            "Sources/BasicRequestBuilder_iOS.swift",
-            "Sources/BasicRequestBuilder_tvOS.swift"
-        ],
-        "dependencies": {
-            "GCNetworkReachability": ["~> 1.3.2"]
-        }
-    },
-    "tvos": {
-        "exclude_files": [
-            "Sources/BasicRequestBuilder_iOS.swift",
-            "Sources/BasicRequestBuilder_OSX.swift"
-        ]
-    },
     "___public_header_files": [
         "Sources/RMBTTrafficCounter.h",
         "Sources/RMBTRAMMonitor.h",
@@ -75,10 +60,7 @@
     "requires_arc": true,
     "xcconfig": {
         "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
-        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator",
-        "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx",
-        "SWIFT_INCLUDE_PATHS[sdk=appletvos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/tvos",
-        "SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/appletvsimulator"
+        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator"
     },
     "preserve_paths": [ "RMBTClientPrivate/*" ],
     "prepare_command": "RMBTClientPrivate/injectXcodePath.sh"
