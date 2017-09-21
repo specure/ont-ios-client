@@ -166,6 +166,7 @@
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A110DE501F742EC80006D773 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
 		A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Shared.xcconfig; path = Configuration/RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
 		A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Debug.xcconfig; path = Configuration/iOS/RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
@@ -286,9 +287,7 @@
 		E02D194B1CF5A3D7002A02FE /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		E02D19FD1CFC80B1002A02FE /* RMBTClient.podspec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = RMBTClient.podspec.json; sourceTree = "<group>"; };
 		E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = injectXcodePath.sh; sourceTree = "<group>"; };
-		E02D1A4A1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E02D1A4C1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		E02D1A4E1CFD7C81002A02FE /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E02D1A561CFD882D002A02FE /* ControlServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlServer.swift; sourceTree = "<group>"; };
 		E02D1A5C1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequestBuilder_iOS.swift; sourceTree = "<group>"; };
 		E02D1A621CFDD755002A02FE /* AbstractBasicRequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractBasicRequestBuilder.swift; sourceTree = "<group>"; };
@@ -307,8 +306,6 @@
 		E0B1C8241CF4B5A200F19282 /* Speed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speed.swift; sourceTree = "<group>"; };
 		E0B1C8271CF4B5C200F19282 /* RMBTHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTHelpers.swift; sourceTree = "<group>"; };
 		E0B1C82E1CF4B63700F19282 /* Ping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ping.swift; sourceTree = "<group>"; };
-		E0FC4C221D6C7F0700D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = RMBTClientPrivate/tvos/module.modulemap; sourceTree = SOURCE_ROOT; };
-		E0FC4C241D6C7F8600D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = appletvsimulator/module.modulemap; sourceTree = "<group>"; };
 		E0FC4C311D6C815B00D5D236 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
 		E0FC4C331D6C816800D5D236 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E0FC4C351D6C817100D5D236 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
@@ -595,11 +592,8 @@
 			isa = PBXGroup;
 			children = (
 				E02D1A481CFD7C81002A02FE /* injectXcodePath.sh */,
-				E0FC4C231D6C7F5D00D5D236 /* appletvsimulator */,
-				E0FC4C211D6C7EDD00D5D236 /* tvos */,
 				E02D1A491CFD7C81002A02FE /* iphoneos */,
 				E02D1A4B1CFD7C81002A02FE /* iphonesimulator */,
-				E02D1A4D1CFD7C81002A02FE /* macosx */,
 			);
 			path = RMBTClientPrivate;
 			sourceTree = "<group>";
@@ -607,7 +601,7 @@
 		E02D1A491CFD7C81002A02FE /* iphoneos */ = {
 			isa = PBXGroup;
 			children = (
-				E02D1A4A1CFD7C81002A02FE /* module.modulemap */,
+				A110DE501F742EC80006D773 /* module.modulemap */,
 			);
 			path = iphoneos;
 			sourceTree = "<group>";
@@ -618,14 +612,6 @@
 				E02D1A4C1CFD7C81002A02FE /* module.modulemap */,
 			);
 			path = iphonesimulator;
-			sourceTree = "<group>";
-		};
-		E02D1A4D1CFD7C81002A02FE /* macosx */ = {
-			isa = PBXGroup;
-			children = (
-				E02D1A4E1CFD7C81002A02FE /* module.modulemap */,
-			);
-			path = macosx;
 			sourceTree = "<group>";
 		};
 		E02D1A5A1CFD94E1002A02FE /* ControlServer */ = {
@@ -759,22 +745,6 @@
 				A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */,
 			);
 			name = iOS;
-			sourceTree = "<group>";
-		};
-		E0FC4C211D6C7EDD00D5D236 /* tvos */ = {
-			isa = PBXGroup;
-			children = (
-				E0FC4C221D6C7F0700D5D236 /* module.modulemap */,
-			);
-			name = tvos;
-			sourceTree = "<group>";
-		};
-		E0FC4C231D6C7F5D00D5D236 /* appletvsimulator */ = {
-			isa = PBXGroup;
-			children = (
-				E0FC4C241D6C7F8600D5D236 /* module.modulemap */,
-			);
-			name = appletvsimulator;
 			sourceTree = "<group>";
 		};
 		E0FC4C3B1D6C81FF00D5D236 /* Domain */ = {
@@ -1159,6 +1129,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -1186,6 +1157,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 			};
@@ -1193,9 +1165,8 @@
 		};
 		E0B1C7E51CF4ADBA00F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */;
+			baseConfigurationReference = 7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -1249,10 +1220,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1260,9 +1233,11 @@
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(inherited)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1271,9 +1246,8 @@
 		};
 		E0B1C7E61CF4ADBA00F19282 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */;
+			baseConfigurationReference = 91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -1309,10 +1283,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1320,8 +1296,10 @@
 				PRODUCT_NAME = RMBTClient;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(inherited)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
