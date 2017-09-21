@@ -12,9 +12,7 @@
     },
     "authors": "Specure GmbH",
     "platforms": {
-        "ios": "9.0",
-        "osx": "10.9",
-        "tvos": "9.0"
+        "ios": "9.0"
     },
     "source_files": [
         "Sources/**/*.swift",
@@ -59,8 +57,8 @@
     ],
     "requires_arc": true,
     "xcconfig": {
-        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
-        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator"
+        "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/RMBTClientPrivate/iphoneos",
+        "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/RMBTClientPrivate/iphonesimulator"
     },
     "preserve_paths": [ "RMBTClientPrivate/*" ],
     "prepare_command": "RMBTClientPrivate/injectXcodePath.sh"
