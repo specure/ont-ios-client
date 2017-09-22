@@ -4,7 +4,7 @@
     "summary": "RMBTClient libary for iOS, OS X and tvOS.",
     "homepage": "https://github.com/SPECURE/",
     "license": {
-        "type": "TODO: Apache v2"
+        "type": "Apache License, Version 2.0"
     },
     "source": {
         "git": "https://github.com/specure/rmbt-ios-client.git",
