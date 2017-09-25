@@ -1,0 +1,2 @@
+#include "Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX.debug.xcconfig"
+#include "Configuration/RMBTClient_Shared.xcconfig"

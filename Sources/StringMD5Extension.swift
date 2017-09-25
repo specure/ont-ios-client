@@ -15,7 +15,12 @@
  *****************************************************************************************************/
 
 import Foundation
-import RMBTClientPrivate
+#if swift(>=3.2)
+    import Darwin
+    import CommonCrypto
+#else
+    import RMBTClientPrivate
+#endif
 
 ///
 //extension Int {

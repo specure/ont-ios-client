@@ -1,0 +1,2 @@
+#include "Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS.beta.xcconfig"
+#include "Configuration/RMBTClient_Shared.xcconfig"
