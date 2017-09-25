@@ -15,7 +15,12 @@
  *****************************************************************************************************/
 
 import Foundation
-import RMBTClientPrivate
+#if swift(>=3.2)
+    import Darwin
+    import dnssd
+#else
+    import RMBTClientPrivate
+#endif
 
 // TODO: is this the Rcode?
 /* enum DNSStatus {

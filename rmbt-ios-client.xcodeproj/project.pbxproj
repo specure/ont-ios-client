@@ -6,9 +6,23 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		A160F0DC1F794DB700649A96 /* CommonCC */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A160F0DF1F794DB700649A96 /* Build configuration list for PBXAggregateTarget "CommonCC" */;
+			buildPhases = (
+				A160F0E01F794DBC00649A96 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = CommonCC;
+			productName = CommonCC;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		0A6975F2B6EB8EE0CC338C80 /* Pods_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */; };
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
-		85E45CEC145A7A4CB2D1F4F3 /* Pods_RMBTClient_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */; };
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
@@ -20,8 +34,7 @@
 		A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
 		A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
 		A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */; };
-		A262CE903656FD3A68DA68E9 /* Pods_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9897BAA8511BE850B3CFCD /* Pods_RMBTClient_tvOS.framework */; };
-		B5CE67017534A5BC5AF486AA /* Pods_All_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */; };
+		C8A87042AE685FEC69092B37 /* Pods_RMBTClient_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFCE84250908CA426490BA01 /* Pods_RMBTClient_OSX.framework */; };
 		E00C20B31D19654400720394 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
 		E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
 		E02130461D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */; };
@@ -447,16 +460,12 @@
 		E0FC4D1F1D6DCDD100D5D236 /* RMBTLocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */; };
 		E0FC4D201D6DCEA700D5D236 /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
-		FAAC3709F1D55152BABFBB57 /* Pods_All_RMBTClient_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1C9897BAA8511BE850B3CFCD /* Pods_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ACAE1081DE1D0CF4B433C3C /* Pods-RMBTClient_OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX.release.xcconfig"; sourceTree = "<group>"; };
-		5DBA602526102FBD1D7593EA /* Pods-All-RMBTClient_tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6A4DF91DB63F6FC518D3C78B /* Pods-All-RMBTClient_OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.release.xcconfig"; sourceTree = "<group>"; };
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -481,9 +490,8 @@
 		A7DB7992695054FA738EA381 /* Pods-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B03940E4BC0B0DDC64682982 /* Pods-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
-		B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_tvOS/Pods-All-RMBTClient_tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_OSX/Pods-All-RMBTClient_OSX.debug.xcconfig"; sourceTree = "<group>"; };
 		BD808C3CAF41A276AE936F3B /* Pods-RMBTClient_tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RMBTClient_tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		CFCE84250908CA426490BA01 /* Pods_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E00C20B21D19654400720394 /* RMBTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTClient.swift; sourceTree = "<group>"; };
 		E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementDisassociateResponse.swift; sourceTree = "<group>"; };
 		E021304A1D786FA80034C378 /* StoredMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredMeasurement.swift; sourceTree = "<group>"; };
@@ -678,8 +686,7 @@
 				E0FC4C361D6C817100D5D236 /* CoreLocation.framework in Frameworks */,
 				E0FC4C341D6C816800D5D236 /* SystemConfiguration.framework in Frameworks */,
 				E0FC4C321D6C815B00D5D236 /* libresolv.tbd in Frameworks */,
-				B5CE67017534A5BC5AF486AA /* Pods_All_RMBTClient_tvOS.framework in Frameworks */,
-				A262CE903656FD3A68DA68E9 /* Pods_RMBTClient_tvOS.framework in Frameworks */,
+				0A6975F2B6EB8EE0CC338C80 /* Pods_RMBTClient_tvOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,8 +700,7 @@
 				E02D19461CF5A3B4002A02FE /* CoreTelephony.framework in Frameworks */,
 				E02D19441CF5A3A5002A02FE /* Foundation.framework in Frameworks */,
 				E02D19421CF5A38F002A02FE /* libresolv.tbd in Frameworks */,
-				FAAC3709F1D55152BABFBB57 /* Pods_All_RMBTClient_OSX.framework in Frameworks */,
-				85E45CEC145A7A4CB2D1F4F3 /* Pods_RMBTClient_OSX.framework in Frameworks */,
+				C8A87042AE685FEC69092B37 /* Pods_RMBTClient_OSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,8 +730,8 @@
 				5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */,
 				7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */,
 				AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */,
-				1D60C3BB2B7774DA93103FBE /* Pods_RMBTClient_OSX.framework */,
-				1C9897BAA8511BE850B3CFCD /* Pods_RMBTClient_tvOS.framework */,
+				CFCE84250908CA426490BA01 /* Pods_RMBTClient_OSX.framework */,
+				32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -733,12 +739,8 @@
 		396D510CBBF7097CD1BAC7F4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				BC2FB53756565B89B77AE15B /* Pods-All-RMBTClient_OSX.debug.xcconfig */,
-				6A4DF91DB63F6FC518D3C78B /* Pods-All-RMBTClient_OSX.release.xcconfig */,
 				7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */,
 				91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */,
-				5DBA602526102FBD1D7593EA /* Pods-All-RMBTClient_tvOS.debug.xcconfig */,
-				B88E328639ACC9127D90FC04 /* Pods-All-RMBTClient_tvOS.release.xcconfig */,
 				B03940E4BC0B0DDC64682982 /* Pods-RMBTClient_OSX.debug.xcconfig */,
 				4ACAE1081DE1D0CF4B433C3C /* Pods-RMBTClient_OSX.release.xcconfig */,
 				BD808C3CAF41A276AE936F3B /* Pods-RMBTClient_tvOS.debug.xcconfig */,
@@ -1361,6 +1363,10 @@
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0830;
 				TargetAttributes = {
+					A160F0DC1F794DB700649A96 = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+					};
 					E0B1C7DD1CF4ADBA00F19282 = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
@@ -1390,6 +1396,7 @@
 				E0B1C7DD1CF4ADBA00F19282 /* RMBTClient_iOS */,
 				E0B1C7F81CF4AE1100F19282 /* RMBTClient_OSX */,
 				E0B1C7EB1CF4ADF100F19282 /* RMBTClient_tvOS */,
+				A160F0DC1F794DB700649A96 /* CommonCC */,
 			);
 		};
 /* End PBXProject section */
@@ -1494,6 +1501,19 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
+		};
+		A160F0E01F794DBC00649A96 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\"\ncat <<EOF > \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap/module.modulemap\"\nmodule CommonCrypto [system] {\n    header \"${SDKROOT}/usr/include/CommonCrypto/CommonCrypto.h\"\n    export *\n}\nEOF";
 		};
 		D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1934,6 +1954,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		A160F0DD1F794DB700649A96 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A160F0DE1F794DB700649A96 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		E0B1C7D71CF4AC8800F19282 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1959,7 +1995,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = "";
 			};
 			name = Debug;
 		};
@@ -1987,7 +2023,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = "";
 			};
 			name = Release;
 		};
@@ -2395,6 +2431,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A160F0DF1F794DB700649A96 /* Build configuration list for PBXAggregateTarget "CommonCC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A160F0DD1F794DB700649A96 /* Debug */,
+				A160F0DE1F794DB700649A96 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E0B1C7D61CF4AC8800F19282 /* Build configuration list for PBXProject "rmbt-ios-client" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

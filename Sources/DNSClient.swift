@@ -16,7 +16,12 @@
 
 import Foundation
 import CocoaAsyncSocket
-import RMBTClientPrivate
+#if swift(>=3.2)
+    import Darwin
+    import dnssd
+#else
+    import RMBTClientPrivate
+#endif
 
 ///
 class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {

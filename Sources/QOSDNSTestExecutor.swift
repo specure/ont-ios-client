@@ -15,7 +15,12 @@
  *****************************************************************************************************/
 
 import Foundation
-import RMBTClientPrivate
+#if swift(>=3.2)
+    import Darwin
+    import dnssd
+#else
+    import RMBTClientPrivate
+#endif
 
 ///
 typealias DNSTestExecutor = QOSDNSTestExecutor<QOSDNSTest>

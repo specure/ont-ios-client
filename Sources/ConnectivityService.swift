@@ -16,7 +16,14 @@
 
 import Foundation
 import CocoaAsyncSocket
-import RMBTClientPrivate
+#if swift(>=3.2)
+    import Darwin
+#else
+    import RMBTClientPrivate
+#endif
+
+import Foundation
+
 
 ///
 public struct IPInfo: CustomStringConvertible {
