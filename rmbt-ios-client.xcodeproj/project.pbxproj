@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		0A6975F2B6EB8EE0CC338C80 /* Pods_RMBTClient_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */; };
 		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
+		A11690C31F7A371A00A1F3A1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A11690C21F7A371A00A1F3A1 /* README.md */; };
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
@@ -469,6 +470,7 @@
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A11690C21F7A371A00A1F3A1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
 		A149A1781F72560200D14546 /* Info-OSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-OSX.plist"; path = "Configuration/Info-OSX.plist"; sourceTree = "<group>"; };
 		A149A1791F72560200D14546 /* Info-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "Configuration/Info-tvOS.plist"; sourceTree = "<group>"; };
@@ -618,7 +620,6 @@
 		E0B1C7EC1CF4ADF100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C7F91CF4AE1100F19282 /* RMBTClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RMBTClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0B1C8131CF4AFFD00F19282 /* RMBTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RMBTClient.h; path = Sources/RMBTClient.h; sourceTree = "<group>"; };
-		E0B1C81C1CF4B37800F19282 /* README.adoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.adoc; sourceTree = "<group>"; };
 		E0B1C8201CF4B38800F19282 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		E0B1C8231CF4B5A200F19282 /* News.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
 		E0B1C8241CF4B5A200F19282 /* Speed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speed.swift; sourceTree = "<group>"; };
@@ -1058,7 +1059,7 @@
 		E0B1C81B1CF4B36300F19282 /* Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				E0B1C81C1CF4B37800F19282 /* README.adoc */,
+				A11690C21F7A371A00A1F3A1 /* README.md */,
 				E0B1C8201CF4B38800F19282 /* LICENSE */,
 				E02D19FD1CFC80B1002A02FE /* RMBTClient.podspec.json */,
 			);
@@ -1406,6 +1407,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11690C31F7A371A00A1F3A1 /* README.md in Resources */,
 				E02D1A4F1CFD7C81002A02FE /* injectXcodePath.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
