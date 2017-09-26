@@ -21,8 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */; };
 		A11690C31F7A371A00A1F3A1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A11690C21F7A371A00A1F3A1 /* README.md */; };
+		A14A21761F7A43CC009AE452 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A14A21751F7A43CB009AE452 /* libresolv.tbd */; };
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1D44AFF1F137D1A00DE9E2D /* Old_Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */; };
@@ -95,12 +95,6 @@
 		E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D186D1CF59262002A02FE /* UIDeviceHardware.swift */; };
 		E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D186E1CF59262002A02FE /* UInt+Extensions.swift */; };
 		E02D190A1CF59262002A02FE /* WalledGardenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D186F1CF59262002A02FE /* WalledGardenTest.swift */; };
-		E02D191A1CF598A4002A02FE /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D19191CF598A4002A02FE /* libresolv.tbd */; };
-		E02D191C1CF598B1002A02FE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D191B1CF598B1002A02FE /* CoreTelephony.framework */; };
-		E02D191E1CF598DE002A02FE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D191D1CF598DE002A02FE /* MobileCoreServices.framework */; };
-		E02D19201CF598E8002A02FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D191F1CF598E8002A02FE /* Foundation.framework */; };
-		E02D19221CF598F3002A02FE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D19211CF598F3002A02FE /* CoreLocation.framework */; };
-		E02D19241CF59900002A02FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02D19231CF59900002A02FE /* SystemConfiguration.framework */; };
 		E02D19251CF59D1A002A02FE /* GetDNSIP.m in Sources */ = {isa = PBXBuildFile; fileRef = E02D17E41CF59262002A02FE /* GetDNSIP.m */; };
 		E02D192B1CF59F6F002A02FE /* QOSConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D19281CF59F6F002A02FE /* QOSConfig.swift */; };
 		E02D192C1CF59F6F002A02FE /* RMBTConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D19291CF59F6F002A02FE /* RMBTConfig.swift */; };
@@ -175,24 +169,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
-		7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A11690C21F7A371A00A1F3A1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
 		A149A17D1F72564400D14546 /* RMBTClient_Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Shared.xcconfig; path = Configuration/RMBTClient_Shared.xcconfig; sourceTree = "<group>"; };
 		A149A1801F72575700D14546 /* RMBTClient_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Debug.xcconfig; path = Configuration/iOS/RMBTClient_Debug.xcconfig; sourceTree = "<group>"; };
 		A149A1811F72575700D14546 /* RMBTClient_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Release.xcconfig; path = Configuration/iOS/RMBTClient_Release.xcconfig; sourceTree = "<group>"; };
+		A14A21751F7A43CB009AE452 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.0.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
 		A157909A1F73EE1E0035ADBE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
 		A1D44B001F137D9500DE9E2D /* Old_Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Request.swift; sourceTree = "<group>"; };
 		A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPRequest.swift; sourceTree = "<group>"; };
-		AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CFCE84250908CA426490BA01 /* Pods_RMBTClient_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RMBTClient_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E00C20B21D19654400720394 /* RMBTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTClient.swift; sourceTree = "<group>"; };
 		E02130441D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementDisassociateResponse.swift; sourceTree = "<group>"; };
 		E021304A1D786FA80034C378 /* StoredMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredMeasurement.swift; sourceTree = "<group>"; };
@@ -286,15 +276,8 @@
 		E02D186D1CF59262002A02FE /* UIDeviceHardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDeviceHardware.swift; sourceTree = "<group>"; };
 		E02D186E1CF59262002A02FE /* UInt+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UInt+Extensions.swift"; sourceTree = "<group>"; };
 		E02D186F1CF59262002A02FE /* WalledGardenTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalledGardenTest.swift; sourceTree = "<group>"; };
-		E02D19191CF598A4002A02FE /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
-		E02D191B1CF598B1002A02FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/CoreTelephony.framework; sourceTree = DEVELOPER_DIR; };
-		E02D191D1CF598DE002A02FE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
-		E02D191F1CF598E8002A02FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		E02D19211CF598F3002A02FE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
-		E02D19231CF59900002A02FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		E02D19281CF59F6F002A02FE /* QOSConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSConfig.swift; sourceTree = "<group>"; };
 		E02D19291CF59F6F002A02FE /* RMBTConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTConfig.swift; sourceTree = "<group>"; };
-		E02D19411CF5A38F002A02FE /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		E02D19431CF5A3A5002A02FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E02D19451CF5A3B4002A02FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		E02D19471CF5A3BE002A02FE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -324,11 +307,6 @@
 		E0B1C82E1CF4B63700F19282 /* Ping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ping.swift; sourceTree = "<group>"; };
 		E0FC4C221D6C7F0700D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = RMBTClientPrivate/tvos/module.modulemap; sourceTree = SOURCE_ROOT; };
 		E0FC4C241D6C7F8600D5D236 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = appletvsimulator/module.modulemap; sourceTree = "<group>"; };
-		E0FC4C311D6C815B00D5D236 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
-		E0FC4C331D6C816800D5D236 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
-		E0FC4C351D6C817100D5D236 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
-		E0FC4C371D6C818900D5D236 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		E0FC4C391D6C81A100D5D236 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.2.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		E0FC4C3D1D6C826C00D5D236 /* BasicRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicRequest.swift; sourceTree = "<group>"; };
 		E0FC4C421D6C82BE00D5D236 /* MapMeasurementRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapMeasurementRequest.swift; sourceTree = "<group>"; };
 		E0FC4C461D6C82EB00D5D236 /* SettingsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRequest.swift; sourceTree = "<group>"; };
@@ -365,13 +343,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E02D19241CF59900002A02FE /* SystemConfiguration.framework in Frameworks */,
-				E02D19221CF598F3002A02FE /* CoreLocation.framework in Frameworks */,
-				E02D19201CF598E8002A02FE /* Foundation.framework in Frameworks */,
-				E02D191E1CF598DE002A02FE /* MobileCoreServices.framework in Frameworks */,
-				E02D191C1CF598B1002A02FE /* CoreTelephony.framework in Frameworks */,
-				E02D191A1CF598A4002A02FE /* libresolv.tbd in Frameworks */,
-				687AF58B190EC1E02754F9DB /* Pods_All_RMBTClient_iOS.framework in Frameworks */,
+				A14A21761F7A43CC009AE452 /* libresolv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,28 +353,12 @@
 		2BCE53BE0C8C1F8DF2447450 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E0FC4C391D6C81A100D5D236 /* MobileCoreServices.framework */,
-				E0FC4C371D6C818900D5D236 /* Foundation.framework */,
-				E0FC4C351D6C817100D5D236 /* CoreLocation.framework */,
-				E0FC4C331D6C816800D5D236 /* SystemConfiguration.framework */,
-				E0FC4C311D6C815B00D5D236 /* libresolv.tbd */,
+				A14A21751F7A43CB009AE452 /* libresolv.tbd */,
 				E02D194B1CF5A3D7002A02FE /* CoreServices.framework */,
 				E02D19491CF5A3D2002A02FE /* SystemConfiguration.framework */,
 				E02D19471CF5A3BE002A02FE /* CoreLocation.framework */,
 				E02D19451CF5A3B4002A02FE /* CoreTelephony.framework */,
 				E02D19431CF5A3A5002A02FE /* Foundation.framework */,
-				E02D19411CF5A38F002A02FE /* libresolv.tbd */,
-				E02D19231CF59900002A02FE /* SystemConfiguration.framework */,
-				E02D19211CF598F3002A02FE /* CoreLocation.framework */,
-				E02D191F1CF598E8002A02FE /* Foundation.framework */,
-				E02D191D1CF598DE002A02FE /* MobileCoreServices.framework */,
-				E02D191B1CF598B1002A02FE /* CoreTelephony.framework */,
-				E02D19191CF598A4002A02FE /* libresolv.tbd */,
-				5DF20848F54125CA1EFF7B82 /* Pods_All_RMBTClient_OSX.framework */,
-				7C58FC20D01974D2275CDDF7 /* Pods_All_RMBTClient_iOS.framework */,
-				AC29CF2A1C06E995EA1DEA7B /* Pods_All_RMBTClient_tvOS.framework */,
-				CFCE84250908CA426490BA01 /* Pods_RMBTClient_OSX.framework */,
-				32CE51A183DA1215D89709EC /* Pods_RMBTClient_tvOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
