@@ -6,5 +6,5 @@
 System APIs includes The network performance tests (upload, download, etc.) and communition with server. Simple example is coming soon.
 
 ## License
-This project is released under the [Apache ](LICENSE.txt).
+This project is released under the [Apache ](LICENSE).
 
