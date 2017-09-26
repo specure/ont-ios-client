@@ -1,14 +1,14 @@
 {
     "name": "RMBTClient",
-    "version": "0.0.3",
+    "version": "0.0.1",
     "summary": "RMBTClient libary for iOS, OS X and tvOS.",
-    "homepage": "https://github.com/specure/...",
+    "homepage": "https://github.com/SPECURE",
     "license": {
-        "type": "TODO: Apache v2"
+        "type": "Apache version 2.0"
     },
     "source": {
-        "git": "https://github.com/specure/...",
-        "tag": "0.0.3"
+        "git": "https://github.com/SPECURE/rmbt-ios-client",
+        "tag": "0.0.1"
     },
     "authors": "Specure GmbH",
     "platforms": {
@@ -49,7 +49,7 @@
             "Sources/BasicRequestBuilder_OSX.swift"
         ]
     },
-    "___public_header_files": [
+    "public_header_files": [
         "Sources/RMBTTrafficCounter.h",
         "Sources/RMBTRAMMonitor.h",
         "Sources/RMBTCPUMonitor.h",
@@ -73,7 +73,7 @@
         "resolv"
     ],
     "requires_arc": true,
-    "xcconfig": {
+    "pod_target_xcconfig": {
         "SWIFT_INCLUDE_PATHS[sdk=iphoneos*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphoneos",
         "SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/iphonesimulator",
         "SWIFT_INCLUDE_PATHS[sdk=macosx*]": "$(SRCROOT)/../../rmbt-ios-client/RMBTClientPrivate/macosx",
