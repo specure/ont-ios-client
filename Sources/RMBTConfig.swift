@@ -27,8 +27,8 @@ public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFA
 
 public class RMBTConfig {
     
-    // ID = 1 is a Server placed in Nurmberg
-    var defaultMeasurementServerId:UInt64 = 1
+//    // ID = 1 is a Server placed in Nurmberg
+//    var defaultMeasurementServerId:UInt64 = 1
     
     //
     public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()

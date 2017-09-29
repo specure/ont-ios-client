@@ -247,7 +247,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             if let serverId = RMBTConfig.sharedInstance.measurementServer?.id as? UInt64 {
                 speedMeasurementRequestOld.measurementServerId = serverId
             } else {
-                speedMeasurementRequestOld.measurementServerId = RMBTConfig.sharedInstance.defaultMeasurementServerId
+                // If Empty fiels id server -> sets defaults
+               // speedMeasurementRequestOld.measurementServerId = RMBTConfig.sharedInstance.defaultMeasurementServerId
             }
             
             

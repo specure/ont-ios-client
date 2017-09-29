@@ -42,11 +42,8 @@ public func getMeasurementServerInfo(success: @escaping (_ response: Measurement
                                      error failure: @escaping ErrorCallback) {
     
     ControlServer.sharedControlServer.getMeasurementServerDetails(success: { servers in
-        
         success(servers)
-        // store
-        RMBTConfig.sharedInstance.measurementServer = servers.servers?.first
-    
+        
     }, error: failure)
 }
 
