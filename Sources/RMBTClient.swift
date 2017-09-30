@@ -436,12 +436,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
             if testTypes.count > 0 {
                 delegate?.qosMeasurementList(self, list: testTypes)
             } else {
-            
                 //
                 delegate?.measurementDidFail(self, withReason: .errorFetchingQosMeasurementParams)
             }
         }
-        
     }
 
     ///
