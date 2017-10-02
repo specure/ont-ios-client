@@ -93,7 +93,7 @@ open class QosMeasurementResultResponse: BasicResponse {
     }
     
     open func calculateQosFailed() -> Int {
-        let failedCount = self.testResultDetail?.count ?? 0 - self.calculateQosSuccess()
+        let failedCount = (self.testResultDetail?.count ?? 0) - self.calculateQosSuccess()
         return failedCount
     }
 
