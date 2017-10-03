@@ -688,8 +688,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         //
 
+        speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings.publishPublicData
         if TEST_USE_PERSONAL_DATA_FUZZING {
-            speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings.publishPublicData
             logger.info("test result: publish_public_data: \(self.speedMeasurementResult.publishPublicData)")
         }
 
