@@ -906,7 +906,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private func cancelWithReason(_ reason: RMBTTestRunnerCancelReason) {
         //ASSERT_ON_WORKER_QUEUE();
     
-        if isStoreZeroMeasurement == true {
+        if isStoreZeroMeasurement == true && reason != .userRequested {
             print("Store")
             let result = self.resultObject()
             if let _ = result.uuid {
