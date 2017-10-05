@@ -30,6 +30,7 @@ class BasicRequestBuilder: AbstractBasicRequestBuilder {
         basicRequest.model = UIDeviceHardware.platform()
         basicRequest.osVersion = currentDevice.systemVersion
         basicRequest.platform = "iOS"
+        basicRequest.plattform = "iOS"
         basicRequest.clientType = "MOBILE"
     }
 

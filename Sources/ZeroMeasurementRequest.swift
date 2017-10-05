@@ -55,6 +55,7 @@ class ZeroMeasurementRequest: BasicRequest {
             self.model = speedMeasurement.model
             self.osVersion = speedMeasurement.osVersion
             self.platform = speedMeasurement.platform
+            self.plattform = speedMeasurement.plattform
             self.product = speedMeasurement.product
             self.previousTestStatus = speedMeasurement.previousTestStatus
             self.softwareRevision = speedMeasurement.softwareRevision

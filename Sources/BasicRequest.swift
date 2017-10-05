@@ -43,6 +43,7 @@ open class BasicRequest: Mappable {
 
     ///
     var platform: String?
+    var plattform: String?
 
     ///
     var product: String?
@@ -96,6 +97,7 @@ open class BasicRequest: Mappable {
         model               <- map["model"]
         osVersion           <- map["os_version"]
         platform            <- map["platform"]
+        plattform            <- map["plattform"]
         product             <- map["product"]
         previousTestStatus  <- map["previous_test_status"]
         softwareRevision    <- map["software_revision"]
