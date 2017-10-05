@@ -17,6 +17,7 @@
 
 import Foundation
 import CoreLocation
+import ObjectMapper
 
 #if os(iOS)
     import UIKit
@@ -183,6 +184,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     
     ///
     open var isNewVersion = false
+    open var isStoreZeroMeasurement = false
 
     ///
     public init(delegate: RMBTTestRunnerDelegate) {
@@ -588,7 +590,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             self.setPhase(.submittingTestResult)
 
             let speedMeasurementResultRequest = self.resultObject()
-
+            
             let controlServer = ControlServer.sharedControlServer
 
             controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
@@ -618,8 +620,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     private func resultObject() -> SpeedMeasurementResult {
-        speedMeasurementResult.token = testParams.testToken
-        speedMeasurementResult.uuid = testParams.testUuid
+        speedMeasurementResult.token = testParams?.testToken ?? ""
+        speedMeasurementResult.uuid = testParams?.testUuid ?? ""
 
         //speedMeasurementResultRequest.portRemote =
 
@@ -634,8 +636,9 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             sumBytesUploaded += w.totalBytesUploaded
         }
 
-        assert(sumBytesDownloaded > 0, "Total bytes downloaded <= 0")
-        assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
+        //It's already not actual. Because we can have zero measurement result
+//        assert(sumBytesDownloaded > 0, "Total bytes downloaded <= 0")
+//        assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
 
         if let firstWorker = workers.first {
             speedMeasurementResult.totalBytesDownload = NSNumber(value: sumBytesDownloaded).intValue // TODO: ?
@@ -683,8 +686,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         // Add relative time_(dl/ul)_ns timestamps
         let startNanos = speedMeasurementResult.testStartNanos
 
-        speedMeasurementResult.relativeTimeDlNs = NSNumber(value: downlinkTestStartedAtNanos - startNanos).intValue
-        speedMeasurementResult.relativeTimeUlNs = NSNumber(value: uplinkTestStartedAtNanos - startNanos).intValue
+        speedMeasurementResult.relativeTimeDlNs = NSNumber(value: Int64(downlinkTestStartedAtNanos) - Int64(startNanos)).intValue
+        speedMeasurementResult.relativeTimeUlNs = NSNumber(value: Int64(uplinkTestStartedAtNanos) - Int64(startNanos)).intValue
 
         //
 
@@ -902,7 +905,17 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     ///
     private func cancelWithReason(_ reason: RMBTTestRunnerCancelReason) {
         //ASSERT_ON_WORKER_QUEUE();
-
+    
+        if isStoreZeroMeasurement == true {
+            print("Store")
+            let result = self.resultObject()
+            if let _ = result.uuid {
+                DispatchQueue.global().async {
+                    let zeroMeasurement = StoredZeroMeasurement.storedZeroMeasurement(with: result)
+                    zeroMeasurement.store()
+                }
+            }
+        }
         logger.debug("REASON: \(reason)")
 
         finalize()

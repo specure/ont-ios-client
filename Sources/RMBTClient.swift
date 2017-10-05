@@ -144,6 +144,8 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     open var delegate: RMBTClientDelegate?
+    
+    open var isStoreZeroMeasurement = false
 
     ///
     var resultUuid: String?
@@ -188,6 +190,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     ///
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
+        testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
         testRunner?.start()
         
         if clientType == .standard {

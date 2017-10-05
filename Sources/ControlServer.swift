@@ -386,6 +386,25 @@ class ControlServer {
     }
 
     ///
+    func submitZeroMeasurementRequests(_ measurementRequests: [ZeroMeasurementRequest], success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            var passedMeasurementResults: [ZeroMeasurementRequest] = []
+            for measurement in measurementRequests {
+                if let measurementUuid = measurement.uuid {
+                    measurement.clientUuid = uuid
+                    passedMeasurementResults.append(measurement)
+                }
+            }
+            if passedMeasurementResults.count > 0 {
+                self.request(.post, path: "/zeroMeasurement", requestObjects: passedMeasurementResults, key: "zero_measurement", success: success, error: failure)
+            }
+            else {
+                failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
+            }
+        }, error: failure)
+    }
+    
+    ///
     func submitSpeedMeasurementResult(_ speedMeasurementResult: SpeedMeasurementResult, success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
             if let measurementUuid = speedMeasurementResult.uuid {
@@ -637,6 +656,11 @@ class ControlServer {
     ///
     private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
+    }
+    
+    ///
+    private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObjects: [BasicRequest]?, key: String?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObjects: requestObjects, key: key, success: success, error: failure)
     }
 
 }

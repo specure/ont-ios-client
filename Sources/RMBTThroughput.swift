@@ -89,7 +89,12 @@ open class RMBTThroughput: CustomStringConvertible {
 
     ///
     open func kilobitsPerSecond() -> UInt32 {
-        return UInt32(Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6))) // TODO: improve
+        if (_durationNanos > 0) {
+            return UInt32(Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6))) // TODO: improve
+        }
+        else {
+            return 0
+        }
     }
 
     ///
