@@ -86,7 +86,7 @@ open class IPRequest_Old: BasicRequest {
     
     ///
     var software_Version_Code: String = "6666" // and more than that
-    var plattform:String = ""
+//    var plattform:String = ""
     
     ///
     override public func mapping(map: Map) {
