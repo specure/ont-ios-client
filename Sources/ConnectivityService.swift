@@ -176,12 +176,13 @@ extension ConnectivityService {
                             if let address = String(validatingUTF8: hostname) {
 
                                 if addr?.sa_family == UInt8(AF_INET) {
-                                    if self.connectivityInfo.ipv4.internalIp == nil {
+                                    if self.connectivityInfo.ipv4.internalIp != address {
                                         self.connectivityInfo.ipv4.internalIp = address
                                         logger.debug("local ipv4 address from getifaddrs: \(address)")
                                     }
-                                } else if addr?.sa_family == UInt8(AF_INET6) {
-                                    if self.connectivityInfo.ipv6.internalIp == nil {
+                                }
+                                if addr?.sa_family == UInt8(AF_INET6) {
+                                    if self.connectivityInfo.ipv6.internalIp != address {
                                         self.connectivityInfo.ipv6.internalIp = address
                                         self.connectivityInfo.ipv6.externalIp = address
                                         logger.debug("local ipv6 address from getifaddrs: \(address)")
