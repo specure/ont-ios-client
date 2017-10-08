@@ -67,6 +67,10 @@ open class HistoryItem: BasicResponse {
 
     ///
     open var pingShortClassification: Int?
+    
+    open var networkName: String?
+    
+    open var qosResult: String?
 
     ///
     override open func mapping(map: Map) {
@@ -90,5 +94,7 @@ open class HistoryItem: BasicResponse {
         speedUploadClassification   <- map["speed_upload_classification"]
         pingClassification          <- map["ping_classification"]
         pingShortClassification     <- map["ping_short_classification"]
+        networkName         <- map["network_name"]
+        qosResult           <- map["qos_result"]
     }
 }
