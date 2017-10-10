@@ -133,7 +133,7 @@ let RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
 
 // MARK:- Other URLs used in the app
 
-let RMBT_URL_HOST = "https://ont.specure.com"
+let RMBT_URL_HOST = "https://qos01.akostest.net"
 
 /// Note: $lang will be replaced by the device language (de, en, sl, etc.)
 let RMBT_STATS_URL       = "\(RMBT_URL_HOST)/$lang/statistics"

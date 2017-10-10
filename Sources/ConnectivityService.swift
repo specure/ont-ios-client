@@ -90,6 +90,7 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
         self.callback = callback
         self.connectivityInfo = ConnectivityInfo()
 
+        getLocalIpAddresses()
         getLocalIpAddressesFromSocket()
 
         checkIPV4()
