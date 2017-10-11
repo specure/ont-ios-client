@@ -163,11 +163,25 @@ class ServerHelper {
                 case .failure(let error):
                     logger.debug("\(error)") // TODO: error callback
                     debugPrint(response)
+                    var resultError = error
+                    if let data = response.data,
+                        let jsonObject = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers),
+                    let jsonDictionary = jsonObject as? [String: Any] {
+                        print(jsonDictionary)
+                        if let errorString = jsonDictionary["error"] as? String {
+                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString])
+                        }
+                        if let errorArray = jsonDictionary["error"] as? [String],
+                            errorArray.count > 0,
+                            let errorString = errorArray.first {
+                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString])
+                        }
+                    }
                     /*if let responseObj = response.result.value as? String {
                      logger.debug("error msg from server: \(responseObj)")
                      }*/
 
-                    failure(error as Error)
+                    failure(resultError as Error)
                 }
             }
     }

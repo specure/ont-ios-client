@@ -166,7 +166,7 @@ class ControlServer {
             
             logger.info("Control Server base url = \(self.baseUrl)")
 
-            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
+//            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
             successCallback()
             
