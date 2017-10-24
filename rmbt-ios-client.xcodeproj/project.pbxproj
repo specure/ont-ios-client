@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		33ACD3A73E457D351A63A672 /* Pods_All_RMBTClient_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 823D96BB521423AA63719828 /* Pods_All_RMBTClient_iOS.framework */; };
 		A11690C31F7A371A00A1F3A1 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A11690C21F7A371A00A1F3A1 /* README.md */; };
 		A14A21761F7A43CC009AE452 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A14A21751F7A43CB009AE452 /* libresolv.tbd */; };
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
@@ -170,6 +171,7 @@
 
 /* Begin PBXFileReference section */
 		7015E880CAD20689498D4107 /* Pods-All-RMBTClient_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		823D96BB521423AA63719828 /* Pods_All_RMBTClient_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_All_RMBTClient_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91DFB8924DD5C0DA20F74AF0 /* Pods-All-RMBTClient_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-All-RMBTClient_iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A11690C21F7A371A00A1F3A1 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A149A1771F72560200D14546 /* Info-iOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iOS.plist"; path = "Configuration/Info-iOS.plist"; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A14A21761F7A43CC009AE452 /* libresolv.tbd in Frameworks */,
+				33ACD3A73E457D351A63A672 /* Pods_All_RMBTClient_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +362,7 @@
 				E02D19471CF5A3BE002A02FE /* CoreLocation.framework */,
 				E02D19451CF5A3B4002A02FE /* CoreTelephony.framework */,
 				E02D19431CF5A3A5002A02FE /* Foundation.framework */,
+				823D96BB521423AA63719828 /* Pods_All_RMBTClient_iOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -945,7 +949,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run \'pod install\' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */ = {

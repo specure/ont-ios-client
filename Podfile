@@ -13,7 +13,7 @@ abstract_target 'All' do
 
   pod 'RealmSwift'
 
-  pod 'XCGLogger'
+  pod 'XCGLogger', '~> 5.0.5'
 
   target 'RMBTClient_iOS' do
     # Pods for RMBTClient_iOS
