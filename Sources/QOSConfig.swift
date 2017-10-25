@@ -51,7 +51,7 @@ let QOS_ENABLED_TESTS: [QosMeasurementType] = [
 //    .DNS,
 //    .TCP,
 //    .UDP,
-//    .VOIP,
+    .VOIP,
 //    .TRACEROUTE
 ]
 
@@ -63,7 +63,7 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 //    .DNS,
 //    .TCP,
 //    .UDP,
-//    .VOIP,
+    .VOIP,
 //    .TRACEROUTE
 ]
 

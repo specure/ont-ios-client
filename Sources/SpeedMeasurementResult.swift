@@ -17,6 +17,8 @@
 import Foundation
 import ObjectMapper
 import CoreLocation
+import RealmSwift
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -162,7 +164,7 @@ class SpeedMeasurementResult: BasicRequest {
     ///////////
 
     ///
-    let resolutionNanos: UInt64
+    var resolutionNanos: UInt64 = 0
 
     ///
     var testStartNanos: UInt64 = 0
@@ -215,12 +217,11 @@ class SpeedMeasurementResult: BasicRequest {
     }
 
     ///
-    required init?(_ map: Map) {
-        fatalError("init has not been implemented")
-    }
-    
-    required init?(map: Map) {
-        fatalError("init(map:) has not been implemented")
+    required public init?(map: Map) {
+        let nanos = self.resolutionNanos
+        self.totalDownloadHistory = RMBTThroughputHistory(resolutionNanos: nanos)
+        self.totalUploadHistory = RMBTThroughputHistory(resolutionNanos: nanos)
+        super.init(map: map)
     }
 
     //////////
@@ -477,8 +478,12 @@ class SpeedMeasurementResult: BasicRequest {
 
     ///
     func calculate() {
-        calculateThreadThroughputs(perThreadDownloadHistories, direction: .Download)
-        calculateThreadThroughputs(perThreadUploadHistories, direction: .Upload)
+        if let perThreadDownloadHistories = perThreadDownloadHistories {
+            calculateThreadThroughputs(perThreadDownloadHistories, direction: .Download)
+        }
+        if let perThreadUploadHistories = perThreadUploadHistories {
+            calculateThreadThroughputs(perThreadUploadHistories, direction: .Upload)
+        }
 
         // download total troughputs
         speedDownload = UInt64(totalDownloadHistory.totalThroughput.kilobitsPerSecond())

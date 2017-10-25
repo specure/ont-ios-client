@@ -155,6 +155,12 @@ public func RMBTMillisecondsStringWithNanos(_ nanos: UInt64) -> String {
 }
 
 ///
+public func RMBTMillisecondsString(_ nanos: UInt64) -> String {
+    let ms = NSNumber(value: Double(nanos) * 1.0e-6 as Double)
+    return "\(RMBTFormatNumber(ms))"
+}
+
+///
 public func RMBTSecondsStringWithNanos(_ nanos: UInt64) -> String {
     return NSString(format: "%f s", Double(nanos) * 1.0e-9) as String
 }

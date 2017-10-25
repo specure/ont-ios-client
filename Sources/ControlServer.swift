@@ -42,11 +42,8 @@ public func getMeasurementServerInfo(success: @escaping (_ response: Measurement
                                      error failure: @escaping ErrorCallback) {
     
     ControlServer.sharedControlServer.getMeasurementServerDetails(success: { servers in
-        
         success(servers)
-        // store
-        RMBTConfig.sharedInstance.measurementServer = servers.servers?.first
-    
+        
     }, error: failure)
 }
 
@@ -96,7 +93,7 @@ class ControlServer {
     private var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    var baseUrl = "https://netcouch.specure.com/api/v1"
+    var baseUrl = "https://ont.specure.com"+"\(RMBT_CONTROL_SERVER_PATH)"///"https://netcouch.specure.com/api/v1"
 
     ///
     private var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
@@ -169,7 +166,7 @@ class ControlServer {
             
             logger.info("Control Server base url = \(self.baseUrl)")
 
-            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
+//            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
             successCallback()
             
@@ -388,6 +385,25 @@ class ControlServer {
         }, error: failure)
     }
 
+    ///
+    func submitZeroMeasurementRequests(_ measurementRequests: [ZeroMeasurementRequest], success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            var passedMeasurementResults: [ZeroMeasurementRequest] = []
+            for measurement in measurementRequests {
+                if let measurementUuid = measurement.uuid {
+                    measurement.clientUuid = uuid
+                    passedMeasurementResults.append(measurement)
+                }
+            }
+            if passedMeasurementResults.count > 0 {
+                self.request(.post, path: "/zeroMeasurement", requestObjects: passedMeasurementResults, key: "zero_measurement", success: success, error: failure)
+            }
+            else {
+                failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
+            }
+        }, error: failure)
+    }
+    
     ///
     func submitSpeedMeasurementResult(_ speedMeasurementResult: SpeedMeasurementResult, success: @escaping (_ response: SpeedMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
@@ -640,6 +656,11 @@ class ControlServer {
     ///
     private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
+    }
+    
+    ///
+    private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObjects: [BasicRequest]?, key: String?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObjects: requestObjects, key: key, success: success, error: failure)
     }
 
 }

@@ -45,6 +45,57 @@ open class QosMeasurementResultResponse: BasicResponse {
         testResultDetailDescription <- map["testresultdetail_desc"]
         testResultDetailTestDescription <- map["testresultdetail_testdesc"]
     }
+    
+    /// calculate success/failure percentage
+    open func calculateQosSuccessPercentage() -> Float {
+        var successCount = 0
+        
+        if let testResultDetail = self.testResultDetail, testResultDetail.count > 0 {
+            for result in testResultDetail {
+                if let failureCount = result.failureCount, failureCount == 0 {
+                    successCount += 1
+                }
+            }
+            
+            let percentage = 100.0 * Float(successCount) / Float(testResultDetail.count)
+            
+            return percentage
+        }
+        return 0.0
+    }
+    
+    open func calculateQosSuccessPercentage() -> String? {
+        if let testResultDetail = self.testResultDetail, testResultDetail.count > 0 {
+            let successCount = self.calculateQosSuccess()
+            let percent: Float = self.calculateQosSuccessPercentage()
+            let testResultDetailCount = testResultDetail.count
+            logger.info("QOS INFO: \(percent)")
+            return String(format: "%0.0f%% (%i/%i)", percent, successCount, testResultDetailCount)
+        }
+        else {
+            logger.error("NO QOS testResultDetail")
+            return nil
+        }
+    }
+    
+    open func calculateQosSuccess() -> Int {
+        var successCount = 0
+        
+        if let testResultDetail = self.testResultDetail, testResultDetail.count > 0 {
+            for result in testResultDetail {
+                if let failureCount = result.failureCount, failureCount == 0 {
+                    successCount += 1
+                }
+            }
+        }
+        
+        return successCount
+    }
+    
+    open func calculateQosFailed() -> Int {
+        let failedCount = (self.testResultDetail?.count ?? 0) - self.calculateQosSuccess()
+        return failedCount
+    }
 
     ///
     open class MeasurementQosResult: Mappable {

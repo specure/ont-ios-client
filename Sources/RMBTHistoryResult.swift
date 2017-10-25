@@ -132,6 +132,10 @@ open class RMBTHistoryResult {
     /// Available in basic details
     open var networkType: RMBTNetworkType!
     
+    open var networkName: String?
+    
+    open var qosResults: String? = "-"
+    
     ///
     open var shareText: String!
     
@@ -160,6 +164,8 @@ open class RMBTHistoryResult {
     ///
     public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
         
+        networkName = response.networkName
+        qosResults = response.qosResult
         downloadSpeedMbpsString = response.speedDownload
         uploadSpeedMbpsString = response.speedUpload
         shortestPingMillisString = response.pingShortest
