@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Background Info
-System APIs includes The network performance tests (upload, download, etc.) and communition with server. Simple example is coming soon.
+System APIs includes The network performance tests (upload, download, etc.) and communition with server. A simple example of use is available (RMBTClientExample.xcworkspace).
 
 ## License
 This project is released under the [Apache ](LICENSE.txt).
