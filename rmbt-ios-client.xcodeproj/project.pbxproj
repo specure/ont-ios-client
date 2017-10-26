@@ -26,6 +26,14 @@
 		A165FCE91F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
 		A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */; };
+		A1696BFE1F9FD2B9003A257A /* ZeroMeasurementRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696BFD1F9FD2B9003A257A /* ZeroMeasurementRequest.swift */; };
+		A1696C001F9FD305003A257A /* FakeCellLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696BFF1F9FD305003A257A /* FakeCellLocation.swift */; };
+		A1696C021F9FD31A003A257A /* StoredZeroMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696C011F9FD31A003A257A /* StoredZeroMeasurement.swift */; };
+		A1696C041F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */; };
+		A1696C051F9FD35C003A257A /* FakeCellLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696BFF1F9FD305003A257A /* FakeCellLocation.swift */; };
+		A1696C061F9FD35C003A257A /* FakeCellLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696BFF1F9FD305003A257A /* FakeCellLocation.swift */; };
+		A1696C071F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */; };
+		A1696C081F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */; };
 		A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
 		A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */; };
@@ -484,6 +492,10 @@
 		A149A18D1F72577A00D14546 /* RMBTClient_tvOS_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_tvOS_Release.xcconfig; path = Configuration/tvOS/RMBTClient_tvOS_Release.xcconfig; sourceTree = "<group>"; };
 		A157909A1F73EE1E0035ADBE /* RMBTClient_Beta.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = RMBTClient_Beta.xcconfig; path = Configuration/iOS/RMBTClient_Beta.xcconfig; sourceTree = "<group>"; };
 		A165FCE81F1F59D70094602A /* UserDefaults+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extension.swift"; sourceTree = "<group>"; };
+		A1696BFD1F9FD2B9003A257A /* ZeroMeasurementRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroMeasurementRequest.swift; sourceTree = "<group>"; };
+		A1696BFF1F9FD305003A257A /* FakeCellLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeCellLocation.swift; sourceTree = "<group>"; };
+		A1696C011F9FD31A003A257A /* StoredZeroMeasurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoredZeroMeasurement.swift; sourceTree = "<group>"; };
+		A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTZeroMeasurementSynchronizer.swift; sourceTree = "<group>"; };
 		A1720F0C1DD48F28000AB71D /* Conversions+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Conversions+Extension.swift"; sourceTree = "<group>"; };
 		A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Responses.swift; sourceTree = "<group>"; };
 		A1D44B001F137D9500DE9E2D /* Old_Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Old_Request.swift; sourceTree = "<group>"; };
@@ -769,6 +781,7 @@
 		E02130491D786F850034C378 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				A1696C011F9FD31A003A257A /* StoredZeroMeasurement.swift */,
 				E021304A1D786FA80034C378 /* StoredMeasurement.swift */,
 				E08EA6A51D88179E000F916A /* StoredHistoryItem.swift */,
 			);
@@ -987,6 +1000,7 @@
 		E09B78861D5B13AA00CC1129 /* MapServer */ = {
 			isa = PBXGroup;
 			children = (
+				A1696BFF1F9FD305003A257A /* FakeCellLocation.swift */,
 				E09B78871D5B13BC00CC1129 /* MapServer.swift */,
 			);
 			name = MapServer;
@@ -1040,6 +1054,7 @@
 				E02D190E1CF59407002A02FE /* DNS */,
 				E02D190D1CF593A2002A02FE /* Shared */,
 				E02D17D71CF59262002A02FE /* ConnectivityService.swift */,
+				A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */,
 				E02D17D81CF59262002A02FE /* ConnectivityServiceDelegate.swift */,
 				E02D18151CF59262002A02FE /* RMBTConnectivity.swift */,
 				E02D18161CF59262002A02FE /* RMBTConnectivityTracker.swift */,
@@ -1185,6 +1200,7 @@
 		E0FC4C4A1D6C82F400D5D236 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				A1696BFD1F9FD2B9003A257A /* ZeroMeasurementRequest.swift */,
 				A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */,
 				E0FC4C3D1D6C826C00D5D236 /* BasicRequest.swift */,
 				E0FC4C421D6C82BE00D5D236 /* MapMeasurementRequest.swift */,
@@ -1569,6 +1585,7 @@
 				E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */,
 				E02D1A081CFC8E90002A02FE /* DNSClient.swift in Sources */,
 				E0FC4C511D6C83C400D5D236 /* SpeedMeasurementRequest.swift in Sources */,
+				A1696C001F9FD305003A257A /* FakeCellLocation.swift in Sources */,
 				A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */,
 				E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */,
@@ -1579,6 +1596,7 @@
 				E02D18701CF59262002A02FE /* AtomicBoolean.swift in Sources */,
 				E00C20B31D19654400720394 /* RMBTClient.swift in Sources */,
 				E02D18CB1CF59262002A02FE /* RMBTNetworkType.swift in Sources */,
+				A1696C021F9FD31A003A257A /* StoredZeroMeasurement.swift in Sources */,
 				E02D188B1CF59262002A02FE /* NSString+IPAddress.m in Sources */,
 				E02D18FB1CF59262002A02FE /* RTPSequence.swift in Sources */,
 				E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */,
@@ -1647,9 +1665,11 @@
 				E02D19951CF5A8A8002A02FE /* PingUtilSwiftDelegate.swift in Sources */,
 				E02D18791CF59262002A02FE /* DNSHeader.swift in Sources */,
 				E02D19A91CF5AAD9002A02FE /* RMBTConnectivityTracker.swift in Sources */,
+				A1696BFE1F9FD2B9003A257A /* ZeroMeasurementRequest.swift in Sources */,
 				A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C6E1D6C84DA00D5D236 /* SpeedMeasurementResult.swift in Sources */,
 				E02D19061CF59262002A02FE /* UDPStreamSender.swift in Sources */,
+				A1696C041F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
 				E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */,
 				E02D18941CF59262002A02FE /* QOSDNSTest.swift in Sources */,
@@ -1692,6 +1712,7 @@
 				E0FC4C781D6C852600D5D236 /* QosMeasurementResultRequest.swift in Sources */,
 				E0FC4CF11D6D98BC00D5D236 /* ConnectivityServiceDelegate.swift in Sources */,
 				E0FC4CDB1D6C896200D5D236 /* RMBTJSONHelper.swift in Sources */,
+				A1696C051F9FD35C003A257A /* FakeCellLocation.swift in Sources */,
 				E0FC4D181D6DCB8200D5D236 /* RMBTClient.swift in Sources */,
 				E0FC4CE51D6C8B4000D5D236 /* ServerHelper.swift in Sources */,
 				E0FC4D171D6DCB1400D5D236 /* SpeedMeasurementResult.swift in Sources */,
@@ -1749,6 +1770,7 @@
 				E0FC4C8C1D6C85B400D5D236 /* ClientSettings.swift in Sources */,
 				E0FC4D031D6D994400D5D236 /* QOSFactory.swift in Sources */,
 				E0FC4CAC1D6C868D00D5D236 /* QosMeasurementResultResponse.swift in Sources */,
+				A1696C071F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E08EA6AC1D88189B000F916A /* HistoryFilter.swift in Sources */,
 				E0FC4CE71D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0FC4CBC1D6C881C00D5D236 /* RTPControlData.swift in Sources */,
@@ -1830,6 +1852,7 @@
 				E02D19851CF5A50E002A02FE /* QOSControlConnection.swift in Sources */,
 				E02D19631CF5A45C002A02FE /* RTPControlData.swift in Sources */,
 				E0FC4CA31D6C865F00D5D236 /* QosMeasurmentResponse.swift in Sources */,
+				A1696C061F9FD35C003A257A /* FakeCellLocation.swift in Sources */,
 				E02D19501CF5A422002A02FE /* DNSHeader.swift in Sources */,
 				E02D1A191CFC95D1002A02FE /* RMBTCPUMonitor.m in Sources */,
 				E02D19581CF5A443002A02FE /* QOSMeasurementType.swift in Sources */,
@@ -1887,6 +1910,7 @@
 				E02D19941CF5A5FB002A02FE /* LogConfig.swift in Sources */,
 				E02D19721CF5A4CB002A02FE /* UDPStreamReceiverDelegate.swift in Sources */,
 				E02D1A1B1CFC95D5002A02FE /* NSString+IPAddress.m in Sources */,
+				A1696C081F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E08EA6AB1D88189B000F916A /* HistoryFilter.swift in Sources */,
 				E0FC4C4E1D6C834000D5D236 /* GeoLocation.swift in Sources */,
 				E0FC4CE61D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,

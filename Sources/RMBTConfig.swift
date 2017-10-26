@@ -51,7 +51,7 @@ public class RMBTConfig {
     public var measurementServer: MeasurementServerInfoResponse.Servers?
     
     //
-    public var RMBT_VERSION_NEW = true
+    public var RMBT_VERSION_NEW = false
     
     //
     public func configNewCS(server:String) {
