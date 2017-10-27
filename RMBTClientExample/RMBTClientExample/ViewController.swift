@@ -130,7 +130,7 @@ extension ViewController: RMBTClientDelegate {
     func speedMeasurementDidStartPhase(_ phase: SpeedMeasurementPhase) {
         
         if phase == .Init {
-            manageMeasurementButton.isUserInteractionEnabled = true
+            makeManageMeasurementButton(available:true)
         }
     }
     //
