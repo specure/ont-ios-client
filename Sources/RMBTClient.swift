@@ -114,12 +114,10 @@ public protocol RMBTClientDelegate {
 
 //
 public enum RMBTClientType {
-    // delay, down, up + QoS
-    case original
-    // delay, down, up, jitter, packet loss + QoS
-    case standard
-    // delay, down, up + QoS
-    case nkom
+    ///
+    case original // delay, down, up + QoS
+    case standard // delay, down, up, jitter, packet loss + QoS
+    case nkom // delay, down, up + QoS
 }
 
 /////////////
@@ -137,7 +135,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var testRunner: RMBTTestRunner?
     
     /// init
-    open var clientType:RMBTClientType = .standard
+    private var clientType:RMBTClientType = .standard
 
     ///
     internal var qualityOfServiceTestRunner: QualityOfServiceTest?
@@ -169,8 +167,12 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     private let ramMonitor = RMBTRAMMonitor()
 
     ///
-    public init() {
-
+    public init(withClient:RMBTClientType) {
+        
+        //
+        defer {
+            clientType = withClient
+        }
     }
 
     ///
@@ -331,6 +333,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
     ///
     public func testRunnerDidFinishInit(_ time: UInt64) {
         //logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
+        self.delegate?.measurementDidStart(client: self)
     }
 
     ///
@@ -466,7 +469,6 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
 ///
 extension RMBTClient {
-
     ///
     public class func refreshSettings() {
         MeasurementHistory.sharedMeasurementHistory.dirty = true // set history to dirty for changed control servers
