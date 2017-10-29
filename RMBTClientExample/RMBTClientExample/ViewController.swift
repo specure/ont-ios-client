@@ -23,8 +23,8 @@ class ViewController: UIViewController {
     @IBOutlet var packeLossResultLabel:UILabel!
     //
     @IBOutlet var pingResultLabel:UILabel!
-    //
-    let client = RMBTClient()
+    // .standard includes 5 main test + QoS
+    let client = RMBTClient(withClient: .standard)
 
     //
     @IBAction func manageMeasurement(_ sender: UIButton) {
@@ -38,9 +38,8 @@ class ViewController: UIViewController {
     
     //
     override func viewDidLoad() {
-        
+        //
         client.delegate = self
-        client.clientType = .standard
         
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
