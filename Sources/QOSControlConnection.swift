@@ -237,7 +237,7 @@ class QOSControlConnection: NSObject {
                 // println(match)
 
                 if match.numberOfRanges > 0 {
-                    let idStr = (response as NSString).substring(with: match.rangeAt(1))
+                    let idStr = (response as NSString).substring(with: match.range(at: 1))
 
                     // return UInt(idStr.toInt()) // does not work because of Int?
                     return UInt(idStr)

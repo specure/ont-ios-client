@@ -852,7 +852,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 // MARK: App state tracking
 
     ///
-    open func applicationDidSwitchToBackground(_ n: Notification) {
+    @objc open func applicationDidSwitchToBackground(_ n: Notification) {
         logger.debug("App backgrounded, aborting \(n)")
         workerQueue.async {
             self.cancelWithReason(.appBackgrounded)
@@ -862,7 +862,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 // MARK: Tracking location
 
     ///
-    open func locationsDidChange(_ notification: Notification) {
+    @objc open func locationsDidChange(_ notification: Notification) {
         var lastLocation: CLLocation?
 
         for l in notification.userInfo?["locations"] as! [CLLocation] { // !

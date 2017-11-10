@@ -23,7 +23,7 @@ import ObjectMapper
 public func getHistoryFilter(success: @escaping (_ filter: HistoryFilterType) -> (),
                              error failure: @escaping ErrorCallback) {
     
-    ControlServer.sharedControlServer.getSettings(success: { _ in
+    ControlServer.sharedControlServer.getSettings(success: { 
     
 
         return
@@ -303,7 +303,7 @@ class ControlServer {
                         port = ":\(port)"
                     }
                     
-                    self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
+                    self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
                     logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
                 }
             }

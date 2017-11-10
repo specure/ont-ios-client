@@ -22,23 +22,23 @@ import ObjectMapper
 class StoredHistoryItem: Object {
 
     ///
-    dynamic var uuid: String?
+    @objc dynamic var uuid: String?
 
 // MARK: Filterable data
 
     ///
-    dynamic var networkType: String?
+    @objc dynamic var networkType: String?
 
     ///
-    dynamic var model: String?
+    @objc dynamic var model: String?
 
 // MARK: Data
 
     ///
-    dynamic var timestamp: Date?
+    @objc dynamic var timestamp: Date?
 
     ///
-    dynamic var jsonData: String?
+    @objc dynamic var jsonData: String?
 
     //
 

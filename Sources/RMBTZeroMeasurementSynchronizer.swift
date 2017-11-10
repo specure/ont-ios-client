@@ -56,7 +56,7 @@ open class RMBTZeroMeasurementSynchronizer: NSObject {
         reachabilityManager?.stopListening()
     }
 
-    func tick(timer: Timer?) {
+    @objc func tick(timer: Timer?) {
         if (isSynchronizating == false) {
             self.isSynchronizating = true
             if let zeroMeasurements = StoredZeroMeasurement.loadObjects() {

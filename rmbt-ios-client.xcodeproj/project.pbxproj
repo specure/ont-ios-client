@@ -468,6 +468,8 @@
 		E0FC4D1F1D6DCDD100D5D236 /* RMBTLocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */; };
 		E0FC4D201D6DCEA700D5D236 /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
+		E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */; };
+		E9C7AF871FB5FF33005DCEA7 /* RMBTNominatim.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -672,6 +674,8 @@
 		E0FC4CA91D6C868D00D5D236 /* QosMeasurementResultResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QosMeasurementResultResponse.swift; sourceTree = "<group>"; };
 		E0FC4CAD1D6C86B200D5D236 /* HistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryItem.swift; sourceTree = "<group>"; };
 		E0FC4CC01D6C886D00D5D236 /* RTPHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTPHeader.swift; sourceTree = "<group>"; };
+		E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatimAddress.swift; sourceTree = "<group>"; };
+		E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatim.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1055,6 +1059,8 @@
 				E02D190D1CF593A2002A02FE /* Shared */,
 				E02D17D71CF59262002A02FE /* ConnectivityService.swift */,
 				A1696C031F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift */,
+				E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */,
+				E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */,
 				E02D17D81CF59262002A02FE /* ConnectivityServiceDelegate.swift */,
 				E02D18151CF59262002A02FE /* RMBTConnectivity.swift */,
 				E02D18161CF59262002A02FE /* RMBTConnectivityTracker.swift */,
@@ -1385,7 +1391,7 @@
 					};
 					E0B1C7DD1CF4ADBA00F19282 = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0910;
 					};
 					E0B1C7EB1CF4ADF100F19282 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -1573,6 +1579,7 @@
 				E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */,
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
 				E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */,
+				E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */,
 				E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D189C1CF59262002A02FE /* QOSTCPTest.swift in Sources */,
 				E02D19A51CF5AACF002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
@@ -1665,6 +1672,7 @@
 				E02D19951CF5A8A8002A02FE /* PingUtilSwiftDelegate.swift in Sources */,
 				E02D18791CF59262002A02FE /* DNSHeader.swift in Sources */,
 				E02D19A91CF5AAD9002A02FE /* RMBTConnectivityTracker.swift in Sources */,
+				E9C7AF871FB5FF33005DCEA7 /* RMBTNominatim.swift in Sources */,
 				A1696BFE1F9FD2B9003A257A /* ZeroMeasurementRequest.swift in Sources */,
 				A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C6E1D6C84DA00D5D236 /* SpeedMeasurementResult.swift in Sources */,
@@ -2019,7 +2027,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -2047,7 +2055,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -2122,7 +2130,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2181,7 +2189,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2247,7 +2255,6 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2305,7 +2312,6 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VALIDATE_PRODUCT = YES;
@@ -2387,7 +2393,6 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2446,7 +2451,6 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};

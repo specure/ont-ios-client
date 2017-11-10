@@ -22,18 +22,18 @@ import ObjectMapper
 class StoredMeasurement: Object {
 
     ///
-    dynamic var uuid: String?
+    @objc dynamic var uuid: String?
 
 // MARK: Data
 
     ///
-    dynamic var measurementData: String?
+    @objc dynamic var measurementData: String?
 
     ///
-    dynamic var measurementDetailsData: String?
+    @objc dynamic var measurementDetailsData: String?
 
     ///
-    dynamic var measurementQosData: String?
+    @objc dynamic var measurementQosData: String?
 
     //
 

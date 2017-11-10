@@ -24,9 +24,9 @@ class StoredZeroMeasurement: Object {
 // MARK: Data
 
     ///
-    dynamic var measurementData: String?
+    @objc dynamic var measurementData: String?
     
-    dynamic var uuid: String?
+    @objc dynamic var uuid: String?
     
     class func storedZeroMeasurement(with measurement: SpeedMeasurementResult) -> StoredZeroMeasurement {
         let storedZeroMeasurement = StoredZeroMeasurement()
