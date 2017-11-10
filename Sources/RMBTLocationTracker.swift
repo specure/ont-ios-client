@@ -141,14 +141,35 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 extension CLLocation {
     ///
     open func fetchCountryAndCity(completion: @escaping (String?, String?) -> ()) {
-        CLGeocoder().reverseGeocodeLocation(self) { placemarks, error in
+        RMBTNominatim().reverseGeocodeLocation(location: self) {
+            address, error in
             if let error = error {
                 print(error)
                 completion(nil, nil)
-            } else if let country = placemarks?.first?.isoCountryCode,
-                let city = placemarks?.first?.locality {
+            }
+            else {
+                let country = address?.countryCode
+                var city = address?.cityDistrictAlias()
+                if let cityResult = city,
+                    let cityAlias = address?.cityAlias() {
+                    city = cityResult + ", " + cityAlias
+                }
+                else {
+                    if let cityAlias = address?.cityAlias() {
+                        city = cityAlias
+                    }
+                }
                 completion(country, city)
             }
         }
+//        CLGeocoder().reverseGeocodeLocation(self) { placemarks, error in
+//            if let error = error {
+//                print(error)
+//                completion(nil, nil)
+//            } else if let country = placemarks?.first?.isoCountryCode,
+//                let city = placemarks?.first?.locality {
+//                completion(country, city)
+//            }
+//        }
     }
 }
