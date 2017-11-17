@@ -262,7 +262,7 @@ open class MeasurementHistory {
     ///
     fileprivate func getStoredMeasurementData(_ uuid: String) -> SpeedMeasurementResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementData = storedMeasurement.measurementData, measurementData.characters.count > 0 {
+            if let measurementData = storedMeasurement.measurementData, measurementData.count > 0 {
                 if let measurement = Mapper<SpeedMeasurementResultResponse>().map(JSONString:measurementData) {
                     logger.debug("RETURNING CACHED MEASUREMENT \(uuid)")
                     return measurement
@@ -276,7 +276,7 @@ open class MeasurementHistory {
     ///
     fileprivate func getStoredMeasurementDetailsData(_ uuid: String) -> SpeedMeasurementDetailResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementDetailsData = storedMeasurement.measurementDetailsData, measurementDetailsData.characters.count > 0 {
+            if let measurementDetailsData = storedMeasurement.measurementDetailsData, measurementDetailsData.count > 0 {
                 if let measurementDetails = Mapper<SpeedMeasurementDetailResultResponse>().map(JSONString:measurementDetailsData) {
                     logger.debug("RETURNING CACHED MEASUREMENT DETAILS \(uuid)")
                     return measurementDetails
@@ -290,7 +290,7 @@ open class MeasurementHistory {
     ///
     fileprivate func getStoredMeasurementQosData(_ uuid: String) -> QosMeasurementResultResponse? {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
-            if let measurementQosData = storedMeasurement.measurementQosData, measurementQosData.characters.count > 0 {
+            if let measurementQosData = storedMeasurement.measurementQosData, measurementQosData.count > 0 {
                 if let measurementQos = Mapper<QosMeasurementResultResponse>().map(JSONString:measurementQosData) {
                     logger.debug("RETURNING CACHED QOS RESULT \(uuid)")
                     return measurementQos

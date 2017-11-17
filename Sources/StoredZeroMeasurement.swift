@@ -71,11 +71,7 @@ class StoredZeroMeasurement: Object {
     
     class func loadObjects() -> [StoredZeroMeasurement]? {
         if let realm = try? Realm() {
-            do {
-                return Array(realm.objects(StoredZeroMeasurement.self))
-            } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
-            }
+            return Array(realm.objects(StoredZeroMeasurement.self))
         }
         return nil
     }

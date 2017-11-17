@@ -595,7 +595,8 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
         }
 
         if name.hasSuffix(".") {
-            name = name.substring(to: name.characters.index(before: name.endIndex))
+            let index = name.index(before: name.endIndex)
+            name = String(name[..<index])
         }
 
         return name
@@ -610,7 +611,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
         let qname_data = NSMutableData()
 
         for part in splitted_qname {
-            var part_count: UInt8 = /*CFSwapInt8HostToBig(*/UInt8(part.characters.count)/*)*/
+            var part_count: UInt8 = /*CFSwapInt8HostToBig(*/UInt8(part.count)/*)*/
 
 //            println("part: \(part), count: \(part_count)")
 

@@ -390,7 +390,7 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
             var passedMeasurementResults: [ZeroMeasurementRequest] = []
             for measurement in measurementRequests {
-                if let measurementUuid = measurement.uuid {
+                if let _ = measurement.uuid {
                     measurement.clientUuid = uuid
                     passedMeasurementResults.append(measurement)
                 }

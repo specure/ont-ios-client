@@ -753,10 +753,9 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default))
             
-            timer.scheduleRepeating(deadline: DispatchTime.now(),
-                                    interval: RMBTTestRunnerProgressUpdateInterval,
-                                    leeway: DispatchTimeInterval.seconds(50))
-            
+            timer.schedule(deadline: DispatchTime.now(),
+                          repeating: RMBTTestRunnerProgressUpdateInterval,
+                             leeway: DispatchTimeInterval.seconds(50))
             timer.setEventHandler {
                 let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
                 

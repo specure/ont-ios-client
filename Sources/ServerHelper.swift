@@ -198,9 +198,7 @@ class ServerHelper {
                 BasicRequestBuilder.addBasicRequestValues(reqObj)
 //                parameters = reqObj.toJSON() as [String : AnyObject]?
 //                break
-                if let parameters = reqObj.toJSON() as [String : AnyObject]? {
-                    parametersObjects.append(parameters)
-                }
+                parametersObjects.append(reqObj.toJSON() as [String : AnyObject])
                 
                 logger.debug { () -> String in
                     if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {

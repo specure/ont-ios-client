@@ -233,7 +233,7 @@ class QOSControlConnection: NSObject {
         do {
             let regex = try NSRegularExpression(pattern: "\\+ID(\\d*)", options: [])
 
-            if let match = regex.firstMatch(in: response, options: [], range: NSRange(location: 0, length: response.characters.count)) {
+            if let match = regex.firstMatch(in: response, options: [], range: NSRange(location: 0, length: response.count)) {
                 // println(match)
 
                 if match.numberOfRanges > 0 {

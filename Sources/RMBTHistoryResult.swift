@@ -241,7 +241,7 @@ open class RMBTHistoryResult {
                     do {
                         let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
                         
-                        let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.characters.count))
+                        let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.count))
                         
                         if matches.count > 0 {
                             let r = matches.last!
