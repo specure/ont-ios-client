@@ -31,7 +31,7 @@ extension String {
 
     ///
     public func stringByRemovingLastNewline() -> String { // TODO: improve...
-        return self.replacingOccurrences(of: "\n", with: "", options: .backwards, range: self.characters.index(self.endIndex, offsetBy: -2)..<self.endIndex)
+        return self.replacingOccurrences(of: "\n", with: "", options: .backwards, range: self.index(self.endIndex, offsetBy: -2)..<self.endIndex)
     }
     
     // add ms

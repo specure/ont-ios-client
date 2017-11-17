@@ -8,22 +8,22 @@ PODS:
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - ObjectMapper (3.0.0)
-  - Realm (3.0.0):
-    - Realm/Headers (= 3.0.0)
-  - Realm/Headers (3.0.0)
-  - RealmSwift (3.0.0):
-    - Realm (= 3.0.0)
+  - ObjectMapper (3.1.0)
+  - Realm (3.0.2):
+    - Realm/Headers (= 3.0.2)
+  - Realm/Headers (3.0.2)
+  - RealmSwift (3.0.2):
+    - Realm (= 3.0.2)
   - RMBTClient (0.0.1):
     - Alamofire
     - AlamofireObjectMapper
     - CocoaAsyncSocket
-    - GCNetworkReachability (~> 1.3.2)
+    - GCNetworkReachability
     - RealmSwift
-    - XCGLogger (~> 5.0.5)
-  - XCGLogger (5.0.5):
-    - XCGLogger/Core (= 5.0.5)
-  - XCGLogger/Core (5.0.5):
+    - XCGLogger
+  - XCGLogger (6.0.1):
+    - XCGLogger/Core (= 6.0.1)
+  - XCGLogger/Core (6.0.1):
     - ObjcExceptionBridging
 
 DEPENDENCIES:
@@ -39,12 +39,12 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 7eadd3f59e1a6c84e2aefc93e9ff7b55156fe174
   GCNetworkReachability: 2a7dd53d362220326b3e38df68c91b3ef84418d1
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
-  Realm: dec0de73be8c57506e39db72694d513c189493b3
-  RealmSwift: 44a7090b16d1b22a406c6bf129bdd602db1bbecc
-  RMBTClient: abab91ee16751d169c4d1b8607519af06ad9c850
-  XCGLogger: 49bceee6dc0c738eae5d6454fdbf800d62256b74
+  ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
+  Realm: 6f23fd1f178a09342eac21bfa7c2bf4312a7a180
+  RealmSwift: 695393add1b8f9d5fa75dd16e6355cf3935f71e2
+  RMBTClient: 700a1ce7bf2eae14067b83c278bdc0d5938dc93f
+  XCGLogger: b4ca980580108cfeaf221afe158f5d89c1be22e0
 
-PODFILE CHECKSUM: 9b1e2364c53e55f05d3d1598e0356ebb34bc4452
+PODFILE CHECKSUM: 87c894b2f40ff9bf606e9c49fb8dc77370d5cec9
 
 COCOAPODS: 1.3.1

@@ -78,8 +78,7 @@ class GCDTimer {
 //        //
         let zeroInterval = DispatchTimeInterval.seconds(0)
 
-        timer.scheduleOneshot(deadline: dt, leeway: zeroInterval)
-        
+        timer.schedule(deadline: dt, leeway: zeroInterval)        
 
         timer.setEventHandler { // `[weak self]` only needed if you reference `self` in this closure and you want to prevent strong reference cycle
             block()

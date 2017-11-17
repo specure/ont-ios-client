@@ -21,7 +21,7 @@ import Foundation
 open class RMBTTOS: NSObject {
 
     ///
-    open dynamic var lastAcceptedVersion: Int
+    @objc open dynamic var lastAcceptedVersion: Int
 
     ///
     open let currentVersion: Int = RMBT_TOS_VERSION

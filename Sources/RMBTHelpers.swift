@@ -205,9 +205,9 @@ public func RMBTReformatHexIdentifier(_ identifier: String!) -> String! { // !
     var tmp = [String]()
 
     for c in identifier.components(separatedBy: ":") {
-        if c.characters.count == 0 {
+        if c.count == 0 {
             tmp.append("00")
-        } else if c.characters.count == 1 {
+        } else if c.count == 1 {
             tmp.append("0\(c)")
         } else {
             tmp.append(c)

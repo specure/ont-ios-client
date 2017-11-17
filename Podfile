@@ -13,18 +13,18 @@ abstract_target 'All' do
 
   pod 'RealmSwift'
 
-  pod 'XCGLogger', '~> 5.0.5'
+  pod 'XCGLogger'
 
   target 'RMBTClient_iOS' do
     # Pods for RMBTClient_iOS
-    pod 'GCNetworkReachability', '~> 1.3.2'
+    pod 'GCNetworkReachability'
   end
 
   target 'RMBTClient_OSX' do
     platform :osx, '10.9'
 
     # Pods for RMBTClient_OSX
-    pod 'GCNetworkReachability', '~> 1.3.2'
+    pod 'GCNetworkReachability'
   end
 
   target 'RMBTClient_tvOS' do
@@ -38,7 +38,7 @@ end
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['SWIFT_VERSION'] = '3.2'
+#            config.build_settings['SWIFT_VERSION'] = '3.2'
         end
     end
 end

@@ -23,7 +23,7 @@ import ObjectMapper
 public func getHistoryFilter(success: @escaping (_ filter: HistoryFilterType) -> (),
                              error failure: @escaping ErrorCallback) {
     
-    ControlServer.sharedControlServer.getSettings(success: { _ in
+    ControlServer.sharedControlServer.getSettings(success: { 
     
 
         return
@@ -93,7 +93,7 @@ class ControlServer {
     private var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    var baseUrl = "https://ont.specure.com"+"\(RMBT_CONTROL_SERVER_PATH)"///"https://netcouch.specure.com/api/v1"
+    var baseUrl = "https://netcouch.specure.com/api/v1"
 
     ///
     private var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
@@ -303,7 +303,7 @@ class ControlServer {
                         port = ":\(port)"
                     }
                     
-                    self.mapServerBaseUrl = String( "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)")!
+                    self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
                     logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
                 }
             }
@@ -390,7 +390,7 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
             var passedMeasurementResults: [ZeroMeasurementRequest] = []
             for measurement in measurementRequests {
-                if let measurementUuid = measurement.uuid {
+                if let _ = measurement.uuid {
                     measurement.clientUuid = uuid
                     passedMeasurementResults.append(measurement)
                 }

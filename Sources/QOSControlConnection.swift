@@ -233,11 +233,11 @@ class QOSControlConnection: NSObject {
         do {
             let regex = try NSRegularExpression(pattern: "\\+ID(\\d*)", options: [])
 
-            if let match = regex.firstMatch(in: response, options: [], range: NSRange(location: 0, length: response.characters.count)) {
+            if let match = regex.firstMatch(in: response, options: [], range: NSRange(location: 0, length: response.count)) {
                 // println(match)
 
                 if match.numberOfRanges > 0 {
-                    let idStr = (response as NSString).substring(with: match.rangeAt(1))
+                    let idStr = (response as NSString).substring(with: match.range(at: 1))
 
                     // return UInt(idStr.toInt()) // does not work because of Int?
                     return UInt(idStr)

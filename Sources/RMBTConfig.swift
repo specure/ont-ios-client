@@ -26,6 +26,10 @@ public let DEFAULT_LANGUAGE = "en"
 public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFAULT_LANGUAGE
 
 public class RMBTConfig {
+    
+//    // ID = 1 is a Server placed in Nurmberg
+//    var defaultMeasurementServerId:UInt64 = 1
+    
     //
     public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
     

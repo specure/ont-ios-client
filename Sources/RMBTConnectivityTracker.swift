@@ -90,7 +90,7 @@ open class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    open func appWillEnterForeground(_ notification: Notification) {
+    @objc open func appWillEnterForeground(_ notification: Notification) {
         queue.async {
             // Restart various observartions and force update (if already started)
             if self.started {
@@ -143,7 +143,7 @@ open class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    open func reachabilityDidChange(_ n: Notification) {
+    @objc open func reachabilityDidChange(_ n: Notification) {
         #if os(iOS)
         if let status = n.userInfo?[kGCNetworkReachabilityStatusKey] as? NSNumber {
             queue.async {
@@ -154,7 +154,7 @@ open class RMBTConnectivityTracker: NSObject {
     }
 
     ///
-    open func radioDidChange(_ n: Notification) {
+    @objc open func radioDidChange(_ n: Notification) {
         queue.async {
             // Note:Sometimes iOS delivers multiple notification w/o radio technology actually changing
             if (n.object as? String) == self.lastRadioAccessTechnology {

@@ -26,88 +26,88 @@ open class RMBTSettings: NSObject {
 // MARK: Temporary app state (global variables)
 
     ///
-    open dynamic var mapOptionsSelection: RMBTMapOptionsSelection
+    @objc open dynamic var mapOptionsSelection: RMBTMapOptionsSelection
 
 // MARK: Persisted app state
 
     ///
-    open dynamic var testCounter: UInt = 0
+    @objc open dynamic var testCounter: UInt = 0
 
     ///
-    open dynamic var previousTestStatus: String?
+    @objc open dynamic var previousTestStatus: String?
 
 // MARK: User configurable properties
 
     ///
-    open dynamic var publishPublicData = false // only for akos
+    @objc open dynamic var publishPublicData = false // only for akos
     
-    open dynamic var submitZeroTesting = false
+    @objc open dynamic var submitZeroTesting = false
 
     /// anonymous mode
-    open dynamic var anonymousModeEnabled = false
+    @objc open dynamic var anonymousModeEnabled = false
 
 // MARK: Nerd mode
 
     ///
-    open dynamic var nerdModeEnabled = false
+    @objc open dynamic var nerdModeEnabled = false
 
     ///
-    open dynamic var nerdModeForceIPv4 = false
+    @objc open dynamic var nerdModeForceIPv4 = false
 
     ///
-    open dynamic var nerdModeForceIPv6 = false
+    @objc open dynamic var nerdModeForceIPv6 = false
 
     ///
-    open dynamic var nerdModeQosEnabled = false // Enable QoS
+    @objc open dynamic var nerdModeQosEnabled = false // Enable QoS
 
 // MARK: Debug properties
 
     ///
-    open dynamic var debugUnlocked = false
+    @objc open dynamic var debugUnlocked = false
 
     // loop mode
 
     ///
-    open dynamic var debugLoopMode = false
+    @objc open dynamic var debugLoopMode = false
 
     ///
-    open dynamic var debugLoopModeMaxTests: UInt = 0
+    @objc open dynamic var debugLoopModeMaxTests: UInt = 0
 
     ///
-    open dynamic var debugLoopModeMinDelay: UInt = 0
+    @objc open dynamic var debugLoopModeMinDelay: UInt = 0
 
     // control server
 
     ///
-    open dynamic var debugControlServerCustomizationEnabled = false
+    @objc open dynamic var debugControlServerCustomizationEnabled = false
 
     ///
-    open dynamic var debugControlServerHostname: String?
+    @objc open dynamic var debugControlServerHostname: String?
 
     ///
-    open dynamic var debugControlServerPort: UInt = 0
+    @objc open dynamic var debugControlServerPort: UInt = 0
 
     ///
-    open dynamic var debugControlServerUseSSL = false
+    @objc open dynamic var debugControlServerUseSSL = false
 
     // map server
 
     ///
-    open dynamic var debugMapServerCustomizationEnabled = false
+    @objc open dynamic var debugMapServerCustomizationEnabled = false
 
     ///
-    open dynamic var debugMapServerHostname: String?
+    @objc open dynamic var debugMapServerHostname: String?
 
     ///
-    open dynamic var debugMapServerPort: UInt = 0
+    @objc open dynamic var debugMapServerPort: UInt = 0
 
     ///
-    open dynamic var debugMapServerUseSSL = false
+    @objc open dynamic var debugMapServerUseSSL = false
 
     // logging
 
     ///
-    open dynamic var debugLoggingEnabled = false
+    @objc open dynamic var debugLoggingEnabled = false
 
     ///
     private override init() {

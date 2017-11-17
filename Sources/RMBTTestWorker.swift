@@ -226,7 +226,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: State handling
 
     ///
-    open func startDownlinkPretest() {
+    @objc open func startDownlinkPretest() {
         assert(state == .initialized, "Invalid state")
 
         state = .downlinkPretestStarted
@@ -244,7 +244,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    open func startLatencyTest() {
+    @objc open func startLatencyTest() {
         assert(state == .downlinkPretestFinished, "Invalid state")
 
         state = .latencyTestStarted
@@ -256,7 +256,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    open func startDownlinkTest() {
+    @objc open func startDownlinkTest() {
         assert(state == .latencyTestFinished || state == .downlinkPretestFinished, "Invalid state")
 
         state = .downlinkTestStarted
@@ -265,7 +265,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    open func startUplinkPretest() {
+    @objc open func startUplinkPretest() {
         assert(state == .downlinkTestFinished, "Invalid state")
 
         state = .uplinkPretestStarted
@@ -274,7 +274,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    open func startUplinkTest() {
+    @objc open func startUplinkTest() {
         assert(state == .uplinkPretestFinished, "Invalid state")
 
         state = .uplinkTestStarted

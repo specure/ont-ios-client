@@ -753,10 +753,9 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: 0), queue: DispatchQueue.global(qos: .default))
             
-            timer.scheduleRepeating(deadline: DispatchTime.now(),
-                                    interval: RMBTTestRunnerProgressUpdateInterval,
-                                    leeway: DispatchTimeInterval.seconds(50))
-            
+            timer.schedule(deadline: DispatchTime.now(),
+                          repeating: RMBTTestRunnerProgressUpdateInterval,
+                             leeway: DispatchTimeInterval.seconds(50))
             timer.setEventHandler {
                 let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
                 
@@ -852,7 +851,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 // MARK: App state tracking
 
     ///
-    open func applicationDidSwitchToBackground(_ n: Notification) {
+    @objc open func applicationDidSwitchToBackground(_ n: Notification) {
         logger.debug("App backgrounded, aborting \(n)")
         workerQueue.async {
             self.cancelWithReason(.appBackgrounded)
@@ -862,7 +861,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 // MARK: Tracking location
 
     ///
-    open func locationsDidChange(_ notification: Notification) {
+    @objc open func locationsDidChange(_ notification: Notification) {
         var lastLocation: CLLocation?
 
         for l in notification.userInfo?["locations"] as! [CLLocation] { // !
