@@ -127,8 +127,11 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     
     // RMBTMainTestExtendedDelegate
     func runVOIPTest() {
-        
         startQosMeasurement(inMain:true)
+    }
+    
+    func shouldRunQOSTest() -> Bool {
+        return self.isQOSEnabled
     }
 
     ///
@@ -144,6 +147,8 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var delegate: RMBTClientDelegate?
     
     open var isStoreZeroMeasurement = false
+    
+    open var isQOSEnabled = false
 
     ///
     var resultUuid: String?

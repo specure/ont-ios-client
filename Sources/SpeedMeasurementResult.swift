@@ -361,9 +361,9 @@ class SpeedMeasurementResult: BasicRequest {
         }
 
         // Remove last measurement from result, as we don't want to plot that one as it's usually too short
-        if result.count > 0 {
-            result = Array(result[0..<(result.count - 1)])
-        }
+//        if result.count > 0 {
+//            result = Array(result[0..<(result.count - 1)])
+//        }
 
         return result
     }

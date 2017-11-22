@@ -103,6 +103,7 @@ public protocol RMBTTestRunnerDelegate {
 protocol RMBTMainTestExtendedDelegate {
     
     func runVOIPTest()
+    func shouldRunQOSTest() -> Bool
 
 }
 
@@ -559,9 +560,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             /// ONT added
             if isNewVersion {
-            
-                ///////////
-                del?.runVOIPTest()
+//                if del?.shouldRunQOSTest() == true {
+//                    ///////////
+//                    del?.runVOIPTest()
+//                }
+//                else {
+                    submitResult()
+//                }
                 
             } else {
                 submitResult()

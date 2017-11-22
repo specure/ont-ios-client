@@ -206,6 +206,46 @@ open class RMBTHistoryResult {
         previousYearFormatter.dateFormat = "MMM dd YYYY"
     }
     
+    open func latitude() -> String {
+        var latText = ""
+
+        // leave this code as fallback if locationString is not available
+        let latitude = self.coordinate.latitude
+        latText = String(format: "%f", latitude)
+        
+        if let locationString = self.locationString { // TODO: use single if let statement (swift 1.2)
+            let splittedLocationString = locationString.components(separatedBy: " ")
+            
+            if splittedLocationString.count > 1 {
+                latText = String(format: "%@ %@", splittedLocationString[0], splittedLocationString[1])
+            }
+        }
+        
+        return latText
+    }
+    
+    open func longitude() -> String {
+        var longText = ""
+
+        // leave this code as fallback if locationString is not available
+        let longitute = self.coordinate.longitude
+        longText = String(format: "%f", longitute)
+        
+        if let locationString = self.locationString {
+            let splittedLocationString = locationString.components(separatedBy: " ")
+            
+            // this is nasty,..most probably an issue with DB
+            // because this string sometimes has 2 spaces in it... (or split worked not the same as componentSeparatedByString)
+            if splittedLocationString.count > 4 {
+                longText = String(format: "%@ %@", splittedLocationString[3], splittedLocationString[4])
+            } else if splittedLocationString.count > 1 {
+                longText = splittedLocationString[1]
+            }
+        }
+        
+        return longText
+    }
+    
     ///
     open func formattedTimestamp() -> String {
         let historyDateComponents = (Calendar.current as NSCalendar).components([.day, .month, .year], from: timestamp)
