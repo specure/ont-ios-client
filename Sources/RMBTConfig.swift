@@ -179,9 +179,6 @@ let RMBT_TOS_VERSION = 1
 
 ///////////////////
 
-let TEST_SHOW_TRAFFIC_WARNING_ON_CELLULAR_NETWORK = false
-let TEST_SHOW_TRAFFIC_WARNING_ON_WIFI_NETWORK = false
-
 let TEST_USE_PERSONAL_DATA_FUZZING = false
 
 // If set to false: Statistics is not visible, tap on map points doesn't show bubble, ...
