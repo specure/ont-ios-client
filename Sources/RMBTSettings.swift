@@ -20,6 +20,12 @@ import Foundation
 ///
 open class RMBTSettings: NSObject {
 
+    public enum NerdModeQosMode: Int {
+        case manually
+        case newNetwork
+        case always
+    }
+    
     ///
     open static let sharedSettings = RMBTSettings()
 
@@ -58,7 +64,7 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var nerdModeForceIPv6 = false
 
     ///
-    @objc open dynamic var nerdModeQosEnabled = false // Enable QoS
+    @objc open dynamic var nerdModeQosEnabled = NerdModeQosMode.newNetwork.rawValue // Enable QoS
 
 // MARK: Debug properties
 
@@ -108,6 +114,8 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var debugLoggingEnabled = false
+    
+    @objc open dynamic var previousNetworkName: String?
 
     ///
     private override init() {
@@ -168,7 +176,8 @@ open class RMBTSettings: NSObject {
 
             // logging
 
-            "debugLoggingEnabled"
+            "debugLoggingEnabled",
+            "previousNetworkName"
         ])
     }
 

@@ -210,7 +210,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     }
 
     ///
-    func startQosMeasurement(inMain:Bool) {
+    open func startQosMeasurement(inMain:Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
@@ -366,7 +366,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
         self.resultUuid = uuid
 
-        if RMBTSettings.sharedSettings.nerdModeQosEnabled {
+        if self.isQOSEnabled {
             startQosMeasurement(inMain: false) // continue with qos measurement
         } else {
             finishMeasurement()
