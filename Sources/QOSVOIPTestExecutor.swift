@@ -76,7 +76,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     private var initialRTPPacket: RTPPacket!
 
     ///
-    private var rtpControlDataList = [UInt16: RTPControlData]()
+    private var rtpControlDataList: [UInt16: RTPControlData] = [:]
 
     ///
     private var payloadSize: Int!
