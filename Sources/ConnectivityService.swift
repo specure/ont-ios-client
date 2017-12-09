@@ -124,7 +124,7 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
     ///
     private func checkIPV6() {
         
-        self.connectivityInfo?.ipv6.connectionAvailable = (self.connectivityInfo?.ipv6.internalIp != nil)
+        self.connectivityInfo.ipv6.connectionAvailable = (self.connectivityInfo.ipv6.internalIp != nil)
         
         self.ipv6Finished = true
         self.callCallback()
