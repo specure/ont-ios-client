@@ -525,6 +525,7 @@ class SpeedMeasurementResult: BasicRequest {
         
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
             
+            
             clientUuid              <- map["client_uuid"]
             extendedTestStat        <- map["extended_test_stat"]
             geoLocations            <- map["geo_locations"]
@@ -556,7 +557,7 @@ class SpeedMeasurementResult: BasicRequest {
             interfaceUltestBytesDownload <- map["interface_ultest_bytes_download"]
             interfaceUltestBytesUpload   <- map["interface_ultest_bytes_upload"]
             
-            time              <- map["time"]
+            time              <- (map["time"], DateStringTransformOf)
             relativeTimeDlNs  <- map["relative_time_dl_ns"]
             relativeTimeUlNs  <- map["relative_time_ul_ns"]
             

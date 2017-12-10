@@ -19,3 +19,25 @@ import ObjectMapper
 
 ///
 let UInt64NSNumberTransformOf = TransformOf<UInt64, NSNumber>(fromJSON: { $0?.uint64Value }, toJSON: { $0.map { NSNumber(value: $0) } })
+
+let DateStringTransformOf = TransformOf<Date, String>(fromJSON: {
+    let defaultDateFormatter = DateFormatter()
+    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+    if let date = $0 {
+        return defaultDateFormatter.date(from: date)
+    }
+    else {
+        return Date()
+    }
+}, toJSON: {
+    let defaultDateFormatter = DateFormatter()
+    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+    if let date = $0 {
+        return defaultDateFormatter.string(from: date)
+    }
+    else {
+        return ""
+    }
+})
