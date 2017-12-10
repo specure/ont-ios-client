@@ -125,12 +125,12 @@ open class RMBTThroughputHistory: CustomStringConvertible {
         let finalTput = periods[periods.count - count - 1]
 
         for _ in 0 ..< count {
-            let t = periods.last!
+            if let t = periods.last {
+                finalTput.endNanos = max(t.endNanos, finalTput.endNanos)
+                finalTput.length += t.length
 
-            finalTput.endNanos = max(t.endNanos, finalTput.endNanos)
-            finalTput.length += t.length
-
-            periods.removeLast()
+                periods.removeLast()
+            }
         }
     }
 

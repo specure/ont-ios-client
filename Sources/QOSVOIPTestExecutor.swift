@@ -76,7 +76,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     private var initialRTPPacket: RTPPacket!
 
     ///
-    private var rtpControlDataList = [UInt16: RTPControlData]()
+    private var rtpControlDataList: [UInt16: RTPControlData] = [:]
 
     ///
     private var payloadSize: Int!
@@ -332,34 +332,37 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         var prevSeqNr: UInt16? = nil
         for x in sequenceNumberArray {
-            let j = rtpControlDataList[x]!
+            if let j = rtpControlDataList[x] {
+                // println("prevSeqNr: \(prevSeqNr)")
+                // println("jitterMap: \(jitterMap)")
 
-            // println("prevSeqNr: \(prevSeqNr)")
-            // println("jitterMap: \(jitterMap)")
+                if let _prevSeqNr = prevSeqNr,
+                    let i = rtpControlDataList[_prevSeqNr] {
 
-            if let _prevSeqNr = prevSeqNr {
-                let i = rtpControlDataList[_prevSeqNr]!
+                    tsDiff = Int64(j.receivedNS) - Int64(i.receivedNS)
 
-                tsDiff = Int64(j.receivedNS) - Int64(i.receivedNS)
+                    var jitter: Double = 0.0
+                    let delta = Int64(abs(calculateDelta(i, j, testObject.sampleRate)))
+                    
+                    if let prevJitter = jitterMap[_prevSeqNr] {
+                        jitter = prevJitter + (Double(delta) - prevJitter) / 16
+                    }
 
-                let prevJitter = jitterMap[_prevSeqNr]!
-                let delta = Int64(abs(calculateDelta(i, j, testObject.sampleRate)))
-                let jitter: Double = prevJitter + (Double(delta) - prevJitter) / 16
+                    jitterMap[x] = jitter
 
-                jitterMap[x] = jitter
+                    maxDelta = max(delta, maxDelta)
 
-                maxDelta = max(delta, maxDelta)
+                    skew += Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(testObject.sampleRate) * 1000) * Double(NSEC_PER_MSEC)) - Int64(tsDiff)
+                    maxJitter = max(Int64(jitter), maxJitter)
+                    meanJitter += Int64(jitter)
+                } else {
+                    jitterMap[x] = 0
+                }
 
-                skew += Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(testObject.sampleRate) * 1000) * Double(NSEC_PER_MSEC)) - Int64(tsDiff)
-                maxJitter = max(Int64(jitter), maxJitter)
-                meanJitter += Int64(jitter)
-            } else {
-                jitterMap[x] = 0
+                prevSeqNr = x
+                sequenceArray.append(RTPSequence(timestampNS: j.receivedNS, seq: x))
+                sequenceArray.sort() { $0.timestampNS < $1.timestampNS } // TODO: delete when set datatype is available
             }
-
-            prevSeqNr = x
-            sequenceArray.append(RTPSequence(timestampNS: j.receivedNS, seq: x))
-            sequenceArray.sort() { $0.timestampNS < $1.timestampNS } // TODO: delete when set datatype is available
         }
 
         //

@@ -561,11 +561,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             /// ONT added
             if isNewVersion {
 //                if del?.shouldRunQOSTest() == true {
-//                    ///////////
-//                    del?.runVOIPTest()
+                    /////////
+                    del?.runVOIPTest()
 //                }
 //                else {
-                    submitResult()
+//                    submitResult()
 //                }
                 
             } else {

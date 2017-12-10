@@ -51,7 +51,7 @@ let QOS_ENABLED_TESTS: [QosMeasurementType] = [
 //    .DNS,
 //    .TCP,
 //    .UDP,
-//    .VOIP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
 //    .TRACEROUTE
 ]
 
@@ -63,7 +63,7 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 //    .DNS,
 //    .TCP,
 //    .UDP,
-//    .VOIP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
 //    .TRACEROUTE
 ]
 
@@ -78,7 +78,7 @@ let QOS_ENABLED_TESTS: [QosMeasurementType] = [
     .DNS,
     .TCP,
     .UDP,
-    .VOIP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
     .TRACEROUTE
 ]
 

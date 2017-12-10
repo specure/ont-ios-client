@@ -375,6 +375,9 @@ open class QualityOfServiceTest {
                 }
             }
         }
+        else {
+            fail(nil)
+        }
     }
 
     ///
