@@ -557,7 +557,7 @@ class SpeedMeasurementResult: BasicRequest {
             interfaceUltestBytesDownload <- map["interface_ultest_bytes_download"]
             interfaceUltestBytesUpload   <- map["interface_ultest_bytes_upload"]
             
-            time              <- (map["time"], DateStringTransformOf)
+            time              <- map["time"]
             relativeTimeDlNs  <- map["relative_time_dl_ns"]
             relativeTimeUlNs  <- map["relative_time_ul_ns"]
             
