@@ -89,7 +89,12 @@ class Signal: Mappable {
         networkType     <- map["network_type"]
         networkTypeId   <- map["network_type_id"]
         catTechnology   <- map["cat_technology"]
-        time            <- map["time"]
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            time            <- (map["time"], IntDateStringTransformOf)
+        }
+        else {
+            time            <- map["time"]
+        }
         signalStrength  <- map["signal_strength"]
         wifiLinkSpeed   <- map["wifi_link_speed"]
         wifiRssi        <- map["wifi_rssi"]
