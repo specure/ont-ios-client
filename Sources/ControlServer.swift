@@ -236,6 +236,8 @@ class ControlServer {
                 RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
             }
             
+            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
+            
             successCallback()
         }
         ////
