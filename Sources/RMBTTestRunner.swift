@@ -45,7 +45,7 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 */
 
 ///
-public enum RMBTTestRunnerPhase: Int {
+@objc public enum RMBTTestRunnerPhase: Int {
     case none = 0
     case fetchingTestParams
     case wait
@@ -60,7 +60,7 @@ public enum RMBTTestRunnerPhase: Int {
 }
 
 ///
-public enum RMBTTestRunnerCancelReason: Int {
+@objc public enum RMBTTestRunnerCancelReason: Int {
     case userRequested
     case noConnection
     case mixedConnectivity
@@ -70,7 +70,7 @@ public enum RMBTTestRunnerCancelReason: Int {
 }
 
 ///
-public protocol RMBTTestRunnerDelegate {
+@objc public protocol RMBTTestRunnerDelegate {
 
     ///
     func testRunnerDidStartPhase(_ phase: RMBTTestRunnerPhase)
@@ -100,7 +100,7 @@ public protocol RMBTTestRunnerDelegate {
     func testRunnerDidFinishInit(_ time: UInt64)
 }
 
-protocol RMBTMainTestExtendedDelegate {
+@objc protocol RMBTMainTestExtendedDelegate {
     
     func runVOIPTest()
     func shouldRunQOSTest() -> Bool
@@ -120,7 +120,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var workers = [RMBTTestWorker]()
 
     ///
-    private let delegate: RMBTTestRunnerDelegate
+    private weak var delegate: RMBTTestRunnerDelegate?
 
     ///
     private var phase: RMBTTestRunnerPhase = .none
@@ -129,7 +129,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var dead = false
     
     ///////////////////////////////////
-     var del:RMBTMainTestExtendedDelegate?
+    weak var del: RMBTMainTestExtendedDelegate?
     
     ////
     var jpl:[String:Any]? {
@@ -357,7 +357,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(!dead, "Invalid state")
 
         //should it be calculated init time recent time - start test time
-        delegate.testRunnerDidFinishInit(duration)
+        delegate?.testRunnerDidFinishInit(duration)
 
         logger.debug("Thread \(worker.index): finished download pretest (chunks = \(chunks))")
 
@@ -413,7 +413,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         let p = Double(speedMeasurementResult.pings.count) / Double(testParams.numPings)
         DispatchQueue.main.async {
-            self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
+            self.delegate?.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
         }
     }
 
@@ -455,7 +455,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         if measuredThroughputs != nil {
         //if let measuredThroughputs = testResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
             DispatchQueue.main.async {
-                self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
+                self.delegate?.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
             }
         }
     }
@@ -477,7 +477,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
             if let _ = measuredThroughputs {
                 DispatchQueue.main.async {
-                    self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
+                    self.delegate?.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .down)
                 }
             }
 
@@ -529,7 +529,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if let measuredThroughputs = speedMeasurementResult.addLength(length, atNanos: nanos, forThreadIndex: Int(worker.index)) {
             DispatchQueue.main.async {
-                self.delegate.testRunnerDidMeasureThroughputs(measuredThroughputs as NSArray, inPhase: .up)
+                self.delegate?.testRunnerDidMeasureThroughputs(measuredThroughputs as NSArray, inPhase: .up)
             }
         }
     }
@@ -554,7 +554,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
             if let _ = measuredThroughputs {
                 DispatchQueue.main.async {
-                    self.delegate.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .up)
+                    self.delegate?.testRunnerDidMeasureThroughputs((measuredThroughputs as NSArray?)!, inPhase: .up)
                 }
             }
             
@@ -607,7 +607,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     
                     if let uuid = self.testParams.testUuid {
                         DispatchQueue.main.async {
-                            self.delegate.testRunnerDidCompleteWithResult(uuid)
+                            self.delegate?.testRunnerDidCompleteWithResult(uuid)
                         }
                     } else {
                         self.workerQueue.async {
@@ -716,7 +716,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             let oldPhase = self.phase
 
             DispatchQueue.main.async {
-                self.delegate.testRunnerDidFinishPhase(oldPhase)
+                self.delegate?.testRunnerDidFinishPhase(oldPhase)
             }
         }
 
@@ -724,7 +724,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if self.phase != .none {
             DispatchQueue.main.async {
-                self.delegate.testRunnerDidStartPhase(self.phase)
+                self.delegate?.testRunnerDidStartPhase(self.phase)
             }
         }
     }
@@ -768,7 +768,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     // We've reached end of interval...
                     // ..send 1.0 progress one last time..
                     DispatchQueue.main.async {
-                        self.delegate.testRunnerDidUpdateProgress(1.0, inPhase: phase)
+                        self.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: phase)
                     }
 
                     // ..then kill the timer
@@ -787,7 +787,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     assert(p <= 1.0, "Invalid percentage")
 
                     DispatchQueue.main.async {
-                        self.delegate.testRunnerDidUpdateProgress(Float(p), inPhase: phase)
+                        self.delegate?.testRunnerDidUpdateProgress(Float(p), inPhase: phase)
                     }
                 }
 
@@ -836,14 +836,14 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         DispatchQueue.main.async {
-            self.delegate.testRunnerDidDetectConnectivity(connectivity)
+            self.delegate?.testRunnerDidDetectConnectivity(connectivity)
         }
     }
 
     ///
     open func connectivityTracker(_ tracker: RMBTConnectivityTracker, didStopAndDetectIncompatibleConnectivity connectivity: RMBTConnectivity) {
         DispatchQueue.main.async {
-            self.delegate.testRunnerDidDetectConnectivity(connectivity)
+            self.delegate?.testRunnerDidDetectConnectivity(connectivity)
         }
 
         workerQueue.async {
@@ -881,7 +881,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if let _ = lastLocation {
             DispatchQueue.main.async {
-                self.delegate.testRunnerDidDetectLocation(lastLocation!) // !
+                self.delegate?.testRunnerDidDetectLocation(lastLocation!) // !
             }
         }
     }
@@ -903,6 +903,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     deinit {
+        print("RMBTTestRunner deinit")
         finalize()
     }
 
@@ -940,7 +941,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         dead = true
 
         DispatchQueue.main.async {
-            self.delegate.testRunnerDidCancelTestWithReason(reason)
+            self.delegate?.testRunnerDidCancelTestWithReason(reason)
         }
     }
 

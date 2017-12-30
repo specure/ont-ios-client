@@ -18,7 +18,7 @@
 import Foundation
 
 ///
-open class RMBTThroughput: CustomStringConvertible {
+open class RMBTThroughput: NSObject {
 
     ///
     var length: UInt64
@@ -67,7 +67,7 @@ open class RMBTThroughput: CustomStringConvertible {
 
     //
 
-    convenience init() {
+    convenience override init() {
         self.init(length: 0, startNanos: 0, endNanos: 0)
     }
 
@@ -79,7 +79,7 @@ open class RMBTThroughput: CustomStringConvertible {
 
         self._durationNanos = endNanos - startNanos
 
-        assert(_durationNanos >= 0, "Invalid duration")
+        assert((endNanos - startNanos) >= 0, "Invalid duration")
     }
 
     ///
@@ -98,7 +98,7 @@ open class RMBTThroughput: CustomStringConvertible {
     }
 
     ///
-    open var description: String {
+    open override var description: String {
         return String(format: "(%@-%@, %lld bytes, %@)",
                         RMBTSecondsStringWithNanos(_startNanos),
                         RMBTSecondsStringWithNanos(_endNanos),

@@ -23,7 +23,7 @@ import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 
 ///
-open class RMBTConnectivity {
+open class RMBTConnectivity: NSObject {
 
     ///
     open let networkType: RMBTNetworkType
@@ -106,7 +106,7 @@ open class RMBTConnectivity {
     public init(networkType: RMBTNetworkType) {
         self.networkType = networkType
         timestamp = Date()
-
+        super.init()
         getNetworkDetails()
     }
 

@@ -440,12 +440,19 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [String]) {
         //logger.debug("QOS: DID FETCH TYPES: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             
             if testTypes.count > 0 {
-                delegate?.qosMeasurementList(self, list: testTypes)
+                delegate?.qosMeasurementList(self, list: testTypes.map({ (string) -> QosMeasurementType in
+                    if let type = QosMeasurementType(rawValue: string) {
+                        return type
+                    }
+                    else {
+                        return QosMeasurementType.HttpProxy
+                    }
+                }))
             } else {
                 //
                 delegate?.measurementDidFail(self, withReason: .errorFetchingQosMeasurementParams)
@@ -454,10 +461,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType) {
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: String) {
         //logger.debug("QOS: DID FINISH TYPE: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
-            self.delegate?.qosMeasurementFinished(self, type: testType)
+            self.delegate?.qosMeasurementFinished(self, type: QosMeasurementType(rawValue: testType) ?? QosMeasurementType.HttpProxy)
         }
     }
 

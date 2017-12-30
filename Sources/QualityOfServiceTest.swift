@@ -30,7 +30,7 @@ private func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 
 ///
-open class QualityOfServiceTest {
+open class QualityOfServiceTest: NSObject {
 
     ///
     public typealias ConcurrencyGroup = UInt
@@ -50,7 +50,7 @@ open class QualityOfServiceTest {
     private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
 
     ///
-    open var delegate: QualityOfServiceTestDelegate?
+    open weak var delegate: QualityOfServiceTestDelegate?
     
     ///
     var isPartOfMainTest = false
@@ -283,7 +283,9 @@ open class QualityOfServiceTest {
 
         // call didFetchTestTypes delegate method
         DispatchQueue.main.async {
-            self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray)
+            self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray.map({ (type) -> String in
+                return type.rawValue
+            }))
             return
         }
 
@@ -441,7 +443,7 @@ open class QualityOfServiceTest {
             logger.debug("QOS: finished test type: \(testType)")
 
             DispatchQueue.main.async {
-                self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType)
+                self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType.rawValue)
                 return
             }
         }
