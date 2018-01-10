@@ -50,8 +50,8 @@ open class MapServer {
 // MARK: MapServer
     
     ///
-    open func getMapFilterOperators(for countryCode: String = "all", success successCallback: @escaping (_ response: OperatorsResponse) -> (), error failure: @escaping ErrorCallback) {
-        request(.post, path: "/tiles/mapFilterOperators", requestObject: OperatorsRequest(countryCode: countryCode), success: { (response: OperatorsResponse) in
+    open func getMapFilterOperators(for countryCode: String = "all", type: OperatorsRequest.ProviderType = .all, success successCallback: @escaping (_ response: OperatorsResponse) -> (), error failure: @escaping ErrorCallback) {
+        request(.post, path: "/tiles/mapFilterOperators", requestObject: OperatorsRequest(countryCode: countryCode, type: type), success: { (response: OperatorsResponse) in
             successCallback(response)
         } , error: failure)
     }

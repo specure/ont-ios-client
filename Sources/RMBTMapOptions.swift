@@ -425,6 +425,24 @@ open class RMBTMapOptionsType: NSObject {
         return _paramsDictionary as [AnyHashable: Any]
     }
 
+    open func toProviderType() -> OperatorsRequest.ProviderType {
+            /// mobile|cell|browser
+        if identifier == "mobile" {
+            return .mobile
+        }
+        else if identifier == "wifi" {
+            return .WLAN
+        }
+        else if identifier == "cell" {
+            return .mobile
+        }
+        else if identifier == "browser" {
+            return .browser
+        }
+        else {
+            return .all
+        }
+    }
 }
 
 /// Subtype = type + up|down|signal etc. (depending on type)

@@ -18,9 +18,9 @@ import Foundation
 import ObjectMapper
 
 ///
-class OperatorsRequest: BasicRequest {
+open class OperatorsRequest: BasicRequest {
 
-    enum ProviderType: String {
+    public enum ProviderType: String {
         case all = "MFT_ALL"
         case WLAN = "MFT_WLAN"
         case mobile = "MFT_MOBILE"
@@ -42,7 +42,7 @@ class OperatorsRequest: BasicRequest {
     }
     
     ///
-    override func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
 
         language <- map["language"]
