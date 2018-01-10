@@ -91,7 +91,24 @@ open class RMBTMapOptions {
 
     ///
     open var activeOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto
-
+    
+    open var activeCountry: RMBTMapOptionCountry?
+    
+    open var counties: [RMBTMapOptionCountry] = []
+    
+    open var operatorsForCountry: [OperatorsResponse.Operator] = []
+    open var activeOperator: OperatorsResponse.Operator?
+    open var defaultOperator: OperatorsResponse.Operator? {
+        get {
+            for op in operatorsForCountry {
+                if op.isDefault {
+                    return op
+                }
+            }
+            
+            return nil
+        }
+    }
     //
 
     ///
@@ -100,6 +117,12 @@ open class RMBTMapOptions {
             RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
             //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
         ]
+
+        if let responseCountries = (response["mapCountries"] as? [[String: Any]]) {
+            self.counties = responseCountries.map({ (response) -> RMBTMapOptionCountry in
+                return RMBTMapOptionCountry(response: response)
+            })
+        }
 
         // Root element, always the same
         let responseRoot = response["mapfilter"] as! NSDictionary
@@ -113,12 +136,18 @@ open class RMBTMapOptions {
             // Process filters for this type
             for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
                 let filter = RMBTMapOptionsFilter(response: filterResponse)
-                type.addFilter(filter)
+                if (filter.title.uppercased() != "OPERATOR") {
+                    type.addFilter(filter)
+                }
             }
         }
 
         // Select first subtype of first type as active per default
         activeSubtype = types[0].subtypes[0]
+        
+        if counties.count > 0 {
+            self.activeCountry = counties.first
+        }
 
         // ..then try to actually select options from app state, if we have one
         restoreSelection()
@@ -216,6 +245,16 @@ open class RMBTMapOptions {
         }
     }
 
+}
+
+open class RMBTMapOptionCountry: NSObject {
+    open var code: String?
+    open var name: String?
+    
+    init(response: [String: Any]) {
+        self.code = response["country_code"] as? String
+        self.name = response["country_name"] as? String
+    }
 }
 
 // Used to persist selected map options between map views

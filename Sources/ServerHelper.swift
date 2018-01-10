@@ -121,7 +121,7 @@ class ServerHelper {
             BasicRequestBuilder.addBasicRequestValues(reqObj)
 
             parameters = reqObj.toJSON() as [String : AnyObject]?
-
+            
             logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                     return "Requesting \(path) with object: \n\(jsonString)"

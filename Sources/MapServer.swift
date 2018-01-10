@@ -48,7 +48,14 @@ open class MapServer {
     }
 
 // MARK: MapServer
-
+    
+    ///
+    open func getMapFilterOperators(for countryCode: String = "all", success successCallback: @escaping (_ response: OperatorsResponse) -> (), error failure: @escaping ErrorCallback) {
+        request(.post, path: "/tiles/mapFilterOperators", requestObject: OperatorsRequest(countryCode: countryCode), success: { (response: OperatorsResponse) in
+            successCallback(response)
+        } , error: failure)
+    }
+    
     ///
     open func getMapOptions(success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in

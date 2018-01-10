@@ -25,6 +25,8 @@ open class MapOptionResponse: BasicResponse {
 
     ///
     var mapFilterList: [String: [MapOptionType]]?
+    
+    var countries: [MapOptionCountry]?
 
     ///
     override open func mapping(map: Map) {
@@ -32,8 +34,30 @@ open class MapOptionResponse: BasicResponse {
 
         mapTypeList <- map["mapfilter.mapTypes"]
         mapFilterList <- map["mapfilter.mapFilters"]
+        countries <- map["mapCountries"]
     }
 
+    open class MapOptionCountry: Mappable {
+        var code: String?
+        var name: String?
+        
+        ///
+        init() {
+            
+        }
+        
+        ///
+        required public init?(map: Map) {
+            
+        }
+        
+        ///
+        open func mapping(map: Map) {
+            code <- map["country_code"]
+            name <- map["country_name"]
+        }
+    }
+    
     ///
     open class MapOptionType: Mappable {
 
