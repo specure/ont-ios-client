@@ -47,7 +47,7 @@ struct RTPPacket {
     func toData() -> Data {
         let data = NSMutableData()
 
-        data.append(header.toData() as Data)
+        data.append(header.toData())
         data.append(payload)
 
         return data as Data

@@ -57,11 +57,11 @@ open class MapServer {
     }
     
     ///
-    open func getMapOptions(success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+    open func getMapOptions(isOld: Bool = true, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
 
             // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary)
+            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isOld: isOld)
             successCallback(mapOptions)
 
         } , error: failure)

@@ -41,7 +41,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.qos.ntp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    fileprivate var ntpTestSocket: GCDAsyncSocket!
+    fileprivate var ntpTestSocket: GCDAsyncSocket?
 
     ///
     fileprivate var gotReply = false
@@ -114,7 +114,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
                 // connect client socket
                 do {
-                    try ntpTestSocket.connect(toHost: testObject.serverAddress, onPort: testObject.port!, withTimeout: timeoutInSec)
+                    try ntpTestSocket?.connect(toHost: testObject.serverAddress, onPort: testObject.port!, withTimeout: timeoutInSec)
                 } catch {
                     // there was an error
                     qosLog.debug("connection error \(error)")
@@ -135,12 +135,13 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-        if sock == ntpTestSocket {
+        if let socket = ntpTestSocket,
+            sock == socket {
             qosLog.debug("will send \(String(describing: testObject.request)) to the server")
 
             // write request message and read response
-            SocketUtils.writeLine(ntpTestSocket, line: testObject.request!, withTimeout: timeoutInSec, tag: TAG_NTPTEST_REQUEST) // TODO: what if request is nil?
-            SocketUtils.readLine(ntpTestSocket, tag: TAG_NTPTEST_REQUEST, withTimeout: timeoutInSec)
+            SocketUtils.writeLine(socket, line: testObject.request!, withTimeout: timeoutInSec, tag: TAG_NTPTEST_REQUEST) // TODO: what if request is nil?
+            SocketUtils.readLine(socket, tag: TAG_NTPTEST_REQUEST, withTimeout: timeoutInSec)
         }
     }
 

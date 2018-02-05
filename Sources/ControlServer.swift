@@ -47,6 +47,13 @@ public func getMeasurementServerInfo(success: @escaping (_ response: Measurement
     }, error: failure)
 }
 
+public func checkSurvey(success: @escaping (_ response: CheckSurveyResponse) -> (),
+                                     error failure: @escaping ErrorCallback) {
+    
+    
+    ControlServer.sharedControlServer.checkSurvey(success: success, error: failure)
+}
+
 /// data type alias for filters
 public typealias HistoryFilterType = [String: [String]]
 
@@ -85,6 +92,8 @@ class ControlServer {
     
     ///
     var historyFilter:HistoryFilterType?
+    
+    var surveySettings: SettingsReponse_Old.Settings.SurveySettings?
 
     ///
     var openTestBaseURL: String?
@@ -256,7 +265,7 @@ class ControlServer {
                     UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
                 }
                 
-                
+                self.surveySettings = set.surveySettings
                 
                 // set control server version
                 self.version = set.versions?.controlServerVersion
@@ -621,6 +630,16 @@ class ControlServer {
             let req = GetSyncCodeRequest()
             req.uuid = uuid
             self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
+        }, error: failure)
+    }
+    
+    // MARK: Survey Settings
+    ///
+    func checkSurvey(success: @escaping (_ response: CheckSurveyResponse) -> (), error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { uuid in
+            let req = CheckSurveyRequest()
+            req.clientUuid = uuid
+            self.request(.post, path: "/checkSurvey", requestObject: req, success: success, error: failure)
         }, error: failure)
     }
     

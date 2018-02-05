@@ -116,6 +116,8 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var debugLoggingEnabled = false
     
     @objc open dynamic var previousNetworkName: String?
+    
+    @objc open dynamic var lastSurveyTimestamp: Double = 0.0
 
     ///
     private override init() {
@@ -177,7 +179,9 @@ open class RMBTSettings: NSObject {
             // logging
 
             "debugLoggingEnabled",
-            "previousNetworkName"
+            "previousNetworkName",
+            
+            "lastSurveyTimestamp"
         ])
     }
 

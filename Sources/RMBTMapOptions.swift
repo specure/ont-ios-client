@@ -110,9 +110,12 @@ open class RMBTMapOptions {
         }
     }
     //
+    
+    var isOld = true
 
     ///
-    public init(response: NSDictionary) {
+    public init(response: NSDictionary, isOld: Bool = true) {
+        self.isOld = isOld
         overlays = [
             RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
             //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
@@ -135,10 +138,14 @@ open class RMBTMapOptions {
 
             // Process filters for this type
             for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
-                let filter = RMBTMapOptionsFilter(response: filterResponse)
-                if (filter.title.uppercased() != "OPERATOR") {
-                    type.addFilter(filter)
+                if isOld == false {
+                if let f = filterResponse["options"] as? [[String: Any]],
+                    let op = f.last?["operator"] {
+                    continue
                 }
+                }
+                let filter = RMBTMapOptionsFilter(response: filterResponse)
+                type.addFilter(filter)
             }
         }
 

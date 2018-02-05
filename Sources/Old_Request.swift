@@ -185,3 +185,16 @@ open class SettingsRequest_Old: BasicRequest {
         name <- map["name"]
     }
 }
+
+///
+open class CheckSurveyRequest: BasicRequest {
+    
+    ///
+    var clientUuid: String = ""
+
+    ///
+    override public func mapping(map: Map) {
+//        super.mapping(map: map)
+        clientUuid <- map["client_uuid"]
+    }
+}

@@ -274,7 +274,7 @@ open class SettingsReponse_Old: BasicResponse {
     
     
     ///
-    class Settings: Mappable {
+    open class Settings: Mappable {
         
         ///
         var urls: UrlSettings?
@@ -297,6 +297,8 @@ open class SettingsReponse_Old: BasicResponse {
         ///
         var history: HistoryFilterType?
         
+        var surveySettings: SurveySettings?
+        
         
         ///
         init() {
@@ -304,12 +306,12 @@ open class SettingsReponse_Old: BasicResponse {
         }
         
         ///
-        required init?(map: Map) {
+        required public init?(map: Map) {
             
         }
         
         ///
-        func mapping(map: Map) {
+        public func mapping(map: Map) {
             advertised_speed_option <- map["advertised_speed_option"]
             qosMeasurementTypes <- map["qostesttype_desc"]
             urls <- map["urls"]
@@ -318,6 +320,7 @@ open class SettingsReponse_Old: BasicResponse {
             map_server <- map["map_server"]
             uuid <- map["uuid"]
             history <- map["history"]
+            surveySettings <- map["survey_settings"]
         }
         
         ///
@@ -381,6 +384,31 @@ open class SettingsReponse_Old: BasicResponse {
             ///
             func mapping(map: Map) {
                 controlServerVersion <- map["control_server_version"]
+            }
+        }
+        
+        open class SurveySettings: Mappable {
+            
+            ///
+            var surveyUrl: String?
+            var isActiveService: Bool?
+            var dateStarted: Double?
+            
+            ///
+            init() {
+                
+            }
+            
+            ///
+            required public init?(map: Map) {
+                
+            }
+            
+            ///
+            public func mapping(map: Map) {
+                surveyUrl <- map["survey_url"]
+                isActiveService <- map["is_active_service"]
+                dateStarted <- map["date_started"]
             }
         }
         

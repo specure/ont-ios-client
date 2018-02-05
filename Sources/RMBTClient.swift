@@ -497,6 +497,19 @@ extension RMBTClient {
             return ControlServer.sharedControlServer.uuid
         }
     }
+    
+    ///
+    public class var surveyTimestamp: TimeInterval? {
+        get {
+            return TimeInterval(ControlServer.sharedControlServer.surveySettings?.dateStarted ?? 0)
+        }
+    }
+    
+    public class var surveyIsActiveService: Bool? {
+        get {
+            return ControlServer.sharedControlServer.surveySettings?.isActiveService
+        }
+    }
 
     ///
     public class var controlServerVersion: String? {
