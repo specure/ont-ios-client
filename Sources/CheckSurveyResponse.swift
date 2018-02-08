@@ -10,12 +10,18 @@ import ObjectMapper
 
 open class CheckSurveyResponse: BasicResponse {
 
-    open var survey: Survey?
+    open var survies: [Survey]?
+    
+    open var survey: Survey? {
+        get {
+            return survies?.first
+        }
+    }
     
     override open func mapping(map: Map) {
         super.mapping(map: map)
         
-        survey <- map["survey"]
+        survies <- map["survey"]
     }
     
     open class Survey: Mappable {

@@ -194,7 +194,6 @@ open class CheckSurveyRequest: BasicRequest {
 
     ///
     override public func mapping(map: Map) {
-//        super.mapping(map: map)
         clientUuid <- map["client_uuid"]
     }
 }
