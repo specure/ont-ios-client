@@ -193,19 +193,20 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     func callFinishCallback() {
 //        timeoutCountDownLatch.countDown()
 
-        objc_sync_enter(self)
+//        objc_sync_enter(self)
 
         // TODO: IMPROVE...let tests don't do anything if there are finished!
 
         // return if already finished
         if hasFinished {
-            objc_sync_exit(self)
+//            objc_sync_exit(self)
             return
         }
         hasFinished = true
 
-        let serialQueue = DispatchQueue(label: "test-executor-queue")
-        serialQueue.sync {
+//        let serialQueue = DispatchQueue(label: "test-executor-queue")
+//        serialQueue.sync {
+        
             
             self.stopTimer()
 
@@ -225,8 +226,8 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
             // call finish callback saved in finishCallback variable
             qosLog.debug("calling finish callback")
             self.finishCallback(self.testResult) // TODO: run this in delegate queue?
-        }
-        objc_sync_exit(self)
+//        }
+//        objc_sync_exit(self)
     }
 
     ///

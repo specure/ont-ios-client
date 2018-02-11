@@ -159,6 +159,17 @@ open class RMBTMapOptions {
         // ..then try to actually select options from app state, if we have one
         restoreSelection()
     }
+    
+    public func merge(with previousMapOptions: RMBTMapOptions) {
+        self.activeCountry = previousMapOptions.activeCountry
+        self.activeOverlay = previousMapOptions.activeOverlay
+        self.activeSubtype = previousMapOptions.activeSubtype
+        self.activeOperator = previousMapOptions.activeOperator
+        self.operatorsForCountry = previousMapOptions.operatorsForCountry
+        
+        // ..then try to actually select options from app state, if we have one
+        restoreSelection()
+    }
 
     /// Returns dictionary with following keys set, representing information to be shown in the toast
     open func toastInfo() -> [String: [String]] {

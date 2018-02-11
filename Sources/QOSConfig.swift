@@ -49,7 +49,7 @@ let QOS_ENABLED_TESTS: [QosMeasurementType] = [
 //    .NonTransparentProxy,
 //    .WEBSITE,
 //    .DNS,
-//    .TCP,
+    .TCP,
 //    .UDP,
     .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
 //    .TRACEROUTE

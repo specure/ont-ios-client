@@ -140,14 +140,14 @@ open class QualityOfServiceTest: NSObject {
 
         let controlServer = ControlServer.sharedControlServer
 
-        controlServer.requestQosMeasurement(measurementUuid, success: { response in
-            self.qosQueue.async {
-                self.continueWithQOSParameters(response)
+        controlServer.requestQosMeasurement(measurementUuid, success: { [weak self] response in
+            self?.qosQueue.async {
+                self?.continueWithQOSParameters(response)
             }
-        }) { error in
+        }) { [weak self] error in
             logger.debug("ERROR fetching qosTestRequest")
 
-            self.fail(nil) // TODO: error message...
+            self?.fail(nil) // TODO: error message...
         }
     }
 
@@ -617,16 +617,16 @@ open class QualityOfServiceTest: NSObject {
 
         let controlServer = ControlServer.sharedControlServer
 
-        controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { response in
+        controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { [weak self] response in
             logger.debug("QOS TEST RESULT SUBMIT SUCCESS")
 
             // now the test has finished...succeeding methods should go here
-            self.success()
-        }) { error in
+            self?.success()
+        }) { [weak self] error in
             logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
 
             // here the test failed...
-            self.fail(error as NSError?)
+            self?.fail(error as NSError?)
         }
     }
 

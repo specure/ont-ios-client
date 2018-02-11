@@ -50,7 +50,7 @@ class QOSControlConnection: NSObject {
     internal var qosControlConnectionSocket: GCDAsyncSocket!
 
     ///
-    internal var taskDelegateDictionary = [UInt: QOSControlConnectionTaskDelegate]()
+    internal var taskDelegateDictionary: [UInt: QOSControlConnectionTaskDelegate] = [:]
 
     ///
     internal var pendingTimeout: Double = 0
