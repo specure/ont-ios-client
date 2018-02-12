@@ -195,7 +195,7 @@ open class QualityOfServiceTest: NSObject {
                             
                             if let type = QosMeasurementType(rawValue: objectiveType) {
                                 
-                                if type == .VOIP {
+                                if type == .JITTER {
                                 
                                     logger.debug("created VOIP test as the main test: \(qosTest)")
                                     

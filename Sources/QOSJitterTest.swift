@@ -17,26 +17,11 @@
 import Foundation
 
 ///
-public enum QosMeasurementType: String {
-    case HttpProxy              = "http_proxy"
-    case NonTransparentProxy    = "non_transparent_proxy"
-    case WEBSITE                = "website"
-    case DNS                    = "dns"
-    case TCP                    = "tcp"
-    case UDP                    = "udp"
-    case VOIP                   = "voip"
-    case JITTER                 = "jitter"
-    case TRACEROUTE             = "traceroute"
+class QOSJitterTest: QOSVOIPTest {
 
     ///
-    static var localizedNameDict = [QosMeasurementType: String]()
-}
-
-///
-extension QosMeasurementType: CustomStringConvertible {
-
-    ///
-    public var description: String {
-        return QosMeasurementType.localizedNameDict[self] ?? self.rawValue
+    override func getType() -> QosMeasurementType! {
+        return .JITTER
     }
+
 }
