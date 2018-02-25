@@ -117,7 +117,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var timer: DispatchSourceTimer!
 
     ///
-    private var workers = [RMBTTestWorker]()
+    private var workers: [RMBTTestWorker] = []
 
     ///
     private weak var delegate: RMBTTestRunnerDelegate?
