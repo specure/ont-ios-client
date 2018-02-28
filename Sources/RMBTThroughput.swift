@@ -88,9 +88,9 @@ open class RMBTThroughput: NSObject {
     }
 
     ///
-    open func kilobitsPerSecond() -> UInt32 {
+    open func kilobitsPerSecond() -> Double {
         if (_durationNanos > 0) {
-            return UInt32(Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6))) // TODO: improve
+            return Double(length) * 8.0 / (Double(_durationNanos) * Double(1e-6)) // TODO: improve
         }
         else {
             return 0
@@ -103,6 +103,6 @@ open class RMBTThroughput: NSObject {
                         RMBTSecondsStringWithNanos(_startNanos),
                         RMBTSecondsStringWithNanos(_endNanos),
                         length,
-                        RMBTSpeedMbpsString(Int(kilobitsPerSecond())))
+                        RMBTSpeedMbpsString(kilobitsPerSecond()))
     }
 }

@@ -180,19 +180,20 @@ public func RMBTFormatNumber(_ number: NSNumber) -> String {
     
     var signif = 2
 
-    if number.doubleValue < 1 {
+    if number.doubleValue > 10 {
         signif = 1
+    }
+    if number.doubleValue > 100 {
+        signif = 0
     }
 
     // TODO: dispatch_once
     formatter.decimalSeparator = "."
-    formatter.usesSignificantDigits = true
-    formatter.minimumSignificantDigits = signif
-    formatter.maximumSignificantDigits = signif
+    formatter.minimumFractionDigits = signif
+    formatter.maximumFractionDigits = signif
+    formatter.minimumIntegerDigits = 1
     //
     
-    
-
     return formatter.string(from: number)!
 }
 

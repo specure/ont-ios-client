@@ -93,7 +93,7 @@ public protocol RMBTClientDelegate {
     func speedMeasurementDidStartPhase(_ phase: SpeedMeasurementPhase)
 
     ///
-    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Int)
+    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Double)
 
 // MARK: Qos
 
@@ -311,27 +311,27 @@ extension RMBTClient: RMBTTestRunnerDelegate {
             }
         case .down:
             if let r = testRunner?.downloadKilobitsPerSecond() {
-                result = Int(r)
+                result = r
             }
         case .up:
             if let r = testRunner?.uploadKilobitsPerSecond() {
-                result = Int(r)
+                result = r
             }
         case .jitter:
             if let r = testRunner?.meanJitterNanos() {
-                result = Int(r)
+                result = r
             }
             
         case .packLoss:
             if let r = testRunner?.packetLossPercentage() {
-                result = Int(r)
+                result = r
             }
             
         default:
             break
         }
 
-        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
+        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: Double(result))
         //logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
 
