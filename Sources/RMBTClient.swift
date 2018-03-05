@@ -505,6 +505,12 @@ extension RMBTClient {
         }
     }
     
+    public class var surveyUrl: String? {
+        get {
+            return ControlServer.sharedControlServer.surveySettings?.surveyUrl
+        }
+    }
+    
     public class var surveyIsActiveService: Bool? {
         get {
             return ControlServer.sharedControlServer.surveySettings?.isActiveService

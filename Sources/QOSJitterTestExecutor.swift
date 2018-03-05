@@ -73,7 +73,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
     private var ssrc: UInt32!
 
     ///
-    private var initialRTPPacket: RTPPacket!
+    private var initialRTPPacket: RTPPacket?
 
     ///
     private var rtpControlDataList: [UInt16: RTPControlData] = [:]
@@ -203,9 +203,9 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
 
         initialRTPPacket = RTPPacket()
 
-        initialRTPPacket.header.payloadType = testObject.payloadType
-        initialRTPPacket.header.ssrc = ssrc
-        initialRTPPacket.header.sequenceNumber = initialSequenceNumber!
+        initialRTPPacket?.header.payloadType = testObject.payloadType
+        initialRTPPacket?.header.ssrc = ssrc
+        initialRTPPacket?.header.sequenceNumber = initialSequenceNumber!
 
         //
 
@@ -494,24 +494,27 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
 
     /// returns false if the class should stop
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool {
+
         if packetNumber > 0 {
-            initialRTPPacket.header.increaseSequenceNumberBy(1)
-            initialRTPPacket.header.increaseTimestampBy(payloadTimestamp)
-            initialRTPPacket.header.marker = 0
+            initialRTPPacket?.header.increaseSequenceNumberBy(1)
+            initialRTPPacket?.header.increaseTimestampBy(payloadTimestamp)
+            initialRTPPacket?.header.marker = 0
         } else {
-            initialRTPPacket.header.marker = 1
+            initialRTPPacket?.header.marker = 1
         }
 
         // generate random bytes
 
         var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
-        initialRTPPacket.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
+        initialRTPPacket?.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
         // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
         free(payloadBytes)
 
         //
 
-        data.append(initialRTPPacket.toData() as Data)
+        if let initialRTPPacket = initialRTPPacket {
+            data.append(initialRTPPacket.toData() as Data)
+        }
 
         return true
     }
