@@ -22,7 +22,6 @@
 #include "object_schema.hpp"
 #include "schema.hpp"
 #include "shared_realm.hpp"
-#include "util/format.hpp"
 
 #include <realm/descriptor.hpp>
 #include <realm/group.hpp>
@@ -30,15 +29,15 @@
 #include <realm/table_view.hpp>
 #include <realm/util/assert.hpp>
 
-#if REALM_HAVE_SYNC_STABLE_IDS
+#if REALM_ENABLE_SYNC
 #include <realm/sync/object.hpp>
-#endif // REALM_HAVE_SYNC_STABLE_IDS
+#endif // REALM_ENABLE_SYNC
 
 #include <string.h>
 
 using namespace realm;
 
-const uint64_t ObjectStore::NotVersioned = std::numeric_limits<uint64_t>::max();
+constexpr uint64_t ObjectStore::NotVersioned;
 
 namespace {
 const char * const c_metadataTableName = "metadata";
@@ -146,7 +145,7 @@ TableRef create_table(Group& group, ObjectSchema const& object_schema)
     auto name = ObjectStore::table_name_for_object_type(object_schema.name);
 
     TableRef table;
-#if REALM_HAVE_SYNC_STABLE_IDS
+#if REALM_ENABLE_SYNC
     if (auto* pk_property = object_schema.primary_key_property()) {
         table = sync::create_table_with_primary_key(group, name, to_core_type(pk_property->type),
                                                     pk_property->name, is_nullable(pk_property->type));
@@ -156,7 +155,7 @@ TableRef create_table(Group& group, ObjectSchema const& object_schema)
     }
 #else
     table = group.get_or_add_table(name);
-#endif // REALM_HAVE_SYNC_STABLE_IDS
+#endif // REALM_ENABLE_SYNC
 
     ObjectStore::set_primary_key_for_object(group, object_schema.name, object_schema.primary_key);
 
@@ -169,11 +168,11 @@ void add_initial_columns(Group& group, ObjectSchema const& object_schema)
     TableRef table = group.get_table(name);
 
     for (auto const& prop : object_schema.persisted_properties) {
-#if REALM_HAVE_SYNC_STABLE_IDS
+#if REALM_ENABLE_SYNC
         // The sync::create_table* functions create the PK column for us.
         if (prop.is_primary)
             continue;
-#endif // REALM_HAVE_SYNC_STABLE_IDS
+#endif // REALM_ENABLE_SYNC
         add_column(group, *table, prop);
     }
 }
@@ -249,7 +248,6 @@ void validate_primary_column_uniqueness(Group const& group)
 }
 } // anonymous namespace
 
-// FIXME remove this after integrating OS's migration related logic into Realm java
 void ObjectStore::set_schema_version(Group& group, uint64_t version) {
     ::create_metadata_tables(group);
     ::set_schema_version(group, version);
@@ -280,7 +278,7 @@ void ObjectStore::set_primary_key_for_object(Group& group, StringData object_typ
 
     size_t row = table->find_first_string(c_primaryKeyObjectClassColumnIndex, object_type);
 
-#if REALM_HAVE_SYNC_STABLE_IDS
+#if REALM_ENABLE_SYNC
     // sync::create_table* functions should have already updated the pk table.
     if (sync::has_object_ids(group)) {
         if (primary_key.size() == 0)
@@ -291,7 +289,7 @@ void ObjectStore::set_primary_key_for_object(Group& group, StringData object_typ
         }
         return;
     }
-#endif // REALM_HAVE_SYNC_STABLE_IDS
+#endif // REALM_ENABLE_SYNC
 
     if (row == not_found && primary_key.size()) {
         row = table->add_empty_row();
@@ -579,7 +577,7 @@ static void create_initial_tables(Group& group, std::vector<SchemaChange> const&
     }
 }
 
-static void apply_additive_changes(Group& group, std::vector<SchemaChange> const& changes, bool update_indexes)
+void ObjectStore::apply_additive_changes(Group& group, std::vector<SchemaChange> const& changes, bool update_indexes)
 {
     using namespace schema_change;
     struct Applier {
@@ -700,14 +698,8 @@ void ObjectStore::apply_schema_changes(Group& group, uint64_t schema_version,
         bool target_schema_is_newer = (schema_version < target_schema_version
             || schema_version == ObjectStore::NotVersioned);
 
-#if REALM_HAVE_SYNC_STABLE_IDS
         // With sync v2.x, indexes are no longer synced, so there's no reason to avoid creating them.
         bool update_indexes = true;
-#else
-        // With sync v1.x, indexes are synced, so we only want to update them if the schema version number
-        // has been bumped. This prevents multiple clients with different opinions about indexes from fighting.
-        bool update_indexes = target_schema_is_newer;
-#endif
         apply_additive_changes(group, changes, update_indexes);
 
         if (target_schema_is_newer)
@@ -772,6 +764,37 @@ Schema ObjectStore::schema_from_group(Group const& group) {
         }
     }
     return schema;
+}
+
+util::Optional<Property> ObjectStore::property_for_column_index(ConstTableRef& table, size_t column_index)
+{
+    StringData column_name = table->get_column_name(column_index);
+
+#if REALM_ENABLE_SYNC
+    // The object ID column is an implementation detail, and is omitted from the schema.
+    // FIXME: Consider filtering out all column names starting with `!`.
+    if (column_name == sync::object_id_column_name)
+        return util::none;
+#endif
+
+    if (table->get_column_type(column_index) == type_Table) {
+        auto subdesc = table->get_subdescriptor(column_index);
+        if (subdesc->get_column_count() != 1 || subdesc->get_column_name(0) != ObjectStore::ArrayColumnName)
+            return util::none;
+    }
+
+    Property property;
+    property.name = column_name;
+    property.type = ObjectSchema::from_core_type(*table->get_descriptor(), column_index);
+    property.is_indexed = table->has_search_index(column_index);
+    property.table_column = column_index;
+
+    if (property.type == PropertyType::Object) {
+        // set link type for objects and arrays
+        ConstTableRef linkTable = table->get_link_target(column_index);
+        property.object_type = ObjectStore::object_type_for_table_name(linkTable->get_name().data());
+    }
+    return property;
 }
 
 void ObjectStore::set_schema_columns(Group const& group, Schema& schema)

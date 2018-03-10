@@ -19,10 +19,11 @@
 #ifndef REALM_OS_SYNC_SESSION_HPP
 #define REALM_OS_SYNC_SESSION_HPP
 
+#include "feature_checks.hpp"
+#include "sync/sync_config.hpp"
+
 #include <realm/util/optional.hpp>
 #include <realm/version_id.hpp>
-
-#include "sync_config.hpp"
 
 #include <mutex>
 #include <unordered_map>
@@ -41,7 +42,6 @@ struct WaitingForAccessToken;
 struct Active;
 struct Dying;
 struct Inactive;
-struct Error;
 }
 }
 
@@ -59,13 +59,14 @@ public:
         Active,
         Dying,
         Inactive,
+
+        // FIXME: This state no longer exists. This should be removed.
         Error,
     };
     PublicState state() const;
 
-    bool is_in_error_state() const {
-        return state() == PublicState::Error;
-    }
+    // FIXME: The error state no longer exists. This should be removed.
+    bool is_in_error_state() const { return false; }
 
     // The on-disk path of the Realm file backing the Realm this `SyncSession` represents.
     std::string const& path() const { return m_realm_path; }
@@ -134,14 +135,28 @@ public:
     // FIXME: we need an API to allow the binding to tell sync that the access token fetch failed
     // or was cancelled, and cannot be retried.
 
-    // Give the `SyncSession` an administrator token, and ask it to immediately `bind()` the session.
-    void bind_with_admin_token(std::string admin_token, std::string server_url);
+    // Set the multiplex identifier used for this session. Sessions with different identifiers are
+    // never multiplexed into a single connection, even if they are connecting to the same host.
+    // The value of the token is otherwise treated as an opaque token.
+    //
+    // Has no effect if session multiplexing is not enabled (see SyncManager::enable_session_multiplexing())
+    // or if called after the Sync session is created. In particular, changing the multiplex identity will
+    // not make the session reconnect.
+    void set_multiplex_identifier(std::string multiplex_identity);
 
     // Inform the sync session that it should close.
     void close();
 
     // Inform the sync session that it should log out.
     void log_out();
+
+    // Override the address and port of the server that this `SyncSession` is connected to. If the
+    // session is already connected, it will disconnect and then reconnect to the specified address.
+    // If it's not already connected, future connection attempts will be to the specified address.
+    //
+    // NOTE: This is intended for use only in very specific circumstances. Please check with the
+    // object store team before using it.
+    void override_server(std::string address, int port);
 
     // An object representing the user who owns the Realm this `SyncSession` represents.
     std::shared_ptr<SyncUser> user() const
@@ -178,11 +193,6 @@ public:
                                                std::function<SyncSessionTransactCallback> callback)
         {
             session.set_sync_transact_callback(std::move(callback));
-        }
-
-        static void set_error_handler(SyncSession& session, std::function<SyncSessionErrorHandler> callback)
-        {
-            session.set_error_handler(std::move(callback));
         }
 
         static void nonsync_transact_notify(SyncSession& session, VersionID::version_type version)
@@ -222,22 +232,30 @@ private:
     friend struct _impl::sync_session_states::Active;
     friend struct _impl::sync_session_states::Dying;
     friend struct _impl::sync_session_states::Inactive;
-    friend struct _impl::sync_session_states::Error;
 
     friend class realm::SyncManager;
     // Called by SyncManager {
-    SyncSession(_impl::SyncClient&, std::string realm_path, SyncConfig);
+    static std::shared_ptr<SyncSession> create(_impl::SyncClient& client, std::string realm_path, SyncConfig config)
+    {
+        struct MakeSharedEnabler : public SyncSession {
+            MakeSharedEnabler(_impl::SyncClient& client, std::string realm_path, SyncConfig config)
+            : SyncSession(client, std::move(realm_path), std::move(config))
+            {}
+        };
+        return std::make_shared<MakeSharedEnabler>(client, std::move(realm_path), std::move(config));
+    }
     // }
 
+    SyncSession(_impl::SyncClient&, std::string realm_path, SyncConfig);
 
     void handle_error(SyncError);
+    void cancel_pending_waits();
     enum class ShouldBackup { yes, no };
     void update_error_and_mark_file_for_deletion(SyncError&, ShouldBackup);
     static std::string get_recovery_file_path();
     void handle_progress_update(uint64_t, uint64_t, uint64_t, uint64_t, bool);
 
     void set_sync_transact_callback(std::function<SyncSessionTransactCallback>);
-    void set_error_handler(std::function<SyncSessionErrorHandler>);
     void nonsync_transact_notify(VersionID::version_type);
 
     void advance_state(std::unique_lock<std::mutex>& lock, const State&);
@@ -247,7 +265,6 @@ private:
     void did_drop_external_reference();
 
     std::function<SyncSessionTransactCallback> m_sync_transact_callback;
-    std::function<SyncSessionErrorHandler> m_error_handler;
 
     // How many bytes are uploadable or downloadable.
     struct Progress {
@@ -301,6 +318,12 @@ private:
     };
     std::vector<CompletionWaitPackage> m_completion_wait_packages;
 
+    struct ServerOverride {
+        std::string address;
+        int port;
+    };
+    util::Optional<ServerOverride> m_server_override;
+
     // The underlying `Session` object that is owned and managed by this `SyncSession`.
     // The session is first created when the `SyncSession` is moved out of its initial `inactive` state.
     // The session might be destroyed if the `SyncSession` becomes inactive again (for example, if the
@@ -317,6 +340,8 @@ private:
 
     // The fully-resolved URL of this Realm, including the server and the path.
     util::Optional<std::string> m_server_url;
+
+    std::string m_multiplex_identity;
 
     class ExternalReference;
     std::weak_ptr<ExternalReference> m_external_reference;

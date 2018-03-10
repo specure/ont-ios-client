@@ -76,6 +76,28 @@ open class SpeedMeasurementResponse: BasicResponse {
     override open var description: String {
         return "SpeedMeasurmentResponse: testToken: \(String(describing: testToken)), testUuid: \(String(describing: testUuid)), clientRemoteIp: \n\(String(describing: clientRemoteIp))"
     }
+    
+    class func createAndFill(from response: SpeedMeasurementResponse_Old) -> SpeedMeasurementResponse {
+        let r = SpeedMeasurementResponse()
+        r.clientRemoteIp = response.clientRemoteIp
+        r.duration = response.duration
+        r.pretestDuration = response.pretestDuration
+        r.numPings = Int(response.numPings)!
+        r.numThreads = Int(response.numThreads)!
+        r.testToken = response.testToken
+        r.testUuid = response.testUuid
+
+        let measure = TargetMeasurementServer()
+        measure.port = response.port?.intValue
+        measure.address = response.serverAddress
+        measure.name = response.serverName
+        measure.encrypted = response.serverEncryption
+        measure.uuid = response.testUuid
+        
+        r.add(details:measure)
+        
+        return r
+    }
 }
 
 ///

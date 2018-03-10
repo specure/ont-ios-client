@@ -18,6 +18,11 @@ abstract_target 'All' do
   target 'RMBTClient_iOS' do
     # Pods for RMBTClient_iOS
     pod 'GCNetworkReachability', '~> 1.3.2'
+    
+        target 'RMBTClientTests' do
+            inherit! :search_paths
+        end
+    
   end
 
   target 'RMBTClient_OSX' do
@@ -38,7 +43,7 @@ end
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['SWIFT_VERSION'] = '3.2'
+#            config.build_settings['SWIFT_VERSION'] = '3.2'
         end
     end
 end

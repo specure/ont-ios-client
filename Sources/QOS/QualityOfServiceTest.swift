@@ -15,19 +15,6 @@
  *****************************************************************************************************/
 
 import Foundation
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-private func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
 
 ///
 open class QualityOfServiceTest: NSObject {
@@ -47,7 +34,7 @@ open class QualityOfServiceTest: NSObject {
     private let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
+    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue")
 
     ///
     open weak var delegate: QualityOfServiceTestDelegate?
@@ -74,19 +61,19 @@ open class QualityOfServiceTest: NSObject {
     private var activeTestsInConcurrencyGroup = 0
 
     ///
-    private var controlConnectionMap = [String: QOSControlConnection]()
+    private var controlConnectionMap: [String: QOSControlConnection] = [:]
 
     ///
-    private var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
+    private var qosTestConcurrencyGroupMap: [ConcurrencyGroup: [QOSTest]] = [:]
 
     ///
-    private var testTypeCountMap = [QosMeasurementType: UInt16]()
+    private var testTypeCountMap: [QosMeasurementType: UInt16] = [:]
 
     ///
-    private var sortedConcurrencyGroups = [ConcurrencyGroup]()
+    private var sortedConcurrencyGroups: [ConcurrencyGroup] = []
 
     ///
-    private var resultArray = [QOSTestResult]()
+    private var resultArray: [QOSTestResult] = []
 
     ///
     private var stopped = false
@@ -201,10 +188,10 @@ open class QualityOfServiceTest: NSObject {
                                     
                                     var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
                                     if concurrencyGroupArray == nil {
-                                        concurrencyGroupArray = [QOSTest]()
+                                        concurrencyGroupArray = []
                                     }
                                     
-                                    concurrencyGroupArray!.append(qosTest)
+                                    concurrencyGroupArray?.append(qosTest)
                                     qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
                                     
                                     // increase test count
@@ -218,10 +205,10 @@ open class QualityOfServiceTest: NSObject {
                             
                             var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
                             if concurrencyGroupArray == nil {
-                                concurrencyGroupArray = [QOSTest]()
+                                concurrencyGroupArray = []
                             }
                             
-                            concurrencyGroupArray!.append(qosTest)
+                            concurrencyGroupArray?.append(qosTest)
                             qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
                             
                             // increase test count
@@ -251,7 +238,7 @@ open class QualityOfServiceTest: NSObject {
             return
         }
 
-        var testTypeSortDictionary = [QosMeasurementType: ConcurrencyGroup]()
+        var testTypeSortDictionary: [QosMeasurementType: ConcurrencyGroup] = [:]
 
         // fill testTypeCount map (used for displaying the finished test types in ui)
         for (cg, testArray) in qosTestConcurrencyGroupMap { // loop each concurrency group
@@ -277,8 +264,13 @@ open class QualityOfServiceTest: NSObject {
 
         // get test types and sort them according to their first execution
         var testTypeArray = [QosMeasurementType](self.testTypeCountMap.keys)
-        testTypeArray.sort() { lhs, rhs in
-            testTypeSortDictionary[lhs] < testTypeSortDictionary[rhs]
+        testTypeArray.sort { (lhs, rhs) -> Bool in
+            guard let firstType = testTypeSortDictionary[lhs],
+                let secondType = testTypeSortDictionary[rhs]
+                else {
+                    return false
+            }
+            return firstType < secondType
         }
 
         // call didFetchTestTypes delegate method

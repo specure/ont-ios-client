@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double SocketIOVersionNumber;
-FOUNDATION_EXPORT const unsigned char SocketIOVersionString[];
+FOUNDATION_EXPORT double Pods_RMBTClientTestsVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_RMBTClientTestsVersionString[];
 
