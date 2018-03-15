@@ -94,7 +94,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -126,7 +126,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
             } else {
 
                 // ask for port
-                controlConnection.sendTaskCommand("GET UDPPORT", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_GET_UDPPORT)
+                controlConnection?.sendTaskCommand("GET UDPPORT", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_GET_UDPPORT)
             }
         }
 
@@ -170,7 +170,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING, number: testObject.packetCountOut!)
         testResult.set(RESULT_UDP_PORT_OUTGOING,        number: testObject.portOut!)
 
-        controlConnection.sendTaskCommand("UDPTEST OUT \(portOut) \(packetCountOut)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_OUT)
+        controlConnection?.sendTaskCommand("UDPTEST OUT \(portOut) \(packetCountOut)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_OUT)
     }
 
     ///
@@ -180,7 +180,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         testResult.set(RESULT_UDP_NUM_PACKETS_INCOMING, number: testObject.packetCountIn!)
         testResult.set(RESULT_UDP_PORT_INCOMING,        number: testObject.portIn!)
 
-        controlConnection.sendTaskCommand("UDPTEST IN \(portIn) \(packetCountIn)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_IN)
+        controlConnection?.sendTaskCommand("UDPTEST IN \(portIn) \(packetCountIn)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_IN)
     }
 
     ///
@@ -214,7 +214,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         // request results
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
         usleep(100000) /* 100 * 1000 */
-        controlConnection.sendTaskCommand("GET UDPRESULT OUT \(testObject.portOut!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPRESULT_OUT)
+        controlConnection?.sendTaskCommand("GET UDPRESULT OUT \(testObject.portOut!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPRESULT_OUT)
     }
 
     ///

@@ -49,7 +49,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -70,7 +70,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
             qosLog.debug("requesting NTPTEST on port \(port)")
 
             // request NTPTEST
-            controlConnection.sendTaskCommand("NTPTEST \(port)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_NTPTEST)
+            controlConnection?.sendTaskCommand("NTPTEST \(port)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_NTPTEST)
         }
     }
 

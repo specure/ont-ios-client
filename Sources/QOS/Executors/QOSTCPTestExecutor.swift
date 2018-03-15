@@ -64,7 +64,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
         print("deinit")
     }
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 

@@ -90,7 +90,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -250,7 +250,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
         usleep(100000) /* 100 * 1000 */
 
-        controlConnection.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
+        controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
         cdlTimeout(500, forTag: "TAG_TASK_VOIPRESULT")
     }
@@ -505,11 +505,41 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
 
         // generate random bytes
 
-        var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
-        initialRTPPacket?.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
-        // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
-        free(payloadBytes)
-
+//        if var payloadBytes = malloc(payloadSize) {// CAUTION! this sends memory dump to server...
+//            let buffer = UnsafeBufferPointer(start: &payloadBytes, count: payloadSize / 8)
+////        let bytes: Array<UInt8> = []
+////        Data(bytes: bytes)
+//        initialRTPPacket?.payload = Data(buffer: buffer)
+////        initialRTPPacket?.payload = Data(bytes: payloadBytes, count: payloadSize)
+//        // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
+//        free(payloadBytes)
+////        payloadBytes = nil
+//        }
+        
+        let randomValue = arc4random()
+        var bigEndian = randomValue.bigEndian
+        let count = MemoryLayout<UInt32>.size
+        var array: [UInt8] = []
+        for i in 0..<count {
+            let n = UInt8(truncatingIfNeeded: randomValue >> (8 * i))
+            array.append(n)
+        }
+        
+        initialRTPPacket?.payload = Data(bytes: array)
+//        let example = 72 << 24 | 66 << 16 | 1 << 8 | 15
+//        var bigEndian = example.bigEndian
+//        let count = MemoryLayout<UInt32>.size
+//        let size = MemoryLayout<UInt8>.size
+//        let bytePtr = withUnsafePointer(to: &bigEndian) {
+//            $0.withMemoryRebound(to: UInt8.self, capacity: count) {
+//                UnsafeBufferPointer(start: $0, count: count)
+//            }
+//        }
+//        var array: [UInt8] = []
+//        for i in 0..<count {
+//            let n = UInt8(truncatingIfNeeded: example >> (8 * i))
+//            array.append(n)
+//        }
         //
 
         if let initialRTPPacket = initialRTPPacket {

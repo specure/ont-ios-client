@@ -47,13 +47,13 @@ let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
 let QOS_ENABLED_TESTS: [QosMeasurementType] = [
     .JITTER,
     .HttpProxy,
-//    .NonTransparentProxy,
-//    .WEBSITE,
-//    .DNS,
+    .NonTransparentProxy,
+    .WEBSITE,
+    .DNS,
     .TCP,
-//    .UDP,
+    .UDP,
     .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
-//    .TRACEROUTE
+    .TRACEROUTE
 ]
 
 /// determine the tests which should show log messages

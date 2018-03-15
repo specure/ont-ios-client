@@ -32,7 +32,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     //
 
     ///
-    let controlConnection: QOSControlConnection
+    weak var controlConnection: QOSControlConnection?
 
     ///
     let delegateQueue: DispatchQueue
@@ -79,7 +79,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     //
 
     ///
-    init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         self.controlConnection = controlConnection
 
         //self.delegate = delegate
@@ -108,7 +108,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
         // set control connection task delegate if needed
         if needsControlConnection() {
-            controlConnection.registerTaskDelegate(self, forTaskId: testObject.qosTestId)
+            controlConnection?.registerTaskDelegate(self, forTaskId: testObject.qosTestId)
         }
 
         // create timeout timer
@@ -220,7 +220,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
             if needsControlConnection() {
                 logger.debug("\(self.controlConnection)")
 
-                self.controlConnection.unregisterTaskDelegate(forTaskId: self.testObject.qosTestId)
+                self.controlConnection?.unregisterTaskDelegate(forTaskId: self.testObject.qosTestId)
             }
 
             // call finish callback saved in finishCallback variable
@@ -273,7 +273,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
     ///
     func sendTaskCommand(_ command: String, withTimeout timeout: TimeInterval, tag: Int) {
-        controlConnection.sendTaskCommand(command, withTimeout: timeout, forTaskId: testObject.qosTestId, tag: tag)
+        controlConnection?.sendTaskCommand(command, withTimeout: timeout, forTaskId: testObject.qosTestId, tag: tag)
     }
 
     /// deprecated
