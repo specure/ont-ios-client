@@ -493,7 +493,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
         if packetNumber > 0 {
             initialRTPPacket.header.increaseSequenceNumberBy(1)
             initialRTPPacket.header.increaseTimestampBy(payloadTimestamp)
@@ -505,13 +505,14 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // generate random bytes
 
         var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
+        memset(payloadBytes, 0, payloadSize)
         initialRTPPacket.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
         // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
         free(payloadBytes)
 
         //
 
-        data.append(initialRTPPacket.toData() as Data)
+        data?.pointee.append(initialRTPPacket.toData() as Data)
 
         return true
     }

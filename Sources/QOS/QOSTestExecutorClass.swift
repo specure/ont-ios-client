@@ -113,13 +113,13 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
         // create timeout timer
         timer.interval = timeoutInSec
-        timer.timerCallback = {
-            self.qosLog.error("TIMEOUT IN QOS TEST")
+        timer.timerCallback = { [weak self] in
+            self?.qosLog.error("TIMEOUT IN QOS TEST")
 
-            if !self.hasFinished {
-                self.delegateQueue.async {
+            if self?.hasFinished == false {
+                self?.delegateQueue.async {
                     //assert(self.finishCallback != nil)
-                    self.testDidTimeout()
+                    self?.testDidTimeout()
                 }
             }
         }

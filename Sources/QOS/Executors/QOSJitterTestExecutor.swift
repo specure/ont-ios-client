@@ -89,8 +89,12 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
 
     //
 
+    deinit {
+        print("deinit QOSJitterTestExecutor")
+    }
     ///
     override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+        print("init QOSJitterTestExecutor")
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -493,7 +497,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
 
         if packetNumber > 0 {
             initialRTPPacket?.header.increaseSequenceNumberBy(1)
@@ -504,9 +508,21 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
         }
 
         // generate random bytes
-
+        
+        var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
+        memset(payloadBytes, 0, payloadSize)
+//        initialRTPPacket?.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
+        initialRTPPacket?.payload = Data(bytes: &payloadBytes, count: Int(payloadSize))
+        
+//         Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
+        free(payloadBytes)
+        
+        //
+//
+//        // generate random bytes
+//
 //        if var payloadBytes = malloc(payloadSize) {// CAUTION! this sends memory dump to server...
-//            let buffer = UnsafeBufferPointer(start: &payloadBytes, count: payloadSize / 8)
+//        let buffer = UnsafeBufferPointer(start: &payloadBytes, count: 1)
 ////        let bytes: Array<UInt8> = []
 ////        Data(bytes: bytes)
 //        initialRTPPacket?.payload = Data(buffer: buffer)
@@ -516,16 +532,16 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
 ////        payloadBytes = nil
 //        }
         
-        let randomValue = arc4random()
-        var bigEndian = randomValue.bigEndian
-        let count = MemoryLayout<UInt32>.size
-        var array: [UInt8] = []
-        for i in 0..<count {
-            let n = UInt8(truncatingIfNeeded: randomValue >> (8 * i))
-            array.append(n)
-        }
-        
-        initialRTPPacket?.payload = Data(bytes: array)
+//        let randomValue = arc4random()
+//        var bigEndian = randomValue.bigEndian
+//        let count = MemoryLayout<UInt32>.size
+//        var array: [UInt8] = []
+//        for i in 0..<count {
+//            let n = UInt8(truncatingIfNeeded: randomValue >> (8 * i))
+//            array.append(n)
+//        }
+//
+//        initialRTPPacket?.payload = Data(bytes: array)
 //        let example = 72 << 24 | 66 << 16 | 1 << 8 | 15
 //        var bigEndian = example.bigEndian
 //        let count = MemoryLayout<UInt32>.size
@@ -543,7 +559,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
         //
 
         if let initialRTPPacket = initialRTPPacket {
-            data.append(initialRTPPacket.toData() as Data)
+            data?.pointee.append(initialRTPPacket.toData() as Data)
         }
 
         return true

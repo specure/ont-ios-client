@@ -42,7 +42,9 @@ class GCDTimer {
 
     ///
     deinit {
-        stop()
+        defer {
+            stop()
+        }
     }
 
     ///

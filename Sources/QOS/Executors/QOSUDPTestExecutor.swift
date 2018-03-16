@@ -340,22 +340,22 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     } */
 
     ///
-    private func appendPacketData(_ data: inout NSMutableData, flag: UInt8, packetNumber: UInt16) {
+    private func appendPacketData(_ data: NSMutableDataPointer, flag: UInt8, packetNumber: UInt16) {
 
         // write flag
-        data.appendValue(flag)
+        data?.pointee.appendValue(flag)
 
         // write packetNumber
-        data.appendValue(UInt8(packetNumber)) // make sure only 1 byte is used for packageNumber here
+        data?.pointee.appendValue(UInt8(packetNumber)) // make sure only 1 byte is used for packageNumber here
 
         // write uuid
         assert(testToken != nil, "testToken must not be nil")
         let uuid = testToken.components(separatedBy: "_")[0] // split uuid from testToken
-        data.append(uuid.data(using: String.Encoding.ascii)!)
+        data?.pointee.append(uuid.data(using: String.Encoding.ascii)!)
 
         // write current time
         let ctm = "\(currentTimeMillis())"
-        data.append(ctm.data(using: String.Encoding.ascii)!)
+        data?.pointee.append(ctm.data(using: String.Encoding.ascii)!)
     }
 
 // MARK: UDPStreamSenderDelegate methods
@@ -394,11 +394,11 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
         qosLog.debug("udpStreamSenderwillSendPacketWithNumber: \(packetNumber)")
 
-        appendPacketData(&data, flag: FLAG_UDP_TEST_AWAIT_RESPONSE, packetNumber: packetNumber)
-
+        appendPacketData(data, flag: FLAG_UDP_TEST_AWAIT_RESPONSE, packetNumber: packetNumber)
+        
         return true
     }
 

@@ -92,11 +92,12 @@ open class QualityOfServiceTest: NSObject {
 
     //
     deinit {
-        print("Deinit")
+        print("Deinit QualityOfServiceTest")
     }
 
     ///
     public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isPartOfMainTest: Bool) {
+        print("Init QualityOfServiceTest")
         self.testToken = testToken
         self.measurementUuid = measurementUuid
         self.speedtestStartTime = speedtestStartTime
@@ -124,6 +125,7 @@ open class QualityOfServiceTest: NSObject {
             // close all control connections
             self.closeAllControlConnections()
 
+            self.controlConnectionMap = [:]
             // inform delegate
             DispatchQueue.main.async {
                 self.delegate?.qualityOfServiceTestDidStop(self)
@@ -727,13 +729,9 @@ open class QualityOfServiceTest: NSObject {
         mutualExclusionQueue.sync {
             // close all control connections
             self.closeAllControlConnections()
+            self.controlConnectionMap = [:]
         }
         
-        for group in self.concurrencyGroups {
-            for executor in group.testExecutors {
-                executor.testExecutor
-            }
-        }
         DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didFinishWithResults: self.resultArray)
             return

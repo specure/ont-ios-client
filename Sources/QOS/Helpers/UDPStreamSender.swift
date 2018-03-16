@@ -48,7 +48,7 @@ class UDPStreamSender: NSObject {
     //
 
     ///
-    var delegate: UDPStreamSenderDelegate?
+    weak var delegate: UDPStreamSenderDelegate?
 
     ///
     fileprivate let settings: UDPStreamSenderSettings

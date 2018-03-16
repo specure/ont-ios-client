@@ -173,7 +173,6 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     public init(withClient:RMBTClientType) {
-        
         //
         defer {
             clientType = withClient

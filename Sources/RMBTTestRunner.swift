@@ -232,13 +232,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         /////!!!!!!!!!!!
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
             
-            controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
-                self.workerQueue.async {
-                    self.continueWithTestParams(response)
+            controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { [weak self] response in
+                self?.workerQueue.async {
+                    self?.continueWithTestParams(response)
                 }
-            }) { error in
-                self.workerQueue.async {
-                    self.cancelWithReason(.errorFetchingTestingParams)
+            }) { [weak self] error in
+                self?.workerQueue.async {
+                    self?.cancelWithReason(.errorFetchingTestingParams)
                 }
             }
         } else {
@@ -263,8 +263,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             
             // workaround - nasty :(
-            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { response in
-                self.workerQueue.async {
+            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { [weak self] response in
+                self?.workerQueue.async {
                     
                     let r = SpeedMeasurementResponse()
                     r.clientRemoteIp = response.clientRemoteIp
@@ -285,11 +285,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                     r.add(details:measure)
                 
                         
-                    self.continueWithTestParams(r)
+                    self?.continueWithTestParams(r)
                 }
-            }) { error in
-                self.workerQueue.async {
-                    self.cancelWithReason(.errorFetchingTestingParams)
+            }) { [weak self] error in
+                self?.workerQueue.async {
+                    self?.cancelWithReason(.errorFetchingTestingParams)
                 }
             }
         }
@@ -598,26 +598,26 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             let controlServer = ControlServer.sharedControlServer
 
-            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { response in
-                self.workerQueue.async {
-                    self.setPhase(.none)
-                    self.dead = true
+            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { [weak self] response in
+                self?.workerQueue.async {
+                    self?.setPhase(.none)
+                    self?.dead = true
                     
                     RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
                     
-                    if let uuid = self.testParams.testUuid {
+                    if let uuid = self?.testParams.testUuid {
                         DispatchQueue.main.async {
-                            self.delegate?.testRunnerDidCompleteWithResult(uuid)
+                            self?.delegate?.testRunnerDidCompleteWithResult(uuid)
                         }
                     } else {
-                        self.workerQueue.async {
-                            self.cancelWithReason(.errorSubmittingTestResult) // TODO
+                        self?.workerQueue.async {
+                            self?.cancelWithReason(.errorSubmittingTestResult) // TODO
                         }
                     }
                 }
-            }, error: { error in
-                self.workerQueue.async {
-                    self.cancelWithReason(.errorSubmittingTestResult)
+            }, error: { [weak self] error in
+                self?.workerQueue.async {
+                    self?.cancelWithReason(.errorSubmittingTestResult)
                 }
             })
         }
@@ -761,33 +761,35 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             timer.schedule(deadline: DispatchTime.now(),
                           repeating: RMBTTestRunnerProgressUpdateInterval,
                              leeway: DispatchTimeInterval.seconds(50))
-            timer.setEventHandler {
-                let elapsedNanos = (RMBTCurrentNanos() - self.progressStartedAtNanos)
+            timer.setEventHandler { [weak self] in
+                let elapsedNanos = (RMBTCurrentNanos() - (self?.progressStartedAtNanos ?? UInt64(0.0)))
                 
-                if elapsedNanos > self.progressDurationNanos {
+                if elapsedNanos > (self?.progressDurationNanos ?? UInt64(0.0))  {
                     // We've reached end of interval...
                     // ..send 1.0 progress one last time..
                     DispatchQueue.main.async {
-                        self.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: phase)
+                        self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: phase)
                     }
 
                     // ..then kill the timer
-                    if self.timer != nil {
-                        self.timer.cancel() // TODO: after swift rewrite of AppDelegate one test got an exception here!
+                    if self?.timer != nil {
+                        self?.timer.cancel() // TODO: after swift rewrite of AppDelegate one test got an exception here!
                     }
-                    self.timer = nil
+                    self?.timer = nil
 
                     // ..and perform completion handler, if any.
-                    if self.progressCompletionHandler != nil {
-                        self.workerQueue.async(execute: self.progressCompletionHandler)
-                        self.progressCompletionHandler = nil
+                    if self?.progressCompletionHandler != nil {
+                        self?.workerQueue.async(execute: {
+                            self?.progressCompletionHandler()
+                            self?.progressCompletionHandler = nil
+                        })
                     }
                 } else {
-                    let p = Double(elapsedNanos) / Double(self.progressDurationNanos)
+                    let p = Double(elapsedNanos) / Double(self?.progressDurationNanos ?? UInt64(0.0))
                     assert(p <= 1.0, "Invalid percentage")
 
                     DispatchQueue.main.async {
-                        self.delegate?.testRunnerDidUpdateProgress(Float(p), inPhase: phase)
+                        self?.delegate?.testRunnerDidUpdateProgress(Float(p), inPhase: phase)
                     }
                 }
 

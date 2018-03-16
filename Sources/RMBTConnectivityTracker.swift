@@ -25,7 +25,7 @@ import GCNetworkReachability
 #endif // TODO: use library for network reachability that works on tvOS
 
 ///
-public protocol RMBTConnectivityTrackerDelegate {
+@objc public protocol RMBTConnectivityTrackerDelegate {
 
     ///
     func connectivityTracker(_ tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity)
@@ -60,7 +60,7 @@ open class RMBTConnectivityTracker: NSObject {
     private let queue = DispatchQueue(label: "com.specure.nettest.connectivitytracker", attributes: [])
 
     ///
-    private let delegate: RMBTConnectivityTrackerDelegate
+    private weak var delegate: RMBTConnectivityTrackerDelegate?
 
     ///
     private var lastConnectivity: RMBTConnectivity!
@@ -137,7 +137,7 @@ open class RMBTConnectivityTracker: NSObject {
         queue.async {
             #if os(iOS)
             assert(self.lastConnectivity != nil, "Connectivity should be known by now")
-            self.delegate.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
+            self.delegate?.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
             #endif
         }
     }
@@ -191,7 +191,7 @@ open class RMBTConnectivityTracker: NSObject {
 
             lastConnectivity = nil
 
-            delegate.connectivityTrackerDidDetectNoConnectivity(self)
+            delegate?.connectivityTrackerDidDetectNoConnectivity(self)
 
             return
         }
@@ -221,16 +221,16 @@ open class RMBTConnectivityTracker: NSObject {
             lastConnectivity = connectivity
 
             if compatible {
-                delegate.connectivityTracker(self, didDetectConnectivity: connectivity)
+                delegate?.connectivityTracker(self, didDetectConnectivity: connectivity)
             } else {
                 // stop
                 stop()
 
-                delegate.connectivityTracker(self, didStopAndDetectIncompatibleConnectivity: connectivity)
+                delegate?.connectivityTracker(self, didStopAndDetectIncompatibleConnectivity: connectivity)
             }
         } else {
             lastConnectivity = connectivity
-            delegate.connectivityTracker(self, didDetectConnectivity: connectivity)
+            delegate?.connectivityTracker(self, didDetectConnectivity: connectivity)
         }
     }
 

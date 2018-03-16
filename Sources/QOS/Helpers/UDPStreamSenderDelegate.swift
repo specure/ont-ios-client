@@ -16,14 +16,15 @@
 
 import Foundation
 
+public typealias NSMutableDataPointer = AutoreleasingUnsafeMutablePointer<NSMutableData>?
 ///
-protocol UDPStreamSenderDelegate {
+@objc protocol UDPStreamSenderDelegate {
 
     /// returns false if the class should stop
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didReceivePacket packetData: Data) -> Bool
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: inout NSMutableData) -> Bool
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool
 
     /// returns the port on which the socket has bound
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didBindToPort port: UInt16)
