@@ -107,60 +107,63 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
     ///
     class func queryNameserver(_ serverHost: String, serverPort: UInt16, forName qname: String, recordTypeInt: UInt16,
-                               success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) {
+                               success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) -> DNSClient {
 
         let dnsClient: DNSClient = DNSClient()
-        dnsClient.queryNameserver(serverHost, serverPort: serverPort, forName: qname, recordTypeInt: recordTypeInt, success: { responseString in
+        dnsClient.queryNameserver(serverHost, serverPort: serverPort, forName: qname, recordTypeInt: recordTypeInt, success: { [weak dnsClient] responseString in
 
-            dnsClient.stop()
+            dnsClient?.stop()
             // dnsClient = nil
 
             successCallback(responseString)
 
-        }) { error in
+        }) { [weak dnsClient] error in
 
-            dnsClient.stop()
+            dnsClient?.stop()
             //dnsClient = nil
 
             failureCallback(error)
         }
+        return dnsClient
     }
 
     ///
     class func queryNameserver(_ serverHost: String, serverPort: UInt16, forName qname: String, recordType: String,
-                               success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) {
+                               success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) -> DNSClient {
 
         let recordTypeInt = UInt16(DNSServiceTypeStrToInt[recordType]!)
 
-        DNSClient.queryNameserver(serverHost, serverPort: serverPort, forName: qname, recordTypeInt: recordTypeInt, success: successCallback, failure: failureCallback)
+        return DNSClient.queryNameserver(serverHost, serverPort: serverPort, forName: qname, recordTypeInt: recordTypeInt, success: successCallback, failure: failureCallback)
     }
 
     ///
-    class func query(_ qname: String, recordType: UInt16, success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) {
+    class func query(_ qname: String, recordType: UInt16, success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) -> DNSClient {
 
         let dnsClient: DNSClient = DNSClient()
-        dnsClient.query(qname, recordType: recordType, success: { responseString in
+        dnsClient.query(qname, recordType: recordType, success: { [weak dnsClient] responseString in
 
-            dnsClient.stop()
+            dnsClient?.stop()
             // dnsClient = nil
 
             successCallback(responseString)
 
-        }) { error in
+        }) { [weak dnsClient] error in
 
-            dnsClient.stop()
+            dnsClient?.stop()
             // dnsClient = nil
 
             failureCallback(error)
         }
+        
+        return dnsClient
     }
 
     ///
-    class func query(_ qname: String, recordType: String, success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) {
+    class func query(_ qname: String, recordType: String, success successCallback: @escaping DNSQuerySuccessCallback, failure failureCallback: @escaping DNSQueryFailureCallback) -> DNSClient {
 
         let recordTypeInt = UInt16(DNSServiceTypeStrToInt[recordType]!)
 
-        DNSClient.query(qname, recordType: recordTypeInt, success: successCallback, failure: failureCallback)
+        return DNSClient.query(qname, recordType: recordTypeInt, success: successCallback, failure: failureCallback)
     }
 
 // MARK: query methods

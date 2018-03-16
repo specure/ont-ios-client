@@ -58,6 +58,12 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
         testResult.set(RESULT_DNS_TIMEOUT,  number: testObject.timeout)
     }
 
+    var countClientsNameserver = 0
+    var countClientsQuery = 0
+    
+    var dnsClientNameserver: DNSClient?
+    var dnsClientQuery: DNSClient?
+    
     ///
     override func executeTest() {
 
@@ -73,16 +79,28 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
             // do {
                 if let resolver = self.testObject.resolver {
-                    /* try */ DNSClient.queryNameserver(resolver, serverPort: 53, forName: host, recordType: self.testObject.record!, success: { responseObj in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
-                    }, failure: { error in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
+                    countClientsNameserver += 1
+                    print("countClientsNameserver" + String(countClientsNameserver))
+                    /* try */self.dnsClientNameserver = DNSClient.queryNameserver(resolver, serverPort: 53, forName: host, recordType: self.testObject.record!, success: { [weak self] responseObj in
+                        print("responseObj")
+                        print(responseObj)
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
+                    }, failure: { [weak self] error in
+                        print("responseObj Error")
+                        print(error)
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
                     })
                 } else {
-                    /* try */ DNSClient.query(host, recordType: self.testObject.record!, success: { responseObj in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
-                    }, failure: { error in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
+                    countClientsQuery += 1
+                    print("countClientsQuery" + String(countClientsQuery))
+                    /* try */ self.dnsClientQuery = DNSClient.query(host, recordType: self.testObject.record!, success: { [weak self] responseObj in
+                        print("responseObj")
+                        print(responseObj)
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
+                    }, failure: { [weak self] error in
+                        print("responseObj Error")
+                        print(error)
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
                     })
                 }
             // } catch {

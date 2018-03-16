@@ -512,7 +512,7 @@ class QOSJitterTestExecutor<T: QOSJitterTest>: QOSTestExecutorClass<T>, UDPStrea
         var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
         memset(payloadBytes, 0, payloadSize)
 //        initialRTPPacket?.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
-        initialRTPPacket?.payload = Data(bytes: &payloadBytes, count: Int(payloadSize))
+        initialRTPPacket?.payload = Data(bytes: &payloadBytes, count: 8)
         
 //         Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
         free(payloadBytes)
