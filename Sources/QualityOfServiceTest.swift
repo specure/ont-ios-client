@@ -142,6 +142,11 @@ open class QualityOfServiceTest: NSObject {
 
         controlServer.requestQosMeasurement(measurementUuid, success: { [weak self] response in
             self?.qosQueue.async {
+                if self?.isPartOfMainTest == true {
+                    if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
+                        response.objectives = [QosMeasurementType.JITTER.rawValue: jitterParams]
+                    }
+                }
                 self?.continueWithQOSParameters(response)
             }
         }) { [weak self] error in
@@ -214,18 +219,22 @@ open class QualityOfServiceTest: NSObject {
                         
                         } else {
                         
-                            logger.debug("created qos test: \(qosTest)")
-                            
-                            var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                            if concurrencyGroupArray == nil {
-                                concurrencyGroupArray = [QOSTest]()
+                            if let type = QosMeasurementType(rawValue: objectiveType) {
+                                if type != .JITTER {
+                                    logger.debug("created qos test: \(qosTest)")
+                                    
+                                    var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+                                    if concurrencyGroupArray == nil {
+                                        concurrencyGroupArray = [QOSTest]()
+                                    }
+                                    
+                                    concurrencyGroupArray!.append(qosTest)
+                                    qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+                                    
+                                    // increase test count
+                                    testCount += 1
+                                }
                             }
-                            
-                            concurrencyGroupArray!.append(qosTest)
-                            qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-                            
-                            // increase test count
-                            testCount += 1
                         }
 
                         

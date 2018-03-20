@@ -408,7 +408,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
         if let mainTest = self.qualityOfServiceTestRunner?.isPartOfMainTest, mainTest {
             
-            if let result = results.first?.resultDictionary {
+            if var result = results.first?.resultDictionary {
                 
                 // should pass even it fails
                 //                if let r = result["voip_result_status"] as? String, r == "TIMEOUT" {
@@ -419,6 +419,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 //                }
                 
                 // delegate to runner to submit VOIP results
+                if let testType = result["test_type"] as? String,
+                    testType == QosMeasurementType.JITTER.rawValue {
+                    result["test_type"] = QosMeasurementType.VOIP.rawValue
+                }
                 self.testRunner?.jpl = result
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
                 
