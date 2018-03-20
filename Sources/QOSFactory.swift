@@ -51,7 +51,7 @@ class QOSFactory {
                     return QOSVOIPTest(testParameters: params)
 
                 case .JITTER:
-                    return QOSJitterTest(testParameters: params)
+                    return QOSVOIPTest(testParameters: params)
                 
                 case .TRACEROUTE:
                     return QOSTracerouteTest(testParameters: params)
@@ -123,12 +123,12 @@ class QOSFactory {
                     )
                 
                 case .JITTER:
-                    return JitterTestExecutor(
+                    return VOIPTestExecutor(
                         controlConnection: controlConnection,
                         delegateQueue: delegateQueue,
-                        testObject: testObject as! QOSJitterTest,
+                        testObject: testObject as! QOSVOIPTest,
                         speedtestStartTime: speedtestStartTime
-                    )
+                )
 
                 case .TRACEROUTE:
                     return TracerouteTestExecutor(

@@ -418,12 +418,8 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 //                    return
                 //                }
                 
-                // delegate to runner to submit VOIP results
-                if let testType = result["test_type"] as? String,
-                    testType == QosMeasurementType.JITTER.rawValue {
-                    result["test_type"] = QosMeasurementType.VOIP.rawValue
-                }
-                self.testRunner?.jpl = result
+                // delegate to runner to submit VOIP results               
+                self.testRunner?.jpl = SpeedMeasurementJPLResult(JSON: result)
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
                 
             } else {

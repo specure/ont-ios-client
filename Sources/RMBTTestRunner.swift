@@ -132,7 +132,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     weak var del: RMBTMainTestExtendedDelegate?
     
     ////
-    var jpl:[String:Any]? {
+    var jpl: SpeedMeasurementJPLResult? {
         
         didSet {
             resultObject().jpl = jpl

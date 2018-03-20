@@ -37,7 +37,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 class SpeedMeasurementResult: BasicRequest {
 
     ///
-    var jpl:[String:Any]?
+    var jpl: SpeedMeasurementJPLResult?
 
     ///
     var clientUuid: String?

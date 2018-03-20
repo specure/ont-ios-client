@@ -144,8 +144,12 @@ open class QualityOfServiceTest: NSObject {
             self?.qosQueue.async {
                 if self?.isPartOfMainTest == true {
                     if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
-                        response.objectives = [QosMeasurementType.JITTER.rawValue: jitterParams]
+                        response.objectives?[QosMeasurementType.VOIP.rawValue] = jitterParams
+                        response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
                     }
+                }
+                else {
+                    response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
                 }
                 self?.continueWithQOSParameters(response)
             }
@@ -200,7 +204,7 @@ open class QualityOfServiceTest: NSObject {
                             
                             if let type = QosMeasurementType(rawValue: objectiveType) {
                                 
-                                if type == .JITTER {
+                                if type == .VOIP {
                                 
                                     logger.debug("created VOIP test as the main test: \(qosTest)")
                                     
