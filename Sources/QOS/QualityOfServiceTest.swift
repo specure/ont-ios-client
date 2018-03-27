@@ -34,7 +34,7 @@ open class QualityOfServiceTest: NSObject {
     private let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
-    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue")
+    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
 
     ///
     open weak var delegate: QualityOfServiceTestDelegate?
@@ -65,6 +65,7 @@ open class QualityOfServiceTest: NSObject {
 
     ///
     private var qosTestConcurrencyGroupMap: [ConcurrencyGroup: [QOSTest]] = [:]
+    private var qosTestExecutors: [String: QOSTestExecutorProtocol] = [:]
 
     ///
     private var testTypeCountMap: [QosMeasurementType: UInt16] = [:]
@@ -103,9 +104,8 @@ open class QualityOfServiceTest: NSObject {
     open func stop() {
         logger.debug("ABORTING QOS TEST")
 
-        mutualExclusionQueue.sync {
-            self.stopped = true
-
+        self.stopped = true
+        mutualExclusionQueue.async {
             // close all control connections
             self.closeAllControlConnections()
 
@@ -345,6 +345,9 @@ open class QualityOfServiceTest: NSObject {
                     if let testExecutor = QOSFactory.createTestExecutor(qosTest, controlConnection: controlConnection, delegateQueue: executorQueue, speedtestStartTime: speedtestStartTime) {
                         // TODO: which queue?
 
+                        let key = UUID().uuidString
+                        self.qosTestExecutors[key] = testExecutor //Need keep it in memory
+                        
                         // set test token (TODO: IMPROVE)
                         testExecutor.setCurrentTestToken(self.testToken)
 
@@ -373,7 +376,8 @@ open class QualityOfServiceTest: NSObject {
                         self.executorQueue.async {
                             testExecutor.execute { [weak self] (testResult: QOSTestResult) in
 
-                                self?.mutualExclusionQueue.sync {
+                                self?.mutualExclusionQueue.sync { [weak self] in
+                                    self?.qosTestExecutors[key] = nil
                                     self?.qosTestFinishedWithResult(testResult.testType, withTestResult: testResult)
                                 }
                             }
@@ -587,7 +591,7 @@ open class QualityOfServiceTest: NSObject {
             return
         }
 
-        mutualExclusionQueue.sync {
+        mutualExclusionQueue.async {
             // close all control connections
             self.closeAllControlConnections()
             self.controlConnectionMap = [:]
