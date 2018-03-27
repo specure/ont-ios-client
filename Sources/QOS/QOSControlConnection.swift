@@ -45,6 +45,8 @@ class QOSControlConnection: NSObject {
 
     ///
     internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    
+    internal let mutableQueue = DispatchQueue(label: "com.specure.rmbt.mutableQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     ///
     internal var qosControlConnectionSocket: GCDAsyncSocket!
@@ -133,14 +135,23 @@ class QOSControlConnection: NSObject {
 
     ///
     func registerTaskDelegate(_ delegate: QOSControlConnectionTaskDelegate, forTaskId taskId: UInt) {
-        taskDelegateDictionary[taskId] = delegate
-        logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
+        self.mutableQueue.sync {
+            taskDelegateDictionary[taskId] = delegate
+            logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
+        }
     }
 
     ///
     func unregisterTaskDelegate(forTaskId taskId: UInt) {
-        taskDelegateDictionary.removeValue(forKey: taskId)
-        // taskDelegateDictionary[taskId] = nil
+        self.mutableQueue.sync {
+            if let delegate = taskDelegateDictionary.removeValue(forKey: taskId) {
+                // taskDelegateDictionary[taskId] = nil
+                logger.debug("unregisterTaskDelegate: \(taskId), delegate: \(delegate)")
+            }
+            else {
+                logger.debug("TaskDelegate: \(taskId) Not found")
+            }
+        }
     }
 
 // MARK: task command methods

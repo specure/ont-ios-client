@@ -129,20 +129,15 @@ open class QualityOfServiceTest: NSObject {
 
         controlServer.requestQosMeasurement(measurementUuid, success: { [weak self] response in
             self?.qosQueue.async {
-                //Maybe wrong logic
-//                if self?.isPartOfMainTest == true {
-//                    if let objectives = response.objectives {
-//                        // objective type is TCP, UDP, etc.
-//                        // objective values are arrays of dictionaries for each test
-//                        for (objectiveType, objectiveValues) in objectives {
-//                            if let type = QosMeasurementType(rawValue: objectiveType),
-//                                type == .JITTER {
-//                                response.objectives = [objectiveType: objectiveValues]
-//                                break
-//                            }
-//                        }
-//                    }
-//                }
+                if self?.isPartOfMainTest == true {
+                    if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
+                        response.objectives?[QosMeasurementType.VOIP.rawValue] = jitterParams
+                        response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
+                    }
+                }
+                else {
+                    response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
+                }
                 self?.continueWithQOSParameters(response)
             }
         }) { [weak self] error in
@@ -196,7 +191,7 @@ open class QualityOfServiceTest: NSObject {
                             
                             if let type = QosMeasurementType(rawValue: objectiveType) {
                                 
-                                if type == .JITTER {
+                                if type == .VOIP {
                                 
                                     logger.debug("created VOIP test as the main test: \(qosTest)")
                                     
@@ -215,18 +210,22 @@ open class QualityOfServiceTest: NSObject {
                         
                         } else {
                         
-                            logger.debug("created qos test: \(qosTest)")
-                            
-                            var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                            if concurrencyGroupArray == nil {
-                                concurrencyGroupArray = []
+                            if let type = QosMeasurementType(rawValue: objectiveType) {
+                                if type != .JITTER {
+                                    logger.debug("created qos test: \(qosTest)")
+                                    
+                                    var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+                                    if concurrencyGroupArray == nil {
+                                        concurrencyGroupArray = [QOSTest]()
+                                    }
+                                    
+                                    concurrencyGroupArray!.append(qosTest)
+                                    qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+                                    
+                                    // increase test count
+                                    testCount += 1
+                                }
                             }
-                            
-                            concurrencyGroupArray?.append(qosTest)
-                            qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-                            
-                            // increase test count
-                            testCount += 1
                         }
 
                         
