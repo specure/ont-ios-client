@@ -74,14 +74,14 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 
 let QOS_ENABLED_TESTS: [QosMeasurementType] = [
     .JITTER,
-//    .HttpProxy,
-//    .NonTransparentProxy,
-//    .WEBSITE,
+    .HttpProxy,
+    .NonTransparentProxy,
+    .WEBSITE,
     .DNS,
-//    .TCP,
-//    .UDP,
+    .TCP,
+    .UDP,
     .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
-//    .TRACEROUTE
+    .TRACEROUTE
 ]
 
 /// determine the tests which should show log messages
