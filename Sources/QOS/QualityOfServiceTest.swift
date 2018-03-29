@@ -567,6 +567,7 @@ open class QualityOfServiceTest: NSObject {
             logger.debug("closing control connection \(controlConnection)")
             controlConnection.disconnect()
         }
+        
     }
 
     ///////////////
@@ -591,10 +592,9 @@ open class QualityOfServiceTest: NSObject {
             return
         }
 
-        mutualExclusionQueue.async {
+        mutualExclusionQueue.sync {
             // close all control connections
             self.closeAllControlConnections()
-            self.controlConnectionMap = [:]
         }
         
         DispatchQueue.main.async {

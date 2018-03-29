@@ -905,7 +905,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     deinit {
-        print("RMBTTestRunner deinit")
         finalize()
     }
 

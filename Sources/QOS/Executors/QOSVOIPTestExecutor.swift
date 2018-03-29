@@ -512,7 +512,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         //
 
-        data?.pointee.append(initialRTPPacket.toData() as Data)
+        data?.pointee.append(initialRTPPacket.toData())
 
         return true
     }
