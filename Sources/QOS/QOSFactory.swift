@@ -62,7 +62,7 @@ class QOSFactory {
     }
 
     ///
-    class func createTestExecutor(_ testObject: QOSTest, controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
+    class func createTestExecutor(_ testObject: QOSTest, controlConnection: QOSControlConnection? = nil, delegateQueue: DispatchQueue, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
         if let type = getTypeIfEnabled(testObject.getType()) {
 
             switch type {

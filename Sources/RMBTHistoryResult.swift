@@ -289,7 +289,7 @@ open class RMBTHistoryResult {
                             assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
                             
                             self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
-                            self.shareURL = (r.url! as NSURL) as URL!
+                            self.shareURL = r.url
                         }
                         
                     } catch {

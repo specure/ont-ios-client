@@ -193,16 +193,17 @@ open class RMBTSettings: NSObject {
             }
 
             // Start observing
-            addObserver(self, forKeyPath: keyPath, options: .new, context: nil)
+//            addObserver(self, forKeyPath: keyPath, options: .new, context: nil)
+            self.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
         }
     }
 
     ///
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let newValue = change?[NSKeyValueChangeKey.newKey], let kp = keyPath {
-            logger.debugExec() {
+            Log.logger.debugExec() {
                 let oldValue = UserDefaults.getDataFor(key: kp)
-                logger.debug("Settings changed for keyPath '\(String(describing: keyPath))' from '\(String(describing: oldValue))' to '\(newValue)'")
+                Log.logger.debug("Settings changed for keyPath '\(String(describing: keyPath))' from '\(String(describing: oldValue))' to '\(newValue)'")
             }
 
             UserDefaults.storeDataFor(key: kp, obj: newValue)

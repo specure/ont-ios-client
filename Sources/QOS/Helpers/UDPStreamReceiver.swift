@@ -67,7 +67,7 @@ class UDPStreamReceiver: NSObject {
 
     ///
     fileprivate func connect() {
-        logger.debug("connecting udp socket")
+        Log.logger.debug("connecting udp socket")
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: settings.delegateQueue, socketQueue: socketQueue)
 
         do {
@@ -80,7 +80,7 @@ class UDPStreamReceiver: NSObject {
 
     ///
     fileprivate func close() {
-        logger.debug("closing udp socket")
+        Log.logger.debug("closing udp socket")
         udpSocket?.close()
     }
 
@@ -139,27 +139,27 @@ extension UDPStreamReceiver: GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
-        logger.debug("didConnectToAddress: \(address)")
+        Log.logger.debug("didConnectToAddress: \(address)")
     }
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
-        logger.debug("didNotConnect: \(String(describing: error))")
+        Log.logger.debug("didNotConnect: \(String(describing: error))")
     }
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
-        logger.debug("didSendDataWithTag: \(tag)")
+        Log.logger.debug("didSendDataWithTag: \(tag)")
     }
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: Error?) {
-        logger.debug("didNotSendDataWithTag: \(String(describing: error))")
+        Log.logger.debug("didNotSendDataWithTag: \(String(describing: error))")
     }
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didReceive data: Data, fromAddress address: Data, withFilterContext filterContext: Any?) {
-        logger.debug("didReceiveData: \(data)")
+        Log.logger.debug("didReceiveData: \(data)")
 
         if running {
             receivePacket(data, fromAddress: address)
@@ -168,7 +168,7 @@ extension UDPStreamReceiver: GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) {
-        logger.debug("udpSocketDidClose: \(String(describing: error))")
+        Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
     }
 
 }

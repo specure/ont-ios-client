@@ -96,7 +96,7 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
             #endif
         } else {
-            logger.warning("User hasn't enabled or authorized location services")
+            Log.logger.warning("User hasn't enabled or authorized location services")
             callback()
         }
     }
@@ -128,7 +128,7 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        logger.error("Failed to obtain location \(error)")
+        Log.logger.error("Failed to obtain location \(error)")
     }
 
     ///

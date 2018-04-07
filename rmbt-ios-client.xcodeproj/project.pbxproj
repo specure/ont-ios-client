@@ -463,13 +463,19 @@
 		E0FC4D1F1D6DCDD100D5D236 /* RMBTLocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */; };
 		E0FC4D201D6DCEA700D5D236 /* RMBTTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */; };
 		E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
+		E9057F462074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E9057F472074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E92F324F2074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */; };
+		E92F32502074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */; };
+		E92F32512074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */; };
+		E92F3253207477B400F0CC9E /* RMBTQosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F3252207477B400F0CC9E /* RMBTQosTests.swift */; };
+		E92F32552074827000F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E92F327420749D1D00F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
 		E9C41DF82053C88500162C87 /* RMBTClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41DF72053C88500162C87 /* RMBTClientTests.swift */; };
 		E9C41DFA2053C88500162C87 /* RMBTClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */; };
 		E9C41E012053C8C600162C87 /* CheckSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E002053C8C500162C87 /* CheckSurveyResponse.swift */; };
 		E9C41E032053C8D400162C87 /* OperatorsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E022053C8D400162C87 /* OperatorsRequest.swift */; };
 		E9C41E052053C8DF00162C87 /* OperatorsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E042053C8DF00162C87 /* OperatorsResponse.swift */; };
-		E9C41E072053C8FA00162C87 /* QOSJitterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E062053C8FA00162C87 /* QOSJitterTest.swift */; };
-		E9C41E092053C90900162C87 /* QOSJitterTestExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E082053C90800162C87 /* QOSJitterTestExecutor.swift */; };
 		E9C41E0D2053CFE700162C87 /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E0B2053CFE700162C87 /* MeasurementHistory.swift */; };
 		E9C41E0E2053CFE700162C87 /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E0B2053CFE700162C87 /* MeasurementHistory.swift */; };
 		E9C41E0F2053CFE700162C87 /* MeasurementHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E0B2053CFE700162C87 /* MeasurementHistory.swift */; };
@@ -693,14 +699,15 @@
 		E0FC4CA91D6C868D00D5D236 /* QosMeasurementResultResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QosMeasurementResultResponse.swift; sourceTree = "<group>"; };
 		E0FC4CAD1D6C86B200D5D236 /* HistoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryItem.swift; sourceTree = "<group>"; };
 		E0FC4CC01D6C886D00D5D236 /* RTPHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTPHeader.swift; sourceTree = "<group>"; };
+		E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementJPLResult.swift; sourceTree = "<group>"; };
+		E92F3252207477B400F0CC9E /* RMBTQosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQosTests.swift; sourceTree = "<group>"; };
+		E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQoSTestHelper.swift; sourceTree = "<group>"; };
 		E9C41DF52053C88500162C87 /* RMBTClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RMBTClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9C41DF72053C88500162C87 /* RMBTClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTClientTests.swift; sourceTree = "<group>"; };
 		E9C41DF92053C88500162C87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E9C41E002053C8C500162C87 /* CheckSurveyResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckSurveyResponse.swift; sourceTree = "<group>"; };
 		E9C41E022053C8D400162C87 /* OperatorsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorsRequest.swift; sourceTree = "<group>"; };
 		E9C41E042053C8DF00162C87 /* OperatorsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorsResponse.swift; sourceTree = "<group>"; };
-		E9C41E062053C8FA00162C87 /* QOSJitterTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSJitterTest.swift; sourceTree = "<group>"; };
-		E9C41E082053C90800162C87 /* QOSJitterTestExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QOSJitterTestExecutor.swift; sourceTree = "<group>"; };
 		E9C41E0B2053CFE700162C87 /* MeasurementHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasurementHistory.swift; sourceTree = "<group>"; };
 		E9C41E0C2053CFE700162C87 /* HistoryFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryFilter.swift; sourceTree = "<group>"; };
 		E9C41E132053D8A200162C87 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = "../rmbt-ios/Vendor/realm-swift-3.1.1/ios/swift-4.0.2/Realm.framework"; sourceTree = "<group>"; };
@@ -855,7 +862,6 @@
 				E02D17FC1CF59262002A02FE /* QOSHTTPProxyTest.swift */,
 				E02D17FE1CF59262002A02FE /* QOSNonTransparentProxyTest.swift */,
 				E02D18011CF59262002A02FE /* QOSTCPTest.swift */,
-				E9C41E062053C8FA00162C87 /* QOSJitterTest.swift */,
 				E02D18081CF59262002A02FE /* QOSTracerouteTest.swift */,
 				E02D18061CF59262002A02FE /* QOSTestResult.swift */,
 				E02D18071CF59262002A02FE /* QOSMeasurementType.swift */,
@@ -1114,6 +1120,7 @@
 				E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */,
 				E02D18431CF59262002A02FE /* RMBTSettings.swift */,
 				E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */,
+				E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */,
 				E00C20B21D19654400720394 /* RMBTClient.swift */,
 				E02D18511CF59262002A02FE /* RMBTTestWorker.swift */,
 				E02D186D1CF59262002A02FE /* UIDeviceHardware.swift */,
@@ -1296,7 +1303,6 @@
 			isa = PBXGroup;
 			children = (
 				E02D17FA1CF59262002A02FE /* QOSDNSTestExecutor.swift */,
-				E9C41E082053C90800162C87 /* QOSJitterTestExecutor.swift */,
 				E02D17FD1CF59262002A02FE /* QOSHTTPProxyTestExecutor.swift */,
 				E02D17FF1CF59262002A02FE /* QOSNonTransparentProxyTestExecutor.swift */,
 				E02D18021CF59262002A02FE /* QOSTCPTestExecutor.swift */,
@@ -1324,6 +1330,8 @@
 			isa = PBXGroup;
 			children = (
 				E9C41DF72053C88500162C87 /* RMBTClientTests.swift */,
+				E92F3252207477B400F0CC9E /* RMBTQosTests.swift */,
+				E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */,
 				E9C41DF92053C88500162C87 /* Info.plist */,
 			);
 			path = RMBTClientTests;
@@ -1474,7 +1482,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0930;
 				TargetAttributes = {
 					A160F0DC1F794DB700649A96 = {
 						CreatedOnToolsVersion = 9.0;
@@ -1776,6 +1784,7 @@
 				A1696C001F9FD305003A257A /* FakeCellLocation.swift in Sources */,
 				A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */,
+				E92F327420749D1D00F0CC9E /* RMBTQoSTestHelper.swift in Sources */,
 				E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */,
 				E0FC4C551D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				E02D1A091CFC8E97002A02FE /* ServiceTypeMapping.swift in Sources */,
@@ -1792,7 +1801,6 @@
 				E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */,
 				E9C41E032053C8D400162C87 /* OperatorsRequest.swift in Sources */,
 				E02D18A21CF59262002A02FE /* QOSMeasurementType.swift in Sources */,
-				E9C41E092053C90900162C87 /* QOSJitterTestExecutor.swift in Sources */,
 				E02D18C11CF59262002A02FE /* RMBTJSONHelper.swift in Sources */,
 				E0FC4C471D6C82EB00D5D236 /* SettingsRequest.swift in Sources */,
 				E02D188C1CF59262002A02FE /* OrderedDictionary.swift in Sources */,
@@ -1819,6 +1827,7 @@
 				E0FC4C591D6C841C00D5D236 /* MeasurementSpeedRawItem.swift in Sources */,
 				E0FC4C4D1D6C834000D5D236 /* GeoLocation.swift in Sources */,
 				E02D189F1CF59262002A02FE /* QOSTestExecutorClass.swift in Sources */,
+				E92F324F2074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */,
 				E02D19031CF59262002A02FE /* TrafficClassification.swift in Sources */,
 				E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */,
 				E021304B1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
@@ -1831,7 +1840,6 @@
 				E0FC4CC11D6C886D00D5D236 /* RTPHeader.swift in Sources */,
 				E0FC4CAA1D6C868D00D5D236 /* QosMeasurementResultResponse.swift in Sources */,
 				E9C41E102053CFE700162C87 /* HistoryFilter.swift in Sources */,
-				E9C41E072053C8FA00162C87 /* QOSJitterTest.swift in Sources */,
 				E02D18FF1CF59262002A02FE /* SocketUtils.swift in Sources */,
 				E9C41E0D2053CFE700162C87 /* MeasurementHistory.swift in Sources */,
 				E02D18AA1CF59262002A02FE /* QOSWebsiteTest.swift in Sources */,
@@ -1938,6 +1946,7 @@
 				E0FC4C571D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				E0FC4CBD1D6C881F00D5D236 /* RTPPacket.swift in Sources */,
 				E0FC4D041D6D994600D5D236 /* QOSTestExecutorClass.swift in Sources */,
+				E9057F472074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */,
 				E0FC4C2E1D6C811D00D5D236 /* PingUtil.m in Sources */,
 				E0FC4C451D6C82BE00D5D236 /* MapMeasurementRequest.swift in Sources */,
 				E0FC4C9C1D6C862400D5D236 /* SpeedMeasurementResultResponse.swift in Sources */,
@@ -2017,6 +2026,7 @@
 				E0FC4CF21D6D98F500D5D236 /* PingUtilDelegateBridge.swift in Sources */,
 				A1720F0F1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4CA01D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
+				E92F32512074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */,
 				E0FC4CCC1D6C88C500D5D236 /* ConversionUtility.swift in Sources */,
 				E0FC4C841D6C857B00D5D236 /* MapOptionResponse.swift in Sources */,
 				E0FC4CEE1D6D97A600D5D236 /* RMBTThroughputHistory.swift in Sources */,
@@ -2078,6 +2088,7 @@
 				E02D195E1CF5A450002A02FE /* QOSDNSTest.swift in Sources */,
 				E0FC4C931D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E0FC4C441D6C82BE00D5D236 /* MapMeasurementRequest.swift in Sources */,
+				E9057F462074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */,
 				E02D198B1CF5A522002A02FE /* CLLocation+RMBTFormat.swift in Sources */,
 				E02D19591CF5A445002A02FE /* QOSTestResult.swift in Sources */,
 				E02D195C1CF5A44B002A02FE /* QOSNonTransparentProxyTest.swift in Sources */,
@@ -2157,6 +2168,7 @@
 				E0FC4C9B1D6C862400D5D236 /* SpeedMeasurementResultResponse.swift in Sources */,
 				A1720F0E1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C831D6C857B00D5D236 /* MapOptionResponse.swift in Sources */,
+				E92F32502074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */,
 				E02D198C1CF5A525002A02FE /* AtomicBoolean.swift in Sources */,
 				E02D198F1CF5A52E002A02FE /* UInt+Extensions.swift in Sources */,
 				E02D19711CF5A4C9002A02FE /* UDPStreamSender.swift in Sources */,
@@ -2173,6 +2185,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E92F32552074827000F0CC9E /* RMBTQoSTestHelper.swift in Sources */,
+				E92F3253207477B400F0CC9E /* RMBTQosTests.swift in Sources */,
 				E9C41DF82053C88500162C87 /* RMBTClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2191,6 +2205,7 @@
 		A160F0DD1F794DB700649A96 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2199,6 +2214,7 @@
 		A160F0DE1F794DB700649A96 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2212,11 +2228,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -2247,11 +2265,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;

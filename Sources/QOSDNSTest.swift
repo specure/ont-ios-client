@@ -43,6 +43,9 @@ class QOSDNSTest: QOSTest {
 
     //
 
+    deinit {
+        print("QOSDNSTest")
+    }
     ///
     override init(testParameters: QOSTestParameters) {
         // host

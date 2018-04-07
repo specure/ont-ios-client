@@ -101,15 +101,15 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
             ////
 
             // set start time
-            requestStartTimeTicks = getCurrentTimeTicks()
+            requestStartTimeTicks = UInt64.getCurrentTimeTicks()
 
             ////
 
             //alamofireManager.request(.get, url, parameters: [:], encoding: .URL, headers: nil)
             alamofireManager.request(url, method: .get, parameters: [:], encoding: URLEncoding.default, headers: nil)
             
-                .responseJSON { response in
-                    
+                .responseJSON { [weak self] response in
+                    guard let strongSelf = self else { return }
                     //to get status code
                     if let status = response.response?.statusCode {
                         switch status {
@@ -117,21 +117,21 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                             case 200, 201, 206:
                                 debugPrint(response)
                                 
-                                self.qosLog.debug("GET SUCCESS")
+                                strongSelf.qosLog.debug("GET SUCCESS")
         
                                 // compute duration
-                                let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
-                                self.testResult.set(self.RESULT_HTTP_PROXY_DURATION, number: durationInNanoseconds)
+                                let durationInNanoseconds = UInt64.getTimeDifferenceInNanoSeconds(strongSelf.requestStartTimeTicks)
+                                strongSelf.testResult.set(strongSelf.RESULT_HTTP_PROXY_DURATION, number: durationInNanoseconds)
         
                                 // set other result values
-                                self.testResult.set(self.RESULT_HTTP_PROXY_STATUS, value: response.response?.statusCode)
-                                self.testResult.set(self.RESULT_HTTP_PROXY_LENGTH, number: response.response?.expectedContentLength)
+                                strongSelf.testResult.set(strongSelf.RESULT_HTTP_PROXY_STATUS, value: response.response?.statusCode)
+                                strongSelf.testResult.set(strongSelf.RESULT_HTTP_PROXY_LENGTH, number: response.response?.expectedContentLength)
         
                                 // compute md5
                                 if let r = response.data {
-                                    self.qosLog.debug("ITS NSDATA!")
+                                    strongSelf.qosLog.debug("ITS NSDATA!")
         
-                                    self.testResult.set(self.RESULT_HTTP_PROXY_HASH, value: r.MD5().hexString()) // TODO: improve
+                                    strongSelf.testResult.set(strongSelf.RESULT_HTTP_PROXY_HASH, value: r.MD5().hexString()) // TODO: improve
                                 }
         
                                 // loop through headers
@@ -142,25 +142,26 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                                     }
                                 }
         
-                                self.testResult.set(self.RESULT_HTTP_PROXY_HEADER, value: headerString)
+                                strongSelf.testResult.set(strongSelf.RESULT_HTTP_PROXY_HEADER, value: headerString)
         
                                 ///
-                            self.testDidSucceed()
+                            strongSelf.testDidSucceed()
                         case 408:
                             // timeout
-                            self.testDidTimeout()
+                            strongSelf.testDidTimeout()
                         default:
-                            logger.debug("error msg from server: \(String(describing: response.result.value))")
+                            Log.logger.debug("error msg from server: \(String(describing: response.result.value))")
                             
                             //to get JSON return value
                             if let result = response.result.value {
-                                let JSON = result as! NSDictionary
-                                print(JSON)
+                                if let JSON = result as? NSDictionary {
+                                    print(JSON)
+                                }
                                 
-                                self.qosLog.debug("GET FAILURE")
-                                self.qosLog.debug("\(String(describing: response.error))")
+                                strongSelf.qosLog.debug("GET FAILURE")
+                                strongSelf.qosLog.debug("\(String(describing: response.error))")
 
-                                self.testDidFail()
+                                strongSelf.testDidFail()
                             }
                         }
                     }

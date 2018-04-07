@@ -62,7 +62,7 @@
     }/* else {
         
     }*/
-    
+    res_ndestroy(res);
     free(res);
     
     return address;
@@ -89,6 +89,7 @@
       
       }*/
     
+    res_ndestroy(res);
     free(res);
     
     if (address) {

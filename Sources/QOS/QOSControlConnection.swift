@@ -48,7 +48,7 @@ class QOSControlConnection: NSObject {
     
     internal let mutableQueue = DispatchQueue(label: "com.specure.rmbt.mutableQueue")
     ///
-    internal var qosControlConnectionSocket: GCDAsyncSocket!
+    internal lazy var qosControlConnectionSocket: GCDAsyncSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue)
 
     ///
     internal var taskDelegateDictionary: [UInt: QOSControlConnectionTaskDelegate] = [:]
@@ -59,16 +59,20 @@ class QOSControlConnection: NSObject {
 
     //
 
+    deinit {
+        defer {
+            taskDelegateDictionary = [:]
+            qosControlConnectionSocket.delegate = nil
+            qosControlConnectionSocket.disconnect()
+        }
+    }
     ///
     init(testToken: String) {
         self.testToken = testToken
 
         super.init()
 
-        // create socket
-        qosControlConnectionSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue) // TODO: specify other dispath queue
-
-        logger.verbose("control connection created")
+        Log.logger.verbose("control connection created")
     }
 
 // MARK: connection handling
@@ -86,7 +90,7 @@ class QOSControlConnection: NSObject {
             try qosControlConnectionSocket.connect(toHost: host, onPort: port, withTimeout: connectTimeout)
         } catch {
             // there was an error
-            logger.verbose("connection error \(error)")
+            Log.logger.verbose("connection error \(error)")
         }
 
         _ = connectCountDownLatch.await(timeout)
@@ -97,7 +101,7 @@ class QOSControlConnection: NSObject {
     ///
     func disconnect() {
         // send quit
-        logger.debug("QUIT QUIT QUIT QUIT QUIT")
+        Log.logger.debug("QUIT QUIT QUIT QUIT QUIT")
 
         writeLine("QUIT", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: -1) // don't bother with the tag, don't need read after this operation
         qosControlConnectionSocket.disconnectAfterWriting()
@@ -108,7 +112,7 @@ class QOSControlConnection: NSObject {
 
     ///
     func setTimeout(_ timeout: UInt64) {
-        // logger.debug("SET TIMEOUT: \(timeout)")
+        // Log.logger.debug("SET TIMEOUT: \(timeout)")
 
         // timeout is in nanoseconds -> convert to ms
         var msTimeout = nsToMs(timeout)
@@ -119,13 +123,13 @@ class QOSControlConnection: NSObject {
         }
 
         if currentTimeout == msTimeout {
-            logger.debug("skipping change of control connection timeout because old value = new value")
+            Log.logger.debug("skipping change of control connection timeout because old value = new value")
             return // skip if old == new timeout
         }
 
         pendingTimeout = msTimeout
 
-        // logger.debug("REQUEST CONN TIMEOUT \(msTimeout)")
+        // Log.logger.debug("REQUEST CONN TIMEOUT \(msTimeout)")
         writeLine("REQUEST CONN TIMEOUT \(msTimeout)", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: TAG_SET_TIMEOUT)
         readLine(TAG_SET_TIMEOUT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
     }
@@ -136,21 +140,21 @@ class QOSControlConnection: NSObject {
     func registerTaskDelegate(_ delegate: QOSControlConnectionTaskDelegate, forTaskId taskId: UInt) {
         self.mutableQueue.sync {
             taskDelegateDictionary[taskId] = delegate
-            logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
+            Log.logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
         }
     }
 
     ///
     func unregisterTaskDelegate(forTaskId taskId: UInt) {
         self.mutableQueue.sync {
-            if let delegate = taskDelegateDictionary[taskId] {
+            if let _ = taskDelegateDictionary[taskId] {
                 if let delegate = taskDelegateDictionary.removeValue(forKey: taskId) {
                     // taskDelegateDictionary[taskId] = nil
-                    logger.debug("unregisterTaskDelegate: \(taskId), delegate: \(delegate)")
+                    Log.logger.debug("unregisterTaskDelegate: \(taskId), delegate: \(delegate)")
                 }
             }
             else {
-                logger.debug("TaskDelegate: \(taskId) Not found")
+                Log.logger.debug("TaskDelegate: \(taskId) Not found")
             }
         }
     }
@@ -161,13 +165,13 @@ class QOSControlConnection: NSObject {
     /// command should not contain \n, will be added inside this method
     func sendTaskCommand(_ command: String, withTimeout timeout: TimeInterval, forTaskId taskId: UInt, tag: Int) {
         /* if (!qosControlConnectionSocket.isConnected) {
-            logger.error("control connection is closed, sendTaskCommand won't work!")
+            Log.logger.error("control connection is closed, sendTaskCommand won't work!")
         } */
 
         let _command = command + " +ID\(taskId)"
 
         let t = createTaskCommandTag(forTaskId: taskId, tag: tag)
-        logger.verbose("SENDTASKCOMMAND: (taskId: \(taskId), tag: \(tag)) -> \(t) (\(String(t, radix: 2)))")
+        Log.logger.verbose("SENDTASKCOMMAND: (taskId: \(taskId), tag: \(tag)) -> \(t) (\(String(t, radix: 2)))")
 
         // write command
         writeLine(_command, withTimeout: timeout, tag: t)
@@ -209,8 +213,8 @@ class QOSControlConnection: NSObject {
 
         bitfield = bitfield + (UInt32(taskId) & 0x0000_FFFF)
 
-        // logger.verbose("created BITFIELD for taskId: \(taskId), tag: \(tag) -> \(String(bitfield, radix: 2))")
-        // logger.verbose("created BITFIELD for taskId: \(taskId), tag: \(tag) -> \(String(Int(bitfield), radix: 2))")
+        // Log.logger.verbose("created BITFIELD for taskId: \(taskId), tag: \(tag) -> \(String(bitfield, radix: 2))")
+        // Log.logger.verbose("created BITFIELD for taskId: \(taskId), tag: \(tag) -> \(String(Int(bitfield), radix: 2))")
 
         return Int(bitfield)
     }
@@ -226,7 +230,7 @@ class QOSControlConnection: NSObject {
         let taskId: UInt = _commandTag & 0x0000_FFFF
         let tag = Int((_commandTag & 0x0FFF_0000) >> 16)
 
-        logger.verbose("BITFIELD2: \(commandTag) -> (taskId: \(taskId), tag: \(tag))")
+        Log.logger.verbose("BITFIELD2: \(commandTag) -> (taskId: \(taskId), tag: \(tag))")
 
         return (taskId, tag)
     }
@@ -271,20 +275,20 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
     ///
     func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-        logger.verbose("connected to host \(host) on port \(port)")
+        Log.logger.verbose("connected to host \(host) on port \(port)")
 
         // control connection to qos server uses tls
         sock.startTLS(QOS_TLS_SETTINGS)
     }
 
     func socket(_ sock: GCDAsyncSocket, didReceive trust: SecTrust, completionHandler: @escaping ((Bool) -> Void)) {
-        logger.verbose("DID RECEIVE TRUST")
+        Log.logger.verbose("DID RECEIVE TRUST")
         completionHandler(true)
     }
 
     ///
     @objc func socketDidSecure(_ sock: GCDAsyncSocket) {
-        logger.verbose("socketDidSecure")
+        Log.logger.verbose("socketDidSecure")
 
         // tls connection has been established, start with QTP handshake
         readLine(TAG_GREETING, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
@@ -292,23 +296,23 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-        logger.verbose("didReadData \(data) with tag \(tag)")
+        Log.logger.verbose("didReadData \(data) with tag \(tag)")
 
         let str: String = SocketUtils.parseResponseToString(data)!
 
-        logger.verbose("didReadData \(str)")
+        Log.logger.verbose("didReadData \(str)")
 
         switch tag {
         case TAG_GREETING:
             // got greeting
-            logger.verbose("got greeting")
+            Log.logger.verbose("got greeting")
 
             // read accept
             readLine(TAG_FIRST_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_FIRST_ACCEPT:
             // got accept
-            logger.verbose("got accept")
+            Log.logger.verbose("got accept")
 
             // send token
             let tokenCommand = "TOKEN \(testToken)\n"
@@ -319,17 +323,17 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
         case TAG_TOKEN:
             // response from token command
-            logger.verbose("got ok")
+            Log.logger.verbose("got ok")
 
             // read second accept
             readLine(TAG_SECOND_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_SECOND_ACCEPT:
             // got second accept
-            logger.verbose("got second accept")
+            Log.logger.verbose("got second accept")
 
             // now connection is ready
-            logger.verbose("CONNECTION READY")
+            Log.logger.verbose("CONNECTION READY")
 
             connected = true // set connected to true to unlock
             connectCountDownLatch.countDown()
@@ -341,13 +345,13 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
         case TAG_SET_TIMEOUT:
             // return from REQUEST CONN TIMEOUT
             if str == "OK\n" {
-                logger.debug("set timeout ok")
+                Log.logger.debug("set timeout ok")
 
                 currentTimeout = pendingTimeout
 
                 // OK
             } else {
-                logger.debug("set timeout fail \(str)")
+                Log.logger.debug("set timeout fail \(str)")
                 // FAIL
             }
 
@@ -355,25 +359,25 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
             // case TAG_TASK_COMMAND:
             // got reply from task command
 
-            logger.verbose("TAGTAGTAGTAG: \(tag)")
+            Log.logger.verbose("TAGTAGTAGTAG: \(tag)")
 
             // dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 if self.isTaskCommandTag(taskCommandTag: tag) {
                     if let (_taskId, _tag) = self.parseTaskCommandTag(taskCommandTag: tag) {
 
-                        logger.verbose("\(tag): got reply from task command")
-                        logger.verbose("\(tag): taskId: \(_taskId), _tag: \(_tag)")
+                        Log.logger.verbose("\(tag): got reply from task command")
+                        Log.logger.verbose("\(tag): taskId: \(_taskId), _tag: \(_tag)")
 
                         if let taskId = self.matchAndGetTestIdFromResponse(str) {
-                            logger.verbose("\(tag): TASK ID: \(taskId)")
+                            Log.logger.verbose("\(tag): TASK ID: \(taskId)")
 
-                            //logger.verbose("\(taskDelegateDictionary.count)")
-                            //logger.verbose("\(taskDelegateDictionary.indexForKey(1))")
+                            //Log.logger.verbose("\(taskDelegateDictionary.count)")
+                            //Log.logger.verbose("\(taskDelegateDictionary.indexForKey(1))")
 
                             if let taskDelegate = self.taskDelegateDictionary[taskId] {
-                                logger.verbose("\(tag): TASK DELEGATE: \(taskDelegate)")
+                                Log.logger.verbose("\(tag): TASK DELEGATE: \(taskDelegate)")
 
-                                logger.debug("CALLING DELEGATE METHOD of \(taskDelegate), withResponse: \(str), taskId: \(taskId), tag: \(tag), _tag: \(_tag)")
+                                Log.logger.debug("CALLING DELEGATE METHOD of \(taskDelegate), withResponse: \(str), taskId: \(taskId), tag: \(tag), _tag: \(_tag)")
 
                                 // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
                                 taskDelegate.controlConnection(self, didReceiveTaskResponse: str, withTaskId: taskId, tag: _tag)
@@ -387,36 +391,36 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
-        logger.verbose("didReadPartialDataOfLength \(partialLength), tag: \(tag)")
+        Log.logger.verbose("didReadPartialDataOfLength \(partialLength), tag: \(tag)")
     }
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-        logger.verbose("didWriteDataWithTag \(tag)")
+        Log.logger.verbose("didWriteDataWithTag \(tag)")
     }
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
-        logger.verbose("didWritePartialDataOfLength \(partialLength), tag: \(tag)")
+        Log.logger.verbose("didWritePartialDataOfLength \(partialLength), tag: \(tag)")
     }
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, shouldTimeoutReadWithTag tag: Int, elapsed: TimeInterval, bytesDone length: UInt) -> TimeInterval {
-        logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
+        Log.logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
 
         // if (tag < TAG_TASK_COMMAND) {
         if isTaskCommandTag(taskCommandTag: tag) {
             //let taskId = UInt(-tag + TAG_TASK_COMMAND)
             if let (taskId, _tag) = parseTaskCommandTag(taskCommandTag: tag) {
 
-                logger.verbose("TASK ID: \(taskId)")
+                Log.logger.verbose("TASK ID: \(taskId)")
 
                 if let taskDelegate = taskDelegateDictionary[taskId] {
-                    logger.verbose("TASK DELEGATE: \(taskDelegate)")
+                    Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
 
                     // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
                     taskDelegate.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
-                    logger.debug("!!! AFTER DID_RECEIVE_TIMEOUT !!!!")
+                    Log.logger.debug("!!! AFTER DID_RECEIVE_TIMEOUT !!!!")
                 }
             }
         }
@@ -427,17 +431,17 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
     ///
     @objc func socket(_ sock: GCDAsyncSocket, shouldTimeoutWriteWithTag tag: Int, elapsed: TimeInterval, bytesDone length: UInt) -> TimeInterval {
-        logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
+        Log.logger.verbose("shouldTimeoutReadWithTag \(tag), elapsed: \(elapsed), bytesDone: \(length)")
 
         // if (tag < TAG_TASK_COMMAND) {
         if isTaskCommandTag(taskCommandTag: tag) {
             //let taskId = UInt(-tag + TAG_TASK_COMMAND)
             if let (taskId, _tag) = parseTaskCommandTag(taskCommandTag: tag) {
 
-                logger.verbose("TASK ID: \(taskId)")
+                Log.logger.verbose("TASK ID: \(taskId)")
 
                 if let taskDelegate = taskDelegateDictionary[taskId] {
-                    logger.verbose("TASK DELEGATE: \(taskDelegate)")
+                    Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
 
                     // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
                     taskDelegate.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
@@ -454,11 +458,11 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
         connected = false
 
         if err == nil {
-            logger.debug("QOS CC: socket closed by server after sending QUIT")
+            Log.logger.debug("QOS CC: socket closed by server after sending QUIT")
             return // if the server closed the connection error is nil (this happens after sending QUIT to the server)
         }
 
-        logger.debug("QOS CC: disconnected with error \(String(describing: err))")
+        Log.logger.debug("QOS CC: disconnected with error \(String(describing: err))")
         // TODO: fail!
     }
 

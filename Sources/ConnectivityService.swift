@@ -69,27 +69,37 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
     public typealias ConnectivityInfoCallback = (_ connectivityInfo: ConnectivityInfo) -> ()
 
+    fileprivate let socketQueue = DispatchQueue(label: "ConnectivityService.Queue")
+    fileprivate lazy var udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: self.socketQueue)
+    
     ///
     var callback: ConnectivityInfoCallback?
 
     ///
-    var connectivityInfo: ConnectivityInfo!
+    var connectivityInfo = ConnectivityInfo()
 
     ///
-    var ipv4Finished = false
+    var ipv4Finished = true
 
     ///
-    var ipv6Finished = false
+    var ipv6Finished = true
+    
+    var ipsWasChecked = false
 
+    deinit {
+        defer {
+            self.udpSocket.close()
+            self.udpSocket.setDelegate(nil)
+            self.callback = nil
+        }
+    }
     ///
     open func checkConnectivity(_ callback: @escaping ConnectivityInfoCallback) {
-        if self.callback != nil { // don't allow multiple concurrent executions
-            return
-        }
-
         self.callback = callback
-        self.connectivityInfo = ConnectivityInfo()
-
+        if ipsWasChecked {
+            self.callback?(connectivityInfo)
+        }
+        
         getLocalIpAddresses()
         getLocalIpAddressesFromSocket()
 
@@ -99,21 +109,18 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
     ///
     private func checkIPV4() {
-        
-        self.ipv4Finished = false
-        
-        ControlServer.sharedControlServer.getIpv4( success: { response in
+        if self.ipv4Finished == true {
+            self.ipv4Finished = false
             
-            self.connectivityInfo.ipv4.connectionAvailable = true
-            self.connectivityInfo.ipv4.externalIp = response.ip
-            
-            self.finishIPv4Check()
-            
-        }, error: { error in
-            self.connectivityInfo.ipv4.connectionAvailable = false
-            
-            self.finishIPv4Check()
-        })
+            ControlServer.sharedControlServer.getIpv4( success: { [weak self] response in
+                self?.connectivityInfo.ipv4.connectionAvailable = true
+                self?.connectivityInfo.ipv4.externalIp = response.ip
+                self?.finishIPv4Check()
+            }, error: { [weak self] error in
+                self?.connectivityInfo.ipv4.connectionAvailable = false
+                self?.finishIPv4Check()
+            })
+        }
     }
     
     private func finishIPv4Check() {
@@ -132,21 +139,11 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
     ///
     private func callCallback() {
-        objc_sync_enter(self)
-
-        if !(ipv4Finished && ipv6Finished) {
-            objc_sync_exit(self)
-            return
+        if (ipv4Finished && ipv6Finished) {
+            self.ipsWasChecked = true
+            self.callback?(connectivityInfo)
         }
-
-        objc_sync_exit(self)
-
-        let savedCallback = callback
-        callback = nil
-
-        savedCallback?(connectivityInfo)
     }
-
 }
 
 // MARK: IP addresses
@@ -179,14 +176,14 @@ extension ConnectivityService {
                                 if addr?.sa_family == UInt8(AF_INET) {
                                     if self.connectivityInfo.ipv4.internalIp != address {
                                         self.connectivityInfo.ipv4.internalIp = address
-                                        logger.debug("local ipv4 address from getifaddrs: \(address)")
+                                        Log.logger.debug("local ipv4 address from getifaddrs: \(address)")
                                     }
                                 }
                                 if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp != address {
                                         self.connectivityInfo.ipv6.internalIp = address
                                         self.connectivityInfo.ipv6.externalIp = address
-                                        logger.debug("local ipv6 address from getifaddrs: \(address)")
+                                        Log.logger.debug("local ipv6 address from getifaddrs: \(address)")
                                     }
                                 }
                             }
@@ -202,41 +199,38 @@ extension ConnectivityService {
 
     ///
     fileprivate func getLocalIpAddressesFromSocket() {
-        let udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: DispatchQueue.global(qos: .default))
+        if self.udpSocket.isConnected() {
+            self.updateConnectivityInfo(with: self.udpSocket)
+        }
+        else {
+            if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
+                udpSocket.setIPv6Enabled(false)
+                udpSocket.setPreferIPv4()
+            }
+            if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+                udpSocket.setIPv4Enabled(false)
+                udpSocket.setPreferIPv6()
+            }
+            if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+                udpSocket.setIPv6Enabled(true)
+                udpSocket.setPreferIPv6()
+            }
+            
+            Log.logger.debug("get local address from socket is prefered IPv4:\(udpSocket.isIPv4Preferred()), prefered IPv6:\(udpSocket.isIPv6Preferred()), enabled IPv4:\(udpSocket.isIPv4Enabled()), enabled IPv6: \(udpSocket.isIPv6Enabled())")
+            let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"
 
-        if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
-            udpSocket.setIPv6Enabled(false)
-            udpSocket.setPreferIPv4()
-        }
-        if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
-            udpSocket.setIPv4Enabled(false)
-            udpSocket.setPreferIPv6()
-        }
-        if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
-            udpSocket.setIPv6Enabled(true)
-            udpSocket.setPreferIPv6()
-        }
-        
-        logger.debug("get local address from socket is prefered IPv4:\(udpSocket.isIPv4Preferred()), prefered IPv6:\(udpSocket.isIPv6Preferred()), enabled IPv4:\(udpSocket.isIPv4Enabled()), enabled IPv6: \(udpSocket.isIPv6Enabled())")
-        let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"
-
-        // connect to any host
-        do {
-            try udpSocket.connect(toHost: host, onPort: 11111) // TODO: which host, which port? // try!
-        } catch {
-            getLocalIpAddresses() // fallback
+            // connect to any host
+            do {
+                try udpSocket.connect(toHost: host, onPort: 11111) // TODO: which host, which port? // try!
+            } catch {
+                getLocalIpAddresses() // fallback
+                checkIPV4()
+                checkIPV6()
+            }
         }
     }
 
-}
-
-// MARK: GCDAsyncUdpSocketDelegate
-
-///
-extension ConnectivityService: GCDAsyncUdpSocketDelegate {
-
-    ///
-    public func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
+    func updateConnectivityInfo(with sock: GCDAsyncUdpSocket) {
         if let ip = sock.localHost_IPv4() {
             connectivityInfo.ipv4.internalIp = ip
         }
@@ -244,25 +238,35 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
             connectivityInfo.ipv6.internalIp = ip
             connectivityInfo.ipv6.externalIp = ip
         }
+        
+        Log.logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")
+        Log.logger.debug("local ipv6 address from socket: \(String(describing: self.connectivityInfo.ipv6.internalIp))")
+    }
+}
 
-        logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")
-        logger.debug("local ipv6 address from socket: \(String(describing: self.connectivityInfo.ipv6.internalIp))")
+// MARK: GCDAsyncUdpSocketDelegate
 
+///
+extension ConnectivityService: GCDAsyncUdpSocketDelegate {
+
+    public func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
+        Log.logger.debug("didNotConnect: \(String(describing: error))")
+        getLocalIpAddresses() // fallback
+        checkIPV4()
+        checkIPV6()
+    }
+    
+    public func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) {
+        Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
+        getLocalIpAddresses() // fallback
+        checkIPV4()
+        checkIPV6()
+    }
+    
+    public func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
+        self.updateConnectivityInfo(with: sock)
         sock.close()
+        checkIPV4()
+        checkIPV6()
     }
-
-    ///
-    @nonobjc public func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
-        logger.debug("didNotConnect: \(String(describing: error))")
-
-        getLocalIpAddresses() // fallback
-    }
-
-    ///
-    @nonobjc public func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: NSError?) {
-        logger.debug("udpSocketDidClose: \(String(describing: error))")
-
-        getLocalIpAddresses() // fallback
-    }
-
 }

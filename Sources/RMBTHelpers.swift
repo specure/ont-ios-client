@@ -66,7 +66,7 @@ public func RMBTVersionString() -> String {
 public func RMBTPreferredLanguage() -> String? {
     let preferredLanguages = Locale.preferredLanguages
 
-    logger.debug("\(preferredLanguages)")
+    Log.logger.debug("\(preferredLanguages)")
 
     if preferredLanguages.count < 1 {
         return nil
@@ -99,7 +99,7 @@ public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
 
     let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
 
-    // logger.debug("replaced $lang in string, output: \(replacedURL)")
+    // Log.logger.debug("replaced $lang in string, output: \(replacedURL)")
 
     return replacedURL
 }

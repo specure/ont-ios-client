@@ -156,19 +156,18 @@ struct RTPHeader {
 
     ///
     func toData() -> Data {
-        let data = NSMutableData()
-
+        var data = Data()
         data.appendValue(flags.bigEndian)
         data.appendValue(sequenceNumber.bigEndian)
         data.appendValue(timestamp.bigEndian)
         data.appendValue(ssrc.bigEndian)
-
+        
         // for csrc in csrcList {
         for cnt in 0 ..< Int(self.csrcCount) {
             data.appendValue(csrcList[cnt].bigEndian)
         }
 
-        return data as Data
+        return data
     }
 
     ///

@@ -45,12 +45,12 @@ struct RTPPacket {
 
     ///
     func toData() -> Data {
-        let data = NSMutableData()
-
+        var data = Data()
+        
         data.append(header.toData())
         data.append(payload)
-
-        return data as Data
+        
+        return data
     }
 
     ///
@@ -76,7 +76,7 @@ struct RTPPacket {
         // rtpPacket.payload = packetData.subdata(in: NSRange(location: offset, length: packetData.count - offset))
         // let r = offset..<packetData.count-offset
 
-        rtpPacket.payload = packetData.subdata(in: offset..<packetData.count-offset)
+        rtpPacket.payload = Data(packetData.subdata(in: offset..<packetData.count))
 
         return rtpPacket
     }

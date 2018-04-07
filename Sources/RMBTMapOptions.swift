@@ -140,7 +140,7 @@ open class RMBTMapOptions {
             for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
                 if isOld == false {
                 if let f = filterResponse["options"] as? [[String: Any]],
-                    let op = f.last?["operator"] {
+                    let _ = f.last?["operator"] {
                     continue
                 }
                 }
@@ -339,7 +339,7 @@ open class RMBTMapOptionsFilterValue: NSObject {
         for key in d.keys {
             if let val = (d[key] as? String) {
                 if val == "" {
-                    logger.debug("removing obj for key: \(key), val: \(val)")
+                    Log.logger.debug("removing obj for key: \(key), val: \(val)")
                     d.removeValue(forKey: key)
                 }
             }

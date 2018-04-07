@@ -49,7 +49,7 @@ class CountDownLatch {
 
             self.count -= 1
             if self.count == 0 {
-                logger.debug("signal semaphore")
+                Log.logger.debug("signal semaphore")
                 self.semaphore.signal()
             }
         }

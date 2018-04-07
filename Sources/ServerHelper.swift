@@ -55,7 +55,7 @@ class ServerHelper {
 
             parameters = reqObj.toJSON() as [String : AnyObject]?
 
-            logger.debug { () -> String in 
+            Log.logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                     return "Requesting \(path) with object: \n\(jsonString)"
                 }
@@ -76,7 +76,7 @@ class ServerHelper {
  // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             /*.responseString { response in
-                logger.debug {
+                Log.logger.debug {
                     debugPrint(response)
                     return "Response for \(path): \n\(response.result.value)"
                 }
@@ -87,7 +87,7 @@ class ServerHelper {
                 case .success:
                     if let responseArray: [T] = response.result.value {
 
-                        logger.debug {
+                        Log.logger.debug {
                             debugPrint(response)
 
                             if let jsonString = Mapper().toJSONString(responseArray, prettyPrint: true) {
@@ -100,10 +100,10 @@ class ServerHelper {
                         success(responseArray)
                     }
                 case .failure(let error):
-                    logger.debug("\(error)") // TODO: error callback
+                    Log.logger.debug("\(error)") // TODO: error callback
 
                     /*if let responseObj = response.result.value as? String {
-                     logger.debug("error msg from server: \(responseObj)")
+                     Log.logger.debug("error msg from server: \(responseObj)")
                      }*/
 
                     failure(error as Error)
@@ -122,7 +122,7 @@ class ServerHelper {
 
             parameters = reqObj.toJSON() as [String : AnyObject]?
             
-            logger.debug { () -> String in 
+            Log.logger.debug { () -> String in 
                 if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                     return "Requesting \(path) with object: \n\(jsonString)"
                 }
@@ -148,7 +148,7 @@ class ServerHelper {
                 case .success:
                     if let responseObj:T = response.result.value {
                         
-                        logger.debug {
+                        Log.logger.debug {
                             debugPrint(response)
 
                             if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
@@ -161,7 +161,7 @@ class ServerHelper {
                         success(responseObj)
                     }
                 case .failure(let error):
-                    logger.debug("\(error)") // TODO: error callback
+                    Log.logger.debug("\(error)") // TODO: error callback
                     debugPrint(response)
                     var resultError = error
                     if let data = response.data,
@@ -178,7 +178,7 @@ class ServerHelper {
                         }
                     }
                     /*if let responseObj = response.result.value as? String {
-                     logger.debug("error msg from server: \(responseObj)")
+                     Log.logger.debug("error msg from server: \(responseObj)")
                      }*/
 
                     failure(resultError as Error)
@@ -200,7 +200,7 @@ class ServerHelper {
 //                break
                 parametersObjects.append(reqObj.toJSON() as [String : AnyObject])
                 
-                logger.debug { () -> String in
+                Log.logger.debug { () -> String in
                     if let jsonString = Mapper().toJSONString(reqObj, prettyPrint: true) {
                         return "Requesting \(path) with object: \n\(jsonString)"
                     }
@@ -230,7 +230,7 @@ class ServerHelper {
                 case .success:
                     if let responseObj:T = response.result.value {
                         
-                        logger.debug {
+                        Log.logger.debug {
                             debugPrint(response)
                             
                             if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
@@ -243,10 +243,10 @@ class ServerHelper {
                         success(responseObj)
                     }
                 case .failure(let error):
-                    logger.debug("\(error)") // TODO: error callback
+                    Log.logger.debug("\(error)") // TODO: error callback
                     debugPrint(response)
                     /*if let responseObj = response.result.value as? String {
-                     logger.debug("error msg from server: \(responseObj)")
+                     Log.logger.debug("error msg from server: \(responseObj)")
                      }*/
                     
                     failure(error as Error)

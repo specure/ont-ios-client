@@ -79,11 +79,11 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
         do {
             // bind to port
-            logger.debug("- binding to port 0")
+            Log.logger.debug("- binding to port 0")
 
             try udpSocket.bind(toPort: 0)
 
-            logger.debug("- begin receiving")
+            Log.logger.debug("- begin receiving")
 
             // begin receiving
             try udpSocket.beginReceiving()
@@ -242,7 +242,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             data.append(qname_data)
             data.append(request2BodyData)
 
-        logger.debug("\(data as NSData)")
+        Log.logger.debug("\(data as NSData)")
 
         return data as Data
     }
@@ -250,25 +250,25 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     ///
     @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didConnectToAddress address: Data) {
         //println("didConnectToAddress: \(address)")
-        logger.debug("didConnectToAddress: \(address)")
+        Log.logger.debug("didConnectToAddress: \(address)")
     }
 
     ///
     @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: Error?) {
         //println("didNotConnect: \(error)")
-        logger.debug("didNotConnect: \(String(describing: error))")
+        Log.logger.debug("didNotConnect: \(String(describing: error))")
     }
 
     ///
     @objc func udpSocket(_ sock: GCDAsyncUdpSocket, didSendDataWithTag tag: Int) {
         //println("didSendDataWithTag: \(tag)")
-        logger.debug("didSendDataWithTag: \(tag)")
+        Log.logger.debug("didSendDataWithTag: \(tag)")
     }
 
     ///
     func udpSocket(_ sock: GCDAsyncUdpSocket, didNotSendDataWithTag tag: Int, dueToError error: Error?) {
         //println("didNotSendDataWithTag: \(error)")
-        logger.debug("didNotSendDataWithTag: \(String(describing: error))")
+        Log.logger.debug("didNotSendDataWithTag: \(String(describing: error))")
     }
 
     
@@ -277,7 +277,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
         DispatchQueue.global(qos: .default).async{ // needed because otherwise println's would merge strangely, TODO: remove this later
         
-            logger.debug("address: \(address.base64EncodedString())")
+            Log.logger.debug("address: \(address.base64EncodedString())")
 
         //// ??????
             let range = NSRange(location: 0, length: MemoryLayout<DNSHeader>.size)
@@ -285,7 +285,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
             let subdata = (data as NSData).subdata(with: range)
 
-            //logger.debug("\(subdata.base64EncodedString())")
+            //Log.logger.debug("\(subdata.base64EncodedString())")
 //////////////
             var dnsHeader: DNSHeader = DNSHeader()
 
@@ -309,7 +309,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             let subdata2 = (data as NSData).subdata(with: NSRange(location: MemoryLayout<DNSHeader>.size, length: (data.count - MemoryLayout<DNSHeader>.size)))
             // let subdata2 = data.subdata(in: MemoryLayout<DNSHeader>.size..<data.count)
 //            println("subdata2: \(subdata2)")
-            logger.debug("\(subdata2.base64EncodedString())")
+            Log.logger.debug("\(subdata2.base64EncodedString())")
 
             // reconstruct qname
             let qname = self.parseNameFromData(subdata2, data: data, nameOffset: 0)
@@ -341,7 +341,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             dnsQuestion.dnsClass = CFSwapInt16BigToHost(dnsQuestion.dnsClass)
 
             //println(dnsQuestion)
-            logger.debug("\(dnsQuestion)")
+            Log.logger.debug("\(dnsQuestion)")
 
             ///
             let callbackKey = "\(qname)_\(dnsQuestion.dnsType)"
@@ -351,7 +351,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
             if dnsHeader.anCount > 0 {
                 //println("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
-                logger.debug("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
+                Log.logger.debug("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
 
                 let dd = (d as NSData).subdata(with: NSRange(location: MemoryLayout<DNSQuestion>.size, length: d.length - MemoryLayout<DNSQuestion>.size)) //d.subdata(in: MemoryLayout<DNSQuestion>.size..<d.count
 
@@ -393,7 +393,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 // -> see struct alignment...do it the other way with getBytes(..., range)
 
                 //println(dnsResourceRecord)
-                logger.debug("\(dnsResourceRecord)")
+                Log.logger.debug("\(dnsResourceRecord)")
 
                 // let rdata = dd.subdata(with: NSRange(location: 2+2+2+4+2, length: Int(dnsResourceRecord.dataLength)))
                 //let rdata = dd.subdata(in: 2+2+2+4+2..<2+2+2+4+2+Int(dnsResourceRecord.dataLength))
@@ -404,7 +404,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                 let strType = DNSServiceTypeIntToStr[Int(dnsResourceRecord.dnsType)]
 
-                logger.debug("rr is of type \(String(describing: strType))")
+                Log.logger.debug("rr is of type \(String(describing: strType))")
 
                 //
 
@@ -426,7 +426,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                     //ipStr = NSString(bytes: &u, length: u.count, encoding: NSASCIIStringEncoding)!
                     //ipStr = String.fromCString(u)!
                     ipStr = String(validatingUTF8: u)
-
+                    i4.deallocate()
                 case kDNSServiceType_AAAA: // ipv6
                     let i6 = UnsafeMutablePointer<in6_addr>.allocate(capacity: MemoryLayout<in6_addr>.size)
 
@@ -438,11 +438,11 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                     //ipStr = NSString(bytes: &u, length: u.count, encoding: NSASCIIStringEncoding)!
                     ipStr = String(validatingUTF8: u)
-
+                    i6.deallocate()
                 case kDNSServiceType_MX: // mx
 
                     //println("MX")
-                    logger.debug("MX")
+                    Log.logger.debug("MX")
 
                     // get preference
                     var preference: UInt16 = 0
@@ -453,12 +453,12 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                     preferenceNum = preference
 
                     //println("preference: \(preference)")
-                    logger.debug("preference: \(preference)")
+                    Log.logger.debug("preference: \(preference)")
 
                     // get exchange
                     let exchangeLength = Int(dnsResourceRecord.dataLength) - MemoryLayout<UInt16>.size
                     //println(exchangeLength)
-                    logger.debug("\(exchangeLength)")
+                    Log.logger.debug("\(exchangeLength)")
 
 //                    let exchangeData = rdata.subdata(with: NSRange(location: MemoryLayout<UInt16>.size, length: rdata.count - MemoryLayout<UInt16>.size))
                     
@@ -466,30 +466,30 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                     let mxName = self.parseNameFromData(exchangeData, data: data, nameOffset: 0)
                     //println("MX name: \(mxName)")
-                    logger.debug("MX name: \(mxName)")
+                    Log.logger.debug("MX name: \(mxName)")
 
                     ipStr = mxName
 
                 case kDNSServiceType_CNAME:
 
                     //println("CNAME")
-                    logger.debug("CNAME")
+                    Log.logger.debug("CNAME")
                     //println(rdata)
-                    logger.debug("\(rdata)")
+                    Log.logger.debug("\(rdata)")
 
                     let str = self.parseNameFromData(rdata, data: data, nameOffset: 0)
                     //println("STR: \(str)")
-                    logger.debug("STR: \(str)")
+                    Log.logger.debug("STR: \(str)")
 
                     ipStr = str // TODO: other field than ipStr
 
                 default:
                     //println("unknown result type")
-                    logger.debug("unknown result type")
+                    Log.logger.debug("unknown result type")
 
                     //ipStr = "UNKNOWN"
                 }
-                logger.debug("GOT DNS REPLY WITH IP: \(ipStr)")
+                Log.logger.debug("GOT DNS REPLY WITH IP: \(ipStr)")
 
                 //self.stop() // TODO: when to close socket?
 
@@ -517,7 +517,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 //                )
 
             } else {
-                logger.debug("there are no rr")
+                Log.logger.debug("there are no rr")
 
                 //self.stop() // TODO: when to close socket?
 
@@ -534,7 +534,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
-        logger.debug("udpSocketDidClose: \(String(describing: error))")
+        Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
     }
     
 

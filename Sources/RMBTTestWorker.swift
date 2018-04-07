@@ -315,7 +315,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 sAddr = ip
             }
 
-            logger.debug("Connecting to host \(sAddr):\(self.params.measurementServer!.port!)")
+            Log.logger.debug("Connecting to host \(sAddr):\(self.params.measurementServer!.port!)")
 
             try socket.connect(toHost: sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
 
@@ -328,7 +328,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     /*private func setupConnectionFailedTimer() {
         serverConnectionFailedTimer.interval = 5 // fail after 5 seconds if no connection can be established
         serverConnectionFailedTimer.timerCallback = {
-            logger.debug("CONNECTION TIMER FIRED!")
+            Log.logger.debug("CONNECTION TIMER FIRED!")
             self.fail()
         }
         serverConnectionFailedTimer.start()
@@ -408,7 +408,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     ///
     open func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         if err != nil {
-            logger.debug("Socket disconnected with error \(String(describing: err))")
+            Log.logger.debug("Socket disconnected with error \(String(describing: err))")
             fail()
         } else {
             if state == .downlinkTestStarted {
@@ -546,7 +546,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             // -> PING
             pingSeq += 1
 
-            logger.debug("Ping packet sent (delta = \(RMBTCurrentNanos() - self.pingStartNanos))")
+            Log.logger.debug("Ping packet sent (delta = \(RMBTCurrentNanos() - self.pingStartNanos))")
 
             readLineWithTag(.rxPong)
         } else if tag == .rxPong {
@@ -698,7 +698,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 let nanos = RMBTCurrentNanos() + testUploadOffsetNanos
 
                 if nanos - testStartNanos >= UInt64(params.duration * Double(NSEC_PER_SEC)) {
-                    logger.debug("Sending last chunk in thread \(self.index)")
+                    Log.logger.debug("Sending last chunk in thread \(self.index)")
 
                     testUploadLastChunkSent = true
                     testUploadMaxWaitReachedClientNanos = RMBTCurrentNanos() + UInt64(RMBT_TEST_UPLOAD_MAX_WAIT_S) * NSEC_PER_SEC
@@ -750,31 +750,31 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 let now = RMBTCurrentNanos()
 
                 if testUploadLastChunkSent && now >= testUploadMaxWaitReachedClientNanos {
-                    logger.debug("Max wait reached in thread \(self.index). Finalizing.")
+                    Log.logger.debug("Max wait reached in thread \(self.index). Finalizing.")
                     finalize()
                     return
                 }
 
                 if testUploadLastChunkSent && now >= testUploadEnoughClientNanos && UInt64(ns) >= testUploadEnoughServerNanos {
                     // We can finalize
-                    logger.debug("Thread \(self.index) has read enough upload reports at local=\(now - self.testStartNanos) server=\(ns). Finalizing...")
+                    Log.logger.debug("Thread \(self.index) has read enough upload reports at local=\(now - self.testStartNanos) server=\(ns). Finalizing...")
                     finalize()
                     return
                 }
 
                 readLineWithTag(.rxPutStatistic)
             } else if line.hasPrefix("ACCEPT") {
-                logger.debug("Thread \(self.index) has read ALL upload reports. Finalizing...")
+                Log.logger.debug("Thread \(self.index) has read ALL upload reports. Finalizing...")
                 finalize()
             } else {
                 // INVALID LINE
                 assert(false, "Invalid response received")
-                logger.debug("Protocol error")
+                Log.logger.debug("Protocol error")
                 fail()
             }
         } else {
             assert(false, "RX/TX with unknown tag \(tag)")
-            logger.debug("Protocol error")
+            Log.logger.debug("Protocol error")
             fail()
         }
     }
@@ -809,7 +809,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     private func logData(_ data: Data) {
-        logger.debug("RX: \(String(describing: String(data: data, encoding: String.Encoding.ascii)))")
+        Log.logger.debug("RX: \(String(describing: String(data: data, encoding: String.Encoding.ascii)))")
     }
 
     ///

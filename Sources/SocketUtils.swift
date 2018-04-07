@@ -29,7 +29,7 @@ class SocketUtils {
             line = line + "\n"
         }
 
-        logger.verbose("-- writing line '\(line)'")
+        Log.logger.verbose("-- writing line '\(line)'")
 
         if let lineData = line.data(using: String.Encoding.utf8) {
             sock.write(lineData, withTimeout: timeout, tag: tag)

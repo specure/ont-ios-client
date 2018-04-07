@@ -125,7 +125,7 @@ open class MapServer {
                 urlString += "&" + paramString
             }
 
-            logger.debug("Generated tile url: \(urlString)")
+            Log.logger.debug("Generated tile url: \(urlString)")
 
             return URL(string: urlString)
         }

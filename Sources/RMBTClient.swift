@@ -256,7 +256,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     @objc func hardwareUsageTimerFired() {
         if let testStartNanos = testRunner?.testStartNanos() {
 
-            let relativeNanos = nanoTime() - testStartNanos
+            let relativeNanos = UInt64.nanoTime() - testStartNanos
 
             //////////////////
             // CPU
@@ -264,7 +264,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
             if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber], cpuUsage.count > 0 {
                 testRunner?.addCpuUsage(cpuUsage[0].doubleValue, atNanos: relativeNanos)
 
-                logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
+                Log.logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
             } else {
                 // TODO: else write implausible error, or use previous value
             }
@@ -275,7 +275,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
             let ramUsagePercentFree = ramMonitor.getRAMUsagePercentFree()
 
             testRunner?.addMemoryUsage(Double(ramUsagePercentFree), atNanos: relativeNanos)
-            logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
+            Log.logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
         }
     }
 }
@@ -285,7 +285,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidDetectConnectivity(_ connectivity: RMBTConnectivity) {
-        logger.debug("TESTRUNNER: CONNECTIVITY")
+        Log.logger.debug("TESTRUNNER: CONNECTIVITY")
     }
 
     ///
@@ -295,7 +295,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidStartPhase(_ phase: RMBTTestRunnerPhase) {
-        //logger.debug("TESTRUNNER: DID START PHASE: \(phase)")
+        //Log.logger.debug("TESTRUNNER: DID START PHASE: \(phase)")
         delegate?.speedMeasurementDidStartPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
     }
 
@@ -331,18 +331,18 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         }
 
         delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: Double(result))
-        //logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
+        //Log.logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
 
     ///
     public func testRunnerDidFinishInit(_ time: UInt64) {
-        //logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
+        //Log.logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
         self.delegate?.measurementDidStart(client: self)
     }
 
     ///
     public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
-        //logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
+        //Log.logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
         self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
         
         
@@ -407,7 +407,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
         if let mainTest = self.qualityOfServiceTestRunner?.isPartOfMainTest, mainTest {
             
-            if var result = results.first?.resultDictionary {
+            if let result = results.first?.resultDictionary {
                 
                 // should pass even it fails
                 //                if let r = result["voip_result_status"] as? String, r == "TIMEOUT" {
@@ -440,7 +440,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [String]) {
-        //logger.debug("QOS: DID FETCH TYPES: \(time)")
+        //Log.logger.debug("QOS: DID FETCH TYPES: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             
             if testTypes.count > 0 {
@@ -461,7 +461,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: String) {
-        //logger.debug("QOS: DID FINISH TYPE: \(time)")
+        //Log.logger.debug("QOS: DID FINISH TYPE: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             self.delegate?.qosMeasurementFinished(self, type: QosMeasurementType(rawValue: testType) ?? QosMeasurementType.HttpProxy)
         }

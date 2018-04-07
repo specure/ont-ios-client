@@ -18,9 +18,6 @@ import Foundation
 import XCGLogger
 
 ///
-let logger = XCGLogger.default
-
-///
 class LogConfig {
 
     // TODO:
@@ -36,16 +33,17 @@ class LogConfig {
 
         let logFilePath = getCurrentLogFilePath()
 
+        Log.logger.add(destination: ConsoleDestination(identifier: "RMBTClient.log"))
         #if RELEASE
             // Release config
             // 1 logfile per day
-            logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
+            Log.logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
         #elseif DEBUG
             // Debug config
-            logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: nil) // don't need log to file
+            Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: nil) // don't need log to file
         #elseif BETA
             // Beta config
-            logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
+            Log.logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
 
             uploadOldLogs()
         #endif
@@ -101,30 +99,30 @@ class LogConfig {
             do {
                 if let fileList: [String] = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(logFolderPath) {
 
-                    logger.debugExec {
-                        logger.debug("LOG: log files in folder")
-                        logger.debug("LOG: \(fileList)")
+                    Log.logger.debugExec {
+                        Log.logger.debug("LOG: log files in folder")
+                        Log.logger.debug("LOG: \(fileList)")
                     }
 
                     // iterate over all log files
                     for file in fileList {
                         if file == currentLogFile {
-                            logger.debug("LOG: not submitting log file \(file) because it is the current log file")
+                            Log.logger.debug("LOG: not submitting log file \(file) because it is the current log file")
                             continue // skip current log file
                         }
 
                         let absoluteFile = (logFolderPath as NSString).stringByAppendingPathComponent(file)
 
-                        logger.debug("LOG: checking if file should be submitted (\(file))")
+                        Log.logger.debug("LOG: checking if file should be submitted (\(file))")
 
                         let fileAttributes = try NSFileManager.defaultManager().attributesOfItemAtPath(absoluteFile)
 
                         let createdDate = fileAttributes[NSFileCreationDate] as! NSDate
                         let modifiedDate = fileAttributes[NSFileModificationDate] as! NSDate
-                        logger.debug("LOG: compared dates of file: \(modifiedDate) to current: \(startedAt)")
+                        Log.logger.debug("LOG: compared dates of file: \(modifiedDate) to current: \(startedAt)")
                         if modifiedDate < startedAt {
 
-                            logger.debug("LOG: found log to submit: \(file), last edited at: \(modifiedDate)")
+                            Log.logger.debug("LOG: found log to submit: \(file), last edited at: \(modifiedDate)")
 
                             let content = try String(contentsOfFile: absoluteFile, encoding: NSUTF8StringEncoding)
 
@@ -140,7 +138,7 @@ class LogConfig {
 
                             ControlServer.sharedControlServer.submitLogFile(logFileJson, success: {
 
-                                logger.debug("LOG: deleting log file \(file)")
+                                Log.logger.debug("LOG: deleting log file \(file)")
 
                                 // delete old log file
                                 do {
@@ -155,7 +153,7 @@ class LogConfig {
                                 // do nothing
                             })
                         } else {
-                            logger.debug("LOG: not submitting log file \(file) because it is the current log file")
+                            Log.logger.debug("LOG: not submitting log file \(file) because it is the current log file")
                         }
                     }
                 }

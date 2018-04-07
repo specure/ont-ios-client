@@ -111,7 +111,7 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
 
     ///
-    private let workerQueue: DispatchQueue // We perform all work on this background queue. Workers also callback onto this queue.
+    private let workerQueue: DispatchQueue = DispatchQueue(label: "at.rtr.rmbt.testrunner") // We perform all work on this background queue. Workers also callback onto this queue.
 
     ///
     private var timer: DispatchSourceTimer!
@@ -158,7 +158,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
-    private var connectivityTracker: RMBTConnectivityTracker!
+    private lazy var connectivityTracker: RMBTConnectivityTracker = RMBTConnectivityTracker(delegate: self, stopOnMixed: true)
 
     /// Snapshots of the network interface byte counts at a given phase
     private var startInterfaceInfo: RMBTConnectivityInterfaceInfo?
@@ -189,19 +189,16 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     public init(delegate: RMBTTestRunnerDelegate) {
-        self.delegate = delegate
+        
         //self.phase = .None
-        self.workerQueue = DispatchQueue(label: "at.rtr.rmbt.testrunner", attributes: []) // TODO: nil?
-
         super.init()
-
+        self.delegate = delegate
         /*
         void *nonNullValue = kWorkerQueueIdentityKey;
         dispatch_queue_set_specific(_workerQueue, kWorkerQueueIdentityKey, nonNullValue, NULL);
         */
         //dispatch_queue_set_specific(workerQueue, kWorkerQueueIdentityKey, nil, nil) // TODO!
 
-        connectivityTracker = RMBTConnectivityTracker(delegate: self, stopOnMixed: true)
         connectivityTracker.start()
     }
 
@@ -217,7 +214,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         let speedMeasurementRequest = SpeedMeasurementRequest()
 
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
-        speedMeasurementRequest.time = currentTimeMillis()
+        speedMeasurementRequest.time = UInt64.currentTimeMillis()
 
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings.testCounter
 
@@ -359,7 +356,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         //should it be calculated init time recent time - start test time
         delegate?.testRunnerDidFinishInit(duration)
 
-        logger.debug("Thread \(worker.index): finished download pretest (chunks = \(chunks))")
+        Log.logger.debug("Thread \(worker.index): finished download pretest (chunks = \(chunks))")
 
         if !singleThreaded && chunks <= UInt(testParams.pretestMinChunkCountForMultithreading) {
             singleThreaded = true
@@ -367,7 +364,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if markWorkerAsFinished() {
             if singleThreaded {
-                logger.debug("Downloaded <= \(self.testParams.pretestMinChunkCountForMultithreading) chunks in the pretest, continuing with single thread.")
+                Log.logger.debug("Downloaded <= \(self.testParams.pretestMinChunkCountForMultithreading) chunks in the pretest, continuing with single thread.")
 
                 activeWorkers = UInt(testParams.numThreads) - 1
                 finishedWorkers = 0
@@ -391,7 +388,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(phase == .Init, "Invalid state")
         assert(!dead, "Invalid state")
 
-        logger.debug("Thread \(worker.index): stopped")
+        Log.logger.debug("Thread \(worker.index): stopped")
 
         workers.remove(at: workers.index(of: worker)!) // !
 
@@ -407,7 +404,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(phase == .latency, "Invalid state")
         assert(!dead, "Invalid state")
 
-        logger.debug("Thread \(worker.index): pong (server = \(serverNanos), client = \(clientNanos))")
+        Log.logger.debug("Thread \(worker.index): pong (server = \(serverNanos), client = \(clientNanos))")
 
         speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
 
@@ -439,7 +436,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             downlinkTestStartedAtNanos = nanos
         }
 
-        logger.debug("Thread \(worker.index): started downlink test with delay \(nanos - self.downlinkTestStartedAtNanos)")
+        Log.logger.debug("Thread \(worker.index): started downlink test with delay \(nanos - self.downlinkTestStartedAtNanos)")
 
         return downlinkTestStartedAtNanos
     }
@@ -467,7 +464,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(!dead, "Invalid state")
 
         if markWorkerAsFinished() {
-            logger.debug("Downlink test finished")
+            Log.logger.debug("Downlink test finished")
 
             downlinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
 
@@ -491,10 +488,10 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(phase == .initUp, "Invalid state")
         assert(!dead, "Invalid state")
 
-        logger.debug("Thread \(worker.index): finished uplink pretest (chunks = \(chunks))")
+        Log.logger.debug("Thread \(worker.index): finished uplink pretest (chunks = \(chunks))")
 
         if markWorkerAsFinished() {
-            logger.debug("Uplink pretest finished")
+            Log.logger.debug("Uplink pretest finished")
             speedMeasurementResult.startUpload()
             startPhase(.up, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startUplinkTest), expectedDuration: testParams.duration, completion: nil)
         }
@@ -516,7 +513,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             delay = nanos - uplinkTestStartedAtNanos
         }
 
-        logger.debug("Thread \(worker.index): started uplink test with delay \(delay)")
+        Log.logger.debug("Thread \(worker.index): started uplink test with delay \(delay)")
 
         return delay
     }
@@ -548,7 +545,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             uplinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
 
             let measuredThroughputs = speedMeasurementResult.flush()
-            logger.debug("Uplink test finished.")
+            Log.logger.debug("Uplink test finished.")
 
             speedMeasurementResult.totalUploadHistory.log()
 
@@ -698,7 +695,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         speedMeasurementResult.publishPublicData = RMBTSettings.sharedSettings.publishPublicData
         if TEST_USE_PERSONAL_DATA_FUZZING {
-            logger.info("test result: publish_public_data: \(self.speedMeasurementResult.publishPublicData)")
+            Log.logger.info("test result: publish_public_data: \(self.speedMeasurementResult.publishPublicData)")
         }
 
         //////
@@ -859,7 +856,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     @objc open func applicationDidSwitchToBackground(_ n: Notification) {
-        logger.debug("App backgrounded, aborting \(n)")
+        Log.logger.debug("App backgrounded, aborting \(n)")
         workerQueue.async {
             self.cancelWithReason(.appBackgrounded)
         }
@@ -877,7 +874,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 speedMeasurementResult.addLocation(l)
 
                 //NSLog(@"Location updated to (%f,%f,+/- %fm, %@)", l.coordinate.longitude, l.coordinate.latitude, l.horizontalAccuracy, l.timestamp);
-                logger.debug("Location updated to (\(l.coordinate.longitude), \(l.coordinate.latitude), \(l.horizontalAccuracy), \(l.timestamp))")
+                Log.logger.debug("Location updated to (\(l.coordinate.longitude), \(l.coordinate.latitude), \(l.horizontalAccuracy), \(l.timestamp))")
             }
         }
 
@@ -922,7 +919,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 }
             }
         }
-        logger.debug("REASON: \(reason)")
+        Log.logger.debug("REASON: \(reason)")
 
         finalize()
 

@@ -42,12 +42,12 @@ open class MeasurementHistory {
             let distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("networkType") as! [String]))
             let distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).valueForKey("model") as! [String]))
 
-            logger.debug("distinct network types: \(distinctNetworkTypes)")
-            logger.debug("distinct models: \(distinctModels)")
+            Log.logger.debug("distinct network types: \(distinctNetworkTypes)")
+            Log.logger.debug("distinct models: \(distinctModels)")
             
-            logger.debug("COUNT1: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", distinctModels).count)")
-            logger.debug("COUNT2: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.first!]).count)")
-            logger.debug("COUNT3: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.last!]).count)")
+            Log.logger.debug("COUNT1: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", distinctModels).count)")
+            Log.logger.debug("COUNT2: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.first!]).count)")
+            Log.logger.debug("COUNT3: \(realm.objects(StoredHistoryItem.self).filter("model IN %@", [distinctModels.last!]).count)")
         }*/
     }
     
@@ -59,8 +59,8 @@ open class MeasurementHistory {
             distinctNetworkTypes = Array(Set(realm.objects(StoredHistoryItem.self).value(forKey: "networkType") as! [String]))
             distinctModels = Array(Set(realm.objects(StoredHistoryItem.self).value(forKey: "model") as! [String]))
             
-            logger.debug("distinct network types: \(distinctNetworkTypes)")
-            logger.debug("distinct models: \(distinctModels)")
+            Log.logger.debug("distinct network types: \(distinctNetworkTypes)")
+            Log.logger.debug("distinct models: \(distinctModels)")
         }
         
         return [
@@ -91,21 +91,21 @@ open class MeasurementHistory {
         dirty = false
         
         if let timestamp = getLastHistoryItemTimestamp() {
-            logger.debug("timestamp!, requesting since \(timestamp)")
+            Log.logger.debug("timestamp!, requesting since \(timestamp)")
 
             ControlServer.sharedControlServer.getMeasurementHistory(UInt64(timestamp.timeIntervalSince1970), success: { historyItems in
 
                 let serverUuidList = Set<String>(historyItems.map({ return $0.testUuid! })) // !
                 let clientUuidList = Set<String>(self.getHistoryItemUuidList()!) // !
                 
-                logger.debug("server: \(serverUuidList)")
-                logger.debug("client: \(clientUuidList)")
+                Log.logger.debug("server: \(serverUuidList)")
+                Log.logger.debug("client: \(clientUuidList)")
 
                 let toRemove = clientUuidList.subtracting(serverUuidList)
                 let toAdd = serverUuidList.subtracting(clientUuidList)
 
-                logger.debug("to remove: \(toRemove)")
-                logger.debug("to add: \(toAdd)")
+                Log.logger.debug("to remove: \(toRemove)")
+                Log.logger.debug("to add: \(toAdd)")
 
                 // add items
                 self.insertOrUpdateHistoryItems(historyItems.filter({ return toAdd.contains($0.testUuid!) })) // !
@@ -130,7 +130,7 @@ open class MeasurementHistory {
                 }
             })
         } else {
-            logger.debug("database empty, requesting without timestamp")
+            Log.logger.debug("database empty, requesting without timestamp")
 
             ControlServer.sharedControlServer.getMeasurementHistory({ historyItems in
                 self.insertOrUpdateHistoryItems(historyItems)
@@ -151,7 +151,7 @@ open class MeasurementHistory {
             return
         }
 
-        logger.debug("NEED TO LOAD MEASUREMENT \(uuid) FROM SERVER")
+        Log.logger.debug("NEED TO LOAD MEASUREMENT \(uuid) FROM SERVER")
 
         ControlServer.sharedControlServer.getSpeedMeasurement(uuid, success: { response in
 
@@ -178,7 +178,7 @@ open class MeasurementHistory {
 
         
         
-        logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
+        Log.logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
         
         ControlServer.sharedControlServer.getHistoryResultWithUUID(uuid: uuid, fullDetails:full,  success: { response in
             
@@ -194,7 +194,7 @@ open class MeasurementHistory {
             return
         }
 
-        logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
+        Log.logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
 
         ControlServer.sharedControlServer.getSpeedMeasurementDetails(uuid, success: { response in
 
@@ -211,7 +211,7 @@ open class MeasurementHistory {
 
         ControlServer.sharedControlServer.getQosMeasurement(uuid, success: { response in
 
-            logger.debug("NEED TO LOAD MEASUREMENT QOS \(uuid) FROM SERVER (this is done every time since qos evaluation can be changed)")
+            Log.logger.debug("NEED TO LOAD MEASUREMENT QOS \(uuid) FROM SERVER (this is done every time since qos evaluation can be changed)")
 
             // store qos measurement
             self.storeMeasurementQosData(uuid, measurementQos: response)
@@ -230,7 +230,7 @@ open class MeasurementHistory {
     ///
     open func disassociateMeasurement(_ measurementUuid: String, success: @escaping (_ response: SpeedMeasurementDisassociateResponse) -> (), error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.disassociateMeasurement(measurementUuid, success: { response in
-            logger.debug("DISASSOCIATE SUCCESS")
+            Log.logger.debug("DISASSOCIATE SUCCESS")
 
             // remove from db
             self.removeMeasurement(measurementUuid)
@@ -264,7 +264,7 @@ open class MeasurementHistory {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
             if let measurementData = storedMeasurement.measurementData, measurementData.count > 0 {
                 if let measurement = Mapper<SpeedMeasurementResultResponse>().map(JSONString:measurementData) {
-                    logger.debug("RETURNING CACHED MEASUREMENT \(uuid)")
+                    Log.logger.debug("RETURNING CACHED MEASUREMENT \(uuid)")
                     return measurement
                 }
             }
@@ -278,7 +278,7 @@ open class MeasurementHistory {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
             if let measurementDetailsData = storedMeasurement.measurementDetailsData, measurementDetailsData.count > 0 {
                 if let measurementDetails = Mapper<SpeedMeasurementDetailResultResponse>().map(JSONString:measurementDetailsData) {
-                    logger.debug("RETURNING CACHED MEASUREMENT DETAILS \(uuid)")
+                    Log.logger.debug("RETURNING CACHED MEASUREMENT DETAILS \(uuid)")
                     return measurementDetails
                 }
             }
@@ -292,7 +292,7 @@ open class MeasurementHistory {
         if let storedMeasurement = loadStoredMeasurement(uuid) {
             if let measurementQosData = storedMeasurement.measurementQosData, measurementQosData.count > 0 {
                 if let measurementQos = Mapper<QosMeasurementResultResponse>().map(JSONString:measurementQosData) {
-                    logger.debug("RETURNING CACHED QOS RESULT \(uuid)")
+                    Log.logger.debug("RETURNING CACHED QOS RESULT \(uuid)")
                     return measurementQos
                 }
             }
@@ -363,7 +363,7 @@ open class MeasurementHistory {
                     realm.add(storedMeasurement)
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }
@@ -383,7 +383,7 @@ open class MeasurementHistory {
                     }
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }
@@ -414,7 +414,7 @@ open class MeasurementHistory {
             var query = realm.objects(StoredHistoryItem.self)
             
             if !filters.isEmpty {
-                logger.debug("filters: \(filters)")
+                Log.logger.debug("filters: \(filters)")
                 
                 for (filterColumn, filterEntries) in filters {
                     query = query.filter("\(filterColumn) IN %@", filterEntries)
@@ -423,9 +423,9 @@ open class MeasurementHistory {
             
             query = query.sorted(byKeyPath: "timestamp", ascending: false)
             
-            return query.flatMap({ storedItem in
-                logger.debug("\(String(describing: storedItem.model))")
-                logger.debug("\(String(describing: storedItem.networkType))")
+            return query.compactMap({ storedItem in
+                Log.logger.debug("\(String(describing: storedItem.model))")
+                Log.logger.debug("\(String(describing: storedItem.networkType))")
                 
                 return Mapper<HistoryItem>().map(JSONString:storedItem.jsonData!)
             })
@@ -455,7 +455,7 @@ open class MeasurementHistory {
                     var storedHistoryItemList = [StoredHistoryItem]()
 
                     historyItems.forEach({ item in
-                        //logger.debug("try to save history item: \(item)")
+                        //Log.logger.debug("try to save history item: \(item)")
 
                         let storedHistoryItem = StoredHistoryItem()
                         storedHistoryItem.uuid = item.testUuid
@@ -473,12 +473,12 @@ open class MeasurementHistory {
                         storedHistoryItemList.append(storedHistoryItem)
                     })
 
-                    logger.debug("storing \(storedHistoryItemList)")
+                    Log.logger.debug("storing \(storedHistoryItemList)")
 
                     realm.add(storedHistoryItemList)
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }
@@ -491,7 +491,7 @@ open class MeasurementHistory {
                     realm.delete(realm.objects(StoredHistoryItem.self).filter("uuid IN %@", historyItemUuidList))
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }

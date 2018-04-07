@@ -354,7 +354,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         data?.pointee.append(uuid.data(using: String.Encoding.ascii)!)
 
         // write current time
-        let ctm = "\(currentTimeMillis())"
+        let ctm = "\(UInt64.currentTimeMillis())"
         data?.pointee.append(ctm.data(using: String.Encoding.ascii)!)
     }
 

@@ -182,12 +182,12 @@ open class RMBTConnectivityTracker: NSObject {
         } else if status == GCNetworkReachabilityStatusWWAN {
             networkType = .cellular
         } else {
-            logger.debug("Unknown reachability status \(status)")
+            Log.logger.debug("Unknown reachability status \(status)")
             return
         }
 
         if networkType == .none {
-            logger.debug("No connectivity detected.")
+            Log.logger.debug("No connectivity detected.")
 
             lastConnectivity = nil
 
@@ -202,7 +202,7 @@ open class RMBTConnectivityTracker: NSObject {
             return
         }
 
-        logger.debug("New connectivity = \(connectivity)")
+        Log.logger.debug("New connectivity = \(connectivity)")
 
         if stopOnMixed {
             // Detect compatilibity
@@ -210,10 +210,10 @@ open class RMBTConnectivityTracker: NSObject {
 
             if lastConnectivity != nil {
                 if connectivity.networkType != lastConnectivity.networkType {
-                    logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
+                    Log.logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
                     compatible = false
                 } else if connectivity.networkName != lastConnectivity.networkName {
-                    logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName) -> \(connectivity.networkName)")
+                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName) -> \(connectivity.networkName)")
                     compatible = false
                 }
             }

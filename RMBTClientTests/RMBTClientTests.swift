@@ -42,7 +42,6 @@ class RMBTClientTests: XCTestCase {
         let expectation = self.expectation(description: "testRequestSettings")
         
         var requestError: Error? = nil
-        
         RMBTConfig.updateSettings(success: {
             expectation.fulfill()
         }, error: { error in
@@ -61,7 +60,7 @@ class RMBTClientTests: XCTestCase {
         
         let speedMeasurementRequest = SpeedMeasurementRequest()
         speedMeasurementRequest.version = "0.3" // TODO: duplicate?
-        speedMeasurementRequest.time = currentTimeMillis()
+        speedMeasurementRequest.time = UInt64.currentTimeMillis()
         speedMeasurementRequest.testCounter = RMBTSettings.sharedSettings.testCounter
         
         if let l = RMBTLocationTracker.sharedTracker.location {
@@ -214,7 +213,7 @@ class RMBTClientTests: XCTestCase {
             controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { response in
                 self.workerQueue.async {
                     let r = SpeedMeasurementResponse.createAndFill(from: response)
-                    self.testToken = r
+                    self.testToken = r.testToken!
                     controlServer.requestQosMeasurement(r.testUuid, success: { [weak self] response in
                         let key = "jitter"
                         if let objectives = response.objectives,

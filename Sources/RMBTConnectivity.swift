@@ -45,7 +45,7 @@ open class RMBTConnectivity: NSObject {
                 return NSLocalizedString("connectivity.cellular", tableName: nil, bundle: Bundle.main, value: "Cellular", comment: "network type description cellular")
             }
         default:
-            logger.warning("Invalid network type \(self.networkType)")
+            Log.logger.warning("Invalid network type \(self.networkType)")
             return NSLocalizedString("intro.network.connection.name-unknown", tableName: nil, bundle: Bundle.main, value: "Unknown", comment: "network type description unknown")
         }
     }

@@ -44,7 +44,7 @@ class StoredZeroMeasurement: Object {
                     realm.add(self)
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }
@@ -57,7 +57,7 @@ class StoredZeroMeasurement: Object {
                     realm.delete(realm.objects(StoredZeroMeasurement.self).filter("uuid = %@", uuid))
                 }
             } catch {
-                logger.debug("realm error \(error)") // do nothing if fails?
+                Log.logger.debug("realm error \(error)") // do nothing if fails?
             }
         }
     }

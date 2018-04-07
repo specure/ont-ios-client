@@ -178,7 +178,6 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     ///
     private func startOutgoingTest() {
-
         let dDelay          = Double(testObject.delay / NSEC_PER_MSEC)
         let dSampleRate     = Double(testObject.sampleRate)
         let dBitsPerSample  = Double(testObject.bitsPerSample)
@@ -200,7 +199,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         qosLog.debug("payloadTimestamp: \(payloadTimestamp)")
 
         //
-
+        
         initialRTPPacket = RTPPacket()
 
         initialRTPPacket.header.payloadType = testObject.payloadType
@@ -229,11 +228,11 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         qosLog.debug("before send udpStreamSender")
 
-        let ticksBeforeSend = getCurrentTimeTicks()
+        let ticksBeforeSend = UInt64.getCurrentTimeTicks()
 
         let boolOk = udpStreamSender.send()
 
-        qosLog.debug("after send udpStreamSender (-> \(boolOk)) (took \(Double(getTimeDifferenceInNanoSeconds(ticksBeforeSend)) / Double(NSEC_PER_MSEC))ms)")
+        qosLog.debug("after send udpStreamSender (-> \(boolOk)) (took \(Double(UInt64.getTimeDifferenceInNanoSeconds(ticksBeforeSend)) / Double(NSEC_PER_MSEC))ms)")
 
         udpStreamSender.stop()
 
@@ -261,13 +260,13 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         let prefix = RESULT_VOIP_PREFIX + RESULT_VOIP_PREFIX_INCOMING
 
-        let _start = getCurrentTimeTicks()
+        let _start = UInt64.getCurrentTimeTicks()
         qosLog.debug("_calculateQOS start")
 
         // calculate QOS
         if let rtpResult = calculateQOS() {
 
-            qosLog.debug("_calculateQOS took \(getTimeDifferenceInNanoSeconds(_start) / NSEC_PER_MSEC) ms")
+            qosLog.debug("_calculateQOS took \(UInt64.getTimeDifferenceInNanoSeconds(_start) / NSEC_PER_MSEC) ms")
 
             qosLog.debug("rtpResult: \(rtpResult)")
 
@@ -469,7 +468,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                 }
 
             default:
-                assert(false, "should never happen")
+                break
+//                assert(false, "should never happen")
         }
     }
 
@@ -479,7 +479,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didReceivePacket packetData: Data) -> Bool {
         // qosLog.debug("udpStreamSenderDidReceive: \(packetData)")
 
-        let receivedNS = nanoTime()
+        let receivedNS = UInt64.nanoTime()
 
         // assemble rtp packet
         if let rtpPacket = RTPPacket.fromData(packetData) {
@@ -494,27 +494,53 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     /// returns false if the class should stop
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
+        if hasFinished {
+            return false
+        }
+        if let initialRTPPacket = self.initialRTPPacket {
+        var packet = initialRTPPacket
         if packetNumber > 0 {
-            initialRTPPacket.header.increaseSequenceNumberBy(1)
-            initialRTPPacket.header.increaseTimestampBy(payloadTimestamp)
-            initialRTPPacket.header.marker = 0
+            packet.header.increaseSequenceNumberBy(1)
+            packet.header.increaseTimestampBy(payloadTimestamp)
+            packet.header.marker = 0
         } else {
-            initialRTPPacket.header.marker = 1
+            packet.header.marker = 1
         }
 
         // generate random bytes
 
+        
+        
+//        let payloadBytes = UnsafeMutableRawPointer.allocate(byteCount: payloadSize, alignment: 0)
+//        let customDealocator = Data.Deallocator.custom { (ptr, length) in
+//            ptr.deallocate()
+//        }
+//        let payload = Data(bytesNoCopy: payloadBytes, count: payloadSize, deallocator: Data.Deallocator.free)
+        
+//        let payload = Data(bytes: payloadBytes, count: payloadSize)
+        
+//        initialRTPPacket.payload = payload
+//        packet.payload = Data(bytes: [192, 108, 18, 0, 0, 96, 0, 0])
+        
         var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
-        memset(payloadBytes, 0, payloadSize)
-        initialRTPPacket.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
+//        memset(payloadBytes, 0, payloadSize)
+        packet.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
         // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
         free(payloadBytes)
 
         //
 
-        data?.pointee.append(initialRTPPacket.toData())
-
-        return true
+            self.initialRTPPacket = packet
+        data?.pointee.append(self.initialRTPPacket.toData())
+        
+        
+//        payloadBytes.deallocate()
+            return true
+        }
+        else {
+            return false
+        }
+        
     }
 
     ///

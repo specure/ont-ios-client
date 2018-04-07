@@ -69,11 +69,11 @@ open class QosMeasurementResultResponse: BasicResponse {
             let successCount = self.calculateQosSuccess()
             let percent: Float = self.calculateQosSuccessPercentage()
             let testResultDetailCount = testResultDetail.count
-            logger.info("QOS INFO: \(percent)")
+            Log.logger.info("QOS INFO: \(percent)")
             return String(format: "%0.0f%% (%i/%i)", percent, successCount, testResultDetailCount)
         }
         else {
-            logger.error("NO QOS testResultDetail")
+            Log.logger.error("NO QOS testResultDetail")
             return nil
         }
     }

@@ -136,13 +136,13 @@ open class RMBTThroughputHistory: CustomStringConvertible {
 
     ///
     func log() {
-        logger.debug("Throughputs:")
+        Log.logger.debug("Throughputs:")
 
         for t in periods {
-            logger.debug("- \(t.description)")
+            Log.logger.debug("- \(t.description)")
         }
 
-        logger.debug("Total: \(self.totalThroughput.description)")
+        Log.logger.debug("Total: \(self.totalThroughput.description)")
     }
 
     ///

@@ -58,9 +58,6 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
         testResult.set(RESULT_DNS_TIMEOUT,  number: testObject.timeout)
     }
 
-    var countClientsNameserver = 0
-    var countClientsQuery = 0
-    
     var dnsClientNameserver: DNSClient?
     var dnsClientQuery: DNSClient?
     
@@ -69,7 +66,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
         if let host = testObject.host {
             qosLog.debug("EXECUTING DNS TEST")
 
-            let startTimeTicks = getCurrentTimeTicks()
+            let startTimeTicks = UInt64.getCurrentTimeTicks()
 
             // do dns query
             // TODO: improve
@@ -115,7 +112,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
     ///
     private func afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?) throws {
 
-        self.testResult.set(self.RESULT_DNS_DURATION, number: getTimeDifferenceInNanoSeconds(startTimeTicks))
+        self.testResult.set(self.RESULT_DNS_DURATION, number: UInt64.getTimeDifferenceInNanoSeconds(startTimeTicks))
 
         //
 
