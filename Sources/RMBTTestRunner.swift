@@ -820,6 +820,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     ///
     open func connectivityTrackerDidDetectNoConnectivity(_ tracker: RMBTConnectivityTracker) {
         // Ignore for now, let connection time out
+        workerQueue.async {
+            if self.phase != .none {
+                self.cancelWithReason(.noConnection)
+            }
+        }
     }
 
     ///
