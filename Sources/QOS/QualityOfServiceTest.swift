@@ -174,7 +174,9 @@ open class QualityOfServiceTest: NSObject {
             self?.qosQueue.async {
                 if self?.isPartOfMainTest == true {
                     if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
-                        response.objectives = [QosMeasurementType.VOIP.rawValue: jitterParams]
+                        if let firstParams = jitterParams.first {
+                            response.objectives = [QosMeasurementType.VOIP.rawValue: [firstParams]]
+                        }
                     }
                 }
                 else {
@@ -260,7 +262,7 @@ open class QualityOfServiceTest: NSObject {
         }
         
         self.concurencyGroups = self.concurencyGroups.sorted(by: { (group1, group2) -> Bool in
-            return group1.identifier > group2.identifier
+            return group1.identifier < group2.identifier
         })
         return
         // loop through objectives
@@ -435,7 +437,9 @@ open class QualityOfServiceTest: NSObject {
                         continue
                     }
                     
-                    controlConnection.setTimeout(qosTest.timeout)
+                    if !testExecutor.needsCustomTimeoutHandling() {
+                        controlConnection.setTimeout(qosTest.timeout)
+                    }
                     testExecutor.setControlConnection(controlConnection)
                 }
             }

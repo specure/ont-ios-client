@@ -83,9 +83,16 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     ///
     private var payloadTimestamp: UInt32!
+    
+    private let TAG_TASK_VOIPTEST_cdl = CountDownLatch()
+    private let TAG_TASK_VOIPRESULT_cdl = CountDownLatch()
 
     ///
-    private var cdl: CountDownLatch!
+//    private var cdl: CountDownLatch! {
+//        didSet {
+//            print("New cdl")
+//        }
+//    }
 
     //
 
@@ -108,7 +115,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         testResult.set(RESULT_VOIP_STATUS,          value: "OK" as AnyObject?) // !
         testResult.set(RESULT_VOIP_TIMEOUT,         number: testObject.timeout)
 
-        initialSequenceNumber = UInt16(arc4random_uniform(10000) + 1)
+        initialSequenceNumber = 0//UInt16(arc4random_uniform(10000) + 1)
     }
 
     ///
@@ -129,7 +136,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         sendTaskCommand(voipCommand, withTimeout: timeoutInSec, tag: TAG_TASK_VOIPTEST)
 
-        cdlTimeout(1000, forTag: "TAG_TASK_VOIPTEST")
+        cdlTimeout(for: TAG_TASK_VOIPTEST_cdl, 1000, forTag: "TAG_TASK_VOIPTEST")
     }
 
     ///
@@ -157,10 +164,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
 // MARK: Other methods
 
-    func cdlTimeout(_ timeoutMs: UInt64, forTag: String) {
-        cdl = CountDownLatch()
+    func cdlTimeout(for cdl: CountDownLatch, _ timeoutMs: UInt64, forTag: String) {
         let noTimeout = cdl.await(timeoutMs * NSEC_PER_MSEC)
-        cdl = nil
         if !noTimeout {
             qosLog.debug("CDL TIMEOUT: \(forTag)")
             testDidTimeout()
@@ -255,7 +260,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
-        cdlTimeout(1000, forTag: "TAG_TASK_VOIPRESULT")
+        cdlTimeout(for: TAG_TASK_VOIPRESULT_cdl, 1000, forTag: "TAG_TASK_VOIPRESULT")
     }
 
     ///
@@ -309,19 +314,19 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         //
 
-        var jitterMap = [UInt16: Double]()
+        var jitterMap: [UInt16: Double] = [:]
 
         //var sequenceNumberArray: [UInt16] = [UInt16](rtpControlDataList.keys) // TODO: fatal error? TODO! also occured on 2016-06-07 14:09, again on 2016-07-27 17:34, again on 2016-08-11 15:19, again on 2016-08-17 17:20
 
         // since try/catch didn't help, try with forEach instead of .keys
-        var sequenceNumberArray = [UInt16]()
+        var sequenceNumberArray: [UInt16] = []
         rtpControlDataList.forEach { index, data in
             sequenceNumberArray.append(index)
         }
 
         sequenceNumberArray.sort() { $0 < $1 } // TODO: delete when set datatype is available
 
-        var sequenceArray = [RTPSequence]()
+        var sequenceArray: [RTPSequence] = []
 
         //
 
@@ -379,32 +384,41 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         //
 
-        for i in sequenceArray {
-            if i.seq != nextSeq {
+        var prevSeguence = sequenceNumberArray.first
+        for i in sequenceNumberArray {
+            if i - (prevSeguence ?? 0) > 1 {
                 packetsOutOfOrder += 1
-
-                maxSequential = max(curSequential, maxSequential)
-
-                if curSequential > 1 {
-                    minSequential = (curSequential < minSequential) ? curSequential : (minSequential == 0 ? curSequential : minSequential)
-                }
-
-                curSequential = 0
-            } else {
-                curSequential += 1
             }
-
-            nextSeq += 1
+            prevSeguence = i
         }
+//        for i in sequenceArray {
+//            if i.seq != nextSeq {
+//                packetsOutOfOrder += 1
+//
+//                maxSequential = max(curSequential, maxSequential)
+//
+//                if curSequential > 1 {
+//                    minSequential = (curSequential < minSequential) ? curSequential : (minSequential == 0 ? curSequential : minSequential)
+//                }
+//
+//                curSequential = 0
+//            } else {
+//                curSequential += 1
+//            }
+//
+//            nextSeq += 1
+//        }
 
-        maxSequential = max(curSequential, maxSequential)
-        if curSequential > 1 {
-            minSequential = (curSequential < minSequential) ? curSequential : (minSequential == 0 ? curSequential : minSequential)
-        }
-
-        if minSequential == 0 && maxSequential > 0 {
-            minSequential = maxSequential
-        }
+        maxSequential = Int(sequenceNumberArray.last ?? 0)
+        minSequential = Int(sequenceNumberArray.first ?? 0)
+//        maxSequential = max(curSequential, maxSequential)
+//        if curSequential > 1 {
+//            minSequential = (curSequential < minSequential) ? curSequential : (minSequential == 0 ? curSequential : minSequential)
+//        }
+//
+//        if minSequential == 0 && maxSequential > 0 {
+//            minSequential = maxSequential
+//        }
 
         //
 
@@ -435,14 +449,12 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     override func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
 
-        print("didReceiveTaskResponse")
-        
         switch tag {
             case TAG_TASK_VOIPTEST:
                 qosLog.debug("TAG_TASK_VOIPTEST response: \(response)")
 
                 if response.hasPrefix("OK") {
-                    cdl?.countDown()
+                    TAG_TASK_VOIPTEST_cdl.countDown()
 
                     ssrc = UInt32(response.components(separatedBy: " ")[1]) // !
                     qosLog.info("got ssrc: \(ssrc)")
@@ -458,7 +470,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                     let voipResultArray = response.components(separatedBy: " ") // split(response) { $0 == " " }
 
                     if voipResultArray.count >= 9 {
-                        cdl?.countDown()
+                        TAG_TASK_VOIPRESULT_cdl.countDown()
 
                         let prefix = RESULT_VOIP_PREFIX + RESULT_VOIP_PREFIX_OUTGOING
 
@@ -489,10 +501,9 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         let receivedNS = UInt64.nanoTime()
 
-        print("Received Received Received")
+        
         // assemble rtp packet
         if let rtpPacket = RTPPacket.fromData(packetData) {
-
             // put packet in data list
             rtpControlDataList[rtpPacket.header.sequenceNumber] = RTPControlData(rtpPacket: rtpPacket, receivedNS: receivedNS)
             // !! TODO: EXC_BAD_ACCESS at this line?
@@ -515,8 +526,6 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         } else {
             packet.header.marker = 1
         }
-
-            print("Send Send Send")
         // generate random bytes
 
         
