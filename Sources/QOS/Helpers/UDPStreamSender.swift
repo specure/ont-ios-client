@@ -82,7 +82,6 @@ class UDPStreamSender: NSObject {
     deinit {
         defer {
             if self.isStopped == false {
-                self.close()
                 self.stop()
             }
         }
@@ -100,13 +99,13 @@ class UDPStreamSender: NSObject {
     ///
     func stop() {
         _ = running.testAndSet(false)
+        close()
     }
 
     ///
     fileprivate func connect() {
         Log.logger.debug("connecting udp socket")
         stop()
-        close()
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: streamSenderQueue)
         isStopped = false
         //
@@ -127,7 +126,6 @@ class UDPStreamSender: NSObject {
                 try udpSocket?.beginReceiving()
             }
         } catch {
-            self.close()
             self.stop()
             Log.logger.debug("bindToPort error?: \(error)")
             Log.logger.debug("connectToHost error?: \(error)") // TODO: check error (i.e. fail if error)
@@ -239,8 +237,10 @@ class UDPStreamSender: NSObject {
             }
         }
 
-        stop()
-        close()
+        if hasTimeout {
+            stop()
+        }
+
 
         Log.logger.debug("UDP AFTER SEND RETURNS \(!hasTimeout)")
 
@@ -309,6 +309,10 @@ extension UDPStreamSender: GCDAsyncUdpSocketDelegate {
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
         Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
+        settings.delegateQueue.async {
+            self.delegate?.udpStreamSenderDidClose(self, with: error)
+            return
+        }
     }
 
 }

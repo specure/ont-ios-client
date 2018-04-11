@@ -151,9 +151,9 @@ class RMBTClientTests: XCTestCase {
         // TODO: make instantiation of control connection synchronous with locks!
         var conn: QOSControlConnection! = nil
         if conn == nil {
-            logger.debug("\(controlConnectionKey): trying to open new control connection")
+            Log.logger.debug("\(controlConnectionKey): trying to open new control connection")
             // logger.debug("NO CONTROL CONNECTION PRESENT FOR \(controlConnectionKey), creating a new one")
-            logger.debug("\(controlConnectionKey): BEFORE LOCK")
+            Log.logger.debug("\(controlConnectionKey): BEFORE LOCK")
             
             // TODO: fail after timeout if qos server not available
             
@@ -166,11 +166,11 @@ class RMBTClientTests: XCTestCase {
             // logger.debug("AFTER LOCK: have control connection?: \(isConnected)")
             // TODO: return nil? if not connected
             
-            logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
+            Log.logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
             
 //            controlConnectionMap[controlConnectionKey] = conn
         } else {
-            logger.debug("\(controlConnectionKey): control connection already opened")
+            Log.logger.debug("\(controlConnectionKey): control connection already opened")
         }
         
         if !conn.connected {
@@ -233,14 +233,14 @@ class RMBTClientTests: XCTestCase {
                                         
                                         if testExecutor.needsControlConnection() {
                                             // set control connection timeout (TODO: compute better! (not all tests may use same control connection))
-                                            logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
+                                            Log.logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
                                             controlConnection?.setTimeout(qosTest.timeout)
                                             
                                             // TODO: DETERMINE IF TEST NEEDS CONTROL CONNECTION
                                             // IF IT NEEDS IT, AND CONTROL CONNECTION CONNECT FAILED THEN SKIP THIS TEST AND DON'T SEND RESULT TO SERVER
                                             if !(controlConnection?.connected)! {
                                                 // don't do this test
-                                                logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
+                                                Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
                                                 
                                                 self?.workerQueue.sync {
                                                     XCTAssert(false, "no result because test didn't run")
@@ -252,7 +252,7 @@ class RMBTClientTests: XCTestCase {
                                             }
                                         }
                                         
-                                        logger.debug("starting execution of test: \(qosTest)")
+                                        Log.logger.debug("starting execution of test: \(qosTest)")
                                         
                                         // execute test
                                         self?.workerQueue.async {

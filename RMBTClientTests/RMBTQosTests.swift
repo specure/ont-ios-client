@@ -39,10 +39,10 @@ class RMBTQosTests: XCTestCase {
         let expectation = self.expectation(description: "testDNSQosTest")
         let qosSettings = Mapper<QosMeasurmentResponse>().map(JSONObject: self.qosSettings)
         var results: QosMeasurementResultRequest? = nil
-        var helper: RMBTQoSTestHelper? = RMBTQoSTestHelper(type: .DNS, testToken: self.testToken)
+        var helper: RMBTQoSTestHelper? = RMBTQoSTestHelper(type: .VOIP, testToken: self.testToken)
         helper?.parseParameters(parameters: qosSettings!)
         helper?.completionHandler = { r in
-            results = r
+            results = r as? QosMeasurementResultRequest
             expectation.fulfill()
         }
         helper?.startNextConcurencyGroup()

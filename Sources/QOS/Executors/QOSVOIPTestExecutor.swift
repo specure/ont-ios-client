@@ -129,7 +129,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         sendTaskCommand(voipCommand, withTimeout: timeoutInSec, tag: TAG_TASK_VOIPTEST)
 
-        cdlTimeout(500, forTag: "TAG_TASK_VOIPTEST")
+        cdlTimeout(1000, forTag: "TAG_TASK_VOIPTEST")
     }
 
     ///
@@ -178,6 +178,9 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
     ///
     private func startOutgoingTest() {
+        if udpStreamSender != nil {
+            return
+        }
         let dDelay          = Double(testObject.delay / NSEC_PER_MSEC)
         let dSampleRate     = Double(testObject.sampleRate)
         let dBitsPerSample  = Double(testObject.bitsPerSample)
@@ -224,7 +227,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         udpStreamSender.delegate = self
 
         // start timeout timer
-        startTimer()
+//        startTimer()
 
         qosLog.debug("before send udpStreamSender")
 
@@ -237,13 +240,14 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         udpStreamSender.stop()
 
         // stop timeout timer
-        stopTimer()
+//        stopTimer()
 
         // timeout if sender ran into timeout
-        if !boolOk {
-            testDidTimeout()
-            return
-        }
+        //Doesn't need because we waiting timeout
+//        if !boolOk {
+//            testDidTimeout()
+//            return
+//        }
 
         // request results
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
@@ -251,7 +255,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
-        cdlTimeout(500, forTag: "TAG_TASK_VOIPRESULT")
+        cdlTimeout(1000, forTag: "TAG_TASK_VOIPRESULT")
     }
 
     ///
@@ -351,7 +355,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
                     maxDelta = max(delta, maxDelta)
 
-                    skew += Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(testObject.sampleRate) * 1000) * Double(NSEC_PER_MSEC)) - Int64(tsDiff)
+                    let timestampDiff = Int64(j.rtpPacket.header.timestamp) - Int64(i.rtpPacket.header.timestamp)
+                    skew += Int64((Double(timestampDiff) / Double(testObject.sampleRate) * 1000) * Double(NSEC_PER_MSEC)) - Int64(tsDiff)
                     maxJitter = max(Int64(jitter), maxJitter)
                     meanJitter += Int64(jitter)
                 } else {
@@ -418,7 +423,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     ///
     private func calculateDelta(_ i: RTPControlData, _ j: RTPControlData, _ sampleRate: UInt16) -> Int64 {
         let msDiff: Int64 = Int64(j.receivedNS) - Int64(i.receivedNS)
-        let tsDiff: Int64 = Int64((Double(j.rtpPacket.header.timestamp - i.rtpPacket.header.timestamp) / Double(sampleRate) * 1000) * Double(NSEC_PER_MSEC))
+        let timestampDiff = Int64(j.rtpPacket.header.timestamp) - Int64(i.rtpPacket.header.timestamp)
+        let tsDiff: Int64 = Int64((Double(timestampDiff) / Double(sampleRate) * 1000) * Double(NSEC_PER_MSEC))
 
         return msDiff - tsDiff
     }
@@ -429,6 +435,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     override func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int) {
         qosLog.debug("CONTROL CONNECTION DELEGATE FOR TASK ID \(taskId), WITH TAG \(tag), WITH STRING \(response)")
 
+        print("didReceiveTaskResponse")
+        
         switch tag {
             case TAG_TASK_VOIPTEST:
                 qosLog.debug("TAG_TASK_VOIPTEST response: \(response)")
@@ -481,6 +489,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         let receivedNS = UInt64.nanoTime()
 
+        print("Received Received Received")
         // assemble rtp packet
         if let rtpPacket = RTPPacket.fromData(packetData) {
 
@@ -507,6 +516,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
             packet.header.marker = 1
         }
 
+            print("Send Send Send")
         // generate random bytes
 
         
@@ -548,4 +558,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         testResult.set(RESULT_VOIP_IN_PORT, number: port)
     }
 
+    func udpStreamSenderDidClose(_ udpStreamSender: UDPStreamSender, with error: Error?) {
+        //Nothing, because udp socket will close by timeout. It's ok
+    }
 }

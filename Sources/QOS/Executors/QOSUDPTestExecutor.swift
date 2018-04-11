@@ -48,7 +48,8 @@ struct UDPPacketData {
 typealias UDPTestExecutor = QOSUDPTestExecutor<QOSUDPTest>
 
 ///
-class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSenderDelegate, UDPStreamReceiverDelegate { /*swift compiler segfault if moved to extension*/
+class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSenderDelegate, UDPStreamReceiverDelegate {
+    /*swift compiler segfault if moved to extension*/
 
     private let RESULT_UDP_OUTGOING_PACKETS                 = "udp_result_out_num_packets"
     private let RESULT_UDP_INCOMING_PACKETS                 = "udp_result_in_num_packets"
@@ -119,24 +120,22 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         qosLog.debug("EXECUTING UDP TEST")
 
         // outgoing
-        if let packetCountOut = testObject.packetCountOut {
+        if let packetCountOut = testObject.packetCountOutgoing {
             if let portOut = testObject.portOut {
-
                 announceOutgoingTest(portOut, packetCountOut)
             } else {
-
                 // ask for port
                 controlConnection?.sendTaskCommand("GET UDPPORT", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_GET_UDPPORT)
             }
         }
 
         // incoming
-        if let packetCountIn = testObject.packetCountIn, let portIn = testObject.portIn {
+        if let packetCountIn = testObject.packetCountIncoming, let portIn = testObject.portIn {
             announceIncomingTest(portIn, packetCountIn)
         }
 
         // check if both params aren't set
-        if testObject.packetCountOut == nil && testObject.packetCountIn == nil {
+        if testObject.packetCountOutgoing == nil && testObject.packetCountIncoming == nil {
             testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING_RESPONSE, value: "NOT_SET" as AnyObject?)
             testResult.set(RESULT_UDP_NUM_PACKETS_INCOMING_RESPONSE, value: "NOT_SET" as AnyObject?)
 
@@ -152,7 +151,6 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     ///
     override func testDidTimeout() {
         // testResult.set(RESULT_UDP_TIMEOUT, value: "")
-
         super.testDidTimeout()
     }
 
@@ -167,7 +165,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     private func announceOutgoingTest(_ portOut: UInt16, _ packetCountOut: UInt16) {
         qosLog.debug("announceOutgoingTest \(portOut), \(packetCountOut)")
 
-        testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING, number: testObject.packetCountOut!)
+        testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING, number: testObject.packetCountOutgoing!)
         testResult.set(RESULT_UDP_PORT_OUTGOING,        number: testObject.portOut!)
 
         controlConnection?.sendTaskCommand("UDPTEST OUT \(portOut) \(packetCountOut)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_OUT)
@@ -177,7 +175,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     private func announceIncomingTest(_ portIn: UInt16, _ packetCountIn: UInt16) {
         qosLog.debug("announceIncomingTest \(portIn), \(packetCountIn)")
 
-        testResult.set(RESULT_UDP_NUM_PACKETS_INCOMING, number: testObject.packetCountIn!)
+        testResult.set(RESULT_UDP_NUM_PACKETS_INCOMING, number: testObject.packetCountIncoming!)
         testResult.set(RESULT_UDP_PORT_INCOMING,        number: testObject.portIn!)
 
         controlConnection?.sendTaskCommand("UDPTEST IN \(portIn) \(packetCountIn)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_UDPTEST_IN)
@@ -190,7 +188,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
             port: testObject.portOut!,
             delegateQueue: delegateQueue,
             sendResponse: true,
-            maxPackets: testObject.packetCountOut!,
+            maxPackets: testObject.packetCountOutgoing!,
             timeout: testObject.timeout,
             delay: testObject.delay,
             writeOnly: false,
@@ -223,13 +221,13 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         testResult.set(RESULT_UDP_NUM_PACKETS_OUTGOING_RESPONSE,    value: resultPacketData.numPackets as AnyObject?)
 
         // calculate packet loss rate
-        let lostPackets = Int(testObject.packetCountOut!) - resultPacketData.numPackets
+        let lostPackets = Int(testObject.packetCountOutgoing!) - resultPacketData.numPackets
 
         qosLog.debug("UDP Outgoing, all: \(resultPacketData.numPackets), lost: \(lostPackets)")
 
         if lostPackets > 0 {
 
-            let packetLossRate = Double(lostPackets) / Double(testObject.packetCountOut!) * 100
+            let packetLossRate = Double(lostPackets) / Double(testObject.packetCountOutgoing!) * 100
             qosLog.debug("packet loss rate: \(packetLossRate)")
 
             testResult.set(RESULT_UDP_OUTGOING_PLR, value: "\(packetLossRate)" as AnyObject?)
@@ -248,7 +246,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
             port: testObject.portIn!,
             delegateQueue: delegateQueue,
             sendResponse: true,
-            maxPackets: testObject.packetCountIn!,
+            maxPackets: testObject.packetCountIncoming!,
             timeout: testObject.timeout
         )
 
@@ -295,7 +293,7 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
 
                 if !response.hasPrefix("ERR") {
                     if let portOut = Int(response) {
-                        announceOutgoingTest(UInt16(portOut), testObject.packetCountOut!)
+                        announceOutgoingTest(UInt16(portOut), testObject.packetCountOutgoing!)
                     } else {
                         // TODO: fail
                         testDidFail()
@@ -407,6 +405,11 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
         // do nothing
     }
 
+    func udpStreamSenderDidClose(_ udpStreamSender: UDPStreamSender, with error: Error?) {
+        if !hasFinished {
+            self.testDidFail()
+        }
+    }
 // MARK: UDPStreamReceiverDelegate methods
 
     ///

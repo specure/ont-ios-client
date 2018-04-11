@@ -471,6 +471,7 @@
 		E92F3253207477B400F0CC9E /* RMBTQosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F3252207477B400F0CC9E /* RMBTQosTests.swift */; };
 		E92F32552074827000F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
 		E92F327420749D1D00F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E9B92F2C207DC1F9007D190F /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B92F2B207DC1F8007D190F /* Log.swift */; };
 		E9C41DF82053C88500162C87 /* RMBTClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41DF72053C88500162C87 /* RMBTClientTests.swift */; };
 		E9C41DFA2053C88500162C87 /* RMBTClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */; };
 		E9C41E012053C8C600162C87 /* CheckSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E002053C8C500162C87 /* CheckSurveyResponse.swift */; };
@@ -702,6 +703,7 @@
 		E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementJPLResult.swift; sourceTree = "<group>"; };
 		E92F3252207477B400F0CC9E /* RMBTQosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQosTests.swift; sourceTree = "<group>"; };
 		E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQoSTestHelper.swift; sourceTree = "<group>"; };
+		E9B92F2B207DC1F8007D190F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E9C41DF52053C88500162C87 /* RMBTClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RMBTClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9C41DF72053C88500162C87 /* RMBTClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTClientTests.swift; sourceTree = "<group>"; };
 		E9C41DF92053C88500162C87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1124,6 +1126,7 @@
 				E00C20B21D19654400720394 /* RMBTClient.swift */,
 				E02D18511CF59262002A02FE /* RMBTTestWorker.swift */,
 				E02D186D1CF59262002A02FE /* UIDeviceHardware.swift */,
+				E9B92F2B207DC1F8007D190F /* Log.swift */,
 				E0B1C8291CF4B5C500F19282 /* Helpers */,
 				E0B1C8221CF4B53400F19282 /* OldModel */,
 			);
@@ -1777,6 +1780,7 @@
 				E0FC4C401D6C827000D5D236 /* BasicRequest.swift in Sources */,
 				E02D1A0E1CFC8EB2002A02FE /* QualityOfServiceTest.swift in Sources */,
 				E02D1A0A1CFC8E9C002A02FE /* StringMD5Extension.swift in Sources */,
+				E9B92F2C207DC1F9007D190F /* Log.swift in Sources */,
 				E02D192C1CF59F6F002A02FE /* RMBTConfig.swift in Sources */,
 				E02D18DD1CF59262002A02FE /* RMBTRAMMonitor.m in Sources */,
 				E02D1A081CFC8E90002A02FE /* DNSClient.swift in Sources */,

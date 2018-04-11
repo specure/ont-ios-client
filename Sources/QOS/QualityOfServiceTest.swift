@@ -258,6 +258,10 @@ open class QualityOfServiceTest: NSObject {
                 }
             }
         }
+        
+        self.concurencyGroups = self.concurencyGroups.sorted(by: { (group1, group2) -> Bool in
+            return group1.identifier > group2.identifier
+        })
         return
         // loop through objectives
 
@@ -446,8 +450,10 @@ open class QualityOfServiceTest: NSObject {
                             self?.checkProgress()
                             if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
                                 self?.closeAllControlConnections()
-                                self?.controlConnectionMap = [:]
-                                self?.runTestsOfNextConcurrencyGroup()
+                                self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
+                                    self?.controlConnectionMap = [:]
+                                    self?.runTestsOfNextConcurrencyGroup()
+                                })
                             }
                         }
                     }

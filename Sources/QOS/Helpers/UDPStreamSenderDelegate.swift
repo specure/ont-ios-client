@@ -28,4 +28,6 @@ public typealias NSMutableDataPointer = AutoreleasingUnsafeMutablePointer<NSMuta
 
     /// returns the port on which the socket has bound
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didBindToPort port: UInt16)
+    
+    func udpStreamSenderDidClose(_ udpStreamSender: UDPStreamSender, with error: Error?)
 }

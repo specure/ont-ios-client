@@ -19,8 +19,8 @@ import Foundation
 ///
 class QOSUDPTest: QOSTest {
 
-    fileprivate let PARAM_NUM_PACKETS_OUT = "out_num_packets"
-    fileprivate let PARAM_NUM_PACKETS_IN = "in_num_packets"
+    fileprivate let PARAM_NUM_PACKETS_OUTGOING = "out_num_packets"
+    fileprivate let PARAM_NUM_PACKETS_INCOMING = "in_num_packets"
 
     fileprivate let PARAM_PORT_OUT = "out_port"
     fileprivate let PARAM_PORT_IN = "in_port"
@@ -29,8 +29,8 @@ class QOSUDPTest: QOSTest {
 
     //
 
-    var packetCountOut: UInt16?
-    var packetCountIn: UInt16?
+    var packetCountOutgoing: UInt16?
+    var packetCountIncoming: UInt16?
 
     var portOut: UInt16?
     var portIn: UInt16?
@@ -41,7 +41,7 @@ class QOSUDPTest: QOSTest {
 
     ///
     override var description: String {
-        return super.description + ", [packetCountOut: \(String(describing: packetCountOut)), packetCountIn: \(String(describing: packetCountIn)), portOut: \(String(describing: portOut)), portIn: \(String(describing: portIn)), delay: \(delay)]"
+        return super.description + ", [packetCountOut: \(String(describing: packetCountOutgoing)), packetCountIn: \(String(describing: packetCountIncoming)), portOut: \(String(describing: portOut)), portIn: \(String(describing: portIn)), delay: \(delay)]"
     }
 
     //
@@ -49,16 +49,16 @@ class QOSUDPTest: QOSTest {
     ///
     override init(testParameters: QOSTestParameters) {
         // packetCountOut
-        if let packetCountOutString = testParameters[PARAM_NUM_PACKETS_OUT] as? String {
+        if let packetCountOutString = testParameters[PARAM_NUM_PACKETS_OUTGOING] as? String {
             if let packetCountOut = UInt16(packetCountOutString) {
-                self.packetCountOut = packetCountOut
+                self.packetCountOutgoing = packetCountOut
             }
         }
 
         // packetCountIn
-        if let packetCountInString = testParameters[PARAM_NUM_PACKETS_IN] as? String {
+        if let packetCountInString = testParameters[PARAM_NUM_PACKETS_INCOMING] as? String {
             if let packetCountIn = UInt16(packetCountInString) {
-                self.packetCountIn = packetCountIn
+                self.packetCountIncoming = packetCountIn
             }
         }
 

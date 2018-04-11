@@ -7,7 +7,7 @@
 
 import UIKit
 import ObjectMapper
-//@testable import RMBTClient
+@testable import RMBTClient
 
 open class RMBTQoSTestHelper: NSObject {
 
@@ -52,7 +52,7 @@ open class RMBTQoSTestHelper: NSObject {
         for (objectiveType, objectiveValues) in objectives {
             for (objectiveParams) in objectiveValues {
                 if let type = QosMeasurementType(rawValue: objectiveType) {
-                    if type == testedType {
+//                    if type == testedType {
                         if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams),
                             let testExecutor = QOSFactory.createTestExecutor(qosTest, delegateQueue: executorQueue, speedtestStartTime: speedtestStartTime) {
                             let group = self.findConcurencyGroup(with: qosTest.concurrencyGroup)
@@ -60,21 +60,7 @@ open class RMBTQoSTestHelper: NSObject {
                             testCount += 1
                             
                             testExecutor.setCurrentTestToken(self.testToken)
-                            
-                            if testExecutor.needsControlConnection() {
-                                let controlConnection = getControlConnection(qosTest)
-                                controlConnection.setTimeout(qosTest.timeout)
-                                
-                                if !controlConnection.connected {
-                                    // don't do this test
-                                    logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
-                                    group.removeTestExecutor(testExecutor: testExecutor)
-                                    testCount -= 1
-                                    continue
-                                }
-                                testExecutor.setControlConnection(controlConnection)
-                            }
-                        }
+//                        }
                     }
                 }
             }
@@ -107,6 +93,23 @@ open class RMBTQoSTestHelper: NSObject {
     public func startNextConcurencyGroup() {
         if let concurencyGroup = self.findNextConcurencyGroup() {
             for testExecutor in concurencyGroup.testExecutors {
+                if testExecutor.needsControlConnection() {
+                    let qosTest = testExecutor.getTestObject()
+                    let controlConnection = getControlConnection(qosTest)
+                    if !controlConnection.connected {
+                        // don't do this test
+                        Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
+                        concurencyGroup.removeTestExecutor(testExecutor: testExecutor)
+                        testCount -= 1
+                        continue
+                    }
+                    
+                    controlConnection.setTimeout(qosTest.timeout)
+                    testExecutor.setControlConnection(controlConnection)
+                }
+            }
+            
+            for testExecutor in concurencyGroup.testExecutors {
                 // execute test
                 executorQueue.async {
                     testExecutor.execute { [weak self, weak concurencyGroup] (testResult: QOSTestResult) in
@@ -114,6 +117,8 @@ open class RMBTQoSTestHelper: NSObject {
                             self?.results.append(testResult)
                             concurencyGroup?.passedExecutors += 1
                             if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
+                                self?.closeAllControlConnections()
+                                self?.controlConnectionMap = [:]
                                 self?.startNextConcurencyGroup()
                             }
                         }
@@ -145,14 +150,14 @@ open class RMBTQoSTestHelper: NSObject {
                 
                 if testExecutor.needsControlConnection() {
                     // set control connection timeout (TODO: compute better! (not all tests may use same control connection))
-                    logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
+                    Log.logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
                     controlConnection.setTimeout(qosTest.timeout)
                     
                     // TODO: DETERMINE IF TEST NEEDS CONTROL CONNECTION
                     // IF IT NEEDS IT, AND CONTROL CONNECTION CONNECT FAILED THEN SKIP THIS TEST AND DON'T SEND RESULT TO SERVER
                     if !controlConnection.connected {
                         // don't do this test
-                        logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
+                        Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
                         
                         testCount -= 1
                         if testCount == 0 {
@@ -170,7 +175,7 @@ open class RMBTQoSTestHelper: NSObject {
                     }
                 }
                 
-                logger.debug("starting execution of test: \(qosTest)")
+                Log.logger.debug("starting execution of test: \(qosTest)")
                 
                 // execute test
                 executorQueue.async {
@@ -192,14 +197,14 @@ open class RMBTQoSTestHelper: NSObject {
     ///
     private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
         // determine control connection
-        let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)"
+        let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)_\(qosTest.getType().rawValue)"
         
         // TODO: make instantiation of control connection synchronous with locks!
         var conn: QOSControlConnection! = self.controlConnectionMap[controlConnectionKey]
         if conn == nil {
-            logger.debug("\(controlConnectionKey): trying to open new control connection")
+            Log.logger.debug("\(controlConnectionKey): trying to open new control connection")
             // logger.debug("NO CONTROL CONNECTION PRESENT FOR \(controlConnectionKey), creating a new one")
-            logger.debug("\(controlConnectionKey): BEFORE LOCK")
+            Log.logger.debug("\(controlConnectionKey): BEFORE LOCK")
             
             // TODO: fail after timeout if qos server not available
             
@@ -212,11 +217,11 @@ open class RMBTQoSTestHelper: NSObject {
             // logger.debug("AFTER LOCK: have control connection?: \(isConnected)")
             // TODO: return nil? if not connected
             
-            logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
+            Log.logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
             
             controlConnectionMap[controlConnectionKey] = conn
         } else {
-            logger.debug("\(controlConnectionKey): control connection already opened")
+            Log.logger.debug("\(controlConnectionKey): control connection already opened")
         }
         
         if !conn.connected {
@@ -228,11 +233,11 @@ open class RMBTQoSTestHelper: NSObject {
     }
     
     private func closeAllControlConnections() {
-        logger.info("closing all control connections")
+        Log.logger.info("closing all control connections")
         
         // TODO: if everything is done: close all control connections
         for (_, controlConnection) in self.controlConnectionMap {
-            logger.debug("closing control connection \(controlConnection)")
+            Log.logger.debug("closing control connection \(controlConnection)")
             controlConnection.disconnect()
         }
         
