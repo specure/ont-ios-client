@@ -175,15 +175,19 @@ public func NKOMTimestampWithNSDate(_ date: Date) -> NSNumber {
 }
 
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
-public func RMBTFormatNumber(_ number: NSNumber) -> String {
+public func RMBTFormatNumber(_ number: NSNumber, _ maxDigits: Int = 2) -> String {
     let formatter = NumberFormatter()
     
-    var signif = 2
+    var signif = maxDigits
 
     if number.doubleValue > 10 {
-        signif = 1
+        signif -= 1
     }
     if number.doubleValue > 100 {
+        signif -= 1
+    }
+    
+    if signif < 0 {
         signif = 0
     }
 

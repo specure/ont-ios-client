@@ -86,6 +86,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     
     private let TAG_TASK_VOIPTEST_cdl = CountDownLatch()
     private let TAG_TASK_VOIPRESULT_cdl = CountDownLatch()
+    
+    private let uniqueQueue = DispatchQueue(label: "Change rtpControlDataList")
 
     ///
 //    private var cdl: CountDownLatch! {
@@ -505,7 +507,9 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // assemble rtp packet
         if let rtpPacket = RTPPacket.fromData(packetData) {
             // put packet in data list
-            rtpControlDataList[rtpPacket.header.sequenceNumber] = RTPControlData(rtpPacket: rtpPacket, receivedNS: receivedNS)
+            uniqueQueue.sync {
+                rtpControlDataList[rtpPacket.header.sequenceNumber] = RTPControlData(rtpPacket: rtpPacket, receivedNS: receivedNS)
+            }
             // !! TODO: EXC_BAD_ACCESS at this line?
         }
 

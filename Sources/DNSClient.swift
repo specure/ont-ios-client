@@ -364,7 +364,11 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 // 16 bit => data length
                 // data-length * 8 bit => data
 
-                let ddr = (dd as NSData).subdata(with: NSRange(location: 0, length: MemoryLayout<DNSResourceRecord>.size))
+                var length = MemoryLayout<DNSResourceRecord>.size
+                if length > (dd as NSData).length {
+                    length = (dd as NSData).length
+                }
+                let ddr = (dd as NSData).subdata(with: NSRange(location: 0, length: length))
                 
                 //let ddr = dd.subdata(in: 0..<MemoryLayout<DNSResourceRecord>.size)
 

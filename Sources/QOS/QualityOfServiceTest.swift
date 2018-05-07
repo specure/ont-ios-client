@@ -217,6 +217,16 @@ open class QualityOfServiceTest: NSObject {
         
     }
 
+    func findNextTestExecutor(in group: RMBTConcurencyGroup) -> QOSTestExecutorProtocol? {
+        for testExecutor in group.testExecutors {
+            if !testExecutor.testExecutorHasFinished() {
+                return testExecutor
+            }
+        }
+        
+        return nil
+    }
+    
     func findNextConcurencyGroup() -> RMBTConcurencyGroup? {
         for group in concurencyGroups {
             if group.passedExecutors != group.testExecutors.count {
@@ -418,6 +428,40 @@ open class QualityOfServiceTest: NSObject {
         runTestsOfNextConcurrencyGroup()
     }
 
+    private func runNextTest(in concurencyGroup: RMBTConcurencyGroup) {
+        if stopped {
+            return
+        }
+        if let testExecutor = self.findNextTestExecutor(in: concurencyGroup) {
+//            for testExecutor in concurencyGroup.testExecutors {
+                // execute test
+                executorQueue.async {
+                    testExecutor.execute { [weak self, weak concurencyGroup] (testResult: QOSTestResult) in
+                        self?.mutualExclusionQueue.sync { [weak self] in
+                            self?.resultArray.append(testResult)
+                            concurencyGroup?.passedExecutors += 1
+                            self?.checkProgress()
+                            if let concurencyGroup = concurencyGroup {
+                                self?.runNextTest(in: concurencyGroup)
+                            }
+//                            if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
+//                                self?.closeAllControlConnections()
+//                                self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
+//                                    self?.controlConnectionMap = [:]
+//                                    self?.runTestsOfNextConcurrencyGroup()
+//                                })
+//                            }
+                        }
+                    }
+                }
+//            }
+        }
+        else {
+            self.closeAllControlConnections()
+            self.controlConnectionMap = [:]
+            self.runTestsOfNextConcurrencyGroup()
+        }
+    }
     ///
     private func runTestsOfNextConcurrencyGroup() {
         if stopped {
@@ -443,6 +487,9 @@ open class QualityOfServiceTest: NSObject {
                     testExecutor.setControlConnection(controlConnection)
                 }
             }
+            
+//            self.runNextTest(in: concurencyGroup)
+//            return
             
             for testExecutor in concurencyGroup.testExecutors {
                 // execute test

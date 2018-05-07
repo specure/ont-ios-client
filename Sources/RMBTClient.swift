@@ -218,6 +218,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
             qualityOfServiceTestRunner?.delegate = self
 
+            _running = true
             qualityOfServiceTestRunner?.start()
         }
     }

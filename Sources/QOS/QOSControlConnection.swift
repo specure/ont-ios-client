@@ -17,6 +17,14 @@
 import Foundation
 import CocoaAsyncSocket
 
+class QOSControlConnectionTaskWeakObserver {
+    weak var delegate: QOSControlConnectionTaskDelegate?
+    
+    init(_ delegate: QOSControlConnectionTaskDelegate) {
+        self.delegate = delegate
+    }
+}
+
 class QOSControlConnection: NSObject {
 
     internal let TAG_GREETING = -1
@@ -51,7 +59,7 @@ class QOSControlConnection: NSObject {
     internal lazy var qosControlConnectionSocket: GCDAsyncSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue)
 
     ///
-    internal var taskDelegateDictionary: [UInt: QOSControlConnectionTaskDelegate] = [:]
+    internal var taskDelegateDictionary: [UInt: QOSControlConnectionTaskWeakObserver] = [:]
 
     ///
     internal var pendingTimeout: Double = 0
@@ -136,10 +144,19 @@ class QOSControlConnection: NSObject {
 
 // MARK: control connection delegate methods
 
+    func clearObservers() {
+        for (_, observer) in taskDelegateDictionary.enumerated() {
+            if observer.value.delegate == nil {
+                taskDelegateDictionary.removeValue(forKey: observer.key)
+            }
+        }
+    }
+    
     ///
     func registerTaskDelegate(_ delegate: QOSControlConnectionTaskDelegate, forTaskId taskId: UInt) {
         self.mutableQueue.sync {
-            taskDelegateDictionary[taskId] = delegate
+            taskDelegateDictionary[taskId] = QOSControlConnectionTaskWeakObserver(delegate)
+            self.clearObservers()
             Log.logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
         }
     }
@@ -156,6 +173,7 @@ class QOSControlConnection: NSObject {
             else {
                 Log.logger.debug("TaskDelegate: \(taskId) Not found")
             }
+            self.clearObservers()
         }
     }
 
@@ -380,7 +398,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
                                 Log.logger.debug("CALLING DELEGATE METHOD of \(taskDelegate), withResponse: \(str), taskId: \(taskId), tag: \(tag), _tag: \(_tag)")
 
                                 // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                                taskDelegate.controlConnection(self, didReceiveTaskResponse: str, withTaskId: taskId, tag: _tag)
+                                taskDelegate.delegate?.controlConnection(self, didReceiveTaskResponse: str, withTaskId: taskId, tag: _tag)
                             }
                         }
                     }
@@ -419,7 +437,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
                     Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
 
                     // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                    taskDelegate.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
+                    taskDelegate.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
                     Log.logger.debug("!!! AFTER DID_RECEIVE_TIMEOUT !!!!")
                 }
             }
@@ -444,7 +462,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
                     Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
 
                     // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                    taskDelegate.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
+                    taskDelegate.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
                 }
             }
         }

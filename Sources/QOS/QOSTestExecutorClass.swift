@@ -35,7 +35,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     //
 
     ///
-    weak var controlConnection: QOSControlConnection?
+    var controlConnection: QOSControlConnection?
 
     ///
     let delegateQueue: DispatchQueue

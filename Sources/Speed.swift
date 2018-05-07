@@ -63,8 +63,8 @@ public func RMBTSpeedLogValue(_ kbps: Double, gaugeParts: Double, log10Max: Doub
 }
 
 ///
-public func RMBTSpeedMbpsString(_ kbps: Double, withMbps: Bool = true) -> String {
-    let speedValue = RMBTFormatNumber(NSNumber(value: kbps / 1000.0))
+public func RMBTSpeedMbpsString(_ kbps: Double, withMbps: Bool = true, maxDigits: Int = 2) -> String {
+    let speedValue = RMBTFormatNumber(NSNumber(value: kbps / 1000.0), maxDigits)
 
     if withMbps {
         let localizedMps = NSLocalizedString("test.speed.unit", value: "Mbps", comment: "Speed suffix")
