@@ -40,7 +40,7 @@ class QOSControlConnection: NSObject {
     //
 
     ///
-    var delegate: QOSControlConnectionDelegate?
+    weak var delegate: QOSControlConnectionDelegate?
 
     ///
     var connected = false
@@ -52,7 +52,7 @@ class QOSControlConnection: NSObject {
     internal let connectCountDownLatch = CountDownLatch()
 
     ///
-    internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue")
     
     internal let mutableQueue = DispatchQueue(label: "com.specure.rmbt.mutableQueue")
     ///
@@ -102,7 +102,7 @@ class QOSControlConnection: NSObject {
         }
 
         _ = connectCountDownLatch.await(timeout)
-
+        
         return connected
     }
 
@@ -111,7 +111,7 @@ class QOSControlConnection: NSObject {
         // send quit
         Log.logger.debug("QUIT QUIT QUIT QUIT QUIT")
 
-        writeLine("QUIT", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: -1) // don't bother with the tag, don't need read after this operation
+        self.writeLine("QUIT", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: -1) // don't bother with the tag, don't need read after this operation
         qosControlConnectionSocket.disconnectAfterWriting()
         // qosControlConnectionSocket.disconnectAfterReadingAndWriting()
     }
@@ -207,12 +207,12 @@ class QOSControlConnection: NSObject {
 
     ///
     internal func writeLine(_ line: String, withTimeout timeout: TimeInterval, tag: Int) {
-        SocketUtils.writeLine(qosControlConnectionSocket, line: line, withTimeout: timeout, tag: tag)
+        qosControlConnectionSocket.writeLine(line: line, withTimeout: timeout, tag: tag)
     }
 
     ///
     internal func readLine(_ tag: Int, withTimeout timeout: TimeInterval) {
-        SocketUtils.readLine(qosControlConnectionSocket, tag: tag, withTimeout: timeout)
+        qosControlConnectionSocket.readLine(tag: tag, withTimeout: timeout)
     }
 
 // MARK: other methods
@@ -326,7 +326,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
             Log.logger.verbose("got greeting")
 
             // read accept
-            readLine(TAG_FIRST_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_FIRST_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_FIRST_ACCEPT:
             // got accept
@@ -334,17 +334,17 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
             // send token
             let tokenCommand = "TOKEN \(testToken)\n"
-            writeLine(tokenCommand, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: TAG_TOKEN)
+            self.writeLine(tokenCommand, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: TAG_TOKEN)
 
             // read token response
-            readLine(TAG_TOKEN, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_TOKEN, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_TOKEN:
             // response from token command
             Log.logger.verbose("got ok")
 
             // read second accept
-            readLine(TAG_SECOND_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_SECOND_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_SECOND_ACCEPT:
             // got second accept

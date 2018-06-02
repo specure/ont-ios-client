@@ -30,7 +30,7 @@ struct UDPStreamReceiverSettings {
 class UDPStreamReceiver: NSObject {
 
     ///
-    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.udp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.udp.socketQueue")
 
     ///
     fileprivate var udpSocket: GCDAsyncUdpSocket!
