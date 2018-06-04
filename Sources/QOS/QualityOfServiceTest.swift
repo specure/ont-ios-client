@@ -505,9 +505,7 @@ open class QualityOfServiceTest: NSObject {
                             concurencyGroup?.passedExecutors += 1
                             self?.checkProgress()
                             if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
-                                self?.closeAllControlConnections()
                                 self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
-                                    self?.controlConnectionMap = [:]
                                     self?.runTestsOfNextConcurrencyGroup()
                                 })
                             }
