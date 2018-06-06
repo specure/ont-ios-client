@@ -127,7 +127,13 @@ open class QualityOfServiceTest: NSObject {
     private var stopped = false
 
     //
-
+    deinit {
+        defer {
+            if self.stopped == false {
+                self.closeAllControlConnections()
+            }
+        }
+    }
     ///
     public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isPartOfMainTest: Bool) {
         self.testToken = testToken

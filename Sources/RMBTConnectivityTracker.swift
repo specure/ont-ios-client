@@ -48,7 +48,7 @@ open class RMBTConnectivityTracker: NSObject {
 
     /// GCNetworkReachability is not made to be multiply instantiated, so we create a global
     /// singleton first time a RMBTConnectivityTracker is instatiated
-    private static let sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
+    private static var sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
 
     /// According to http://www.objc.io/issue-5/iOS7-hidden-gems-and-workarounds.html one should
     /// keep a reference to CTTelephonyNetworkInfo live if we want to receive radio changed notifications (?)
@@ -79,6 +79,15 @@ open class RMBTConnectivityTracker: NSObject {
         static var token: Int = 0
     }
 
+    private let refreshTimeinterval = 1.0
+    private var refreshTimer: Timer? { //Hack. Sometimes we don't have changes from reachability
+        didSet {
+            if let timer = oldValue,
+                timer.isValid == true {
+                timer.invalidate()
+            }
+        }
+    }
     ///
     public init(delegate: RMBTConnectivityTrackerDelegate, stopOnMixed: Bool) {
         self.delegate = delegate
@@ -99,8 +108,23 @@ open class RMBTConnectivityTracker: NSObject {
         }
     }
 
+    @objc func refreshTimerHandler(_ timer: Timer) {
+        
+        if let reachability = GCNetworkReachability.forInternetConnection(),
+            reachability.currentReachabilityStatus() != RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus() {
+            RMBTConnectivityTracker.sharedReachability = reachability
+            #if os(iOS)
+            reachability.startMonitoringNetworkReachabilityWithNotification()
+            #endif
+        self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
+        }
+    }
+    
     ///
     open func start() {
+        DispatchQueue.main.async {
+            self.refreshTimer = Timer.scheduledTimer(timeInterval: self.refreshTimeinterval, target: self, selector: #selector(self.refreshTimerHandler(_:)), userInfo: nil, repeats: true)
+        }
         queue.async {
             self.started = true
             self.lastRadioAccessTechnology = nil
@@ -126,6 +150,7 @@ open class RMBTConnectivityTracker: NSObject {
     ///
     open func stop() {
         queue.async {
+            self.refreshTimer = nil
             NotificationCenter.default.removeObserver(self)
 
             self.started = false
