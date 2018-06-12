@@ -49,4 +49,12 @@ public extension UInt64 {
 
         return ticksToNanoTime(elapsed)
     }
+    
+    func toNanoTime() -> UInt64 {
+        return self * NSEC_PER_SEC
+    }
+    
+    func toMilisecondsTime() -> UInt64 {
+        return self * USEC_PER_SEC
+    }
 }

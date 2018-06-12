@@ -237,7 +237,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
             if needsControlConnection() {
                 Log.logger.debug("\(String(describing: self.controlConnection))")
 
-                self.controlConnection?.unregisterTaskDelegate(forTaskId: self.testObject.qosTestId)
+                self.controlConnection?.unregisterTaskDelegate(self, forTaskId: self.testObject.qosTestId)
             }
 
             // call finish callback saved in finishCallback variable

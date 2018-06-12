@@ -279,8 +279,11 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
                     // send udp packets
                     qosLog.debug("send udp packets")
 
-                    // send udp packets
-                    startOutgoingTest()
+                    let queue = DispatchQueue(label: "udp startOutgoingTest")
+                    queue.async {
+                        // send udp packets
+                        self.startOutgoingTest()
+                    }
 
                     // callFinishCallback()
                 } else {

@@ -759,7 +759,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                           repeating: RMBTTestRunnerProgressUpdateInterval,
                              leeway: DispatchTimeInterval.seconds(50))
             timer.setEventHandler { [weak self] in
-                let elapsedNanos = (RMBTCurrentNanos() - (self?.progressStartedAtNanos ?? UInt64(0.0)))
+                let elapsedNanos: Int64 = (Int64(RMBTCurrentNanos()) - Int64(self?.progressStartedAtNanos ?? UInt64(0.0)))
                 
                 if elapsedNanos > (self?.progressDurationNanos ?? UInt64(0.0))  {
                     // We've reached end of interval...

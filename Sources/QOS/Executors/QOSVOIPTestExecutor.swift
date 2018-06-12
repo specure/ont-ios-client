@@ -263,7 +263,13 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
-        cdlTimeout(for: TAG_TASK_VOIPRESULT_cdl, 1000, forTag: "TAG_TASK_VOIPRESULT")
+        
+        var timeout = Int64(UInt64(self.timeoutInSec).toNanoTime()) - Int64(UInt64.getTimeDifferenceInNanoSeconds(testStartTimeTicks))
+        if timeout < 0 {
+            timeout = 0
+        }
+        
+        cdlTimeout(for: TAG_TASK_VOIPRESULT_cdl, UInt64(timeout) / NSEC_PER_USEC, forTag: "TAG_TASK_VOIPRESULT")    
     }
 
     ///
