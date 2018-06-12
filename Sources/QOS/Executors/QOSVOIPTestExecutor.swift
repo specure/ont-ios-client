@@ -258,7 +258,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         // request results
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
-        usleep(100000) /* 100 * 1000 */
+        
+//        usleep(100000) /* 100 * 1000 */
 
         controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
@@ -461,7 +462,10 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                     ssrc = UInt32(response.components(separatedBy: " ")[1]) // !
                     qosLog.info("got ssrc: \(ssrc)")
 
-                    startOutgoingTest()
+                    let queue = DispatchQueue(label: "Voip startOutgoingTest queue")
+                    queue.async {
+                        self.startOutgoingTest()
+                    }
                 }
 
             case TAG_TASK_VOIPRESULT:

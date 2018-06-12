@@ -831,7 +831,7 @@ open class QualityOfServiceTest: NSObject {
             return
         }
 
-        var _testResultArray = [QOSTestResults]()
+        var _testResultArray: [QOSTestResults] = []
 
         for testResult in resultArray { // TODO: resultArray == _testResultArray? just use resultArray?
             if !testResult.isEmpty() {
@@ -839,6 +839,8 @@ open class QualityOfServiceTest: NSObject {
             }
         }
 
+        print("SUBMIT RESULTS")
+        print(_testResultArray)
         // don't send results if all results are empty (e.g. only tcp tests and no control connection) or added additional test as part of the main test group
         if _testResultArray.isEmpty || self.isPartOfMainTest {
             // inform delegate

@@ -95,6 +95,8 @@ open class QOSTest: CustomStringConvertible { /* TODO: declarations in extension
             if timeout > 0 {
                 self.timeout = UInt64(timeout)
             }
+            
+            self.timeout = 10000000000
         }
     }
 
