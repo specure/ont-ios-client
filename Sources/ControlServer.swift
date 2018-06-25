@@ -94,6 +94,7 @@ class ControlServer {
     var historyFilter:HistoryFilterType?
     
     var surveySettings: SettingsReponse_Old.Settings.SurveySettings?
+    var advertisingSettings: SettingsReponse_Old.Settings.AdvertisingSettings?
 
     ///
     var openTestBaseURL: String?
@@ -266,6 +267,7 @@ class ControlServer {
                 }
                 
                 self.surveySettings = set.surveySettings
+                self.advertisingSettings = set.advertisingSettings
                 
                 // set control server version
                 self.version = set.versions?.controlServerVersion

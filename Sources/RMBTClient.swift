@@ -516,6 +516,19 @@ extension RMBTClient {
             return ControlServer.sharedControlServer.surveySettings?.isActiveService
         }
     }
+    
+    public class var advertisingIsActive: Bool {
+        get {
+            return true
+//            return ControlServer.sharedControlServer.advertisingSettings?.isShowAdvertising ?? false
+        }
+    }
+    
+    public class var advertisingSettings: SettingsReponse_Old.Settings.AdvertisingSettings? {
+        get {
+            return ControlServer.sharedControlServer.advertisingSettings
+        }
+    }
 
     ///
     public class var controlServerVersion: String? {

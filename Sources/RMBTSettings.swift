@@ -116,6 +116,7 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var debugLoggingEnabled = false
     
     @objc open dynamic var previousNetworkName: String?
+    @objc open dynamic var isAdsRemoved: Bool = false
     
     @objc open dynamic var lastSurveyTimestamp: Double = 0.0
 
@@ -180,6 +181,7 @@ open class RMBTSettings: NSObject {
 
             "debugLoggingEnabled",
             "previousNetworkName",
+            "isAdsRemoved",
             
             "lastSurveyTimestamp"
         ])
