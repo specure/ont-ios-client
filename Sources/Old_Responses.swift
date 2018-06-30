@@ -298,8 +298,6 @@ open class SettingsReponse_Old: BasicResponse {
         var history: HistoryFilterType?
         
         var surveySettings: SurveySettings?
-        var advertisingSettings: AdvertisingSettings?
-        
         
         ///
         init() {
@@ -322,7 +320,6 @@ open class SettingsReponse_Old: BasicResponse {
             uuid <- map["uuid"]
             history <- map["history"]
             surveySettings <- map["survey_settings"]
-            advertisingSettings <- map["advertising_settings"]
         }
         
         ///
@@ -411,33 +408,6 @@ open class SettingsReponse_Old: BasicResponse {
                 surveyUrl <- map["survey_url"]
                 isActiveService <- map["is_active_service"]
                 dateStarted <- map["date_started"]
-            }
-        }
-        
-        open class AdvertisingSettings: Mappable {
-            
-            ///
-            var isShowAdvertising: Bool?
-            var adProvider: String?
-            var bannerId: String?
-            var appId: String?
-            
-            ///
-            init() {
-                
-            }
-            
-            ///
-            required public init?(map: Map) {
-                
-            }
-            
-            ///
-            public func mapping(map: Map) {
-                isShowAdvertising <- map["isShowAdvertising"]
-                adProvider <- map["adProvider"]
-                bannerId <- map["bannerId"]
-                appId <- map["appID"]
             }
         }
         

@@ -94,7 +94,7 @@ class ControlServer {
     var historyFilter:HistoryFilterType?
     
     var surveySettings: SettingsReponse_Old.Settings.SurveySettings?
-    var advertisingSettings: SettingsReponse_Old.Settings.AdvertisingSettings?
+    var advertisingSettings: AdvertisingResponse?
 
     ///
     var openTestBaseURL: String?
@@ -140,6 +140,9 @@ class ControlServer {
         
         // get settings of control server
         getSettings(success: {
+            self.getAdvertising(success: { },
+                           error: { (_) in    
+            })
             // 
             if self.settings.debugUnlocked {
                 
@@ -195,6 +198,28 @@ class ControlServer {
         self.request(.post, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }
 
+// MARK: Advertising
+    
+    func getAdvertising(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        let advertisingRequest = AdvertisingRequest()
+        advertisingRequest.uuid = uuid
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            successCallback()
+        }
+        else {
+            let successFunc: (_ response: AdvertisingResponse) -> () = { response in
+                Log.logger.debug("advertising: \(String(describing: response.isShowAdvertising))")
+                self.advertisingSettings = response
+            }
+            request(.post, path: "/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
+                Log.logger.debug("advertising error")
+                
+                failure(error)
+            })
+        }
+    }
+    
 // MARK: Settings
 
     ///
@@ -267,7 +292,6 @@ class ControlServer {
                 }
                 
                 self.surveySettings = set.surveySettings
-                self.advertisingSettings = set.advertisingSettings
                 
                 // set control server version
                 self.version = set.versions?.controlServerVersion

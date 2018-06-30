@@ -524,7 +524,7 @@ extension RMBTClient {
         }
     }
     
-    public class var advertisingSettings: SettingsReponse_Old.Settings.AdvertisingSettings? {
+    public class var advertisingSettings: AdvertisingResponse? {
         get {
             return ControlServer.sharedControlServer.advertisingSettings
         }
