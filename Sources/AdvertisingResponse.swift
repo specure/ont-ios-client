@@ -9,10 +9,10 @@ import UIKit
 import ObjectMapper
 
 public class AdvertisingResponse: BasicResponse {
-    var isShowAdvertising: Bool = false
-    var adProvider: String?
-    var bannerId: String?
-    var appId: String?
+    public var isShowAdvertising: Bool = false
+    public var adProvider: String?
+    public var bannerId: String?
+    public var appId: String?
     
     override open func mapping(map: Map) {
         super.mapping(map: map)
