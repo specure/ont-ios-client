@@ -519,8 +519,7 @@ extension RMBTClient {
     
     public class var advertisingIsActive: Bool {
         get {
-            return true
-//            return ControlServer.sharedControlServer.advertisingSettings?.isShowAdvertising ?? false
+            return ControlServer.sharedControlServer.advertisingSettings?.isShowAdvertising ?? false
         }
     }
     

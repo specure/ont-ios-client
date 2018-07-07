@@ -43,27 +43,27 @@ public let RMBTMapOptionsOverlayPoints = RMBTMapOptionsOverlay(
     identifier: "points",
     localizedDescription: NSLocalizedString("map.options.overlay.points", value: "Points", comment: "Map overlay description")
 )
-// let RMBTMapOptionsOverlayShapes = RMBTMapOptionsOverlay(
-//    identifier: "shapes",
-//    localizedDescription: NSLocalizedString("map.options.overlay.shapes", value: "Shapes", comment: "Map overlay description")
-// )
-// //
-/* let RMBTMapOptionsOverlayRegions = RMBTMapOptionsOverlay(
+public let RMBTMapOptionsOverlayShapes = RMBTMapOptionsOverlay(
+    identifier: "shapes",
+    localizedDescription: NSLocalizedString("map.options.overlay.shapes", value: "Shapes", comment: "Map overlay description")
+)
+ //
+public let RMBTMapOptionsOverlayRegions = RMBTMapOptionsOverlay(
     identifier: "regions",
     localizedDescription: NSLocalizedString("map.options.overlay.regions", value: "Regions", comment: "Map overlay description")
 )
-let RMBTMapOptionsOverlayMunicipality = RMBTMapOptionsOverlay(
+public let RMBTMapOptionsOverlayMunicipality = RMBTMapOptionsOverlay(
     identifier: "municipality",
     localizedDescription: NSLocalizedString("map.options.overlay.municipality", value: "Municipality", comment: "Map overlay description")
 )
-let RMBTMapOptionsOverlaySettlements = RMBTMapOptionsOverlay(
+public let RMBTMapOptionsOverlaySettlements = RMBTMapOptionsOverlay(
     identifier: "settlements",
     localizedDescription: NSLocalizedString("map.options.overlay.settlements", value: "Settlements", comment: "Map overlay description")
 )
-let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
+public let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
     identifier: "whitespots",
     localizedDescription: NSLocalizedString("map.options.overlay.whitespots", value: "White spots", comment: "Map overlay description")
-) */
+)
 
 ///
 public let RMBTMapOptionsToastInfoTitle = "title"
@@ -120,6 +120,12 @@ open class RMBTMapOptions {
             RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
             //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
         ]
+        
+        if isOld == true {
+            overlays.append(contentsOf: [
+                RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
+                ])
+        }
 
         if let responseCountries = (response["mapCountries"] as? [[String: Any]]) {
             self.counties = responseCountries.map({ (response) -> RMBTMapOptionCountry in

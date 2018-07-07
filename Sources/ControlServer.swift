@@ -91,7 +91,7 @@ class ControlServer {
     var uuid: String?
     
     ///
-    var historyFilter:HistoryFilterType?
+    var historyFilter: HistoryFilterType?
     
     var surveySettings: SettingsReponse_Old.Settings.SurveySettings?
     var advertisingSettings: AdvertisingResponse?
