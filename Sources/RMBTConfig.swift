@@ -67,12 +67,17 @@ public class RMBTConfig {
     }
     
     //
-    public func configNewMapServer(server:String) {
+    public func configNewMapServer(server: String) {
         RMBT_MAP_SERVER_PATH_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
         RMBT_MAP_SERVER_PATH_URL = RMBT_MAP_SERVER_PATH_URL.hasSuffix(RMBT_MAP_SERVER_PATH) ?
             RMBT_MAP_SERVER_PATH_URL
             :
             RMBT_MAP_SERVER_PATH_URL + RMBT_MAP_SERVER_PATH
+    }
+    
+    //
+    public func configNewSuffixMapServer(server: String) {
+        RMBT_MAP_SERVER_PATH = server
     }
     
     public static func updateSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
@@ -127,7 +132,7 @@ let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer"
 let RMBT_CONTROL_SERVER_SUFFIX = "/api/v1"
 
 ///
-let RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
+var RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
 
 
 

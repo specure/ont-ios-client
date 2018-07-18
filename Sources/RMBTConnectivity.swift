@@ -133,7 +133,7 @@ open class RMBTConnectivity: NSObject {
             
             // action while changing provider
             netinfo.subscriberCellularProviderDidUpdateNotifier = { carrier in
-                
+                print(carrier)
                 // TODO
                     
             }

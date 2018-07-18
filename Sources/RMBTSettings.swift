@@ -81,6 +81,8 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var debugLoopModeMinDelay: UInt = 0
+    
+    @objc open dynamic var debugLoopModeSkipQOS: Bool = false
 
     // control server
 
@@ -183,7 +185,13 @@ open class RMBTSettings: NSObject {
             "previousNetworkName",
             "isAdsRemoved",
             
-            "lastSurveyTimestamp"
+            "lastSurveyTimestamp",
+            
+            //Loop mode
+            "debugLoopMode",
+            "debugLoopModeMaxTests",
+            "debugLoopModeMinDelay",
+            "debugLoopModeSkipQOS"
         ])
     }
 
