@@ -315,10 +315,14 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 sAddr = ip
             }
 
-            Log.logger.debug("Connecting to host \(sAddr):\(self.params.measurementServer!.port!)")
-
-            try socket.connect(toHost: sAddr, onPort: UInt16(params.measurementServer!.port!) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
-
+            if let port = self.params.measurementServer?.port {
+                Log.logger.debug("Connecting to host \(sAddr):\(port)")
+                try socket.connect(toHost: sAddr, onPort: UInt16(port) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
+            }
+            else {
+                Log.logger.error("Connecting to host: Unknowed port and maybe host")
+                fail()
+            }
         } catch {
             fail()
         }
