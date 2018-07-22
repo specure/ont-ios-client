@@ -140,9 +140,6 @@ class ControlServer {
         
         // get settings of control server
         getSettings(success: {
-            self.getAdvertising(success: { },
-                           error: { (_) in    
-            })
             // 
             if self.settings.debugUnlocked {
                 
@@ -211,6 +208,7 @@ class ControlServer {
             let successFunc: (_ response: AdvertisingResponse) -> () = { response in
                 Log.logger.debug("advertising: \(String(describing: response.isShowAdvertising))")
                 self.advertisingSettings = response
+                successCallback()
             }
             request(.post, path: "/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
                 Log.logger.debug("advertising error")

@@ -89,6 +89,10 @@ public class RMBTConfig {
             failure(error)
         })
     }
+    
+    public static func updateAdvertisingSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.getAdvertising(success: successCallback, error: failure)
+    }
 }
 
 
