@@ -10,7 +10,7 @@ import ObjectMapper
 
 class AdvertisingRequest: BasicRequest {
     
-    var country: String? = ((NSLocale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String)?.lowercased()
+    var country: String? = ((NSLocale.current as NSLocale).object(forKey: NSLocale.Key.countryCode) as? String)?.lowercased() ?? "unknown"
     
     ///
     public override func mapping(map: Map) {

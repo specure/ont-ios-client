@@ -109,7 +109,6 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 
 ///
 open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTrackerDelegate {
-
     ///
     private let workerQueue: DispatchQueue = DispatchQueue(label: "at.rtr.rmbt.testrunner") // We perform all work on this background queue. Workers also callback onto this queue.
 
@@ -827,6 +826,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
     }
 
+    open func connectivityNetworkTypeDidChange(connectivity: RMBTConnectivity) {
+        workerQueue.async {
+            if self.phase != .none {
+                self.cancelWithReason(.mixedConnectivity)
+            }
+        }
+    }
     ///
     open func connectivityTracker(_ tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity) {
         workerQueue.async {

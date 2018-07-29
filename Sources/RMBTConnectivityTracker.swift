@@ -27,6 +27,9 @@ import GCNetworkReachability
 ///
 @objc public protocol RMBTConnectivityTrackerDelegate {
 
+    //    var currentConnectivityNetworkType: RMBTNetworkType? { @objc(currentConnectivityNetworkType)get @objc(setCurrentConnectivityNetworkType:)set }
+    func connectivityNetworkTypeDidChange(connectivity: RMBTConnectivity)
+    
     ///
     func connectivityTracker(_ tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity)
 
@@ -63,7 +66,11 @@ open class RMBTConnectivityTracker: NSObject {
     private weak var delegate: RMBTConnectivityTrackerDelegate?
 
     ///
-    private var lastConnectivity: RMBTConnectivity!
+    private var lastConnectivity: RMBTConnectivity! {
+        didSet {
+            print("lastConnectivity changed")
+        }
+    }
 
     ///
     private var stopOnMixed = false
@@ -228,7 +235,12 @@ open class RMBTConnectivityTracker: NSObject {
         }
 
         Log.logger.debug("New connectivity = \(connectivity)")
-
+        
+        if let lastConnection = self.lastConnectivity,
+            lastConnection.networkType != .none {
+            self.delegate?.connectivityNetworkTypeDidChange(connectivity: lastConnectivity)
+        }
+        
         if stopOnMixed {
             // Detect compatilibity
             var compatible = true
