@@ -83,6 +83,8 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var debugLoopModeMinDelay: UInt = 0
     
     @objc open dynamic var debugLoopModeSkipQOS: Bool = false
+    
+    @objc open dynamic var debugLoopModeDistance: UInt = 0
 
     // control server
 
@@ -191,7 +193,8 @@ open class RMBTSettings: NSObject {
             "debugLoopMode",
             "debugLoopModeMaxTests",
             "debugLoopModeMinDelay",
-            "debugLoopModeSkipQOS"
+            "debugLoopModeSkipQOS",
+            "debugLoopModeDistance"
         ])
     }
 
