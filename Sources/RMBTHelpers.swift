@@ -165,6 +165,11 @@ public func RMBTNanos(_ millisecondsString: String) -> UInt64 {
     return UInt64(truncating: ms)
 }
 
+public func RMBTMbps(_ mbps: String) -> Double {
+    let s = mbps.replacingOccurrences(of: ",", with: ".")
+    return Double(s) ?? 0.0
+}
+
 ///
 public func RMBTSecondsStringWithNanos(_ nanos: UInt64) -> String {
     return NSString(format: "%f s", Double(nanos) * 1.0e-9) as String
