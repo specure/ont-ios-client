@@ -127,7 +127,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     
     // RMBTMainTestExtendedDelegate
     func runVOIPTest() {
-        startQosMeasurement(inMain:true)
+        startQosMeasurement(inMain: true)
     }
     
     func shouldRunQOSTest() -> Bool {
@@ -209,7 +209,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     }
 
     ///
-    open func startQosMeasurement(inMain:Bool) {
+    open func startQosMeasurement(inMain: Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
@@ -421,7 +421,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 // delegate to runner to submit VOIP results               
                 self.testRunner?.jpl = SpeedMeasurementJPLResult(JSON: result)
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
-                
+                self.testRunner?.continueFromDownload()
             } else {
                 self.delegate?.measurementDidFail(self, withReason: .unknownError)
             }

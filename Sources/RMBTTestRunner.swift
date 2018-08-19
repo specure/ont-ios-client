@@ -135,7 +135,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         
         didSet {
             resultObject().jpl = jpl
-            submitResult()
+//            submitResult()
         }
     
     }
@@ -201,6 +201,12 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         connectivityTracker.start()
     }
 
+    open func continueFromDownload() {
+        if markWorkerAsFinished() {
+            startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+        }
+    }
+    
     /// Run on main queue (called from VC)
     open func start() {
         assert(phase == .none, "Invalid state")
@@ -419,8 +425,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         assert(phase == .latency, "Invalid state")
         assert(!dead, "Invalid state")
 
-        if markWorkerAsFinished() {
-            startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+        if isNewVersion {
+            del?.runVOIPTest()
+        }
+        else {
+            if markWorkerAsFinished() {
+                startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+            }
         }
     }
 
@@ -555,18 +566,18 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             }
             
             /// ONT added
-            if isNewVersion {
-//                if del?.shouldRunQOSTest() == true {
-                    /////////
-                    del?.runVOIPTest()
-//                }
-//                else {
-//                    submitResult()
-//                }
-                
-            } else {
+//            if isNewVersion {
+////                if del?.shouldRunQOSTest() == true {
+//                    /////////
+//                    del?.runVOIPTest()
+////                }
+////                else {
+////                    submitResult()
+////                }
+//
+//            } else {
                 submitResult()
-            }
+//            }
 
         }
     }
