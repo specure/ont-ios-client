@@ -38,6 +38,8 @@ public class RMBTConfig {
 
     // MARK: Default control server URLs   // CouchDB as Default disabled 
     var RMBT_CONTROL_SERVER_URL        = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    
+    var RMBT_CONTROL_MEASUREMENT_SERVER_URL        = "\(RMBT_URL_HOST)\(RMBT_CONTROL_MEASUREMENT_SERVER_PATH)"
     //
     var RMBT_CONTROL_SERVER_IPV4_URL   = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
@@ -54,21 +56,25 @@ public class RMBTConfig {
     public var RMBT_VERSION_NEW = false
     
     //
-    public func configNewCS(server:String) {
-        RMBT_CONTROL_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewCS(server: String) {
+        RMBT_CONTROL_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     //
-    public func configNewCS_IPv4(server:String) {
-        RMBT_CONTROL_SERVER_IPV4_URL  = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewMeasurementCS(server: String) {
+        RMBT_CONTROL_MEASUREMENT_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     //
-    public func configNewCS_IPv6(server:String) {
-        RMBT_CONTROL_SERVER_IPV6_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewCS_IPv4(server: String) {
+        RMBT_CONTROL_SERVER_IPV4_URL  = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
+    }
+    //
+    public func configNewCS_IPv6(server: String) {
+        RMBT_CONTROL_SERVER_IPV6_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     
     //
     public func configNewMapServer(server: String) {
-        RMBT_MAP_SERVER_PATH_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+        RMBT_MAP_SERVER_PATH_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
         RMBT_MAP_SERVER_PATH_URL = RMBT_MAP_SERVER_PATH_URL.hasSuffix(RMBT_MAP_SERVER_PATH) ?
             RMBT_MAP_SERVER_PATH_URL
             :
@@ -131,6 +137,8 @@ let RMBT_TEST_SAMPLING_RESOLUTION_MS = 250
 
 ///
 let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer"
+
+let RMBT_CONTROL_MEASUREMENT_SERVER_PATH = "/RMBTControlServer/V2"
 
 ///
 let RMBT_CONTROL_SERVER_SUFFIX = "/api/v1"

@@ -192,7 +192,8 @@ class ControlServer {
         
         let req = MeasurementServerInfoRequest()
         
-        self.request(.post, path: "/measurementServer", requestObject: req, success: success, error: failure)
+        let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
+        self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }
 
 // MARK: Advertising
@@ -700,6 +701,11 @@ class ControlServer {
 
     ///
     private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
+    }
+    
+    ///
+    private func request<T: BasicResponse>(_ baseUrl: String?, _ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
     

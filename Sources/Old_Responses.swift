@@ -38,7 +38,15 @@ open class MeasurementServerInfoResponse: BasicResponse {
         ///
         open var id: NSNumber?
 
+        open var country: String?
+        open var distance: String?
+        open var city: String?
+        open var sponsor: String?
         
+        open var fullName: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+        }
         ///
         init() {
             
@@ -52,9 +60,13 @@ open class MeasurementServerInfoResponse: BasicResponse {
         ///
         public func mapping(map: Map) {
             address     <- map["address"]
-            port     <- map["port"]
-            name     <- map["name"]
-            id     <- map["id"]
+            port        <- map["port"]
+            name        <- map["name"]
+            id          <- map["id"]
+            country     <- map["country"]
+            distance    <- map["distance"]
+            city        <- map["city"]
+            sponsor     <- map["sponsor"]
         }
     }
 }
