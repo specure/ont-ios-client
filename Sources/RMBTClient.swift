@@ -152,6 +152,12 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     var resultUuid: String?
+    
+    open var loopModeUUID: String? {
+        didSet {
+            self.testRunner?.loopModeUUID = loopModeUUID
+        }
+    }
 
     ///
     open var running: Bool {
@@ -197,6 +203,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
+        testRunner?.loopModeUUID = self.loopModeUUID
         testRunner?.start()
         
         if clientType == .standard {

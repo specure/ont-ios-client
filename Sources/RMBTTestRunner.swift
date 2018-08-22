@@ -152,6 +152,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     open var testParams: SpeedMeasurementResponse!
+    
+    internal var loopModeUUID: String?
 
     ///
     private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
@@ -634,6 +636,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private func resultObject() -> SpeedMeasurementResult {
         speedMeasurementResult.token = testParams?.testToken ?? ""
         speedMeasurementResult.uuid = testParams?.testUuid ?? ""
+        speedMeasurementResult.loopUuid = loopModeUUID
 
         //speedMeasurementResultRequest.portRemote =
 
