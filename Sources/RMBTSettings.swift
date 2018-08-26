@@ -62,6 +62,8 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var nerdModeForceIPv6 = false
+    
+    @objc open dynamic var isDarkMode = false
 
     ///
     @objc open dynamic var nerdModeQosEnabled = NerdModeQosMode.newNetwork.rawValue // Enable QoS
@@ -197,7 +199,8 @@ open class RMBTSettings: NSObject {
             "debugLoopModeMinDelay",
             "debugLoopModeSkipQOS",
             "debugLoopModeDistance",
-            "debugLoopModeIsStartImmedatelly"
+            "debugLoopModeIsStartImmedatelly",
+            "isDarkMode"
         ])
     }
 
