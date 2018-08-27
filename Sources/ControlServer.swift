@@ -192,6 +192,11 @@ class ControlServer {
         
         let req = MeasurementServerInfoRequest()
         
+        if let l = RMBTLocationTracker.sharedTracker.location {
+            let geoLocation = GeoLocation(location: l)
+            req.geoLocation = geoLocation
+        }
+        
         let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
         self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }

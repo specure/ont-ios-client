@@ -14,11 +14,13 @@ import CoreLocation
 open class MeasurementServerInfoRequest: BasicRequest {
     
     var client: String = "RMBT"
+    var geoLocation: GeoLocation?
     
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
         client <- map["client"]
+        geoLocation <- map["location"]
     }
 }
 

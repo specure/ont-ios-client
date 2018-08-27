@@ -227,7 +227,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if let l = RMBTLocationTracker.sharedTracker.location {
             let geoLocation = GeoLocation(location: l)
-
             speedMeasurementRequest.geoLocation = geoLocation
         }
 
