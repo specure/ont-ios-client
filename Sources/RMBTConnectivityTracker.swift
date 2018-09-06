@@ -193,7 +193,9 @@ open class RMBTConnectivityTracker: NSObject {
                 return
             }
 
-            self.lastRadioAccessTechnology = n.object as! String
+            if let radioAccessTechnology = n.object as? String {
+                self.lastRadioAccessTechnology = radioAccessTechnology
+            }
 
             #if os(iOS)
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())

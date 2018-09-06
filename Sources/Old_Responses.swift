@@ -43,9 +43,14 @@ open class MeasurementServerInfoResponse: BasicResponse {
         open var city: String?
         open var sponsor: String?
         
-        open var fullName: String? {
+        open var fullNameWithDistance: String? {
             let country = self.country?.uppercased()
             return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+        }
+        
+        open var fullName: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "")"
         }
         ///
         init() {
