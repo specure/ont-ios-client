@@ -15,9 +15,10 @@
  *****************************************************************************************************/
 
 import Foundation
+import CommonCrypto
 #if swift(>=3.2)
     import Darwin
-    import CommonCrypto
+//    import CommonCrypto
 #else
     import RMBTClientPrivate
 #endif

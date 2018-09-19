@@ -26,10 +26,10 @@ import SystemConfiguration.CaptiveNetwork
 open class RMBTConnectivity: NSObject {
 
     ///
-    open let networkType: RMBTNetworkType
+    public let networkType: RMBTNetworkType
 
     ///
-    open let timestamp: Date
+    public let timestamp: Date
 
     ///
     open var networkTypeDescription: String {

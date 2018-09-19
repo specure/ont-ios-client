@@ -1,22 +1,22 @@
 PODS:
-  - Alamofire (4.7.1)
-  - AlamofireObjectMapper (5.0.0):
+  - Alamofire (4.7.3)
+  - AlamofireObjectMapper (5.1.0):
     - Alamofire (~> 4.1)
-    - ObjectMapper (~> 3.0)
+    - ObjectMapper (~> 3.3)
   - CocoaAsyncSocket (7.6.3)
   - GCNetworkReachability (1.3.2)
   - ObjcExceptionBridging (1.0.1):
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
-  - ObjectMapper (3.1.0)
-  - Realm (3.3.2):
-    - Realm/Headers (= 3.3.2)
-  - Realm/Headers (3.3.2)
-  - RealmSwift (3.3.2):
-    - Realm (= 3.3.2)
-  - XCGLogger (6.0.2):
-    - XCGLogger/Core (= 6.0.2)
-  - XCGLogger/Core (6.0.2):
+  - ObjectMapper (3.3.0)
+  - Realm (3.9.0):
+    - Realm/Headers (= 3.9.0)
+  - Realm/Headers (3.9.0)
+  - RealmSwift (3.9.0):
+    - Realm (= 3.9.0)
+  - XCGLogger (6.1.0):
+    - XCGLogger/Core (= 6.1.0)
+  - XCGLogger/Core (6.1.0):
     - ObjcExceptionBridging
 
 DEPENDENCIES:
@@ -27,26 +27,37 @@ DEPENDENCIES:
   - RealmSwift
   - XCGLogger
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - AlamofireObjectMapper
+    - GCNetworkReachability
+    - ObjcExceptionBridging
+    - ObjectMapper
+    - Realm
+    - RealmSwift
+    - XCGLogger
+
 EXTERNAL SOURCES:
   CocoaAsyncSocket:
     :git: https://github.com/robbiehanson/CocoaAsyncSocket.git
 
 CHECKOUT OPTIONS:
   CocoaAsyncSocket:
-    :commit: ec6c373de9eb7606a229ab927d1cce432073cc26
+    :commit: f33ea53c298fcad69d55f387ead174e30c2446cf
     :git: https://github.com/robbiehanson/CocoaAsyncSocket.git
 
 SPEC CHECKSUMS:
-  Alamofire: 68d7d521118d49c615a8d2214d87cdf525599d30
-  AlamofireObjectMapper: 5fafc816351cbbc0d486611aaeba7461c0cbad49
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AlamofireObjectMapper: 3395e698901d8b0e6f48b7d0c43bd47875325102
   CocoaAsyncSocket: eafaa68a7e0ec99ead0a7b35015e0bf25d2c8987
   GCNetworkReachability: 2a7dd53d362220326b3e38df68c91b3ef84418d1
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
-  ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
-  Realm: d927fbf66df5532cfafc08afb5f7e53ded37b894
-  RealmSwift: 4e903a494e05d866581d69ad6f7e7b879d446baf
-  XCGLogger: c9601cae9a8912de34a58666ba931ed3d624dd31
+  ObjectMapper: b612bf8c8e99c4dc0bb6013a51f7c27966ed5da9
+  Realm: 3d36f208bf3aff8335dc3298742140182bde4edb
+  RealmSwift: aa4d11917bfcfaa3ed51f219102a487ecd895447
+  XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
 
 PODFILE CHECKSUM: 0f2b7514ffd9045deff7f3b66eff594e15944a1c
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

@@ -27,7 +27,7 @@ open class RMBTSettings: NSObject {
     }
     
     ///
-    open static let sharedSettings = RMBTSettings()
+    public static let sharedSettings = RMBTSettings()
 
 // MARK: Temporary app state (global variables)
 

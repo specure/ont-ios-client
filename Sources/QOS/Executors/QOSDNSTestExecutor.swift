@@ -145,7 +145,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
                         case kDNSServiceType_AAAA:
                             resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                         default:
-                            qosLog.debug("unknown result record type \(response.qType), skipping")
+                            qosLog.debug("unknown result record type \(response.qType ?? 0), skipping")
                     }
 
                     resultRecord[RESULT_DNS_TTL] = "\(response.ttl!)" as AnyObject

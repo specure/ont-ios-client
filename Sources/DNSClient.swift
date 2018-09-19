@@ -493,7 +493,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
                     //ipStr = "UNKNOWN"
                 }
-                Log.logger.debug("GOT DNS REPLY WITH IP: \(ipStr)")
+                Log.logger.debug("GOT DNS REPLY WITH IP: \(String(describing: ipStr))")
 
                 //self.stop() // TODO: when to close socket?
 

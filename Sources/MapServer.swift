@@ -24,7 +24,7 @@ import ObjectMapper
 open class MapServer {
 
     ///
-    open static let sharedMapServer = MapServer()
+    public static let sharedMapServer = MapServer()
 
     ///
     private let alamofireManager: Alamofire.SessionManager

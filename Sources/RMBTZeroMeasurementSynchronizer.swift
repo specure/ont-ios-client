@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 open class RMBTZeroMeasurementSynchronizer: NSObject {
-    open static let shared = RMBTZeroMeasurementSynchronizer()
+    public static let shared = RMBTZeroMeasurementSynchronizer()
     
     var timer: Timer?
     
