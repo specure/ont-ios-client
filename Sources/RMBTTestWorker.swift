@@ -257,11 +257,13 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     @objc open func startDownlinkTest() {
-        assert(state == .latencyTestFinished || state == .downlinkPretestFinished, "Invalid state")
+        if state != .aborted {
+            assert(state == .latencyTestFinished || state == .downlinkPretestFinished, "Invalid state")
 
-        state = .downlinkTestStarted
+            state = .downlinkTestStarted
 
-        writeLine("GETTIME \(Int(params.duration))", withTag: .txGetTime)
+            writeLine("GETTIME \(Int(params.duration))", withTag: .txGetTime)
+        }
     }
 
     ///

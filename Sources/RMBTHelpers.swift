@@ -50,8 +50,9 @@ public func RMBTBuildInfoString() -> String {
 ///
 public func RMBTBuildDateString() -> String {
     let info = Bundle.main.infoDictionary!
-
-    return info["BuildDate"] as! String
+    let buildDate = info["BuildDate"] as? String ?? "none"
+    
+    return buildDate
 }
 
 ///
