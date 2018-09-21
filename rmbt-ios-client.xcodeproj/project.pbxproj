@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -485,6 +485,8 @@
 		E9C41E122053CFE700162C87 /* HistoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E0C2053CFE700162C87 /* HistoryFilter.swift */; };
 		E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */; };
 		E9C7AF871FB5FF33005DCEA7 /* RMBTNominatim.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */; };
+		E9F5BC9F21557D6700832594 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */; };
+		E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -720,6 +722,8 @@
 		E9C41E1C2053D8C300162C87 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = "../rmbt-ios/Vendor/realm-swift-3.1.1/tvos/swift-4.0.2/RealmSwift.framework"; sourceTree = "<group>"; };
 		E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatimAddress.swift; sourceTree = "<group>"; };
 		E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatim.swift; sourceTree = "<group>"; };
+		E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingResponse.swift; sourceTree = "<group>"; };
+		E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1274,6 +1278,7 @@
 				E0FC4C751D6C852600D5D236 /* QosMeasurementResultRequest.swift */,
 				A1D44B001F137D9500DE9E2D /* Old_Request.swift */,
 				E9C41E022053C8D400162C87 /* OperatorsRequest.swift */,
+				E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */,
 			);
 			name = Request;
 			sourceTree = "<group>";
@@ -1298,6 +1303,7 @@
 				E0FC4CAD1D6C86B200D5D236 /* HistoryItem.swift */,
 				E9C41E002053C8C500162C87 /* CheckSurveyResponse.swift */,
 				A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */,
+				E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */,
 			);
 			name = Response;
 			sourceTree = "<group>";
@@ -1406,7 +1412,6 @@
 				E0B1C7DA1CF4ADBA00F19282 /* Frameworks */,
 				E0B1C7DB1CF4ADBA00F19282 /* Headers */,
 				E0B1C7DC1CF4ADBA00F19282 /* Resources */,
-				4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1426,7 +1431,6 @@
 				E0B1C7E81CF4ADF100F19282 /* Frameworks */,
 				E0B1C7E91CF4ADF100F19282 /* Headers */,
 				E0B1C7EA1CF4ADF100F19282 /* Resources */,
-				D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1446,7 +1450,6 @@
 				E0B1C7F51CF4AE1100F19282 /* Frameworks */,
 				E0B1C7F61CF4AE1100F19282 /* Headers */,
 				E0B1C7F71CF4AE1100F19282 /* Resources */,
-				00AB88CA68A36CB6F0BF84E0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1466,7 +1469,6 @@
 				E9C41DF22053C88500162C87 /* Frameworks */,
 				E9C41DF32053C88500162C87 /* Resources */,
 				A4C9180425A37F28DA1C2381 /* [CP] Embed Pods Frameworks */,
-				CA3CCBF66ACCD4A40AFE9A47 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1511,7 +1513,7 @@
 				};
 			};
 			buildConfigurationList = E0B1C7D61CF4AC8800F19282 /* Build configuration list for PBXProject "rmbt-ios-client" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1565,21 +1567,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00AB88CA68A36CB6F0BF84E0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		02494C7E3C12A48EB065EF66 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1632,21 +1619,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		88E395D9193F3DA4428CE8A9 /* [CP] Check Pods Manifest.lock */ = {
@@ -1714,36 +1686,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CA3CCBF66ACCD4A40AFE9A47 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1766,12 +1708,14 @@
 				E02D18EE1CF59262002A02FE /* RMBTThroughputHistory.swift in Sources */,
 				E02D199F1CF5AAB5002A02FE /* ConnectivityService.swift in Sources */,
 				E02D18991CF59262002A02FE /* QOSNonTransparentProxyTest.swift in Sources */,
+				E9F5BC9F21557D6700832594 /* AdvertisingResponse.swift in Sources */,
 				E08EA6A21D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */,
 				E0FC4C7A1D6C854A00D5D236 /* BasicResponse.swift in Sources */,
 				E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */,
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
 				E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */,
 				E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */,
+				E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */,
 				E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D189C1CF59262002A02FE /* QOSTCPTest.swift in Sources */,
 				E02D19A51CF5AACF002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
@@ -2292,7 +2236,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -2329,18 +2274,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/AlamofireObjectMapper\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-iOS\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjcExceptionBridging\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/Realm\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/RealmSwift\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/XCGLogger\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2358,7 +2292,11 @@
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2407,6 +2345,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2418,7 +2357,11 @@
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2482,7 +2425,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2541,7 +2488,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
@@ -2619,7 +2570,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -2679,7 +2634,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2724,7 +2683,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = RMBTClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS.test.RMBTClientTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2762,7 +2725,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = RMBTClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS.test.RMBTClientTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
