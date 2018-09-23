@@ -138,7 +138,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var testRunner: RMBTTestRunner?
     
     /// init
-    private var clientType:RMBTClientType = .standard
+    private var clientType: RMBTClientType = .standard
 
     ///
     internal var qualityOfServiceTestRunner: QualityOfServiceTest?

@@ -227,11 +227,13 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     @objc open func startDownlinkPretest() {
-        assert(state == .initialized, "Invalid state")
+        if state != .aborted && state != .failed {
+            assert(state == .initialized, "Invalid state")
 
-        state = .downlinkPretestStarted
+            state = .downlinkPretestStarted
 
-        connect()
+            connect()
+        }
     }
 
     ///
