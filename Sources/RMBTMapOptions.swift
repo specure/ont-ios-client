@@ -109,19 +109,14 @@ open class RMBTMapOptions {
             return nil
         }
     }
-    //
-    
-    var isOld = true
-
     ///
-    public init(response: NSDictionary, isOld: Bool = true) {
-        self.isOld = isOld
+    public init(response: NSDictionary, isSkipOperators: Bool = false, isSkipOverlays: Bool = false) {
         overlays = [
             RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
             //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
         ]
         
-        if isOld == true {
+        if isSkipOverlays == false {
             overlays.append(contentsOf: [
                 RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
                 ])
@@ -144,7 +139,7 @@ open class RMBTMapOptions {
 
             // Process filters for this type
             for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
-                if isOld == false {
+                if isSkipOperators == true {
                 if let f = filterResponse["options"] as? [[String: Any]],
                     let _ = f.last?["operator"] {
                     continue
