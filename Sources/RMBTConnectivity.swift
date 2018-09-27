@@ -172,21 +172,16 @@ open class RMBTConnectivity: NSObject {
         #if os(OSX)
         // TODO
         #else
-            if let interfaces = CNCopySupportedInterfaces() {
-                for i in 0..<CFArrayGetCount(interfaces) {
-                    let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interfaces, i)
-                    let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
-                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString) {
-                        let interfaceData = unsafeInterfaceData as! [AnyHashable: Any]
-
-                        if let currentSSID = interfaceData[kCNNetworkInfoKeySSID as AnyHashable] as? String,
-                            let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID as AnyHashable] as? String {
-                                return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
-                        }
-                    }
+        if let interfaces = CNCopySupportedInterfaces() as? [CFString] {
+            for interface in interfaces {
+                if let interfaceData = CNCopyCurrentNetworkInfo(interface) as? [CFString: Any],
+                let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
+                let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
+                    return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
                 }
             }
-            #endif
+        }
+        #endif
         //}
 
         return nil

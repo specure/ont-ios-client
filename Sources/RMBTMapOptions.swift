@@ -167,6 +167,7 @@ open class RMBTMapOptions {
         self.activeSubtype = previousMapOptions.activeSubtype
         self.activeOperator = previousMapOptions.activeOperator
         self.operatorsForCountry = previousMapOptions.operatorsForCountry
+        self.mapViewType = previousMapOptions.mapViewType
         
         // ..then try to actually select options from app state, if we have one
         restoreSelection()
