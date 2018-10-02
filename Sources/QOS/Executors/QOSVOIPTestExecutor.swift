@@ -205,8 +205,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         payloadSize         = Int(dSampleRate / (1000 / dDelay) * (dBitsPerSample / 8))
         payloadTimestamp    = UInt32(dSampleRate / (1000 / dDelay))
 
-        qosLog.debug("payloadSize: \(payloadSize)")
-        qosLog.debug("payloadTimestamp: \(payloadTimestamp)")
+        qosLog.debug("payloadSize: \(payloadSize ?? 0)")
+        qosLog.debug("payloadTimestamp: \(payloadTimestamp ?? 0)")
 
         //
         
@@ -466,7 +466,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                     TAG_TASK_VOIPTEST_cdl.countDown()
 
                     ssrc = UInt32(response.components(separatedBy: " ")[1]) // !
-                    qosLog.info("got ssrc: \(ssrc)")
+                    qosLog.info("got ssrc: \(ssrc ?? 0)")
 
                     let queue = DispatchQueue(label: "Voip startOutgoingTest queue")
                     queue.async {

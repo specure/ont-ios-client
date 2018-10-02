@@ -50,8 +50,9 @@ public func RMBTBuildInfoString() -> String {
 ///
 public func RMBTBuildDateString() -> String {
     let info = Bundle.main.infoDictionary!
-
-    return info["BuildDate"] as! String
+    let buildDate = info["BuildDate"] as? String ?? "none"
+    
+    return buildDate
 }
 
 ///
@@ -88,20 +89,13 @@ public func RMBTPreferredLanguage() -> String? {
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
-public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
-    let r = urlString.range(of: LANGUAGE_PREFIX)
-
-    if r.location == NSNotFound {
-        return urlString as String // return same string if no $lang was found
+public func RMBTLocalizeURLString(_ urlString: String) -> String {
+    if urlString.range(of: LANGUAGE_PREFIX) != nil {
+        let lang = PREFFERED_LANGUAGE
+        let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
+        return replacedURL
     }
-
-    let lang = PREFFERED_LANGUAGE
-
-    let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
-
-    // Log.logger.debug("replaced $lang in string, output: \(replacedURL)")
-
-    return replacedURL
+    return urlString
 }
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)

@@ -24,7 +24,7 @@ import ObjectMapper
 open class MapServer {
 
     ///
-    open static let sharedMapServer = MapServer()
+    public static let sharedMapServer = MapServer()
 
     ///
     private let alamofireManager: Alamofire.SessionManager
@@ -57,11 +57,11 @@ open class MapServer {
     }
     
     ///
-    open func getMapOptions(isOld: Bool = true, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+    open func getMapOptions(isSkipOperators: Bool = false, isSkipOverlays: Bool = false, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
 
             // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isOld: isOld)
+            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isSkipOperators: isSkipOperators, isSkipOverlays: isSkipOverlays)
             successCallback(mapOptions)
 
         } , error: failure)
@@ -96,6 +96,43 @@ open class MapServer {
         }, error: failure)
     }
 
+    open func getTileUrlForMapBoxOverlayType(_ overlayType: String, params: [String: Any]?) -> String? {
+        if let base = baseUrl {
+            // baseUrl and layer
+            var urlString = base + "/tiles/\(overlayType)/{z}/{x}/{y}.png?v=1"
+            
+            // add uuid for highlight
+            if let uuid = ControlServer.sharedControlServer.uuid {
+                urlString += "&highlight=\(uuid)"
+            }
+            
+            // add params
+            if let p = params, p.count > 0 {
+                let paramString = p.map({ (key, value) in
+                    let escapedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                    
+                    var escapedValue: String?
+                    if let v = value as? String {
+                        escapedValue = v.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) // TODO: does this need a cast to string?
+                    } else if let numValue = value as? NSNumber {
+                        escapedValue = String(describing: numValue)
+                    }
+                    
+                    return "\(escapedKey ?? key)=\(escapedValue ?? value as! String)"
+                }).joined(separator: "&")
+                
+                urlString += "&" + paramString
+            }
+            
+            Log.logger.debug("Generated tile url: \(urlString)")
+            
+            print(urlString)
+            
+            return urlString
+        }
+        
+        return nil
+    }
     ///
     open func getTileUrlForMapOverlayType(_ overlayType: String, x: UInt, y: UInt, zoom: UInt, params: [String: Any]?) -> URL? {
         if let base = baseUrl {

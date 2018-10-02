@@ -193,9 +193,7 @@ open class RMBTConnectivityTracker: NSObject {
                 return
             }
 
-            if let radioAccessTechnology = n.object as? String {
-                self.lastRadioAccessTechnology = radioAccessTechnology
-            }
+            self.lastRadioAccessTechnology = (n.object as? String) ?? ""
 
             #if os(iOS)
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
@@ -252,7 +250,7 @@ open class RMBTConnectivityTracker: NSObject {
                     Log.logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
                     compatible = false
                 } else if connectivity.networkName != lastConnectivity.networkName {
-                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName) -> \(connectivity.networkName)")
+                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName ?? "") -> \(connectivity.networkName ?? "")")
                     compatible = false
                 }
             }

@@ -127,7 +127,7 @@ open class RMBTHistoryResult {
     open var locationString: String!
     
     /// "WLAN", "2G/3G" etc.
-    open let networkTypeServerDescription: String!
+    public let networkTypeServerDescription: String!
     
     /// Available in basic details
     open var networkType: RMBTNetworkType!

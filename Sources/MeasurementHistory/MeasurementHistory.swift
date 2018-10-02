@@ -24,7 +24,7 @@ import ObjectMapper
 open class MeasurementHistory {
 
     ///
-    open static let sharedMeasurementHistory = MeasurementHistory()
+    public static let sharedMeasurementHistory = MeasurementHistory()
 
     ///
     private let serialQueue = DispatchQueue(label: "DefaultHistoryQueue", attributes: [])
