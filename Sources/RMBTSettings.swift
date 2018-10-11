@@ -127,6 +127,9 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var isAdsRemoved: Bool = false
     
     @objc open dynamic var lastSurveyTimestamp: Double = 0.0
+    
+    @objc open dynamic var isClientPersistent: Bool = true
+    @objc open dynamic var isAnalyticsEnabled: Bool = true
 
     ///
     private override init() {
@@ -200,7 +203,9 @@ open class RMBTSettings: NSObject {
             "debugLoopModeSkipQOS",
             "debugLoopModeDistance",
             "debugLoopModeIsStartImmedatelly",
-            "isDarkMode"
+            "isDarkMode",
+            "isClientPersistent",
+            "isAnalyticsEnabled"
         ])
     }
 

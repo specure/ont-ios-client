@@ -136,6 +136,10 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
         stop()
         _ = startIfAuthorized()
     }
+    
+    open func isLocationManagerEnabled() -> Bool {
+        return CLLocationManager.authorizationStatus() == .authorizedAlways || CLLocationManager.authorizationStatus() == .authorizedWhenInUse
+    }
 }
 
 extension CLLocation {
