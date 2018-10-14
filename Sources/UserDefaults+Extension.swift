@@ -115,7 +115,7 @@ extension UserDefaults {
     }
 
     ///
-    open class func checkFirstLaunch() {
+    open class func checkFirstLaunch() -> Bool {
         
         if !UserDefaults.standard.bool(forKey: "was_launched_once") {
             Log.logger.info("FIRST LAUNCH OF APP")
@@ -124,7 +124,10 @@ extension UserDefaults {
             
             firstLaunch(UserDefaults.standard)
             UserDefaults.standard.synchronize()
+            
+            return true
         }
+        return true
     }
     
     ///
