@@ -129,14 +129,23 @@ class ControlServer {
         alamofireManager.session.invalidateAndCancel()
     }
     
+    func clearStoredUUID() {
+        baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
+        uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
+        
+        UserDefaults.clearStoredUUID(uuidKey: uuidKey)
+        self.uuid = nil
+    }
+    
     ///
     func updateWithCurrentSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
         
-        uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
-        
+        if self.uuid == nil {
+            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
+        }
         
         // get settings of control server
         getSettings(success: {
@@ -245,10 +254,10 @@ class ControlServer {
             self.uuid = response.client?.uuid
             
             // save uuid
+            
             if let uuidKey = self.uuidKey, let u = self.uuid {
                 UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
             }
-            
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion
             
@@ -647,8 +656,8 @@ class ControlServer {
     ///
     func syncWithCode(code:String, success: @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-        let req = SyncCodeRequest()
-        req.code = code
+            let req = SyncCodeRequest()
+            req.code = code
             req.uuid = uuid
             self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
         }, error: failure)

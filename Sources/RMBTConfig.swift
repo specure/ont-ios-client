@@ -96,6 +96,10 @@ public class RMBTConfig {
         })
     }
     
+    public static func clearStoredUUID() {
+        ControlServer.sharedControlServer.clearStoredUUID()
+    }
+    
     public static func updateAdvertisingSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.getAdvertising(success: successCallback, error: failure)
     }

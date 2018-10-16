@@ -15,14 +15,14 @@ let TOS_VERSION_KEY = "tos_version"
 extension UserDefaults {
     
     /// Generic function
-    open class func storeDataFor(key:String, obj:Any) {
+    open class func storeDataFor(key: String, obj: Any) {
     
         UserDefaults.standard.set(obj, forKey: key)
         UserDefaults.standard.synchronize()
     }
     
     ///
-    open class func getDataFor(key:String) -> Any? {
+    open class func getDataFor(key: String) -> Any? {
     
         guard let result = UserDefaults.standard.object(forKey: key) else {
             return nil
@@ -32,7 +32,7 @@ extension UserDefaults {
     }
     
     ///
-    open class func storeTOSVersion(lastAcceptedVersion:Int) {
+    open class func storeTOSVersion(lastAcceptedVersion: Int) {
         storeDataFor(key: TOS_VERSION_KEY, obj: lastAcceptedVersion)
     }
     
@@ -41,19 +41,26 @@ extension UserDefaults {
         return UserDefaults.standard.integer(forKey: TOS_VERSION_KEY)
     }
     
+    open class func clearStoredUUID(uuidKey: String?) {
+        if let uuidKey = uuidKey {
+            UserDefaults.standard.removeObject(forKey: uuidKey)
+            UserDefaults.standard.synchronize()
+        }
+    }
     ///
-    open class func storeNewUUID(uuidKey:String, uuid:String) {
-    
-        storeDataFor(key: uuidKey, obj: uuid)
-        Log.logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
+    open class func storeNewUUID(uuidKey: String, uuid: String) {
+        if RMBTSettings.sharedSettings.isClientPersistent {
+            storeDataFor(key: uuidKey, obj: uuid)
+            Log.logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
+        }
     }
     
     ///
-    open class func checkStoredUUID(uuidKey:String?) -> String? {
+    open class func checkStoredUUID(uuidKey: String?) -> String? {
         
         //NKOM reconciliation can be deleted after another distant future release
 
-        var reconHost:String?
+        var reconHost: String?
         reconHost = uuidKey?.replacingOccurrences(of: "uuid_", with: "") //"netcouch.specure.com"
         let reconKey = "uuid_\(String(describing: reconHost))"
         if let reconUUID = UserDefaults.standard.object(forKey: reconKey) {
