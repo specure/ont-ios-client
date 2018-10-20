@@ -47,7 +47,7 @@ open class RMBTSettings: NSObject {
     ///
     @objc open dynamic var publishPublicData = false // only for akos
     
-    @objc open dynamic var submitZeroTesting = false
+    @objc open dynamic var submitZeroTesting = true
 
     /// anonymous mode
     @objc open dynamic var anonymousModeEnabled = false
