@@ -23,7 +23,7 @@ public let LANGUAGE_PREFIX = "$lang"
 //
 public let DEFAULT_LANGUAGE = "en"
 //
-public let PREFFERED_LANGUAGE = Locale.userPreferred.languageCode ?? DEFAULT_LANGUAGE
+public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFAULT_LANGUAGE
 
 public class RMBTConfig {
     

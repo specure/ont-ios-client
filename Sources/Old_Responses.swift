@@ -50,7 +50,7 @@ open class MeasurementServerInfoResponse: BasicResponse {
         
         open var fullName: String? {
             let country = self.country?.uppercased()
-            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "")"
+            return "\(city ?? ""), \(country ?? "")"
         }
         ///
         init() {

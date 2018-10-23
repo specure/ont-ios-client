@@ -110,8 +110,9 @@ open class RMBTMapOptions {
         }
     }
     ///
-    public init(response: NSDictionary, isSkipOperators: Bool = false, isSkipOverlays: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard) {
+    public init(response: NSDictionary, isSkipOperators: Bool = false, isSkipOverlays: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard, defaultOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto) {
         self.mapViewType = defaultMapViewType
+        self.activeOverlay = defaultOverlay
         overlays = [
             RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
             //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
