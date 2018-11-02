@@ -141,7 +141,7 @@ open class RMBTConnectivityTracker: NSObject {
 
             #if os(iOS)
             NotificationCenter.default.addObserver(self, selector: #selector(RMBTConnectivityTracker.appWillEnterForeground(_:)),
-                                                             name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+                                                   name: UIApplication.willEnterForegroundNotification, object: nil)
 
             NotificationCenter.default.addObserver(self, selector: #selector(RMBTConnectivityTracker.reachabilityDidChange(_:)),
                                                              name: NSNotification.Name.gcNetworkReachabilityDidChange, object: nil)

@@ -326,7 +326,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(RMBTTestRunner.applicationDidSwitchToBackground(_:)),
-                name: NSNotification.Name.UIApplicationDidEnterBackground,
+                name: UIApplication.didEnterBackgroundNotification,
                 object: nil
             )
         #endif

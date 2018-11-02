@@ -107,7 +107,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
 
             repeat { // needed for CFRunLoop things...
                 // Log.logger.debug("executing run loop")
-                RunLoop.current.run(mode: RunLoopMode.defaultRunLoopMode, before: Date.distantFuture)
+                RunLoop.current.run(mode: RunLoop.Mode.default, before: Date.distantFuture)
                 // Log.logger.debug("run loop ran")
             } while self.pingUtil != nil
         }
