@@ -59,7 +59,24 @@ public func RMBTBuildDateString() -> String {
 public func RMBTVersionString() -> String {
     let info = Bundle.main.infoDictionary!
 
-    return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    let versionString = "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    
+    var environment = ""
+    switch currentEnvironment {
+    case .Beta:
+        environment = "BETA"
+    case .Debug:
+        environment = "DEBUG"
+    case .Test:
+        environment = "TEST"
+    default:
+        break
+    }
+    #if DEBUG
+    return "\(versionString) [\(environment) \(RMBTBuildInfoString()) (\(RMBTBuildDateString()))]"
+    #else
+    return "\(versionString) \(environment)"
+    #endif
 }
 
 /////
