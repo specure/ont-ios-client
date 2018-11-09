@@ -130,6 +130,8 @@ open class RMBTSettings: NSObject {
     
     @objc open dynamic var isClientPersistent: Bool = true
     @objc open dynamic var isAnalyticsEnabled: Bool = true
+    
+    @objc open dynamic var countMeasurements: Int = 0
 
     ///
     private override init() {
@@ -205,7 +207,8 @@ open class RMBTSettings: NSObject {
             "debugLoopModeIsStartImmedatelly",
             "isDarkMode",
             "isClientPersistent",
-            "isAnalyticsEnabled"
+            "isAnalyticsEnabled",
+            "countMeasurements"
         ])
     }
 
