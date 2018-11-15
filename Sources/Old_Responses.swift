@@ -52,6 +52,16 @@ open class MeasurementServerInfoResponse: BasicResponse {
             let country = self.country?.uppercased()
             return "\(city ?? ""), \(country ?? "")"
         }
+        
+        open var fullNameWithSponsor: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "")"
+        }
+        
+        open var fullNameWithDistanceAndSponsor: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+        }
         ///
         init() {
             
