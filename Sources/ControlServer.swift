@@ -267,23 +267,25 @@ class ControlServer {
                     QosMeasurementType.localizedNameDict[type] = measurementType.name
                 }
             })
-            ///
-            // No synchro = No filters
-            //
-            if let ipv4Server = response.settings?.controlServerIpv4Host {
-                RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
-            }
             
-            //
-            if let ipv6Server = response.settings?.controlServerIpv6Host {
-                RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+            if RMBTConfig.sharedInstance.settingsMode == .remotely {
+                ///
+                // No synchro = No filters
+                //
+                if let ipv4Server = response.settings?.controlServerIpv4Host {
+                    RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
+                }
+                
+                //
+                if let ipv6Server = response.settings?.controlServerIpv6Host {
+                    RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+                }
+                
+                //
+                if let mapServer = response.settings?.mapServer?.host {
+                    RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
+                }
             }
-            
-            //
-            if let mapServer = response.settings?.mapServer?.host {
-                RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
-            }
-            
             self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
             successCallback()
@@ -320,41 +322,45 @@ class ControlServer {
                 // get history filters
                 self.historyFilter = set.history
                 
-                //
-                if let ipv4Server = set.urls?.ipv4IpOnly {
-                    RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
-                }
-                
-                //
-                if let ipv6Server = set.urls?.ipv6IpOnly {
-                    RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
-                }
-                
-                //
-                if let theOpenTestBase = set.urls?.opendataPrefix {
-                    self.openTestBaseURL = theOpenTestBase
-                }
-                
-                //
-                if let checkip4 = set.urls?.ipv4IpCheck {
-                    RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR = checkip4
-                }
-                
-                
-                // check for map server from settings
-                if let mapServer = set.map_server {
-                    let host = mapServer.host
-                    let scheme = mapServer.useTls ? "https" : "http"
+                if RMBTConfig.sharedInstance.settingsMode == .remotely {
                     //
-                    var port = (mapServer.port! as NSNumber).stringValue
-                    if (port == "80" || port == "443") {
-                        port = ""
-                    } else {
-                        port = ":\(port)"
+                    if let ipv4Server = set.urls?.ipv4IpOnly {
+                        RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
                     }
                     
-                    self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
-                    Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
+                    //
+                    if let ipv6Server = set.urls?.ipv6IpOnly {
+                        RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+                    }
+                    
+                    //
+                    if let theOpenTestBase = set.urls?.opendataPrefix {
+                        self.openTestBaseURL = theOpenTestBase
+                    }
+                    
+                    //
+                    if let checkip4 = set.urls?.ipv4IpCheck {
+                        RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL = checkip4
+                    }
+                    
+                    
+                    // check for map server from settings
+                    if let mapServer = set.map_server {
+                        let host = mapServer.host
+                        let scheme = mapServer.useTls ? "https" : "http"
+                        //
+                        var port = (mapServer.port! as NSNumber).stringValue
+                        if (port == "80" || port == "443") {
+                            port = ""
+                        } else {
+                            port = ":\(port)"
+                        }
+                        
+                        self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
+                        Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
+                    }
+                } else {
+                    self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
                 }
             }
             
@@ -388,7 +394,7 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR, success: successCallback, error: failure)
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL, success: successCallback, error: failure)
     }
 
     /// no NAT

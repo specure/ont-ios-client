@@ -27,6 +27,10 @@ public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFA
 
 public class RMBTConfig {
     
+    public enum SettingsMode {
+        case urlsLocally
+        case remotely
+    }
 //    // ID = 1 is a Server placed in Nurmberg
 //    var defaultMeasurementServerId:UInt64 = 1
     
@@ -47,13 +51,15 @@ public class RMBTConfig {
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
     //
-    var RMBT_CHECK_IPV4_ULR            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
+    var RMBT_CHECK_IPV4_URL            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
     
     // Server to be used for a measurement
     public var measurementServer: MeasurementServerInfoResponse.Servers?
     
     //
     public var RMBT_VERSION_NEW = false
+    
+    public var settingsMode: SettingsMode = .remotely
     
     //
     public func configNewCS(server: String) {
@@ -70,6 +76,10 @@ public class RMBTConfig {
     //
     public func configNewCS_IPv6(server: String) {
         RMBT_CONTROL_SERVER_IPV6_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
+    }
+
+    public func configNewCS_checkIPv4(server: String) {
+        RMBT_CHECK_IPV4_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     
     //
