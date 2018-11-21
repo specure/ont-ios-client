@@ -40,6 +40,7 @@ class ZeroMeasurementRequest: BasicRequest {
             self.geoLocations = speedMeasurement.geoLocations
             self.networkType = speedMeasurement.networkType
             self.time = speedMeasurement.time
+            #if os(iOS)
             self.signals = speedMeasurement.signals
             for signal in self.signals {
                 if signal.time == nil {
@@ -48,6 +49,7 @@ class ZeroMeasurementRequest: BasicRequest {
             }
             self.telephonyInfo = speedMeasurement.telephonyInfo
             self.wifiInfo = speedMeasurement.wifiInfo
+            #endif
             self.uuid = speedMeasurement.uuid
             self.apiLevel = speedMeasurement.apiLevel
             self.clientName = speedMeasurement.clientName

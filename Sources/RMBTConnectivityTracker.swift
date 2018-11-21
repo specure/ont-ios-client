@@ -44,7 +44,9 @@ import GCNetworkReachability
 open class RMBTConnectivityTracker: NSObject {
 
     private static var __once: () = {
+            #if os(iOS)
             RMBTConnectivityTracker.sharedReachability.startMonitoringNetworkReachabilityWithNotification()
+            #endif
         }()
 
     #if os(iOS)
@@ -116,15 +118,16 @@ open class RMBTConnectivityTracker: NSObject {
     }
 
     @objc func refreshTimerHandler(_ timer: Timer) {
-        
+        #if os(iOS)
         if let reachability = GCNetworkReachability.forInternetConnection(),
             reachability.currentReachabilityStatus() != RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus() {
             RMBTConnectivityTracker.sharedReachability = reachability
-            #if os(iOS)
+            
             reachability.startMonitoringNetworkReachabilityWithNotification()
-            #endif
-        self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
+            let status = RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus()
+            self.reachabilityDidChangeToStatus(status)
         }
+        #endif
     }
     
     ///

@@ -172,6 +172,7 @@ open class RMBTConnectivity: NSObject {
         #if os(OSX)
         // TODO
         #else
+        #if os(iOS)
         if let interfaces = CNCopySupportedInterfaces() as? [CFString] {
             for interface in interfaces {
                 if let interfaceData = CNCopyCurrentNetworkInfo(interface) as? [CFString: Any],
@@ -181,6 +182,7 @@ open class RMBTConnectivity: NSObject {
                 }
             }
         }
+        #endif
         #endif
         //}
 

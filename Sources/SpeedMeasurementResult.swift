@@ -514,7 +514,7 @@ class SpeedMeasurementResult: BasicRequest {
             }
         }
         #else
-        networkType = RMBTNetworkType.WiFi.rawValue // TODO: correctly set on macos and tvOS
+        networkType = RMBTNetworkType.wiFi.rawValue // TODO: correctly set on macos and tvOS
         #endif
     }
 
