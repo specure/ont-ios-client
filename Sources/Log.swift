@@ -8,6 +8,6 @@
 import UIKit
 import XCGLogger
 
-class Log: NSObject {
-    static let logger = XCGLogger.init(identifier: "RMBTClient", includeDefaultDestinations: true)
+public class Log: NSObject {
+    public static let logger = XCGLogger.init(identifier: "RMBTClient", includeDefaultDestinations: true)
 }

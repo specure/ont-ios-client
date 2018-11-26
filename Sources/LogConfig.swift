@@ -40,7 +40,11 @@ class LogConfig {
             Log.logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
         #elseif DEBUG
             // Debug config
-            Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: nil) // don't need log to file
+            Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) // don't need log to file
+        #elseif TEST
+        // Test config
+            Log.logger.setup(.debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
+
         #elseif BETA
             // Beta config
             Log.logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
@@ -51,7 +55,7 @@ class LogConfig {
 
     ///
     fileprivate class func setupFileDateFormatter() {
-/*        let bundleIdentifier = NSBundle.mainBundle().bundleIdentifier ?? "rmbt"
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "rmbt"
         let uuid = ControlServer.sharedControlServer.uuid ?? "uuid_missing"
 
         #if RELEASE
@@ -59,7 +63,7 @@ class LogConfig {
         #else
             fileDateFormatter.dateFormat = "'\(bundleIdentifier)_\(uuid)_'yyyy_MM_dd_HH_mm_ss'.log'"
         #endif
-*/    }
+    }
 
     ///
     class func getCurrentLogFilePath() -> String {

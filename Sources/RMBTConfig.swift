@@ -35,7 +35,11 @@ public class RMBTConfig {
 //    var defaultMeasurementServerId:UInt64 = 1
     
     //
-    public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
+    public static let sharedInstance: RMBTConfig = {
+        let config = RMBTConfig()
+        LogConfig.initLoggingFramework()
+        return config
+    } ()
     
     //
     public init() {}
