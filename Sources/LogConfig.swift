@@ -38,31 +38,31 @@ class LogConfig {
             // Release config
             // 1 logfile per day
             Log.logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
-        #elseif DEBUG
+        #elseif DEBUG || TEST
             // Debug config
             Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) // don't need log to file
-        #elseif TEST
-        // Test config
-            Log.logger.setup(.debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
-
         #elseif BETA
             // Beta config
             Log.logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
 
             uploadOldLogs()
+        #else
+            // Debug config
+            Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) // don't need log to file
         #endif
     }
 
     ///
     fileprivate class func setupFileDateFormatter() {
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "rmbt"
-        let uuid = ControlServer.sharedControlServer.uuid ?? "uuid_missing"
+//        let uuid = ControlServer.sharedControlServer.uuid ?? "uuid_missing"
+        let uuid = "uuid_missing"
 
-        #if RELEASE
+//        #if RELEASE
             fileDateFormatter.dateFormat = "'\(bundleIdentifier)_\(uuid)_'yyyy_MM_dd'.log'"
-        #else
-            fileDateFormatter.dateFormat = "'\(bundleIdentifier)_\(uuid)_'yyyy_MM_dd_HH_mm_ss'.log'"
-        #endif
+//        #else
+//            fileDateFormatter.dateFormat = "'\(bundleIdentifier)_\(uuid)_'yyyy_MM_dd_HH_mm_ss'.log'"
+//        #endif
     }
 
     ///
