@@ -129,13 +129,13 @@ open class RMBTMapOptions {
                 return RMBTMapOptionCountry(response: response)
             })
         }
-
+        
         // Root element, always the same
-        let responseRoot = response["mapfilter"] as! NSDictionary
-
-        let filters = responseRoot["mapFilters"] as! NSDictionary
-
-        for typeResponse in (responseRoot["mapTypes"] as! [[String:AnyObject]]) {
+        let responseRoot = response["mapfilter"] as? NSDictionary ?? NSDictionary()
+        let filters = responseRoot["mapFilters"] as? NSDictionary ?? NSDictionary()
+        let mapTypes = responseRoot["mapTypes"] as? [[String:AnyObject]] ?? []
+        
+        for typeResponse in mapTypes {
             let type = RMBTMapOptionsType(response: typeResponse)
             types.append(type)
 
@@ -153,7 +153,12 @@ open class RMBTMapOptions {
         }
 
         // Select first subtype of first type as active per default
-        activeSubtype = types[0].subtypes[0]
+        if types.count > 0,
+            types[0].subtypes.count > 0 {
+            activeSubtype = types[0].subtypes[0]
+        } else {
+            activeSubtype = RMBTMapOptionsSubtype(response: [:])
+        }
         
         if counties.count > 0 {
             self.activeCountry = counties.first
@@ -181,15 +186,16 @@ open class RMBTMapOptions {
         var keys = [String]()
         var values = [String]()
 
-        info[RMBTMapOptionsToastInfoTitle] = [String(format: "%@ %@", activeSubtype.type.title, activeSubtype.title)]
+        if let type = activeSubtype.type {
+            info[RMBTMapOptionsToastInfoTitle] = [String(format: "%@ %@", type.title, activeSubtype.title)]
+            for f in type.filters {
+                keys.append(f.title.capitalized)
+                values.append(f.activeValue.title)
+            }
+        }
 
         keys.append(NSLocalizedString("map.options.filter.overlay", comment: "overlay"))
         values.append(activeOverlay.localizedDescription)
-
-        for f in activeSubtype.type.filters {
-            keys.append(f.title.capitalized)
-            values.append(f.activeValue.title)
-        }
 
         info[RMBTMapOptionsToastInfoKeys] = keys
         info[RMBTMapOptionsToastInfoValues] = values
@@ -492,10 +498,10 @@ open class RMBTMapOptionsSubtype: NSObject {
 
     ///
     public init(response: [String: AnyObject]) {
-        self.title = response["title"] as! String
-        self.summary = response["summary"] as! String
-        self.mapOptions = response["map_options"] as! String
-        self.overlayType = response["overlay_type"] as! String
+        self.title = response["title"] as? String ?? ""
+        self.summary = response["summary"] as? String ?? ""
+        self.mapOptions = response["map_options"] as? String ?? ""
+        self.overlayType = response["overlay_type"] as? String ?? ""
 
         self.identifier = mapOptions
     }
@@ -506,8 +512,10 @@ open class RMBTMapOptionsSubtype: NSObject {
             "map_options": mapOptions
         ])
 
-        for f in type.filters {
-            result.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
+        if type != nil {
+            for f in type.filters {
+                result.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
+            }
         }
 
         return result
