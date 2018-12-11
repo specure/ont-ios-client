@@ -117,6 +117,10 @@ public class RMBTConfig {
     public static func updateAdvertisingSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.getAdvertising(success: successCallback, error: failure)
     }
+    
+    public static func updateBadges(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.getBadges(success: successCallback, error: failure)
+    }
 }
 
 

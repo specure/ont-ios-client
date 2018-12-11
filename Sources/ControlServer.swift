@@ -233,6 +233,30 @@ class ControlServer {
         }
     }
     
+// MARK: Badges
+
+    func getBadges(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        let badgesRequest = BasicRequest()
+        badgesRequest.uuid = uuid
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            successCallback()
+        }
+        else {
+            let successFunc: (_ response: BadgesResponse) -> () = { response in
+                Log.logger.debug("badges: \(String(describing: response.toJSON))")
+//                self.advertisingSettings = response
+                //TODO: Update badges
+                successCallback()
+            }
+            request(.post, path: "/badges", requestObject: badgesRequest, success: successFunc, error: { error in
+                Log.logger.debug("badges error")
+                
+                failure(error)
+            })
+        }
+    }
+    
 // MARK: Settings
 
     ///
