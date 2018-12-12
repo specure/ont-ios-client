@@ -29,7 +29,7 @@ public class BadgeResponse: BasicResponse {
     public var category: String?
     public var image_link: String?
     public var terms_operator: String?
-    public var criteria: String?
+    public var criteria: [BadgeCriteriaTermResponse]?
     
     override open func mapping(map: Map) {
         super.mapping(map: map)
