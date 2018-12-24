@@ -639,6 +639,32 @@ class ControlServer {
         }, error: errorCallback)
     }
     
+    ///
+    func getHistoryWithFiltersV2(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        
+        ensureClientUuid(success: { uuid in
+            let req = HistoryWithFiltersRequest()
+            req.uuid = uuid
+            req.resultLimit = NSNumber(value: length)
+            req.resultOffset = NSNumber(value: offset)
+            //
+            if let theFilters = filters {
+                for filter in theFilters {
+                    //
+                    if filter.key == "devices" {
+                        req.devices = filter.value
+                    }
+                    //
+                    if filter.key == "networks" {
+                        req.networks = filter.value
+                    }
+                }
+            }
+            
+            self.request(.post, path: "/V2/history", requestObject: req, success: success, error: errorCallback)
+        }, error: errorCallback)
+    }
+    
     //
     ///
     func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error errorCallback: @escaping ErrorCallback) {

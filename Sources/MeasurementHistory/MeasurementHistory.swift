@@ -245,6 +245,10 @@ open class MeasurementHistory {
         ControlServer.sharedControlServer.getHistoryWithFilters(filters: filters, length: length, offset: offset, success: success, error: errorCallback)
     }
     
+    open func getHistoryWithFiltersV2(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.getHistoryWithFiltersV2(filters: filters, length: length, offset: offset, success: success, error: errorCallback)
+    }
+    
     ///
     open func syncDevicesWith(code:String, success : @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.syncWithCode(code: code, success: success, error: failure)
