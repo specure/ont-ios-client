@@ -69,6 +69,7 @@ open class HistoryItem: BasicResponse {
     open var pingShortClassification: Int?
     
     open var networkName: String?
+    open var operatorName: String?
     
     open var qosResult: String?
 
@@ -95,6 +96,7 @@ open class HistoryItem: BasicResponse {
         pingClassification          <- map["ping_classification"]
         pingShortClassification     <- map["ping_short_classification"]
         networkName         <- map["network_name"]
+        operatorName         <- map["operator"]
         qosResult           <- map["qos_result"]
     }
 }

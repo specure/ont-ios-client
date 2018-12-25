@@ -213,24 +213,26 @@ class ControlServer {
 // MARK: Advertising
     
     func getAdvertising(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
-        let advertisingRequest = AdvertisingRequest()
-        advertisingRequest.uuid = uuid
-        
-        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            successCallback()
-        }
-        else {
-            let successFunc: (_ response: AdvertisingResponse) -> () = { response in
-                Log.logger.debug("advertising: \(String(describing: response.isShowAdvertising))")
-                self.advertisingSettings = response
+        ensureClientUuid(success: { (uuid) in
+            let advertisingRequest = AdvertisingRequest()
+            advertisingRequest.uuid = uuid
+            
+            if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
                 successCallback()
             }
-            request(.post, path: "/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
-                Log.logger.debug("advertising error")
-                
-                failure(error)
-            })
-        }
+            else {
+                let successFunc: (_ response: AdvertisingResponse) -> () = { response in
+                    Log.logger.debug("advertising: \(String(describing: response.isShowAdvertising))")
+                    self.advertisingSettings = response
+                    successCallback()
+                }
+                self.request(.post, path: "/V2/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
+                    Log.logger.debug("advertising error")
+                    
+                    failure(error)
+                })
+            }
+        }, error: failure)
     }
     
 // MARK: Badges

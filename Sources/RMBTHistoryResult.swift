@@ -132,7 +132,16 @@ open class RMBTHistoryResult {
     /// Available in basic details
     open var networkType: RMBTNetworkType!
     
-    open var networkName: String?
+    open var networkName: String? {
+        get {
+            return operatorName == nil ? _networkName : operatorName
+        }
+        set {
+            _networkName = newValue
+        }
+    }
+    open var operatorName: String?
+    open var _networkName: String?
     
     open var qosResults: String? = "-"
     
@@ -158,13 +167,13 @@ open class RMBTHistoryResult {
     
     ///
     private var previousYearFormatter = DateFormatter()
-    
     //
     
     ///
     public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
         
-        networkName = response.networkName
+        operatorName = response.operatorName
+        _networkName = response.networkName
         qosResults = response.qosResult
         downloadSpeedMbpsString = response.speedDownload
         uploadSpeedMbpsString = response.speedUpload
