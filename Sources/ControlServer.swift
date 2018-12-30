@@ -226,7 +226,7 @@ class ControlServer {
                     self.advertisingSettings = response
                     successCallback()
                 }
-                self.request(.post, path: "/V2/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
+                self.request(.post, path: "/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
                     Log.logger.debug("advertising error")
                     
                     failure(error)
@@ -638,32 +638,6 @@ class ControlServer {
             }
             
             self.request(.post, path: "/history", requestObject: req, success: success, error: errorCallback)
-        }, error: errorCallback)
-    }
-    
-    ///
-    func getHistoryWithFiltersV2(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
-        
-        ensureClientUuid(success: { uuid in
-            let req = HistoryWithFiltersRequest()
-            req.uuid = uuid
-            req.resultLimit = NSNumber(value: length)
-            req.resultOffset = NSNumber(value: offset)
-            //
-            if let theFilters = filters {
-                for filter in theFilters {
-                    //
-                    if filter.key == "devices" {
-                        req.devices = filter.value
-                    }
-                    //
-                    if filter.key == "networks" {
-                        req.networks = filter.value
-                    }
-                }
-            }
-            
-            self.request(.post, path: "/V2/history", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }
     

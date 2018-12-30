@@ -27,7 +27,7 @@ public enum RMBTMapOptionsMapViewType: Int {
 }
 
 ///
-public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay(
+public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay (
     identifier: "auto",
     localizedDescription: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description")
 )
