@@ -25,27 +25,6 @@
 // http://stackoverflow.com/questions/10999612/iphone-get-3g-dns-host-name-and-ip-address
 
 +(NSString *)getdnsip {
-    
-    /*NSMutableString *addresses = [[NSMutableString alloc]initWithString:@"DNS Addresses \n"];
-    
-    res_state res = malloc(sizeof(struct __res_state));
-    
-    int result = res_ninit(res);
-    
-    if ( result == 0 ) {
-        for ( int i = 0; i < res->nscount; i++ ) {
-            NSString *s = [NSString stringWithUTF8String :  inet_ntoa(res->nsaddr_list[i].sin_addr)];
-            [addresses appendFormat:@"%@\n",s];
-            NSLog(@"%@",s);
-        }
-    } else {
-        [addresses appendString:@" res_init result != 0"];
-    }
-    
-    free(res);
-     
-    return addresses;*/
-    
     NSString *address;
     
     res_state res = malloc(sizeof(struct __res_state));
@@ -53,15 +32,26 @@
     int result = res_ninit(res);
     
     if ( result == 0 ) {
-//        for ( int i = 0; i < res->nscount; i++ ) {
-        if (res->nscount > 0) {
-            address = [NSString stringWithUTF8String: inet_ntoa(res->nsaddr_list[0].sin_addr)];
-            NSLog(@"found dns server ip: %@, port: %u", address, htons(res->nsaddr_list[0].sin_port));
-        }
-//        }
-    }/* else {
+        union res_9_sockaddr_union *addr_union = malloc(res->nscount * sizeof(union res_9_sockaddr_union));
+        res_getservers(res, addr_union, res->nscount);
         
-    }*/
+        for (int i = 0; i < res->nscount; i++) {
+            if (addr_union[i].sin.sin_family == AF_INET) {
+                char ip[INET_ADDRSTRLEN];
+                inet_ntop(AF_INET, &(addr_union[i].sin.sin_addr), ip, INET_ADDRSTRLEN);
+                address = [NSString stringWithUTF8String: ip];
+                break;
+            } else if (addr_union[i].sin6.sin6_family == AF_INET6) {
+                char ip[INET6_ADDRSTRLEN];
+                inet_ntop(AF_INET6, &(addr_union[i].sin6.sin6_addr), ip, INET6_ADDRSTRLEN);
+                address = [NSString stringWithUTF8String: ip];
+                break;
+            }
+        }
+        
+        free(addr_union);
+    }
+    
     res_ndestroy(res);
     free(res);
     
@@ -87,32 +77,20 @@
                 inet_ntop(AF_INET, &(addr_union[i].sin.sin_addr), ip, INET_ADDRSTRLEN);
                 NSString *dnsIP = [NSString stringWithUTF8String: ip];
                 port = htons(addr_union[i].sin.sin_port);
-                NSLog(@"IPv4 DNS IP: %@", dnsIP);
-                NSLog(@"IPv4 DNS Port: %u", port);
+                address = dnsIP;
+                break;
             } else if (addr_union[i].sin6.sin6_family == AF_INET6) {
                 char ip[INET6_ADDRSTRLEN];
                 inet_ntop(AF_INET6, &(addr_union[i].sin6.sin6_addr), ip, INET6_ADDRSTRLEN);
                 NSString *dnsIP = [NSString stringWithUTF8String: ip];
                 port = htons(addr_union[i].sin6.sin6_port);
-                NSLog(@"IPv6 DNS IP: %@", dnsIP);
-                NSLog(@"IPv6 DNS Port: %u", port);
-            } else {
-                NSLog(@"Undefined family.");
+                address = dnsIP;
+                break;
             }
         }
         
         free(addr_union);
-        
-        //        for ( int i = 0; i < res->nscount; i++ ) {
-        if (res->nscount > 0) {
-            address = [NSString stringWithUTF8String: inet_ntoa(res->nsaddr_list[0].sin_addr)];
-            port = htons(res->nsaddr_list[0].sin_port);
-            NSLog(@"found dns server ip: %@, port: %u", address, port);
-        }
-        //        }
-    }/* else {
-      
-      }*/
+    }
     
     res_ndestroy(res);
     free(res);
