@@ -27,7 +27,7 @@ import CocoaAsyncSocket
 class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
     typealias DNSQuerySuccessCallback = (DNSRecordClass) -> ()
-    typealias DNSQueryFailureCallback = (NSError) -> ()
+    typealias DNSQueryFailureCallback = (NSError?) -> ()
 
     //
 
@@ -43,7 +43,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     private var callbackFailureMap = [String: DNSQueryFailureCallback]()
 
     //
-
+    private var isFinished = false
     ///
     private let dnsServer: String
 
@@ -533,12 +533,18 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
             // call callback
             self.callbackSuccessMap[callbackKey]?(dnsRecordClass)
+            self.isFinished = true
         }
     }
 
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
         Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
+        if isFinished == false {
+            for callback in callbackFailureMap {
+                callback.value(error as? NSError)
+            }
+        }
     }
     
 
