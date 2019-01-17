@@ -97,9 +97,9 @@
     
     if (address) {
         return @{
-            @"host": address,
-            @"port": [NSNumber numberWithUnsignedShort: port]
-        };
+                 @"host": address,
+                 @"port": [NSNumber numberWithUnsignedShort: port]
+                 };
     } else {
         return nil;
     }
