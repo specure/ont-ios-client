@@ -211,8 +211,10 @@ open class RMBTMapOptions {
         selection.overlayIdentifier = activeOverlay.identifier
 
         var activeFilters = [String: String]()
-        for f in activeSubtype.type.filters {
-            activeFilters[f.title] = f.activeValue.title
+        if let type = activeSubtype.type {
+            for f in type.filters {
+                activeFilters[f.title] = f.activeValue.title
+            }
         }
 
         selection.activeFilters = activeFilters
@@ -253,8 +255,9 @@ open class RMBTMapOptions {
             }
         }
 
-        if let activeFilters = selection.activeFilters {
-            for f in activeSubtype.type.filters {
+        if let activeFilters = selection.activeFilters,
+            let type = activeSubtype.type {
+            for f in type.filters {
                 if let activeFilterValueTitle = activeFilters[f.title] {
 
                     if let v = f.possibleValues.filter({ a in
@@ -477,7 +480,7 @@ open class RMBTMapOptionsType: NSObject {
 open class RMBTMapOptionsSubtype: NSObject {
 
     ///
-    open var type: RMBTMapOptionsType!
+    open var type: RMBTMapOptionsType?
 
     ///
     open var identifier: String
@@ -512,7 +515,7 @@ open class RMBTMapOptionsSubtype: NSObject {
             "map_options": mapOptions
         ])
 
-        if type != nil {
+        if let type = type {
             for f in type.filters {
                 result.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
             }
@@ -532,8 +535,10 @@ open class RMBTMapOptionsSubtype: NSObject {
 
         let filterResult = NSMutableDictionary()
 
-        for f in type.filters {
-            filterResult.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
+        if let type = type {
+            for f in type.filters {
+                filterResult.addEntries(from: f.activeValue.info as! [AnyHashable: Any])
+            }
         }
 
         result.setObject(filterResult, forKey: "filter" as NSCopying)
