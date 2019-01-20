@@ -57,13 +57,9 @@ open class MapServer {
     }
     
     ///
-    open func getMapOptions(isSkipOperators: Bool = false, isSkipOverlays: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard, defaultOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+    open func getMapOptions(success successCallback: @escaping (_ response: MapOptionResponse) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
-
-            // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isSkipOperators: isSkipOperators, isSkipOverlays: isSkipOverlays, defaultMapViewType: defaultMapViewType, defaultOverlay: defaultOverlay)
-            successCallback(mapOptions)
-
+            successCallback(response)
         } , error: failure)
     }
 

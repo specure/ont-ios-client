@@ -26,6 +26,8 @@ public enum RMBTMapOptionsMapViewType: Int {
     case hybrid = 2
 }
 
+public let MapOptionResponseOverlayAuto = MapOptionResponse.MapOverlays(identifier: "auto", title: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description"), isDefault: true)
+
 ///
 public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay (
     identifier: "auto",
@@ -84,17 +86,46 @@ open class RMBTMapOptions {
     open var types = [RMBTMapOptionsType]()
 
     ///
-    open var overlays: [RMBTMapOptionsOverlay]
+    open var activeOverlay: MapOptionResponse.MapOverlays = MapOptionResponseOverlayAuto
+    open var overlays: [MapOptionResponse.MapOverlays] = []
+    
+    open var activePeriodFilter: MapOptionResponse.MapPeriodFilters?
+    open var periodFilters: [MapOptionResponse.MapPeriodFilters] = []
+    
+    open var activeCellularTypes: [MapOptionResponse.MapCellularTypes] = []
+    open var mapCellularTypes: [MapOptionResponse.MapCellularTypes] = []
 
     ///
     open var activeSubtype: RMBTMapOptionsSubtype
 
     ///
-    open var activeOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto
+    
     
     open var activeCountry: RMBTMapOptionCountry?
-    
-    open var counties: [RMBTMapOptionCountry] = []
+
+    private var _countries: [RMBTMapOptionCountry] = []
+    open var countries: [RMBTMapOptionCountry] {
+        if _countries.count == 0 {
+            let locale = Locale.current
+            let countryArray = Locale.isoRegionCodes
+            var unsortedCountryArray: [RMBTMapOptionCountry] = []
+            for countryCode in countryArray {
+                if let displayNameString = locale.localizedString(forRegionCode: countryCode) {
+                    let country = RMBTMapOptionCountry(response: [:])
+                    country.code = countryCode
+                    country.name = displayNameString
+                    unsortedCountryArray.append(country)
+                    country.isDefault = (locale.regionCode == countryCode)
+                }
+            }
+            unsortedCountryArray.sort { (country1, country2) -> Bool in
+                return country1.name?.compare(country2.name ?? "") == ComparisonResult.orderedAscending
+            }
+            self._countries = unsortedCountryArray
+        }
+        
+        return self._countries
+    }
     
     open var operatorsForCountry: [OperatorsResponse.Operator] = []
     open var activeOperator: OperatorsResponse.Operator?
@@ -110,62 +141,80 @@ open class RMBTMapOptions {
         }
     }
     ///
-    public init(response: NSDictionary, isSkipOperators: Bool = false, isSkipOverlays: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard, defaultOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto) {
+    public init(response: MapOptionResponse, isSkipOperators: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard) {
         self.mapViewType = defaultMapViewType
-        self.activeOverlay = defaultOverlay
-        overlays = [
-            RMBTMapOptionsOverlayAuto, RMBTMapOptionsOverlayHeatmap, RMBTMapOptionsOverlayPoints, /*RMBTMapOptionsOverlayShapes,*/
-            //RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
-        ]
         
-        if isSkipOverlays == false {
-            overlays.append(contentsOf: [
-                RMBTMapOptionsOverlayRegions, RMBTMapOptionsOverlayMunicipality, RMBTMapOptionsOverlaySettlements, RMBTMapOptionsOverlayWhitespots
-                ])
-        }
+        //Set overlays
+        self.activeOverlay = response.mapOverlays.first(where: { (overlay) -> Bool in
+            return overlay.isDefault == true
+        }) ?? MapOptionResponseOverlayAuto
+        overlays.append(MapOptionResponseOverlayAuto)
+        overlays.append(contentsOf: response.mapOverlays)
+        
+        //Set period
+        periodFilters = response.mapPeriodFilters
+        
+        self.activePeriodFilter = periodFilters.first(where: { (period) -> Bool in
+            return period.isDefault == true
+        })
 
-        if let responseCountries = (response["mapCountries"] as? [[String: Any]]) {
-            self.counties = responseCountries.map({ (response) -> RMBTMapOptionCountry in
-                return RMBTMapOptionCountry(response: response)
-            })
+        if activePeriodFilter == nil {
+            periodFilters.first
         }
         
-        // Root element, always the same
-        let responseRoot = response["mapfilter"] as? NSDictionary ?? NSDictionary()
-        let filters = responseRoot["mapFilters"] as? NSDictionary ?? NSDictionary()
-        let mapTypes = responseRoot["mapTypes"] as? [[String:AnyObject]] ?? []
-        
-        for typeResponse in mapTypes {
-            let type = RMBTMapOptionsType(response: typeResponse)
-            types.append(type)
-
-            // Process filters for this type
-            for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
-                if isSkipOperators == true {
-                if let f = filterResponse["options"] as? [[String: Any]],
-                    let _ = f.last?["operator"] {
-                    continue
-                }
-                }
-                let filter = RMBTMapOptionsFilter(response: filterResponse)
-                type.addFilter(filter)
+        //Set technologies
+        self.mapCellularTypes = response.mapCellularTypes
+        for type in self.mapCellularTypes {
+            if type.isDefault == true {
+                self.activeCellularTypes.append(type)
             }
         }
 
-        // Select first subtype of first type as active per default
-        if types.count > 0,
-            types[0].subtypes.count > 0 {
-            activeSubtype = types[0].subtypes[0]
-        } else {
-            activeSubtype = RMBTMapOptionsSubtype(response: [:])
-        }
+//        // Root element, always the same
+//        let responseRoot = response["mapfilter"] as? NSDictionary ?? NSDictionary()
+//        let filters = responseRoot["mapFilters"] as? NSDictionary ?? NSDictionary()
+//        let mapTypes = responseRoot["mapTypes"] as? [[String:AnyObject]] ?? []
+//
+//        for typeResponse in mapTypes {
+//            let type = RMBTMapOptionsType(response: typeResponse)
+//            types.append(type)
+//
+//            // Process filters for this type
+//            for filterResponse in (filters[type.identifier] as! [[String:AnyObject]]) {
+//                if isSkipOperators == true {
+//                if let f = filterResponse["options"] as? [[String: Any]],
+//                    let _ = f.last?["operator"] {
+//                    continue
+//                }
+//                }
+//                let filter = RMBTMapOptionsFilter(response: filterResponse)
+//                type.addFilter(filter)
+//            }
+//        }
+//
+//        // Select first subtype of first type as active per default
+//        if types.count > 0,
+//            types[0].subtypes.count > 0 {
+//            activeSubtype = types[0].subtypes[0]
+//        } else {
+//            activeSubtype = RMBTMapOptionsSubtype(response: [:])
+//        }
+//
         
-        if counties.count > 0 {
-            self.activeCountry = counties.first
+        // ..then try to actually select options from app state, if we have one
+        
+        activeSubtype = RMBTMapOptionsSubtype(response: [:])
+        
+        if self.countries.count > 0 {
+            self.activeCountry = self.countries.first(where: { (country) -> Bool in
+                return country.isDefault == true
+            })
+            if self.activeCountry == nil {
+                self.activeCountry = self.countries.first
+            }
         }
 
-        // ..then try to actually select options from app state, if we have one
-        restoreSelection()
+        self.restoreSelection()
     }
     
     public func merge(with previousMapOptions: RMBTMapOptions) {
@@ -195,7 +244,7 @@ open class RMBTMapOptions {
         }
 
         keys.append(NSLocalizedString("map.options.filter.overlay", comment: "overlay"))
-        values.append(activeOverlay.localizedDescription)
+        values.append(activeOverlay.title ?? "")
 
         info[RMBTMapOptionsToastInfoKeys] = keys
         info[RMBTMapOptionsToastInfoValues] = values
@@ -281,10 +330,21 @@ open class RMBTMapOptions {
 open class RMBTMapOptionCountry: NSObject {
     open var code: String?
     open var name: String?
+    open var isDefault: Bool = false
     
     init(response: [String: Any]) {
         self.code = response["country_code"] as? String
         self.name = response["country_name"] as? String
+    }
+    
+    override open func isEqual(_ object: Any?) -> Bool {
+        if let object = object as? RMBTMapOptionCountry {
+            return self.code == object.code
+        }
+        return false
+    }
+    public static func == (lhs: RMBTMapOptionCountry, rhs: RMBTMapOptionCountry) -> Bool {
+        return lhs.code == rhs.code
     }
 }
 

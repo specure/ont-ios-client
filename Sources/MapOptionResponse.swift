@@ -19,114 +19,181 @@ import ObjectMapper
 
 ///
 open class MapOptionResponse: BasicResponse {
-
-    ///
-    var mapTypeList: [MapOptionType]?
-
-    ///
-    var mapFilterList: [String: [MapOptionType]]?
+    enum MapTypesIdentifier: String {
+        case mobile
+        case wifi
+        case browser
+        case all
+    }
     
-    var countries: [MapOptionCountry]?
-
-    ///
+    enum MapSubTypesIdentifier: String {
+        case download
+        case upload
+        case ping
+        case signal
+    }
+    
+    var mapTypes: [MapType] = []
+    var mapSubTypes: [MapSubType] = []
+    var mapCellularTypes: [MapCellularTypes] = []
+    var mapPeriodFilters: [MapPeriodFilters] = []
+    var mapOverlays: [MapOverlays] = []
+    var mapStatistics: [MapStatistics] = []
+    var mapLayouts: [MapLayout] = []
+    
     override open func mapping(map: Map) {
         super.mapping(map: map)
 
-        mapTypeList <- map["mapfilter.mapTypes"]
-        mapFilterList <- map["mapfilter.mapFilters"]
-        countries <- map["mapCountries"]
+        mapCellularTypes <- map["mapCellularTypes"]
+        mapSubTypes <- map["mapSubTypes"]
+        mapStatistics <- map["mapStatistics"]
+        mapOverlays <- map["mapOverlays"]
+        mapTypes <- map["mapTypes"]
+        mapLayouts <- map["mapLayouts"]
+        mapPeriodFilters <- map["mapPeriodFilters"]
     }
 
-    open class MapOptionCountry: Mappable {
-        var code: String?
-        var name: String?
-        
-        ///
-        init() {
-            
+    open class MapSubType: DefaultMappable {
+        var heatmapCaptions: [String] = []
+        var heatmapColors: [String] = []
+        var isDefault: Bool = false
+        var index: Int = 0
+        var id: MapSubTypesIdentifier = .download
+        var title: String?
+       
+        open override func mapping(map: Map) {
+            heatmapCaptions       <- map["heatmap_captions"]
+            heatmapColors         <- map["heatmap_colors"]
+            isDefault             <- map["default"]
+            index                 <- map["index"]
+            id                    <- map["id"]
+            title                 <- map["title"]
         }
-        
-        ///
-        required public init?(map: Map) {
-            
-        }
-        
-        ///
-        open func mapping(map: Map) {
-            code <- map["country_code"]
-            name <- map["country_name"]
+    }
+
+    open class MapType: DefaultMappable {
+        var id: MapTypesIdentifier = .mobile
+        var title: String?
+        var mapListOptions: Int = 0
+        var mapSubTypeOptions: [Int] = []
+        var isMapCellularTypeOptions: Bool = false
+        var isDefault: Bool = false
+
+        open override func mapping(map: Map) {
+            id                          <- map["id"]
+            title                       <- map["title"]
+            mapListOptions              <- map["mapListOptions"]
+            mapSubTypeOptions           <- map["mapSubTypeOptions"]
+            isMapCellularTypeOptions    <- map["mapCellularTypeOptions"]
+            isDefault                   <- map["default"]
         }
     }
     
-    ///
-    open class MapOptionType: Mappable {
-
-        ///
-        var title: String?
-
-        ///
-        var options: [/*MapOption*/[String: AnyObject]]?
-
-        ///
-        init() {
-
-        }
-
-        ///
+    open class MapCellularTypes: DefaultMappable, Equatable {
+        open var id: String?
+        open var title: String?
+        open var isDefault: Bool = false
+        
         required public init?(map: Map) {
-
+            super.init()
         }
-
-        ///
-        open func mapping(map: Map) {
-            title   <- map["title"]
-            options <- map["options"]
+        
+        open override func mapping(map: Map) {
+            id          <- map["id"]
+            title       <- map["title"]
+            isDefault   <- map["default"]
         }
-
-        ///
-        open class MapOption: Mappable {
-
-            ///
-            var title: String?
-
-            ///
-            var summary: String?
-
-            ///
-            var isDefault = false
-
-            ///
-            var statisticalMethod: String?
-
-            ///
-            var period: String?
-
-            ///
-            var provider: String?
-
-            ///
-            var technology: String?
-
-            ///
-            init() {
-
-            }
-
-            ///
-            required public init?(map: Map) {
-
-            }
-
-            ///
-            open func mapping(map: Map) {
-                title       <- map["title"]
-                summary     <- map["summary"]
-                isDefault   <- map["default"]
-                statisticalMethod <- map["statistical_method"]
-                period      <- map["period"]
-                provider    <- map["provider"]
-                technology  <- map["technology"]
-            }
+        
+        public static func == (lhs: MapOptionResponse.MapCellularTypes, rhs: MapOptionResponse.MapCellularTypes) -> Bool {
+            return lhs.id == rhs.id && lhs.title == rhs.title
         }
     }
+    
+    open class MapPeriodFilters: DefaultMappable, Equatable {
+        open var period: Int = 0
+        open var title: String?
+        open var isDefault: Bool = false
+        
+        required public init?(map: Map) {
+            super.init()
+        }
+        
+        open override func mapping(map: Map) {
+            period      <- map["period"]
+            title       <- map["title"]
+            isDefault   <- map["default"]
+        }
+        
+        public static func == (lhs: MapOptionResponse.MapPeriodFilters, rhs: MapOptionResponse.MapPeriodFilters) -> Bool {
+            return lhs.period == rhs.period && lhs.title == rhs.title
+        }
+    }
+    
+    open class MapOverlays: MapOptionResponse.DefaultMappable, Equatable {
+        open var identifier: String?
+        open var title: String?
+        open var isDefault: Bool = false
+        
+        init(identifier: String, title: String, isDefault: Bool = false) {
+            super.init()
+            self.identifier = identifier
+            self.title = title
+            self.isDefault = isDefault
+        }
+        
+        required public init?(map: Map) {
+            super.init()
+        }
+        
+        open override func mapping(map: Map) {
+            identifier  <- map["id"]
+            title       <- map["title"]
+            isDefault   <- map["default"]
+        }
+        
+        public static func == (lhs: MapOptionResponse.MapOverlays, rhs: MapOptionResponse.MapOverlays) -> Bool {
+            return lhs.identifier == rhs.identifier && lhs.title == rhs.title
+        }
+    }
+    
+    open class MapStatistics: DefaultMappable {
+        var title: String?
+        var value: Float = 0.0
+        
+        open override func mapping(map: Map) {
+            title       <- map["title"]
+            value       <- map["value"]
+        }
+    }
+    
+    open class MapLayout: DefaultMappable {
+        var title: String?
+        var isDefault: Bool = false
+        var apiLink: String?
+        var accessToken: String?
+        var layer: String?
+        
+        open override func mapping(map: Map) {
+            title           <- map["title"]
+            apiLink         <- map["apiLink"]
+            accessToken     <- map["accessToken"]
+            layer           <- map["layer"]
+            isDefault       <- map["default"]
+        }
+    }
+    
+    
+    open class DefaultMappable: Mappable {
+        open func mapping(map: Map) {
+        }
+        
+        init() {
+            
+        }
+        
+        required public init?(map: Map) {
+            
+        }
+    }
+    
 }
