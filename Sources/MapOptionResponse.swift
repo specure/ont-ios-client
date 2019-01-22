@@ -157,19 +157,57 @@ open class MapOptionResponse: BasicResponse {
     }
     
     open class MapOverlays: MapOptionResponse.DefaultMappable, Equatable {
+        enum ResponseType: String {
+            case auto = "MAP_FILTER_AUTOMATIC"
+            case heatmap = "MAP_FILTER_HEATMAP"
+            case points = "MAP_FILTER_POINTS"
+            case regions = "MAP_FILTER_REGIONS"
+            case shapes = "MAP_FILTER_SHAPES"
+            case municipality = "MAP_FILTER_MUNICIPALITY"
+            case settlements = "MAP_FILTER_SETTLEMENTS"
+            case whitespots = "MAP_FILTER_WHITESPOTS"
+            
+            func toMapOverlaysIdentifier() -> String {
+                switch self {
+                    case .auto: return "auto"
+                    case .heatmap: return "heatmap"
+                    case .points: return "points"
+                    case .regions: return "regions"
+                    case .shapes: return "shapes"
+                    case .municipality: return "municipality"
+                    case .settlements: return "settlements"
+                    case .whitespots: return "whitespots"
+                }
+            }
+            
+            static func toMapOverlaysIdentifier(value: String) -> String {
+                if let identifier = ResponseType(rawValue: value) {
+                    return identifier.toMapOverlaysIdentifier()
+                } else {
+                    let components = value.components(separatedBy: "_")
+                    return components.last ?? "unknown"
+                }
+            }
+        }
+        
         open var identifier: String?
         open var title: String?
         open var isDefault: Bool = false
         open var overlayIdentifier: String {
-            if identifier == nil {
-                return title?.lowercased() ?? ""
+            if let identifier = identifier {
+                if let type = ResponseType(rawValue: identifier) {
+                    return type.toMapOverlaysIdentifier()
+                } else {
+                    return ResponseType.toMapOverlaysIdentifier(value: identifier)
+                }
             } else {
-                return identifier ?? ""
+                return title?.lowercased() ?? ""
             }
         }
         
         init(identifier: String, title: String, isDefault: Bool = false) {
             super.init()
+            
             self.identifier = identifier
             self.title = title
             self.isDefault = isDefault
