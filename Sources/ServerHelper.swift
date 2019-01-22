@@ -144,9 +144,10 @@ class ServerHelper {
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
         
             .responseObject { (response: DataResponse<T>) in
+                print(String(data: response.data ?? Data(), encoding: .utf8))
                 switch response.result {
                 case .success:
-                    if let responseObj:T = response.result.value {
+                    if let responseObj: T = response.result.value {
                         
                         Log.logger.debug {
                             debugPrint(response)

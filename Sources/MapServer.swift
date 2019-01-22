@@ -57,18 +57,14 @@ open class MapServer {
     }
     
     ///
-    open func getMapOptions(isSkipOperators: Bool = false, isSkipOverlays: Bool = false, defaultMapViewType: RMBTMapOptionsMapViewType = .standard, defaultOverlay: RMBTMapOptionsOverlay = RMBTMapOptionsOverlayAuto, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+    open func getMapOptions(success successCallback: @escaping (_ response: MapOptionResponse) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
-
-            // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isSkipOperators: isSkipOperators, isSkipOverlays: isSkipOverlays, defaultMapViewType: defaultMapViewType, defaultOverlay: defaultOverlay)
-            successCallback(mapOptions)
-
+            successCallback(response)
         } , error: failure)
     }
 
     ///
-    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
+    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: Any], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
 
         let mapMeasurementRequest = MapMeasurementRequest()
         mapMeasurementRequest.coords = MapMeasurementRequest.CoordObject()
@@ -76,8 +72,8 @@ open class MapServer {
         mapMeasurementRequest.coords?.longitude = coordinate.longitude
         mapMeasurementRequest.coords?.zoom = zoom
 
-        mapMeasurementRequest.options = params["options"]
-        mapMeasurementRequest.filter = params["filter"]
+        mapMeasurementRequest.options = params["options"] as? [String : AnyObject]
+        mapMeasurementRequest.filter = params["filter"] as? [String : AnyObject]
 
         mapMeasurementRequest.prioritizeUuid = mapMeasurementRequest.clientUuid
 
