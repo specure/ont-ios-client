@@ -64,7 +64,7 @@ open class MapServer {
     }
 
     ///
-    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
+    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: Any], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
 
         let mapMeasurementRequest = MapMeasurementRequest()
         mapMeasurementRequest.coords = MapMeasurementRequest.CoordObject()
@@ -72,8 +72,8 @@ open class MapServer {
         mapMeasurementRequest.coords?.longitude = coordinate.longitude
         mapMeasurementRequest.coords?.zoom = zoom
 
-        mapMeasurementRequest.options = params["options"]
-        mapMeasurementRequest.filter = params["filter"]
+        mapMeasurementRequest.options = params["options"] as? [String : AnyObject]
+        mapMeasurementRequest.filter = params["filter"] as? [String : AnyObject]
 
         mapMeasurementRequest.prioritizeUuid = mapMeasurementRequest.clientUuid
 

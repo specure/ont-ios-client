@@ -19,14 +19,15 @@ import ObjectMapper
 
 ///
 open class MapOptionResponse: BasicResponse {
-    enum MapTypesIdentifier: String {
+    public enum MapTypesIdentifier: String {
         case mobile
         case wifi
+        case cell
         case browser
         case all
     }
     
-    enum MapSubTypesIdentifier: String {
+    public enum MapSubTypesIdentifier: String {
         case download
         case upload
         case ping
@@ -53,13 +54,13 @@ open class MapOptionResponse: BasicResponse {
         mapPeriodFilters <- map["mapPeriodFilters"]
     }
 
-    open class MapSubType: DefaultMappable {
-        var heatmapCaptions: [String] = []
-        var heatmapColors: [String] = []
-        var isDefault: Bool = false
-        var index: Int = 0
-        var id: MapSubTypesIdentifier = .download
-        var title: String?
+    open class MapSubType: DefaultMappable, Equatable {
+        open var heatmapCaptions: [String] = []
+        open var heatmapColors: [String] = []
+        open var isDefault: Bool = false
+        open var index: Int = 0
+        open var id: MapSubTypesIdentifier = .download
+        open var title: String?
        
         open override func mapping(map: Map) {
             heatmapCaptions       <- map["heatmap_captions"]
@@ -69,15 +70,19 @@ open class MapOptionResponse: BasicResponse {
             id                    <- map["id"]
             title                 <- map["title"]
         }
+        
+        public static func == (lhs: MapOptionResponse.MapSubType, rhs: MapOptionResponse.MapSubType) -> Bool {
+            return lhs.id == rhs.id && lhs.title == rhs.title
+        }
     }
 
-    open class MapType: DefaultMappable {
-        var id: MapTypesIdentifier = .mobile
-        var title: String?
-        var mapListOptions: Int = 0
-        var mapSubTypeOptions: [Int] = []
-        var isMapCellularTypeOptions: Bool = false
-        var isDefault: Bool = false
+    open class MapType: DefaultMappable, Equatable {
+        open var id: MapTypesIdentifier = .mobile
+        open var title: String?
+        open var mapListOptions: Int = 0
+        open var mapSubTypeOptions: [Int] = []
+        open var isMapCellularTypeOptions: Bool = false
+        open var isDefault: Bool = false
 
         open override func mapping(map: Map) {
             id                          <- map["id"]
@@ -87,10 +92,32 @@ open class MapOptionResponse: BasicResponse {
             isMapCellularTypeOptions    <- map["mapCellularTypeOptions"]
             isDefault                   <- map["default"]
         }
+        
+        public static func == (lhs: MapOptionResponse.MapType, rhs: MapOptionResponse.MapType) -> Bool {
+            return lhs.id == rhs.id && lhs.title == rhs.title
+        }
+        
+        open func toProviderType() -> OperatorsRequest.ProviderType {
+            /// mobile|cell|browser
+            switch id {
+            case .mobile:
+                return OperatorsRequest.ProviderType.mobile
+            case .wifi:
+                return OperatorsRequest.ProviderType.WLAN
+            case .mobile:
+                return OperatorsRequest.ProviderType.mobile
+            case .cell:
+                return OperatorsRequest.ProviderType.mobile
+            case .browser:
+                return OperatorsRequest.ProviderType.browser
+            default:
+                return OperatorsRequest.ProviderType.all
+            }
+        }
     }
     
     open class MapCellularTypes: DefaultMappable, Equatable {
-        open var id: String?
+        open var id: Int?
         open var title: String?
         open var isDefault: Bool = false
         
@@ -133,6 +160,13 @@ open class MapOptionResponse: BasicResponse {
         open var identifier: String?
         open var title: String?
         open var isDefault: Bool = false
+        open var overlayIdentifier: String {
+            if identifier == nil {
+                return title?.lowercased() ?? ""
+            } else {
+                return identifier ?? ""
+            }
+        }
         
         init(identifier: String, title: String, isDefault: Bool = false) {
             super.init()
