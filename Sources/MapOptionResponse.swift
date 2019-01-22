@@ -185,7 +185,7 @@ open class MapOptionResponse: BasicResponse {
                     return identifier.toMapOverlaysIdentifier()
                 } else {
                     let components = value.components(separatedBy: "_")
-                    return components.last ?? "unknown"
+                    return components.last?.lowercased() ?? "unknown"
                 }
             }
         }
