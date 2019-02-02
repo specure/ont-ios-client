@@ -41,7 +41,7 @@ class LogConfig {
     fileprivate class func setupDestination() {
         let logFilePath = getCurrentLogFilePath()
         
-        let destination = AutoRotatingFileDestination(owner: Log.logger, writeToFile: logFilePath, shouldAppend: true, maxTimeInterval: 60 * 60 * 24)
+        let destination = FileDestination(owner: Log.logger, writeToFile: logFilePath, shouldAppend: true)
         Log.logger.add(destination: destination)
     }
 
@@ -52,8 +52,11 @@ class LogConfig {
 
     ///
     class func getCurrentLogFileName() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        let name = dateFormatter.string(from: Date())
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "rmbt"
-        return bundleIdentifier + "_log.log"
+        return bundleIdentifier + "_" + name + "_" + "_log.log"
     }
 
     ///
