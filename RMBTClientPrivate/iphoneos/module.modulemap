@@ -5,7 +5,7 @@ module RMBTClientPrivate [system] [extern_c] {
     export *
 }
 
-module CommonCrypto [system] {
+module SSCommonCrypto [system] {
     header "/Applications/XCode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/usr/include/CommonCrypto/CommonCrypto.h"
     export *
 }
