@@ -127,7 +127,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     
     // RMBTMainTestExtendedDelegate
     func runVOIPTest() {
-        startQosMeasurement(inMain:true)
+        startQosMeasurement(inMain: true)
     }
     
     func shouldRunQOSTest() -> Bool {
@@ -138,7 +138,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var testRunner: RMBTTestRunner?
     
     /// init
-    private var clientType:RMBTClientType = .standard
+    private var clientType: RMBTClientType = .standard
 
     ///
     internal var qualityOfServiceTestRunner: QualityOfServiceTest?
@@ -152,6 +152,12 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     var resultUuid: String?
+    
+    open var loopModeUUID: String? {
+        didSet {
+            self.testRunner?.loopModeUUID = loopModeUUID
+        }
+    }
 
     ///
     open var running: Bool {
@@ -197,6 +203,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
+        testRunner?.loopModeUUID = self.loopModeUUID
         testRunner?.start()
         
         if clientType == .standard {
@@ -209,7 +216,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     }
 
     ///
-    open func startQosMeasurement(inMain:Bool) {
+    open func startQosMeasurement(inMain: Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
@@ -421,7 +428,7 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 // delegate to runner to submit VOIP results               
                 self.testRunner?.jpl = SpeedMeasurementJPLResult(JSON: result)
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
-                
+                self.testRunner?.continueFromDownload()
             } else {
                 self.delegate?.measurementDidFail(self, withReason: .unknownError)
             }
@@ -514,6 +521,18 @@ extension RMBTClient {
     public class var surveyIsActiveService: Bool? {
         get {
             return ControlServer.sharedControlServer.surveySettings?.isActiveService
+        }
+    }
+    
+    public class var advertisingIsActive: Bool {
+        get {
+            return ControlServer.sharedControlServer.advertisingSettings?.isShowAdvertising ?? false
+        }
+    }
+    
+    public class var advertisingSettings: AdvertisingResponse? {
+        get {
+            return ControlServer.sharedControlServer.advertisingSettings
         }
     }
 

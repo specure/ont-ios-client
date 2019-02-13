@@ -24,7 +24,7 @@ import ObjectMapper
 open class MeasurementHistory {
 
     ///
-    open static let sharedMeasurementHistory = MeasurementHistory()
+    public static let sharedMeasurementHistory = MeasurementHistory()
 
     ///
     private let serialQueue = DispatchQueue(label: "DefaultHistoryQueue", attributes: [])
@@ -254,7 +254,6 @@ open class MeasurementHistory {
     ///
     open func getSyncCode(success : @escaping (_ response: GetSyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.synchGetCode(success: success, error: failure)
-        
     }
 
 // MARK: Get

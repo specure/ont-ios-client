@@ -38,7 +38,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
     let TAG_NTPTEST_REQUEST = -1
 
     ///
-    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.qos.ntp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.qos.ntp.socketQueue")
 
     ///
     fileprivate var ntpTestSocket: GCDAsyncSocket?
@@ -140,8 +140,8 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
             qosLog.debug("will send \(String(describing: testObject.request)) to the server")
 
             // write request message and read response
-            SocketUtils.writeLine(socket, line: testObject.request!, withTimeout: timeoutInSec, tag: TAG_NTPTEST_REQUEST) // TODO: what if request is nil?
-            SocketUtils.readLine(socket, tag: TAG_NTPTEST_REQUEST, withTimeout: timeoutInSec)
+            socket.writeLine(line: testObject.request!, withTimeout: timeoutInSec, tag: TAG_NTPTEST_REQUEST) // TODO: what if request is nil?
+            socket.readLine(tag: TAG_NTPTEST_REQUEST, withTimeout: timeoutInSec)
         }
     }
 

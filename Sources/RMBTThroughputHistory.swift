@@ -28,7 +28,7 @@ open class RMBTThroughputHistory: CustomStringConvertible {
     open var resolutionNanos: UInt64
 
     /// Array of throughput objects for each period
-    open var periods = [RMBTThroughput]()
+    open var periods: [RMBTThroughput] = []
 
     /// Returns the index of the last period which is complete, meaning that no reports can change its value.
     /// -1 if not even the first period is complete yet
@@ -122,7 +122,11 @@ open class RMBTThroughputHistory: CustomStringConvertible {
             return
         }
 
-        let finalTput = periods[periods.count - count - 1]
+        let index = periods.count - count - 1
+        if index < 0 {
+            return
+        }
+        let finalTput = periods[index]
 
         for _ in 0 ..< count {
             if let t = periods.last {

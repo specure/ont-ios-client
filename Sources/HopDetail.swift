@@ -56,6 +56,6 @@ open class HopDetail: NSObject { /* struct */
 
     ///
     open override var description: String {
-        return "HopDetail: fromIp: \(fromIp), time: \(time)"
+        return "HopDetail: fromIp: \(fromIp ?? ""), time: \(time)"
     }
 }

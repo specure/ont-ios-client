@@ -21,10 +21,10 @@ import UIKit
 class BasicRequestBuilder: AbstractBasicRequestBuilder {
 
     ///
-    override class func addBasicRequestValues(basicRequest: BasicRequest) {
+    override class func addBasicRequestValues(_ basicRequest: BasicRequest) {
         super.addBasicRequestValues(basicRequest)
 
-        let currentDevice = UIDevice.currentDevice()
+        let currentDevice = UIDevice.current
 
         basicRequest.device = currentDevice.model
         basicRequest.model = UIDeviceHardware.platform()

@@ -91,9 +91,10 @@ class ControlServer {
     var uuid: String?
     
     ///
-    var historyFilter:HistoryFilterType?
+    var historyFilter: HistoryFilterType?
     
     var surveySettings: SettingsReponse_Old.Settings.SurveySettings?
+    var advertisingSettings: AdvertisingResponse?
 
     ///
     var openTestBaseURL: String?
@@ -128,14 +129,23 @@ class ControlServer {
         alamofireManager.session.invalidateAndCancel()
     }
     
+    func clearStoredUUID() {
+        baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
+        uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
+        
+        UserDefaults.clearStoredUUID(uuidKey: uuidKey)
+        self.uuid = nil
+    }
+    
     ///
     func updateWithCurrentSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
         uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
         
-        uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
-        
+        if self.uuid == nil {
+            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
+        }
         
         // get settings of control server
         getSettings(success: {
@@ -191,9 +201,61 @@ class ControlServer {
         
         let req = MeasurementServerInfoRequest()
         
-        self.request(.post, path: "/measurementServer", requestObject: req, success: success, error: failure)
+        if let l = RMBTLocationTracker.sharedTracker.location {
+            let geoLocation = GeoLocation(location: l)
+            req.geoLocation = geoLocation
+        }
+        
+        let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
+        self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }
 
+// MARK: Advertising
+    
+    func getAdvertising(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
+        ensureClientUuid(success: { (uuid) in
+            let advertisingRequest = AdvertisingRequest()
+            advertisingRequest.uuid = uuid
+            
+            if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+                successCallback()
+            }
+            else {
+                let successFunc: (_ response: AdvertisingResponse) -> () = { response in
+                    Log.logger.debug("advertising: \(String(describing: response.isShowAdvertising))")
+                    self.advertisingSettings = response
+                    successCallback()
+                }
+                self.request(.post, path: "/advertising", requestObject: advertisingRequest, success: successFunc, error: { error in
+                    Log.logger.debug("advertising error")
+                    
+                    failure(error)
+                })
+            }
+        }, error: failure)
+    }
+    
+// MARK: Badges
+
+    func getBadges(success successCallback: @escaping (_ response: BadgesResponse?) -> (), error failure: @escaping ErrorCallback) {
+        let badgesRequest = BasicRequest()
+        badgesRequest.uuid = uuid
+        
+        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            successCallback(nil)
+        }
+        else {
+            let successFunc: (_ response: BadgesResponse) -> () = { response in
+                successCallback(response)
+            }
+            request(.post, path: "/badges", requestObject: badgesRequest, success: successFunc, error: { error in
+                Log.logger.debug("badges error " + error.localizedDescription)
+                
+                failure(error)
+            })
+        }
+    }
+    
 // MARK: Settings
 
     ///
@@ -215,10 +277,10 @@ class ControlServer {
             self.uuid = response.client?.uuid
             
             // save uuid
+            
             if let uuidKey = self.uuidKey, let u = self.uuid {
                 UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
             }
-            
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion
             
@@ -228,23 +290,25 @@ class ControlServer {
                     QosMeasurementType.localizedNameDict[type] = measurementType.name
                 }
             })
-            ///
-            // No synchro = No filters
-            //
-            if let ipv4Server = response.settings?.controlServerIpv4Host {
-                RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
-            }
             
-            //
-            if let ipv6Server = response.settings?.controlServerIpv6Host {
-                RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+            if RMBTConfig.sharedInstance.settingsMode == .remotely {
+                ///
+                // No synchro = No filters
+                //
+                if let ipv4Server = response.settings?.controlServerIpv4Host {
+                    RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
+                }
+                
+                //
+                if let ipv6Server = response.settings?.controlServerIpv6Host {
+                    RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+                }
+                
+                //
+                if let mapServer = response.settings?.mapServer?.host {
+                    RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
+                }
             }
-            
-            //
-            if let mapServer = response.settings?.mapServer?.host {
-                RMBTConfig.sharedInstance.configNewMapServer(server: mapServer)
-            }
-            
             self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
             successCallback()
@@ -281,41 +345,45 @@ class ControlServer {
                 // get history filters
                 self.historyFilter = set.history
                 
-                //
-                if let ipv4Server = set.urls?.ipv4IpOnly {
-                    RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
-                }
-                
-                //
-                if let ipv6Server = set.urls?.ipv6IpOnly {
-                    RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
-                }
-                
-                //
-                if let theOpenTestBase = set.urls?.opendataPrefix {
-                    self.openTestBaseURL = theOpenTestBase
-                }
-                
-                //
-                if let checkip4 = set.urls?.ipv4IpCheck {
-                    RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR = checkip4
-                }
-                
-                
-                // check for map server from settings
-                if let mapServer = set.map_server {
-                    let host = mapServer.host
-                    let scheme = mapServer.useTls ? "https" : "http"
+                if RMBTConfig.sharedInstance.settingsMode == .remotely {
                     //
-                    var port = (mapServer.port! as NSNumber).stringValue
-                    if (port == "80" || port == "443") {
-                        port = ""
-                    } else {
-                        port = ":\(port)"
+                    if let ipv4Server = set.urls?.ipv4IpOnly {
+                        RMBTConfig.sharedInstance.configNewCS_IPv4(server: ipv4Server)
                     }
                     
-                    self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
-                    Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
+                    //
+                    if let ipv6Server = set.urls?.ipv6IpOnly {
+                        RMBTConfig.sharedInstance.configNewCS_IPv6(server: ipv6Server)
+                    }
+                    
+                    //
+                    if let theOpenTestBase = set.urls?.opendataPrefix {
+                        self.openTestBaseURL = theOpenTestBase
+                    }
+                    
+                    //
+                    if let checkip4 = set.urls?.ipv4IpCheck {
+                        RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL = checkip4
+                    }
+                    
+                    
+                    // check for map server from settings
+                    if let mapServer = set.map_server {
+                        let host = mapServer.host
+                        let scheme = mapServer.useTls ? "https" : "http"
+                        //
+                        var port = (mapServer.port! as NSNumber).stringValue
+                        if (port == "80" || port == "443") {
+                            port = ""
+                        } else {
+                            port = ":\(port)"
+                        }
+                        
+                        self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
+                        Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
+                    }
+                } else {
+                    self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
                 }
             }
             
@@ -349,7 +417,7 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR, success: successCallback, error: failure)
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL, success: successCallback, error: failure)
     }
 
     /// no NAT
@@ -617,8 +685,8 @@ class ControlServer {
     ///
     func syncWithCode(code:String, success: @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-        let req = SyncCodeRequest()
-        req.code = code
+            let req = SyncCodeRequest()
+            req.code = code
             req.uuid = uuid
             self.request(.post, path: "/sync", requestObject: req, success: success, error: failure)
         }, error: failure)
@@ -676,6 +744,11 @@ class ControlServer {
 
     ///
     private func request<T: BasicResponse>(_ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+        ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
+    }
+    
+    ///
+    private func request<T: BasicResponse>(_ baseUrl: String?, _ method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping  (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         ServerHelper.request(alamofireManager, baseUrl: baseUrl, method: method, path: path, requestObject: requestObject, success: success, error: failure)
     }
     

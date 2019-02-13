@@ -17,7 +17,7 @@
 import Foundation
 import CocoaAsyncSocket
 
-class QOSControlConnectionTaskWeakObserver {
+class QOSControlConnectionTaskWeakObserver: NSObject {
     weak var delegate: QOSControlConnectionTaskDelegate?
     
     init(_ delegate: QOSControlConnectionTaskDelegate) {
@@ -40,7 +40,7 @@ class QOSControlConnection: NSObject {
     //
 
     ///
-    var delegate: QOSControlConnectionDelegate?
+    weak var delegate: QOSControlConnectionDelegate?
 
     ///
     var connected = false
@@ -52,14 +52,14 @@ class QOSControlConnection: NSObject {
     internal let connectCountDownLatch = CountDownLatch()
 
     ///
-    internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    internal let socketQueue = DispatchQueue(label: "com.specure.rmbt.controlConnectionSocketQueue")
     
     internal let mutableQueue = DispatchQueue(label: "com.specure.rmbt.mutableQueue")
     ///
     internal lazy var qosControlConnectionSocket: GCDAsyncSocket = GCDAsyncSocket(delegate: self, delegateQueue: socketQueue)
 
     ///
-    internal var taskDelegateDictionary: [UInt: QOSControlConnectionTaskWeakObserver] = [:]
+    internal var taskDelegateDictionary: [UInt: [QOSControlConnectionTaskWeakObserver]] = [:]
 
     ///
     internal var pendingTimeout: Double = 0
@@ -102,7 +102,7 @@ class QOSControlConnection: NSObject {
         }
 
         _ = connectCountDownLatch.await(timeout)
-
+        
         return connected
     }
 
@@ -111,7 +111,7 @@ class QOSControlConnection: NSObject {
         // send quit
         Log.logger.debug("QUIT QUIT QUIT QUIT QUIT")
 
-        writeLine("QUIT", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: -1) // don't bother with the tag, don't need read after this operation
+        self.writeLine("QUIT", withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: -1) // don't bother with the tag, don't need read after this operation
         qosControlConnectionSocket.disconnectAfterWriting()
         // qosControlConnectionSocket.disconnectAfterReadingAndWriting()
     }
@@ -145,9 +145,17 @@ class QOSControlConnection: NSObject {
 // MARK: control connection delegate methods
 
     func clearObservers() {
-        for (_, observer) in taskDelegateDictionary.enumerated() {
-            if observer.value.delegate == nil {
-                taskDelegateDictionary.removeValue(forKey: observer.key)
+        for (_, arrayOfObservers) in taskDelegateDictionary.enumerated() {
+            var observers = arrayOfObservers.value
+            for observer in arrayOfObservers.value {
+                if observer.delegate == nil {
+                    if let index = observers.index(of: observer) {
+                        observers.remove(at: index)
+                    }
+                }
+            }
+            if observers.count == 0 {
+                taskDelegateDictionary.removeValue(forKey: arrayOfObservers.key)
             }
         }
     }
@@ -155,19 +163,34 @@ class QOSControlConnection: NSObject {
     ///
     func registerTaskDelegate(_ delegate: QOSControlConnectionTaskDelegate, forTaskId taskId: UInt) {
         self.mutableQueue.sync {
-            taskDelegateDictionary[taskId] = QOSControlConnectionTaskWeakObserver(delegate)
+            var observers: [QOSControlConnectionTaskWeakObserver]? = taskDelegateDictionary[taskId]
+            if observers == nil {
+                observers = []
+            }
+            
+            observers?.append(QOSControlConnectionTaskWeakObserver(delegate))
+            taskDelegateDictionary[taskId] = observers
             self.clearObservers()
             Log.logger.debug("registerTaskDelegate: \(taskId), delegate: \(delegate)")
         }
     }
 
     ///
-    func unregisterTaskDelegate(forTaskId taskId: UInt) {
+    func unregisterTaskDelegate(_ delegate: QOSControlConnectionTaskDelegate, forTaskId taskId: UInt) {
         self.mutableQueue.sync {
-            if let _ = taskDelegateDictionary[taskId] {
-                if let delegate = taskDelegateDictionary.removeValue(forKey: taskId) {
-                    // taskDelegateDictionary[taskId] = nil
+            if let tempObservers = taskDelegateDictionary[taskId] {
+                var observers = tempObservers
+                if let index = observers.index(where: { (observer) -> Bool in
+                    return observer.delegate! === delegate
+                }) {
+                    observers.remove(at: index)
                     Log.logger.debug("unregisterTaskDelegate: \(taskId), delegate: \(delegate)")
+                }
+                if observers.count == 0 {
+                    taskDelegateDictionary[taskId] = nil
+                }
+                else {
+                    taskDelegateDictionary[taskId] = observers
                 }
             }
             else {
@@ -207,12 +230,12 @@ class QOSControlConnection: NSObject {
 
     ///
     internal func writeLine(_ line: String, withTimeout timeout: TimeInterval, tag: Int) {
-        SocketUtils.writeLine(qosControlConnectionSocket, line: line, withTimeout: timeout, tag: tag)
+        qosControlConnectionSocket.writeLine(line: line, withTimeout: timeout, tag: tag)
     }
 
     ///
     internal func readLine(_ tag: Int, withTimeout timeout: TimeInterval) {
-        SocketUtils.readLine(qosControlConnectionSocket, tag: tag, withTimeout: timeout)
+        qosControlConnectionSocket.readLine(tag: tag, withTimeout: timeout)
     }
 
 // MARK: other methods
@@ -326,7 +349,7 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
             Log.logger.verbose("got greeting")
 
             // read accept
-            readLine(TAG_FIRST_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_FIRST_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_FIRST_ACCEPT:
             // got accept
@@ -334,17 +357,17 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
             // send token
             let tokenCommand = "TOKEN \(testToken)\n"
-            writeLine(tokenCommand, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: TAG_TOKEN)
+            self.writeLine(tokenCommand, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC, tag: TAG_TOKEN)
 
             // read token response
-            readLine(TAG_TOKEN, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_TOKEN, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_TOKEN:
             // response from token command
             Log.logger.verbose("got ok")
 
             // read second accept
-            readLine(TAG_SECOND_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
+            self.readLine(TAG_SECOND_ACCEPT, withTimeout: QOS_CONTROL_CONNECTION_TIMEOUT_SEC)
 
         case TAG_SECOND_ACCEPT:
             // got second accept
@@ -392,13 +415,15 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
                             //Log.logger.verbose("\(taskDelegateDictionary.count)")
                             //Log.logger.verbose("\(taskDelegateDictionary.indexForKey(1))")
 
-                            if let taskDelegate = self.taskDelegateDictionary[taskId] {
-                                Log.logger.verbose("\(tag): TASK DELEGATE: \(taskDelegate)")
+                            if let observers = self.taskDelegateDictionary[taskId] {
+                                for observer in observers {
+                                    Log.logger.verbose("\(tag): TASK DELEGATE: \(String(describing: observer.delegate))")
 
-                                Log.logger.debug("CALLING DELEGATE METHOD of \(taskDelegate), withResponse: \(str), taskId: \(taskId), tag: \(tag), _tag: \(_tag)")
+                                    Log.logger.debug("CALLING DELEGATE METHOD of \(String(describing: observer.delegate)), withResponse: \(str), taskId: \(taskId), tag: \(tag), _tag: \(_tag)")
 
-                                // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                                taskDelegate.delegate?.controlConnection(self, didReceiveTaskResponse: str, withTaskId: taskId, tag: _tag)
+                                    // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
+                                    observer.delegate?.controlConnection(self, didReceiveTaskResponse: str, withTaskId: taskId, tag: _tag)
+                                }
                             }
                         }
                     }
@@ -433,12 +458,14 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
                 Log.logger.verbose("TASK ID: \(taskId)")
 
-                if let taskDelegate = taskDelegateDictionary[taskId] {
-                    Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
+                if let observers = taskDelegateDictionary[taskId] {
+                    for observer in observers {
+                        Log.logger.verbose("TASK DELEGATE: \(String(describing: observer.delegate))")
 
-                    // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                    taskDelegate.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
-                    Log.logger.debug("!!! AFTER DID_RECEIVE_TIMEOUT !!!!")
+                        // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
+                        observer.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
+                        Log.logger.debug("!!! AFTER DID_RECEIVE_TIMEOUT !!!!")
+                    }
                 }
             }
         }
@@ -458,11 +485,13 @@ extension QOSControlConnection: GCDAsyncSocketDelegate {
 
                 Log.logger.verbose("TASK ID: \(taskId)")
 
-                if let taskDelegate = taskDelegateDictionary[taskId] {
-                    Log.logger.verbose("TASK DELEGATE: \(taskDelegate)")
+                if let observers = taskDelegateDictionary[taskId] {
+                    for observer in observers {
+                        Log.logger.verbose("TASK DELEGATE: \(String(describing: observer.delegate))")
 
-                    // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
-                    taskDelegate.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
+                        // call delegate method // TODO: dispatch delegate methods with dispatch queue of delegate
+                        observer.delegate?.controlConnection(self, didReceiveTimeout: elapsed, withTaskId: taskId, tag: _tag)
+                    }
                 }
             }
         }

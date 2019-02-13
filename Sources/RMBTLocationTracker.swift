@@ -25,10 +25,10 @@ public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
-    open static let sharedTracker = RMBTLocationTracker()
+    public static let sharedTracker = RMBTLocationTracker()
 
     ///
-    open let locationManager: CLLocationManager
+    public let locationManager: CLLocationManager
 
     ///
     open var authorizationCallback: EmptyCallback?
@@ -135,6 +135,10 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
     open func forceUpdate() {
         stop()
         _ = startIfAuthorized()
+    }
+    
+    open func isLocationManagerEnabled() -> Bool {
+        return CLLocationManager.authorizationStatus() == .authorizedAlways || CLLocationManager.authorizationStatus() == .authorizedWhenInUse
     }
 }
 

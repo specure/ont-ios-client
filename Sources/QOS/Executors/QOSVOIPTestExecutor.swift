@@ -205,8 +205,8 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         payloadSize         = Int(dSampleRate / (1000 / dDelay) * (dBitsPerSample / 8))
         payloadTimestamp    = UInt32(dSampleRate / (1000 / dDelay))
 
-        qosLog.debug("payloadSize: \(payloadSize)")
-        qosLog.debug("payloadTimestamp: \(payloadTimestamp)")
+        qosLog.debug("payloadSize: \(payloadSize ?? 0)")
+        qosLog.debug("payloadTimestamp: \(payloadTimestamp ?? 0)")
 
         //
         
@@ -258,11 +258,18 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 
         // request results
         // wait short time (last udp packet could reach destination after this request resulting in strange server behaviour)
-        usleep(100000) /* 100 * 1000 */
+        
+//        usleep(100000) /* 100 * 1000 */
 
         controlConnection?.sendTaskCommand("GET VOIPRESULT \(ssrc!)", withTimeout: timeoutInSec, forTaskId: testObject.qosTestId, tag: TAG_TASK_VOIPRESULT)
 
-        cdlTimeout(for: TAG_TASK_VOIPRESULT_cdl, 1000, forTag: "TAG_TASK_VOIPRESULT")
+        
+        var timeout = Int64(UInt64(self.timeoutInSec).toNanoTime()) - Int64(UInt64.getTimeDifferenceInNanoSeconds(testStartTimeTicks))
+        if timeout < 0 {
+            timeout = 0
+        }
+        
+        cdlTimeout(for: TAG_TASK_VOIPRESULT_cdl, UInt64(timeout) / NSEC_PER_USEC, forTag: "TAG_TASK_VOIPRESULT")    
     }
 
     ///
@@ -459,9 +466,12 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
                     TAG_TASK_VOIPTEST_cdl.countDown()
 
                     ssrc = UInt32(response.components(separatedBy: " ")[1]) // !
-                    qosLog.info("got ssrc: \(ssrc)")
+                    qosLog.info("got ssrc: \(ssrc ?? 0)")
 
-                    startOutgoingTest()
+                    let queue = DispatchQueue(label: "Voip startOutgoingTest queue")
+                    queue.async {
+                        self.startOutgoingTest()
+                    }
                 }
 
             case TAG_TASK_VOIPRESULT:

@@ -39,7 +39,7 @@ open class WalledGardenTest {
                 if let res = response as? HTTPURLResponse {
                     let httpResponse = res
 
-                    callback((httpResponse.statusCode != 204))
+                    callback((httpResponse.statusCode == 204))
                 } else {
                     callback(false) // request failed (probably due to no network connection)
                 }

@@ -24,7 +24,7 @@ import ObjectMapper
 open class MapServer {
 
     ///
-    open static let sharedMapServer = MapServer()
+    public static let sharedMapServer = MapServer()
 
     ///
     private let alamofireManager: Alamofire.SessionManager
@@ -57,18 +57,14 @@ open class MapServer {
     }
     
     ///
-    open func getMapOptions(isOld: Bool = true, success successCallback: @escaping (_ response: /*MapOptionResponse*/RMBTMapOptions) -> (), error failure: @escaping ErrorCallback) {
+    open func getMapOptions(success successCallback: @escaping (_ response: MapOptionResponse) -> (), error failure: @escaping ErrorCallback) {
         request(.post, path: "/tiles/info", requestObject: BasicRequest(), success: { (response: MapOptionResponse) in
-
-            // TODO: rewrite MapViewController to use new objects
-            let mapOptions = RMBTMapOptions(response: response.toJSON() as NSDictionary, isOld: isOld)
-            successCallback(mapOptions)
-
+            successCallback(response)
         } , error: failure)
     }
 
     ///
-    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: [String: AnyObject]], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
+    open func getMeasurementsAtCoordinate(_ coordinate: CLLocationCoordinate2D, zoom: Int, params: [String: Any], success successCallback: @escaping (_ response: [SpeedMeasurementResultResponse]) -> (), error failure: @escaping ErrorCallback) {
 
         let mapMeasurementRequest = MapMeasurementRequest()
         mapMeasurementRequest.coords = MapMeasurementRequest.CoordObject()
@@ -76,8 +72,8 @@ open class MapServer {
         mapMeasurementRequest.coords?.longitude = coordinate.longitude
         mapMeasurementRequest.coords?.zoom = zoom
 
-        mapMeasurementRequest.options = params["options"]
-        mapMeasurementRequest.filter = params["filter"]
+        mapMeasurementRequest.options = params["options"] as? [String : AnyObject]
+        mapMeasurementRequest.filter = params["filter"] as? [String : AnyObject]
 
         mapMeasurementRequest.prioritizeUuid = mapMeasurementRequest.clientUuid
 
@@ -96,6 +92,43 @@ open class MapServer {
         }, error: failure)
     }
 
+    open func getTileUrlForMapBoxOverlayType(_ overlayType: String, params: [String: Any]?) -> String? {
+        if let base = baseUrl {
+            // baseUrl and layer
+            var urlString = base + "/tiles/\(overlayType)/{z}/{x}/{y}.png?v=1"
+            
+            // add uuid for highlight
+            if let uuid = ControlServer.sharedControlServer.uuid {
+                urlString += "&highlight=\(uuid)"
+            }
+            
+            // add params
+            if let p = params, p.count > 0 {
+                let paramString = p.map({ (key, value) in
+                    let escapedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                    
+                    var escapedValue: String?
+                    if let v = value as? String {
+                        escapedValue = v.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) // TODO: does this need a cast to string?
+                    } else if let numValue = value as? NSNumber {
+                        escapedValue = String(describing: numValue)
+                    }
+                    
+                    return "\(escapedKey ?? key)=\(escapedValue ?? value as! String)"
+                }).joined(separator: "&")
+                
+                urlString += "&" + paramString
+            }
+            
+            Log.logger.debug("Generated tile url: \(urlString)")
+            
+            print(urlString)
+            
+            return urlString
+        }
+        
+        return nil
+    }
     ///
     open func getTileUrlForMapOverlayType(_ overlayType: String, x: UInt, y: UInt, zoom: UInt, params: [String: Any]?) -> URL? {
         if let base = baseUrl {
@@ -127,6 +160,8 @@ open class MapServer {
 
             Log.logger.debug("Generated tile url: \(urlString)")
 
+            print(urlString)
+            
             return URL(string: urlString)
         }
 

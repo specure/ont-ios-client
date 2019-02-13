@@ -27,7 +27,7 @@ open class RMBTSettings: NSObject {
     }
     
     ///
-    open static let sharedSettings = RMBTSettings()
+    public static let sharedSettings = RMBTSettings()
 
 // MARK: Temporary app state (global variables)
 
@@ -47,7 +47,7 @@ open class RMBTSettings: NSObject {
     ///
     @objc open dynamic var publishPublicData = false // only for akos
     
-    @objc open dynamic var submitZeroTesting = false
+    @objc open dynamic var submitZeroTesting = true
 
     /// anonymous mode
     @objc open dynamic var anonymousModeEnabled = false
@@ -62,6 +62,8 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var nerdModeForceIPv6 = false
+    
+    @objc open dynamic var isDarkMode = false
 
     ///
     @objc open dynamic var nerdModeQosEnabled = NerdModeQosMode.newNetwork.rawValue // Enable QoS
@@ -81,6 +83,12 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var debugLoopModeMinDelay: UInt = 0
+    
+    @objc open dynamic var debugLoopModeSkipQOS: Bool = false
+    
+    @objc open dynamic var debugLoopModeDistance: UInt = 0
+    
+    @objc open dynamic var debugLoopModeIsStartImmedatelly: Bool = true
 
     // control server
 
@@ -116,8 +124,15 @@ open class RMBTSettings: NSObject {
     @objc open dynamic var debugLoggingEnabled = false
     
     @objc open dynamic var previousNetworkName: String?
+    @objc open dynamic var isAdsRemoved: Bool = false
     
     @objc open dynamic var lastSurveyTimestamp: Double = 0.0
+    
+    @objc open dynamic var isClientPersistent: Bool = true
+    @objc open dynamic var isAnalyticsEnabled: Bool = true
+    
+    @objc open dynamic var countMeasurements: Int = 0
+    @objc open dynamic var isDevModeEnabled: Bool = false
 
     ///
     private override init() {
@@ -180,8 +195,22 @@ open class RMBTSettings: NSObject {
 
             "debugLoggingEnabled",
             "previousNetworkName",
+            "isAdsRemoved",
             
-            "lastSurveyTimestamp"
+            "lastSurveyTimestamp",
+            
+            //Loop mode
+            "debugLoopMode",
+            "debugLoopModeMaxTests",
+            "debugLoopModeMinDelay",
+            "debugLoopModeSkipQOS",
+            "debugLoopModeDistance",
+            "debugLoopModeIsStartImmedatelly",
+            "isDarkMode",
+            "isClientPersistent",
+            "isAnalyticsEnabled",
+            "countMeasurements",
+            "isDevModeEnabled"
         ])
     }
 

@@ -1,6 +1,0 @@
-framework module GCNetworkReachability {
-  umbrella header "GCNetworkReachability-macOS-umbrella.h"
-
-  export *
-  module * { export * }
-}

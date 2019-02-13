@@ -44,7 +44,8 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     //
 
     ///
-    fileprivate let socketQueue = DispatchQueue(label: "com.specure.rmbt.tcp.socketQueue", attributes: DispatchQueue.Attributes.concurrent)
+    fileprivate let inSocketQueue = DispatchQueue(label: "com.specure.rmbt.tcp.in.socketQueue")
+    fileprivate let outSocketQueue = DispatchQueue(label: "com.specure.rmbt.tcp.out.socketQueue")
 
     ///
     fileprivate var tcpTestOutSocket: GCDAsyncSocket?
@@ -72,6 +73,12 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
         testResult.set(RESULT_TCP_TIMEOUT, number: testObject.timeout)
     }
 
+    override func callFinishCallback() {
+        self.tcpTestInSocket?.disconnect()
+        self.tcpTestOutSocket?.disconnect()
+        super.callFinishCallback()
+    }
+    
     ///
     override func executeTest() {
         qosLog.debug("EXECUTING TCP TEST")
@@ -138,7 +145,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
                 if response.hasPrefix("OK") {
 
                     // create client socket
-                    tcpTestOutSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: socketQueue)
+                    tcpTestOutSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: outSocketQueue)
 
                     // connect client socket
                     do {
@@ -163,7 +170,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
             case TAG_TASK_TCPTEST_IN:
 
                 // create server socket
-                tcpTestInSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: socketQueue)
+                tcpTestInSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: inSocketQueue)
 
                 do {
                     if let portIn = testObject.portIn {
@@ -185,12 +192,14 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
     }
 
 // MARK: GCDAsyncSocketDelegate methods
-
+    func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+        print("socketDidDisconnect")
+    }
     ///
     @objc func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
         if sock == tcpTestInSocket {
             // read line
-            SocketUtils.readLine(newSocket, tag: TAG_TCPTEST_IN_PING, withTimeout: timeoutInSec)
+            newSocket.readLine(tag: TAG_TCPTEST_IN_PING, withTimeout: timeoutInSec)
         }
     }
 
@@ -200,8 +209,8 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
         if let socket = tcpTestOutSocket,
             sock == socket {
             // write "PING" and read response
-            SocketUtils.writeLine(socket, line: "PING", withTimeout: timeoutInSec, tag: TAG_TCPTEST_OUT_PING)
-            SocketUtils.readLine(socket, tag: TAG_TCPTEST_OUT_PING, withTimeout: timeoutInSec)
+            socket.writeLine(line: "PING", withTimeout: timeoutInSec, tag: TAG_TCPTEST_OUT_PING)
+            socket.readLine(tag: TAG_TCPTEST_OUT_PING, withTimeout: timeoutInSec)
         }
     }
 

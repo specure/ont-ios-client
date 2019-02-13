@@ -50,15 +50,33 @@ public func RMBTBuildInfoString() -> String {
 ///
 public func RMBTBuildDateString() -> String {
     let info = Bundle.main.infoDictionary!
-
-    return info["BuildDate"] as! String
+    let buildDate = info["BuildDate"] as? String ?? "none"
+    
+    return buildDate
 }
 
 ///
 public func RMBTVersionString() -> String {
     let info = Bundle.main.infoDictionary!
 
-    return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    let versionString = "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    
+    var environment = ""
+    switch currentEnvironment {
+    case .Beta:
+        environment = "BETA"
+    case .Debug:
+        environment = "DEBUG"
+    case .Test:
+        environment = "TEST"
+    default:
+        break
+    }
+    #if DEBUG
+    return "\(versionString) [\(environment) \(RMBTBuildInfoString()) (\(RMBTBuildDateString()))]"
+    #else
+    return "\(versionString) \(environment)"
+    #endif
 }
 
 /////
@@ -88,20 +106,13 @@ public func RMBTPreferredLanguage() -> String? {
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
-public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
-    let r = urlString.range(of: LANGUAGE_PREFIX)
-
-    if r.location == NSNotFound {
-        return urlString as String // return same string if no $lang was found
+public func RMBTLocalizeURLString(_ urlString: String) -> String {
+    if urlString.range(of: LANGUAGE_PREFIX) != nil {
+        let lang = PREFFERED_LANGUAGE
+        let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
+        return replacedURL
     }
-
-    let lang = PREFFERED_LANGUAGE
-
-    let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
-
-    // Log.logger.debug("replaced $lang in string, output: \(replacedURL)")
-
-    return replacedURL
+    return urlString
 }
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)
@@ -157,6 +168,17 @@ public func RMBTMillisecondsStringWithNanos(_ nanos: UInt64) -> String {
 public func RMBTMillisecondsString(_ nanos: UInt64) -> String {
     let ms = NSNumber(value: Double(nanos) * 1.0e-6 as Double)
     return "\(RMBTFormatNumber(ms))"
+}
+
+public func RMBTNanos(_ millisecondsString: String) -> UInt64 {
+    let s = millisecondsString.replacingOccurrences(of: ",", with: ".")
+    let ms = NSNumber(value: (Double(s) ?? 0.0) * 1.0e+6)
+    return UInt64(truncating: ms)
+}
+
+public func RMBTMbps(_ mbps: String) -> Double {
+    let s = mbps.replacingOccurrences(of: ",", with: ".")
+    return Double(s) ?? 0.0
 }
 
 ///

@@ -72,7 +72,9 @@ open class QualityOfServiceTest: NSObject {
     //
 
     ///
-    private let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue", attributes: DispatchQueue.Attributes.concurrent)
+    private let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue")
+    
+    private let delegateQueue = DispatchQueue(label: "com.specure.rmbt.delegateQueue", attributes: DispatchQueue.Attributes.concurrent)
 
     private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue")
     
@@ -125,7 +127,13 @@ open class QualityOfServiceTest: NSObject {
     private var stopped = false
 
     //
-
+    deinit {
+        defer {
+            if self.stopped == false {
+                self.closeAllControlConnections()
+            }
+        }
+    }
     ///
     public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isPartOfMainTest: Bool) {
         self.testToken = testToken
@@ -182,6 +190,7 @@ open class QualityOfServiceTest: NSObject {
                 else {
                     response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.UDP.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.TCP.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.HttpProxy.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.NonTransparentProxy.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.WEBSITE.rawValue] = nil
@@ -261,7 +270,7 @@ open class QualityOfServiceTest: NSObject {
         for (objectiveType, objectiveValues) in objectives {
             for (objectiveParams) in objectiveValues {
                 if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams),
-                    let testExecutor = QOSFactory.createTestExecutor(qosTest, delegateQueue: executorQueue, speedtestStartTime: speedtestStartTime) {
+                    let testExecutor = QOSFactory.createTestExecutor(qosTest, delegateQueue: delegateQueue, speedtestStartTime: speedtestStartTime) {
                     let group = self.findConcurencyGroup(with: qosTest.concurrencyGroup)
                     group.addTestExecutor(testExecutor: testExecutor)
                     testCount += 1
@@ -472,8 +481,14 @@ open class QualityOfServiceTest: NSObject {
             for testExecutor in concurencyGroup.testExecutors {
                 if testExecutor.needsControlConnection() {
                     let qosTest = testExecutor.getTestObject()
-                    let controlConnection = getControlConnection(qosTest)
-                    if !controlConnection.connected {
+                    
+                    if let controlConnection = getControlConnection(qosTest) {
+                        if !testExecutor.needsCustomTimeoutHandling() {
+                            controlConnection.setTimeout(QOS_CONTROL_CONNECTION_TIMEOUT_NS)
+                        }
+                        testExecutor.setControlConnection(controlConnection)
+                    }
+                    else {
                         // don't do this test
                         Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
                         concurencyGroup.removeTestExecutor(testExecutor: testExecutor)
@@ -481,10 +496,6 @@ open class QualityOfServiceTest: NSObject {
                         continue
                     }
                     
-                    if !testExecutor.needsCustomTimeoutHandling() {
-                        controlConnection.setTimeout(qosTest.timeout)
-                    }
-                    testExecutor.setControlConnection(controlConnection)
                 }
             }
             
@@ -500,9 +511,7 @@ open class QualityOfServiceTest: NSObject {
                             concurencyGroup?.passedExecutors += 1
                             self?.checkProgress()
                             if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
-                                self?.closeAllControlConnections()
                                 self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
-                                    self?.controlConnectionMap = [:]
                                     self?.runTestsOfNextConcurrencyGroup()
                                 })
                             }
@@ -724,12 +733,12 @@ open class QualityOfServiceTest: NSObject {
     }
 
     ///
-    private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
+    private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection? {
         // determine control connection
         let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)"
 
         // TODO: make instantiation of control connection synchronous with locks!
-        var conn: QOSControlConnection! = self.controlConnectionMap[controlConnectionKey]
+        var conn: QOSControlConnection? = self.controlConnectionMap[controlConnectionKey]
         if conn == nil {
             Log.logger.debug("\(controlConnectionKey): trying to open new control connection")
             // Log.logger.debug("NO CONTROL CONNECTION PRESENT FOR \(controlConnectionKey), creating a new one")
@@ -739,23 +748,19 @@ open class QualityOfServiceTest: NSObject {
 
             conn = QOSControlConnection(testToken: testToken)
             // conn.delegate = self
-
-            // connect
-            /* let isConnected = */_ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort) // blocking
-
-            // Log.logger.debug("AFTER LOCK: have control connection?: \(isConnected)")
-            // TODO: return nil? if not connected
-
-            Log.logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
-
+    
             controlConnectionMap[controlConnectionKey] = conn
         } else {
             Log.logger.debug("\(controlConnectionKey): control connection already opened")
         }
 
-        if !conn.connected {
+        if conn?.connected == false {
             // reconnect
-            _ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
+            let isConnected = conn?.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
+            if isConnected == false {
+                controlConnectionMap[controlConnectionKey] = nil
+                conn = nil
+            }
         }
 
         return conn
@@ -826,7 +831,7 @@ open class QualityOfServiceTest: NSObject {
             return
         }
 
-        var _testResultArray = [QOSTestResults]()
+        var _testResultArray: [QOSTestResults] = []
 
         for testResult in resultArray { // TODO: resultArray == _testResultArray? just use resultArray?
             if !testResult.isEmpty() {
@@ -834,6 +839,8 @@ open class QualityOfServiceTest: NSObject {
             }
         }
 
+        print("SUBMIT RESULTS")
+        print(_testResultArray)
         // don't send results if all results are empty (e.g. only tcp tests and no control connection) or added additional test as part of the main test group
         if _testResultArray.isEmpty || self.isPartOfMainTest {
             // inform delegate

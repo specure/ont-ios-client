@@ -38,6 +38,8 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
 
     ///
     fileprivate var alamofireManager: Alamofire.SessionManager! // !
+    
+    fileprivate var request: DataRequest?
 
     //
 
@@ -106,7 +108,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
             ////
 
             //alamofireManager.request(.get, url, parameters: [:], encoding: .URL, headers: nil)
-            alamofireManager.request(url, method: .get, parameters: [:], encoding: URLEncoding.default, headers: nil)
+            request = alamofireManager.request(url, method: .get, parameters: [:], encoding: URLEncoding.default, headers: nil)
             
                 .responseJSON { [weak self] response in
                     guard let strongSelf = self else { return }
@@ -227,6 +229,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
         testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0)
         testResult.set(RESULT_HTTP_PROXY_HEADER, value: "")
 
+        request?.cancel()
         super.testDidTimeout()
     }
 
@@ -238,6 +241,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
         testResult.set(RESULT_HTTP_PROXY_LENGTH, value: 0)
         testResult.set(RESULT_HTTP_PROXY_HEADER, value: "")
 
+        request?.cancel()
         super.testDidFail()
     }
 

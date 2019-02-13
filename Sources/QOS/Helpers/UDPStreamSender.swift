@@ -137,7 +137,7 @@ class UDPStreamSender: NSObject {
     fileprivate func close() {
         isStopped = true
         Log.logger.debug("closing udp socket")
-        udpSocket?.closeAfterSending()
+        udpSocket?.close()//AfterSending()
         udpSocket?.setDelegate(nil)
         udpSocket?.setDelegateQueue(nil)
         udpSocket = nil

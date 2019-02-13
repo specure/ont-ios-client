@@ -26,10 +26,10 @@ import SystemConfiguration.CaptiveNetwork
 open class RMBTConnectivity: NSObject {
 
     ///
-    open let networkType: RMBTNetworkType
+    public let networkType: RMBTNetworkType
 
     ///
-    open let timestamp: Date
+    public let timestamp: Date
 
     ///
     open var networkTypeDescription: String {
@@ -133,7 +133,7 @@ open class RMBTConnectivity: NSObject {
             
             // action while changing provider
             netinfo.subscriberCellularProviderDidUpdateNotifier = { carrier in
-                
+                print(carrier)
                 // TODO
                     
             }
@@ -172,21 +172,18 @@ open class RMBTConnectivity: NSObject {
         #if os(OSX)
         // TODO
         #else
-            if let interfaces = CNCopySupportedInterfaces() {
-                for i in 0..<CFArrayGetCount(interfaces) {
-                    let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interfaces, i)
-                    let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
-                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString) {
-                        let interfaceData = unsafeInterfaceData as! [AnyHashable: Any]
-
-                        if let currentSSID = interfaceData[kCNNetworkInfoKeySSID as AnyHashable] as? String,
-                            let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID as AnyHashable] as? String {
-                                return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
-                        }
-                    }
+        #if os(iOS)
+        if let interfaces = CNCopySupportedInterfaces() as? [CFString] {
+            for interface in interfaces {
+                if let interfaceData = CNCopyCurrentNetworkInfo(interface) as? [CFString: Any],
+                let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
+                let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
+                    return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
                 }
             }
-            #endif
+        }
+        #endif
+        #endif
         //}
 
         return nil

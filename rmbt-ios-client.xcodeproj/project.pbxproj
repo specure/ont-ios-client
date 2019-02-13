@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -471,6 +471,12 @@
 		E92F3253207477B400F0CC9E /* RMBTQosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F3252207477B400F0CC9E /* RMBTQosTests.swift */; };
 		E92F32552074827000F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
 		E92F327420749D1D00F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E9A21D2021513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
+		E9A21D2121513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
+		E9A21D2221513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
+		E9A21D2421513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */; };
+		E9A21D2521513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */; };
+		E9A21D2621513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */; };
 		E9B92F2C207DC1F9007D190F /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B92F2B207DC1F8007D190F /* Log.swift */; };
 		E9C41DF82053C88500162C87 /* RMBTClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41DF72053C88500162C87 /* RMBTClientTests.swift */; };
 		E9C41DFA2053C88500162C87 /* RMBTClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B1C7DE1CF4ADBA00F19282 /* RMBTClient.framework */; };
@@ -485,6 +491,8 @@
 		E9C41E122053CFE700162C87 /* HistoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C41E0C2053CFE700162C87 /* HistoryFilter.swift */; };
 		E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */; };
 		E9C7AF871FB5FF33005DCEA7 /* RMBTNominatim.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */; };
+		E9F5BC9F21557D6700832594 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */; };
+		E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -703,6 +711,8 @@
 		E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementJPLResult.swift; sourceTree = "<group>"; };
 		E92F3252207477B400F0CC9E /* RMBTQosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQosTests.swift; sourceTree = "<group>"; };
 		E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQoSTestHelper.swift; sourceTree = "<group>"; };
+		E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingRequest.swift; sourceTree = "<group>"; };
+		E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingResponse.swift; sourceTree = "<group>"; };
 		E9B92F2B207DC1F8007D190F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		E9C41DF52053C88500162C87 /* RMBTClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RMBTClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9C41DF72053C88500162C87 /* RMBTClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTClientTests.swift; sourceTree = "<group>"; };
@@ -720,6 +730,8 @@
 		E9C41E1C2053D8C300162C87 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = "../rmbt-ios/Vendor/realm-swift-3.1.1/tvos/swift-4.0.2/RealmSwift.framework"; sourceTree = "<group>"; };
 		E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatimAddress.swift; sourceTree = "<group>"; };
 		E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatim.swift; sourceTree = "<group>"; };
+		E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingResponse.swift; sourceTree = "<group>"; };
+		E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1274,6 +1286,7 @@
 				E0FC4C751D6C852600D5D236 /* QosMeasurementResultRequest.swift */,
 				A1D44B001F137D9500DE9E2D /* Old_Request.swift */,
 				E9C41E022053C8D400162C87 /* OperatorsRequest.swift */,
+				E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */,
 			);
 			name = Request;
 			sourceTree = "<group>";
@@ -1281,6 +1294,7 @@
 		E0FC4C4B1D6C82FE00D5D236 /* Response */ = {
 			isa = PBXGroup;
 			children = (
+				E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */,
 				E0FC4C791D6C854A00D5D236 /* BasicResponse.swift */,
 				E0FC4C7D1D6C856300D5D236 /* IpResponse.swift */,
 				E0FC4C811D6C857B00D5D236 /* MapOptionResponse.swift */,
@@ -1298,6 +1312,7 @@
 				E0FC4CAD1D6C86B200D5D236 /* HistoryItem.swift */,
 				E9C41E002053C8C500162C87 /* CheckSurveyResponse.swift */,
 				A1D44AFE1F137D1A00DE9E2D /* Old_Responses.swift */,
+				E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */,
 			);
 			name = Response;
 			sourceTree = "<group>";
@@ -1406,7 +1421,6 @@
 				E0B1C7DA1CF4ADBA00F19282 /* Frameworks */,
 				E0B1C7DB1CF4ADBA00F19282 /* Headers */,
 				E0B1C7DC1CF4ADBA00F19282 /* Resources */,
-				4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1426,7 +1440,6 @@
 				E0B1C7E81CF4ADF100F19282 /* Frameworks */,
 				E0B1C7E91CF4ADF100F19282 /* Headers */,
 				E0B1C7EA1CF4ADF100F19282 /* Resources */,
-				D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1446,7 +1459,6 @@
 				E0B1C7F51CF4AE1100F19282 /* Frameworks */,
 				E0B1C7F61CF4AE1100F19282 /* Headers */,
 				E0B1C7F71CF4AE1100F19282 /* Resources */,
-				00AB88CA68A36CB6F0BF84E0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1466,7 +1478,6 @@
 				E9C41DF22053C88500162C87 /* Frameworks */,
 				E9C41DF32053C88500162C87 /* Resources */,
 				A4C9180425A37F28DA1C2381 /* [CP] Embed Pods Frameworks */,
-				CA3CCBF66ACCD4A40AFE9A47 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1511,7 +1522,7 @@
 				};
 			};
 			buildConfigurationList = E0B1C7D61CF4AC8800F19282 /* Build configuration list for PBXProject "rmbt-ios-client" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1565,21 +1576,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00AB88CA68A36CB6F0BF84E0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClient_OSX/Pods-RMBTClient_OSX-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		02494C7E3C12A48EB065EF66 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1632,21 +1628,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4B18152661CF8EA26E8DFC8B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-All-RMBTClient_iOS/Pods-All-RMBTClient_iOS-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		88E395D9193F3DA4428CE8A9 /* [CP] Check Pods Manifest.lock */ = {
@@ -1714,36 +1695,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CA3CCBF66ACCD4A40AFE9A47 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D1D0651ABE5025A8D974C550 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClient_tvOS/Pods-RMBTClient_tvOS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1766,12 +1717,14 @@
 				E02D18EE1CF59262002A02FE /* RMBTThroughputHistory.swift in Sources */,
 				E02D199F1CF5AAB5002A02FE /* ConnectivityService.swift in Sources */,
 				E02D18991CF59262002A02FE /* QOSNonTransparentProxyTest.swift in Sources */,
+				E9F5BC9F21557D6700832594 /* AdvertisingResponse.swift in Sources */,
 				E08EA6A21D7EBE29000F916A /* ObjectMapperHelper.swift in Sources */,
 				E0FC4C7A1D6C854A00D5D236 /* BasicResponse.swift in Sources */,
 				E02D19081CF59262002A02FE /* UIDeviceHardware.swift in Sources */,
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
 				E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */,
 				E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */,
+				E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */,
 				E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D189C1CF59262002A02FE /* QOSTCPTest.swift in Sources */,
 				E02D19A51CF5AACF002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
@@ -1875,6 +1828,7 @@
 				A1720F0D1DD48F28000AB71D /* Conversions+Extension.swift in Sources */,
 				E0FC4C6E1D6C84DA00D5D236 /* SpeedMeasurementResult.swift in Sources */,
 				E02D19061CF59262002A02FE /* UDPStreamSender.swift in Sources */,
+				E9A21D2021513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */,
 				A1696C041F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
 				E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */,
@@ -1888,6 +1842,7 @@
 				A1D44AFF1F137D1A00DE9E2D /* Old_Responses.swift in Sources */,
 				E02D199C1CF5AA93002A02FE /* PingUtilDelegateBridge.swift in Sources */,
 				E0FC4C9E1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
+				E9A21D2421513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */,
 				E02D19251CF59D1A002A02FE /* GetDNSIP.m in Sources */,
 				E02D1A571CFD882D002A02FE /* ControlServer.swift in Sources */,
 				E02D19051CF59262002A02FE /* UDPStreamReceiverDelegate.swift in Sources */,
@@ -1949,6 +1904,7 @@
 				E08EA6A81D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E0FC4C571D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				E0FC4CBD1D6C881F00D5D236 /* RTPPacket.swift in Sources */,
+				E9A21D2221513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */,
 				E0FC4D041D6D994600D5D236 /* QOSTestExecutorClass.swift in Sources */,
 				E9057F472074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */,
 				E0FC4C2E1D6C811D00D5D236 /* PingUtil.m in Sources */,
@@ -2034,6 +1990,7 @@
 				E0FC4CCC1D6C88C500D5D236 /* ConversionUtility.swift in Sources */,
 				E0FC4C841D6C857B00D5D236 /* MapOptionResponse.swift in Sources */,
 				E0FC4CEE1D6D97A600D5D236 /* RMBTThroughputHistory.swift in Sources */,
+				E9A21D2621513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */,
 				E0FC4C2D1D6C811A00D5D236 /* RMBTCPUMonitor.m in Sources */,
 				E0FC4CB61D6C87DB00D5D236 /* QOSConfig.swift in Sources */,
 				E0FC4CE81D6D975E00D5D236 /* RMBTMapOptions.swift in Sources */,
@@ -2091,6 +2048,7 @@
 				E08EA6A71D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D195E1CF5A450002A02FE /* QOSDNSTest.swift in Sources */,
 				E0FC4C931D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
+				E9A21D2121513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */,
 				E0FC4C441D6C82BE00D5D236 /* MapMeasurementRequest.swift in Sources */,
 				E9057F462074A23700D83936 /* RMBTQoSTestHelper.swift in Sources */,
 				E02D198B1CF5A522002A02FE /* CLLocation+RMBTFormat.swift in Sources */,
@@ -2176,6 +2134,7 @@
 				E02D198C1CF5A525002A02FE /* AtomicBoolean.swift in Sources */,
 				E02D198F1CF5A52E002A02FE /* UInt+Extensions.swift in Sources */,
 				E02D19711CF5A4C9002A02FE /* UDPStreamSender.swift in Sources */,
+				E9A21D2521513CE500EB8CB2 /* AdvertisingResponse.swift in Sources */,
 				E0FC4C971D6C860E00D5D236 /* SpeedMeasurementSubmitResponse.swift in Sources */,
 				E02D1A2D1CFC9D34002A02FE /* QOSTCPTestExecutor.swift in Sources */,
 				E0FC4C9F1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
@@ -2292,7 +2251,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -2329,18 +2289,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/Alamofire\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/AlamofireObjectMapper\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/GCNetworkReachability-iOS\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjcExceptionBridging\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/ObjectMapper\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/Realm\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/RealmSwift\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/XCGLogger\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2358,7 +2307,11 @@
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2407,6 +2360,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2418,7 +2372,11 @@
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2482,7 +2440,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2541,7 +2503,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-tvOS";
@@ -2619,7 +2585,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -2679,7 +2649,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-OSX.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2724,7 +2698,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = RMBTClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS.test.RMBTClientTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2762,7 +2740,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = RMBTClientTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.specure.nettest.client.RMBTClient-iOS.test.RMBTClientTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
