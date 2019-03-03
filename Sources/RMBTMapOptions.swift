@@ -30,7 +30,7 @@ public let MapOptionResponseOverlayAuto = MapOptionResponse.MapOverlays(identifi
 
 ///
 public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay (
-    identifier: "auto",
+    identifier: "automatic",
     localizedDescription: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description")
 )
 
@@ -142,7 +142,7 @@ open class RMBTMapOptions {
         self.activeOverlay = response.mapOverlays.first(where: { (overlay) -> Bool in
             return overlay.isDefault == true
         }) ?? MapOptionResponseOverlayAuto
-        overlays.append(MapOptionResponseOverlayAuto)
+//        overlays.append(MapOptionResponseOverlayAuto)
         overlays.append(contentsOf: response.mapOverlays)
         
         //Set period
