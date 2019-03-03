@@ -30,7 +30,7 @@ public let MapOptionResponseOverlayAuto = MapOptionResponse.MapOverlays(identifi
 
 ///
 public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay (
-    identifier: "automatic",
+    identifier: "auto",
     localizedDescription: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description")
 )
 

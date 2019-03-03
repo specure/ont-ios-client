@@ -218,7 +218,7 @@ open class MapOptionResponse: BasicResponse {
         }
         
         open override func mapping(map: Map) {
-            identifier  <- map["id"]
+            identifier  <- map["value"]
             title       <- map["title"]
             isDefault   <- map["default"]
         }
