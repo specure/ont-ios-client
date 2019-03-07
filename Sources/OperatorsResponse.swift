@@ -26,6 +26,16 @@ open class OperatorsResponse: BasicResponse {
         open var title: String = ""
         open var subtitle: String = ""
         open var idProvider: Int?
+        open var provider: String?
+        
+        open var providerForRequest: String {
+            if let idProvider = self.idProvider {
+                return String(format: "%d", idProvider)
+            } else if let provider = provider {
+                return provider
+            }
+            return ""
+        }
         
         public required init?(map: Map) {
             
@@ -34,6 +44,7 @@ open class OperatorsResponse: BasicResponse {
         open func mapping(map: Map) {
             isDefault <- map["default"]
             idProvider <- map["id_provider"]
+            provider <- map["provider"]
             title <- map["title"]
             subtitle <- map["detail"]
         }

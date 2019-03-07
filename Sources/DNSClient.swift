@@ -540,11 +540,11 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
     ///
     func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: Error?) { // crashes if NSError is used without questionmark
         Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
-        if isFinished == false {
-            for callback in callbackFailureMap {
-                callback.value(error as? NSError)
-            }
-        }
+//        if isFinished == false {
+//            for callback in callbackFailureMap {
+//                callback.value(error as? NSError)
+//            }
+//        }
     }
     
 

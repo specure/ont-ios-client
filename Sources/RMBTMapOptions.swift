@@ -305,7 +305,9 @@ open class RMBTMapOptions {
             }).joined(separator: "")
         }
         if let activeOperator = self.activeOperator {
-            params["mobile_provider_name"] = activeOperator.title
+            params["provider"] = activeOperator.providerForRequest
+        } else {
+            params["provider"] = ""
         }
         
         return params
