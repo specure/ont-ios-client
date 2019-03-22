@@ -70,7 +70,7 @@ public func RMBTSpeedMbpsString(_ kbps: Double, withMbps: Bool = true, maxDigits
         let localizedMps = NSLocalizedString("test.speed.unit", value: "Mbps", comment: "Speed suffix")
 
         return String(format: "%@ %@", speedValue, localizedMps)
-    } else {
-        return "\(speedValue)"
     }
+
+    return "\(speedValue)"
 }
