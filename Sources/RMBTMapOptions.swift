@@ -308,11 +308,14 @@ open class RMBTMapOptions {
         } else {
             params["period"] = 180
         }
-        if self.activeCellularTypes.count > 0 {
-            params["technology"] = self.activeCellularTypes.map({ (type) -> String in
-                return String(type.id ?? 0)
-            }).joined(separator: "")
+        if self.activeType?.id == .cell {
+            if self.activeCellularTypes.count > 0 {
+                params["technology"] = self.activeCellularTypes.map({ (type) -> String in
+                    return String(type.id ?? 0)
+                }).joined(separator: "")
+            }
         }
+        
         if let activeOperator = self.activeOperator {
             params["provider"] = activeOperator.providerForRequest
         } else {
