@@ -101,13 +101,22 @@ open class RMBTMapOptions {
                     country.code = countryCode.lowercased()
                     country.name = displayNameString
                     unsortedCountryArray.append(country)
-                    country.isDefault = (locale.regionCode?.lowercased() == countryCode.lowercased())
+                    if RMBTConfig.sharedInstance.RMBT_DEFAULT_IS_CURRENT_COUNTRY {
+                        country.isDefault = (locale.regionCode?.lowercased() == countryCode.lowercased())
+                    } else {
+                        country.isDefault = false
+                    }
                 }
             }
             unsortedCountryArray.sort { (country1, country2) -> Bool in
                 return country1.name?.compare(country2.name ?? "") == ComparisonResult.orderedAscending
             }
-            var sortedCountryArray = [RMBTMapOptionCountryAll]
+            
+            let allCountries = RMBTMapOptionCountryAll
+            if RMBTConfig.sharedInstance.RMBT_DEFAULT_IS_CURRENT_COUNTRY {
+                allCountries.isDefault = true
+            }
+            var sortedCountryArray = [allCountries]
             sortedCountryArray.append(contentsOf: unsortedCountryArray)
             self._countries = sortedCountryArray
         }

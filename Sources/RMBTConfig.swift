@@ -63,6 +63,8 @@ public class RMBTConfig {
     //
     public var RMBT_VERSION_NEW = false
     
+    public var RMBT_DEFAULT_IS_CURRENT_COUNTRY = true
+    
     public var settingsMode: SettingsMode = .remotely
     
     //
