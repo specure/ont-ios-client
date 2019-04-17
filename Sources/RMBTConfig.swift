@@ -65,6 +65,9 @@ public class RMBTConfig {
     
     public var RMBT_DEFAULT_IS_CURRENT_COUNTRY = true
     
+    public var RMBT_USE_MAIN_LANGUAGE = false
+    public var RMBT_MAIN_LANGUAGE = "en"
+    
     public var settingsMode: SettingsMode = .remotely
     
     //

@@ -25,7 +25,11 @@ class AbstractBasicRequestBuilder {
 
         basicRequest.apiLevel = "" // always null on iOS...
         basicRequest.clientName = "RMBT"
-        basicRequest.language = PREFFERED_LANGUAGE
+        if RMBTConfig.sharedInstance.RMBT_USE_MAIN_LANGUAGE == true {
+            basicRequest.language = RMBTConfig.sharedInstance.RMBT_MAIN_LANGUAGE
+        } else {
+            basicRequest.language = PREFFERED_LANGUAGE
+        }
         basicRequest.product = "" // always null on iOS...
 
         Log.logger.debug("ADDING PREVIOUS TEST STATUS: \(String(describing: RMBTSettings.sharedSettings.previousTestStatus))")
