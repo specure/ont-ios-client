@@ -230,6 +230,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
             portIn: testObject.portIn
         )
 
+        qosLog.debug("=================numPackets=======\(numPackets)")
         udpStreamSender = UDPStreamSender(settings: settings)
         udpStreamSender.delegate = self
 
@@ -518,6 +519,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         if let rtpPacket = RTPPacket.fromData(packetData) {
             // put packet in data list
             uniqueQueue.sync {
+                qosLog.debug("======Receive===========sequenceNumber=======\(rtpPacket.header.sequenceNumber)")
                 rtpControlDataList[rtpPacket.header.sequenceNumber] = RTPControlData(rtpPacket: rtpPacket, receivedNS: receivedNS)
             }
             // !! TODO: EXC_BAD_ACCESS at this line?
@@ -543,7 +545,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         // generate random bytes
 
         
-        
+        qosLog.debug("======Send===========sequenceNumber=======\(packet.header.sequenceNumber)")
 //        let payloadBytes = UnsafeMutableRawPointer.allocate(byteCount: payloadSize, alignment: 0)
 //        let customDealocator = Data.Deallocator.custom { (ptr, length) in
 //            ptr.deallocate()
