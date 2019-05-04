@@ -420,6 +420,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
     }
 
+    open func testWorker(_ worker: RMBTTestWorker, startPing: Int, totalPings: Int) {
+    }
     ///
     open func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker) {
         //ASSERT_ON_WORKER_QUEUE();

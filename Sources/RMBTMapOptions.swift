@@ -67,7 +67,7 @@ public let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
     localizedDescription: NSLocalizedString("map.options.overlay.whitespots", value: "White spots", comment: "Map overlay description")
 )
 
-public let RMBTMapOptionCountryAll = RMBTMapOptionCountry(code: "all", name: "All Countries")
+public let RMBTMapOptionCountryAll = RMBTMapOptionCountry(code: "all", name: NSLocalizedString("map.options.filter.all_countries", comment: "All Countries"))
 
 ///
 public let RMBTMapOptionsToastInfoTitle = "title"

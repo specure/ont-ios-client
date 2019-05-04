@@ -108,7 +108,10 @@ public func RMBTPreferredLanguage() -> String? {
 /// Fallback to english for non-translated languages is done on the server side.
 public func RMBTLocalizeURLString(_ urlString: String) -> String {
     if urlString.range(of: LANGUAGE_PREFIX) != nil {
-        let lang = PREFFERED_LANGUAGE
+        var lang = PREFFERED_LANGUAGE
+        if RMBTConfig.sharedInstance.RMBT_USE_MAIN_LANGUAGE == true {
+            lang = RMBTConfig.sharedInstance.RMBT_MAIN_LANGUAGE
+        }
         let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
         return replacedURL
     }

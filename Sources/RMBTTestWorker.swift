@@ -94,6 +94,9 @@ public protocol RMBTTestWorkerDelegate: class {
     func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
 
     ///
+    func testWorker(_ worker: RMBTTestWorker, startPing: Int, totalPings: Int)
+    
+    ///
     func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker)
 
     ///
@@ -593,6 +596,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 delegate?.testWorkerDidFinishLatencyTest(self)
             } else {
                 // Send PING again
+                delegate?.testWorker(self, startPing: Int(pingSeq), totalPings: params.numPings)
                 writeLine("PING", withTag: .txPing)
                 pingStartNanos = RMBTCurrentNanos()
             }
