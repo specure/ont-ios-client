@@ -28,7 +28,7 @@ open class RMBTThroughputHistory: CustomStringConvertible {
     open var resolutionNanos: UInt64
 
     /// Array of throughput objects for each period
-    open var periods = [RMBTThroughput]()
+    open var periods: [RMBTThroughput] = []
 
     /// Returns the index of the last period which is complete, meaning that no reports can change its value.
     /// -1 if not even the first period is complete yet
@@ -122,27 +122,31 @@ open class RMBTThroughputHistory: CustomStringConvertible {
             return
         }
 
-        let finalTput = periods[periods.count - count - 1]
+        let index = periods.count - count - 1
+        if index < 0 {
+            return
+        }
+        let finalTput = periods[index]
 
         for _ in 0 ..< count {
-            let t = periods.last!
+            if let t = periods.last {
+                finalTput.endNanos = max(t.endNanos, finalTput.endNanos)
+                finalTput.length += t.length
 
-            finalTput.endNanos = max(t.endNanos, finalTput.endNanos)
-            finalTput.length += t.length
-
-            periods.removeLast()
+                periods.removeLast()
+            }
         }
     }
 
     ///
     func log() {
-        logger.debug("Throughputs:")
+        Log.logger.debug("Throughputs:")
 
         for t in periods {
-            logger.debug("- \(t.description)")
+            Log.logger.debug("- \(t.description)")
         }
 
-        logger.debug("Total: \(self.totalThroughput.description)")
+        Log.logger.debug("Total: \(self.totalThroughput.description)")
     }
 
     ///

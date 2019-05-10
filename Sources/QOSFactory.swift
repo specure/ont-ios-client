@@ -50,6 +50,9 @@ class QOSFactory {
                 case .VOIP:
                     return QOSVOIPTest(testParameters: params)
 
+                case .JITTER:
+                    return QOSVOIPTest(testParameters: params)
+                
                 case .TRACEROUTE:
                     return QOSTracerouteTest(testParameters: params)
             }
@@ -59,7 +62,7 @@ class QOSFactory {
     }
 
     ///
-    class func createTestExecutor(_ testObject: QOSTest, controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
+    class func createTestExecutor(_ testObject: QOSTest, controlConnection: QOSControlConnection? = nil, delegateQueue: DispatchQueue, speedtestStartTime: UInt64) -> QOSTestExecutorProtocol? {
         if let type = getTypeIfEnabled(testObject.getType()) {
 
             switch type {
@@ -118,6 +121,14 @@ class QOSFactory {
                         testObject: testObject as! QOSVOIPTest,
                         speedtestStartTime: speedtestStartTime
                     )
+                
+                case .JITTER:
+                    return VOIPTestExecutor(
+                        controlConnection: controlConnection,
+                        delegateQueue: delegateQueue,
+                        testObject: testObject as! QOSVOIPTest,
+                        speedtestStartTime: speedtestStartTime
+                )
 
                 case .TRACEROUTE:
                     return TracerouteTestExecutor(

@@ -27,17 +27,27 @@ public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFA
 
 public class RMBTConfig {
     
+    public enum SettingsMode {
+        case urlsLocally
+        case remotely
+    }
 //    // ID = 1 is a Server placed in Nurmberg
 //    var defaultMeasurementServerId:UInt64 = 1
     
     //
-    public static let sharedInstance: RMBTConfig = { RMBTConfig() } ()
+    public static let sharedInstance: RMBTConfig = {
+        let config = RMBTConfig()
+        LogConfig.initLoggingFramework()
+        return config
+    } ()
     
     //
     public init() {}
 
     // MARK: Default control server URLs   // CouchDB as Default disabled 
     var RMBT_CONTROL_SERVER_URL        = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
+    
+    var RMBT_CONTROL_MEASUREMENT_SERVER_URL        = "\(RMBT_URL_HOST)\(RMBT_CONTROL_MEASUREMENT_SERVER_PATH)"
     //
     var RMBT_CONTROL_SERVER_IPV4_URL   = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)" // "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
@@ -45,7 +55,7 @@ public class RMBTConfig {
     //
     var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
     //
-    var RMBT_CHECK_IPV4_ULR            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
+    var RMBT_CHECK_IPV4_URL            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
     
     // Server to be used for a measurement
     public var measurementServer: MeasurementServerInfoResponse.Servers?
@@ -53,26 +63,46 @@ public class RMBTConfig {
     //
     public var RMBT_VERSION_NEW = false
     
+    public var RMBT_DEFAULT_IS_CURRENT_COUNTRY = true
+    
+    public var RMBT_USE_MAIN_LANGUAGE = false
+    public var RMBT_MAIN_LANGUAGE = "en"
+    
+    public var settingsMode: SettingsMode = .remotely
+    
     //
-    public func configNewCS(server:String) {
-        RMBT_CONTROL_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewCS(server: String) {
+        RMBT_CONTROL_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     //
-    public func configNewCS_IPv4(server:String) {
-        RMBT_CONTROL_SERVER_IPV4_URL  = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewMeasurementCS(server: String) {
+        RMBT_CONTROL_MEASUREMENT_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     //
-    public func configNewCS_IPv6(server:String) {
-        RMBT_CONTROL_SERVER_IPV6_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewCS_IPv4(server: String) {
+        RMBT_CONTROL_SERVER_IPV4_URL  = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
+    }
+    //
+    public func configNewCS_IPv6(server: String) {
+        RMBT_CONTROL_SERVER_IPV6_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
+    }
+
+    public func configNewCS_checkIPv4(server: String) {
+        RMBT_CHECK_IPV4_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
     }
     
     //
-    public func configNewMapServer(server:String) {
-        RMBT_MAP_SERVER_PATH_URL = server.hasPrefix(secureRequestPrefix) ? server:secureRequestPrefix+server
+    public func configNewMapServer(server: String) {
+        RMBT_MAP_SERVER_PATH_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
         RMBT_MAP_SERVER_PATH_URL = RMBT_MAP_SERVER_PATH_URL.hasSuffix(RMBT_MAP_SERVER_PATH) ?
             RMBT_MAP_SERVER_PATH_URL
             :
             RMBT_MAP_SERVER_PATH_URL + RMBT_MAP_SERVER_PATH
+    }
+    
+    //
+    public func configNewSuffixMapServer(server: String) {
+        RMBT_MAP_SERVER_PATH = server
     }
     
     public static func updateSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
@@ -84,6 +114,7 @@ public class RMBTConfig {
             failure(error)
         })
     }
+    
 }
 
 
@@ -123,11 +154,13 @@ let RMBT_TEST_SAMPLING_RESOLUTION_MS = 250
 ///
 let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer"
 
+let RMBT_CONTROL_MEASUREMENT_SERVER_PATH = "/RMBTControlServer/V2"
+
 ///
 let RMBT_CONTROL_SERVER_SUFFIX = "/api/v1"
 
 ///
-let RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
+var RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
 
 
 
@@ -178,9 +211,6 @@ let RMBT_GMAPS_API_KEY = "AIzaSyDCoFuxghaMIVOKEeGxeGInAiWo9A0iJL4"
 let RMBT_TOS_VERSION = 1
 
 ///////////////////
-
-let TEST_SHOW_TRAFFIC_WARNING_ON_CELLULAR_NETWORK = false
-let TEST_SHOW_TRAFFIC_WARNING_ON_WIFI_NETWORK = false
 
 let TEST_USE_PERSONAL_DATA_FUZZING = false
 

@@ -17,10 +17,11 @@
 import Foundation
 
 ///
-protocol QOSTestExecutorProtocol {
+protocol QOSTestExecutorProtocol: class {
 
     ///
     func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ())
+    func setProgressCallback(progressCallback: @escaping (_ executor: NSObject, _ percent: Float) -> Void)
 
     ///
     func needsControlConnection() -> Bool
@@ -30,4 +31,12 @@ protocol QOSTestExecutorProtocol {
 
     ///
     func setCurrentTestToken(_ testToken: String) // TODO: refactor
+    
+    func setControlConnection(_ controlConnection: QOSControlConnection)
+    
+    func testObjectType() -> QosMeasurementType
+    
+    func getTestObject() -> QOSTest
+    
+    func testExecutorHasFinished() -> Bool
 }

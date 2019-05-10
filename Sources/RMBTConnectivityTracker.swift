@@ -25,8 +25,11 @@ import GCNetworkReachability
 #endif // TODO: use library for network reachability that works on tvOS
 
 ///
-public protocol RMBTConnectivityTrackerDelegate {
+@objc public protocol RMBTConnectivityTrackerDelegate {
 
+    //    var currentConnectivityNetworkType: RMBTNetworkType? { @objc(currentConnectivityNetworkType)get @objc(setCurrentConnectivityNetworkType:)set }
+    func connectivityNetworkTypeDidChange(connectivity: RMBTConnectivity)
+    
     ///
     func connectivityTracker(_ tracker: RMBTConnectivityTracker, didDetectConnectivity connectivity: RMBTConnectivity)
 
@@ -41,14 +44,16 @@ public protocol RMBTConnectivityTrackerDelegate {
 open class RMBTConnectivityTracker: NSObject {
 
     private static var __once: () = {
+            #if os(iOS)
             RMBTConnectivityTracker.sharedReachability.startMonitoringNetworkReachabilityWithNotification()
+            #endif
         }()
 
     #if os(iOS)
 
     /// GCNetworkReachability is not made to be multiply instantiated, so we create a global
     /// singleton first time a RMBTConnectivityTracker is instatiated
-    private static let sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
+    private static var sharedReachability: GCNetworkReachability = GCNetworkReachability.forInternetConnection()
 
     /// According to http://www.objc.io/issue-5/iOS7-hidden-gems-and-workarounds.html one should
     /// keep a reference to CTTelephonyNetworkInfo live if we want to receive radio changed notifications (?)
@@ -60,10 +65,14 @@ open class RMBTConnectivityTracker: NSObject {
     private let queue = DispatchQueue(label: "com.specure.nettest.connectivitytracker", attributes: [])
 
     ///
-    private let delegate: RMBTConnectivityTrackerDelegate
+    private weak var delegate: RMBTConnectivityTrackerDelegate?
 
     ///
-    private var lastConnectivity: RMBTConnectivity!
+    private var lastConnectivity: RMBTConnectivity! {
+        didSet {
+            print("lastConnectivity changed")
+        }
+    }
 
     ///
     private var stopOnMixed = false
@@ -79,6 +88,15 @@ open class RMBTConnectivityTracker: NSObject {
         static var token: Int = 0
     }
 
+    private let refreshTimeinterval = 1.0
+    private var refreshTimer: Timer? { //Hack. Sometimes we don't have changes from reachability
+        didSet {
+            if let timer = oldValue,
+                timer.isValid == true {
+                timer.invalidate()
+            }
+        }
+    }
     ///
     public init(delegate: RMBTConnectivityTrackerDelegate, stopOnMixed: Bool) {
         self.delegate = delegate
@@ -99,8 +117,24 @@ open class RMBTConnectivityTracker: NSObject {
         }
     }
 
+    @objc func refreshTimerHandler(_ timer: Timer) {
+        #if os(iOS)
+        if let reachability = GCNetworkReachability.forInternetConnection(),
+            reachability.currentReachabilityStatus() != RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus() {
+            RMBTConnectivityTracker.sharedReachability = reachability
+            
+            reachability.startMonitoringNetworkReachabilityWithNotification()
+            let status = RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus()
+            self.reachabilityDidChangeToStatus(status)
+        }
+        #endif
+    }
+    
     ///
     open func start() {
+        DispatchQueue.main.async {
+            self.refreshTimer = Timer.scheduledTimer(timeInterval: self.refreshTimeinterval, target: self, selector: #selector(self.refreshTimerHandler(_:)), userInfo: nil, repeats: true)
+        }
         queue.async {
             self.started = true
             self.lastRadioAccessTechnology = nil
@@ -110,7 +144,7 @@ open class RMBTConnectivityTracker: NSObject {
 
             #if os(iOS)
             NotificationCenter.default.addObserver(self, selector: #selector(RMBTConnectivityTracker.appWillEnterForeground(_:)),
-                                                             name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+                                                   name: UIApplication.willEnterForegroundNotification, object: nil)
 
             NotificationCenter.default.addObserver(self, selector: #selector(RMBTConnectivityTracker.reachabilityDidChange(_:)),
                                                              name: NSNotification.Name.gcNetworkReachabilityDidChange, object: nil)
@@ -126,6 +160,7 @@ open class RMBTConnectivityTracker: NSObject {
     ///
     open func stop() {
         queue.async {
+            self.refreshTimer = nil
             NotificationCenter.default.removeObserver(self)
 
             self.started = false
@@ -137,7 +172,7 @@ open class RMBTConnectivityTracker: NSObject {
         queue.async {
             #if os(iOS)
             assert(self.lastConnectivity != nil, "Connectivity should be known by now")
-            self.delegate.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
+            self.delegate?.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
             #endif
         }
     }
@@ -161,7 +196,7 @@ open class RMBTConnectivityTracker: NSObject {
                 return
             }
 
-            self.lastRadioAccessTechnology = n.object as! String
+            self.lastRadioAccessTechnology = (n.object as? String) ?? ""
 
             #if os(iOS)
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
@@ -182,16 +217,16 @@ open class RMBTConnectivityTracker: NSObject {
         } else if status == GCNetworkReachabilityStatusWWAN {
             networkType = .cellular
         } else {
-            logger.debug("Unknown reachability status \(status)")
+            Log.logger.debug("Unknown reachability status \(status)")
             return
         }
 
         if networkType == .none {
-            logger.debug("No connectivity detected.")
+            Log.logger.debug("No connectivity detected.")
 
             lastConnectivity = nil
 
-            delegate.connectivityTrackerDidDetectNoConnectivity(self)
+            delegate?.connectivityTrackerDidDetectNoConnectivity(self)
 
             return
         }
@@ -202,18 +237,23 @@ open class RMBTConnectivityTracker: NSObject {
             return
         }
 
-        logger.debug("New connectivity = \(connectivity)")
-
+        Log.logger.debug("New connectivity = \(connectivity)")
+        
+        if let lastConnection = self.lastConnectivity,
+            lastConnection.networkType != .none {
+            self.delegate?.connectivityNetworkTypeDidChange(connectivity: lastConnectivity)
+        }
+        
         if stopOnMixed {
             // Detect compatilibity
             var compatible = true
 
             if lastConnectivity != nil {
                 if connectivity.networkType != lastConnectivity.networkType {
-                    logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
+                    Log.logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
                     compatible = false
                 } else if connectivity.networkName != lastConnectivity.networkName {
-                    logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName) -> \(connectivity.networkName)")
+                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName ?? "") -> \(connectivity.networkName ?? "")")
                     compatible = false
                 }
             }
@@ -221,16 +261,16 @@ open class RMBTConnectivityTracker: NSObject {
             lastConnectivity = connectivity
 
             if compatible {
-                delegate.connectivityTracker(self, didDetectConnectivity: connectivity)
+                delegate?.connectivityTracker(self, didDetectConnectivity: connectivity)
             } else {
                 // stop
                 stop()
 
-                delegate.connectivityTracker(self, didStopAndDetectIncompatibleConnectivity: connectivity)
+                delegate?.connectivityTracker(self, didStopAndDetectIncompatibleConnectivity: connectivity)
             }
         } else {
             lastConnectivity = connectivity
-            delegate.connectivityTracker(self, didDetectConnectivity: connectivity)
+            delegate?.connectivityTracker(self, didDetectConnectivity: connectivity)
         }
     }
 

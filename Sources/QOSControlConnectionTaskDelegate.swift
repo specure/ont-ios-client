@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-protocol QOSControlConnectionTaskDelegate {
+protocol QOSControlConnectionTaskDelegate: class {
 
     ///
     func controlConnection(_ connection: QOSControlConnection, didReceiveTaskResponse response: String, withTaskId taskId: UInt, tag: Int)

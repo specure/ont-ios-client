@@ -12,21 +12,19 @@ import UIKit
 ///
 let TOS_VERSION_KEY = "tos_version"
 
-let UserStandard = UserDefaults.standard
-
 extension UserDefaults {
     
     /// Generic function
-    open class func storeDataFor(key:String, obj:Any) {
+    open class func storeDataFor(key: String, obj: Any) {
     
-        UserStandard.set(obj, forKey: key)
-        UserStandard.synchronize()
+        UserDefaults.standard.set(obj, forKey: key)
+        UserDefaults.standard.synchronize()
     }
     
     ///
-    open class func getDataFor(key:String) -> Any? {
+    open class func getDataFor(key: String) -> Any? {
     
-        guard let result = UserStandard.object(forKey: key) else {
+        guard let result = UserDefaults.standard.object(forKey: key) else {
             return nil
         }
         
@@ -34,32 +32,39 @@ extension UserDefaults {
     }
     
     ///
-    open class func storeTOSVersion(lastAcceptedVersion:Int) {
+    open class func storeTOSVersion(lastAcceptedVersion: Int) {
         storeDataFor(key: TOS_VERSION_KEY, obj: lastAcceptedVersion)
     }
     
     ///
     open class func getTOSVersion() -> Int {
-        return UserStandard.integer(forKey: TOS_VERSION_KEY)
+        return UserDefaults.standard.integer(forKey: TOS_VERSION_KEY)
+    }
+    
+    open class func clearStoredUUID(uuidKey: String?) {
+        if let uuidKey = uuidKey {
+            UserDefaults.standard.removeObject(forKey: uuidKey)
+            UserDefaults.standard.synchronize()
+        }
+    }
+    ///
+    open class func storeNewUUID(uuidKey: String, uuid: String) {
+        if RMBTSettings.sharedSettings.isClientPersistent {
+            storeDataFor(key: uuidKey, obj: uuid)
+            Log.logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
+        }
     }
     
     ///
-    open class func storeNewUUID(uuidKey:String, uuid:String) {
-    
-        storeDataFor(key: uuidKey, obj: uuid)
-        logger.debug("UUID: uuid is now: \(uuid) for key '\(uuidKey)'")
-    }
-    
-    ///
-    open class func checkStoredUUID(uuidKey:String?) -> String? {
+    open class func checkStoredUUID(uuidKey: String?) -> String? {
         
         //NKOM reconciliation can be deleted after another distant future release
 
-        var reconHost:String?
+        var reconHost: String?
         reconHost = uuidKey?.replacingOccurrences(of: "uuid_", with: "") //"netcouch.specure.com"
         let reconKey = "uuid_\(String(describing: reconHost))"
-        if let reconUUID = UserStandard.object(forKey: reconKey) {
-            logger.debug("UUID: Found old uuid \"\(reconUUID)\" in user defaults for key '\(reconKey)'")
+        if let reconUUID = UserDefaults.standard.object(forKey: reconKey) {
+            Log.logger.debug("UUID: Found old uuid \"\(reconUUID)\" in user defaults for key '\(reconKey)'")
             return reconUUID as? String
         }
         ///////////////////////////////////////////////////////////////////////////
@@ -67,13 +72,13 @@ extension UserDefaults {
         let uuid:String?
         // load uuid
         if let key = uuidKey {
-            uuid = UserStandard.object(forKey: key) as? String
+            uuid = UserDefaults.standard.object(forKey: key) as? String
             
-            logger.debugExec({
+            Log.logger.debugExec({
                 if uuid != nil {
-                    logger.debug("UUID: Found uuid \"\(String(describing: uuid))\" in user defaults for key '\(key)'")
+                    Log.logger.debug("UUID: Found uuid \"\(String(describing: uuid))\" in user defaults for key '\(key)'")
                 } else {
-                    logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
+                    Log.logger.debug("UUID: Uuid was not found in user defaults for key '\(key)'")
                 }
             })
             
@@ -85,10 +90,10 @@ extension UserDefaults {
     ///
     open class func storeRequestUserAgent() {
     
-        let info = Bundle.main.infoDictionary!
-        
-        let bundleName = (info["CFBundleName"] as! String).replacingOccurrences(of: " ", with: "")
-        let bundleVersion = info["CFBundleShortVersionString"] as! String
+        guard let info = Bundle.main.infoDictionary,
+            let bundleName = (info["CFBundleName"] as? String)?.replacingOccurrences(of: " ", with: ""),
+            let bundleVersion = info["CFBundleShortVersionString"] as? String
+        else { return }
         
         let iosVersion = UIDevice.current.systemVersion
         
@@ -101,15 +106,15 @@ extension UserDefaults {
         
         // set global user agent
         let specureUserAgent = "SpecureNetTest/2.0 (iOS; \(locale); \(iosVersion)) \(bundleName)/\(bundleVersion)"
-        UserStandard.register(defaults: ["UserAgent": specureUserAgent])
-        UserStandard.synchronize()
+        UserDefaults.standard.set(specureUserAgent, forKey: "UserAgent")
+        UserDefaults.standard.synchronize()
         
-        logger.info("USER AGENT: \(specureUserAgent)")
+        Log.logger.info("USER AGENT: \(specureUserAgent)")
     }
     
     ///
     open class func getRequestUserAgent() -> String? {
-        guard let user = UserStandard.string(forKey: "UserAgent") else {
+        guard let user = UserDefaults.standard.string(forKey: "UserAgent") else {
             return nil
         }
         
@@ -117,23 +122,26 @@ extension UserDefaults {
     }
 
     ///
-    open class func checkFirstLaunch() {
+    open class func checkFirstLaunch() -> Bool {
         
-        if !UserStandard.bool(forKey: "was_launched_once") {
-            logger.info("FIRST LAUNCH OF APP")
+        if !UserDefaults.standard.bool(forKey: "was_launched_once") {
+            Log.logger.info("FIRST LAUNCH OF APP")
             
-            UserStandard.set(true, forKey: "was_launched_once")
+            UserDefaults.standard.set(true, forKey: "was_launched_once")
             
-            firstLaunch(UserStandard)
-            UserStandard.synchronize()
+            firstLaunch(UserDefaults.standard)
+            UserDefaults.standard.synchronize()
+            
+            return true
         }
+        return true
     }
     
     ///
     private class func firstLaunch(_ userDefaults: UserDefaults) {
         if TEST_USE_PERSONAL_DATA_FUZZING {
             RMBTSettings.sharedSettings.publishPublicData = true
-            logger.debug("setting publishPublicData to true")
+            Log.logger.debug("setting publishPublicData to true")
         }
     }
 

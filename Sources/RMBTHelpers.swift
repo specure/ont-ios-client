@@ -50,15 +50,33 @@ public func RMBTBuildInfoString() -> String {
 ///
 public func RMBTBuildDateString() -> String {
     let info = Bundle.main.infoDictionary!
-
-    return info["BuildDate"] as! String
+    let buildDate = info["BuildDate"] as? String ?? "none"
+    
+    return buildDate
 }
 
 ///
 public func RMBTVersionString() -> String {
     let info = Bundle.main.infoDictionary!
 
-    return "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    let versionString = "\(info["CFBundleShortVersionString"] as! String) (\(info["CFBundleVersion"] as! String))"
+    
+    var environment = ""
+    switch currentEnvironment {
+    case .Beta:
+        environment = "BETA"
+    case .Debug:
+        environment = "DEBUG"
+    case .Test:
+        environment = "TEST"
+    default:
+        break
+    }
+    #if DEBUG
+    return "\(versionString) [\(environment) \(RMBTBuildInfoString()) (\(RMBTBuildDateString()))]"
+    #else
+    return "\(versionString) \(environment)"
+    #endif
 }
 
 /////
@@ -66,7 +84,7 @@ public func RMBTVersionString() -> String {
 public func RMBTPreferredLanguage() -> String? {
     let preferredLanguages = Locale.preferredLanguages
 
-    logger.debug("\(preferredLanguages)")
+    Log.logger.debug("\(preferredLanguages)")
 
     if preferredLanguages.count < 1 {
         return nil
@@ -88,20 +106,16 @@ public func RMBTPreferredLanguage() -> String? {
 
 /// Replaces $lang in template with the current locale.
 /// Fallback to english for non-translated languages is done on the server side.
-public func RMBTLocalizeURLString(_ urlString: NSString) -> String {
-    let r = urlString.range(of: LANGUAGE_PREFIX)
-
-    if r.location == NSNotFound {
-        return urlString as String // return same string if no $lang was found
+public func RMBTLocalizeURLString(_ urlString: String) -> String {
+    if urlString.range(of: LANGUAGE_PREFIX) != nil {
+        var lang = PREFFERED_LANGUAGE
+        if RMBTConfig.sharedInstance.RMBT_USE_MAIN_LANGUAGE == true {
+            lang = RMBTConfig.sharedInstance.RMBT_MAIN_LANGUAGE
+        }
+        let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
+        return replacedURL
     }
-
-    let lang = PREFFERED_LANGUAGE
-
-    let replacedURL = urlString.replacingOccurrences(of: LANGUAGE_PREFIX, with: lang)
-
-    // logger.debug("replaced $lang in string, output: \(replacedURL)")
-
-    return replacedURL
+    return urlString
 }
 
 /// Returns bundle name from Info.plist (e.g. SPECURE NetTest)
@@ -159,6 +173,17 @@ public func RMBTMillisecondsString(_ nanos: UInt64) -> String {
     return "\(RMBTFormatNumber(ms))"
 }
 
+public func RMBTNanos(_ millisecondsString: String) -> UInt64 {
+    let s = millisecondsString.replacingOccurrences(of: ",", with: ".")
+    let ms = NSNumber(value: (Double(s) ?? 0.0) * 1.0e+6)
+    return UInt64(truncating: ms)
+}
+
+public func RMBTMbps(_ mbps: String) -> Double {
+    let s = mbps.replacingOccurrences(of: ",", with: ".")
+    return Double(s) ?? 0.0
+}
+
 ///
 public func RMBTSecondsStringWithNanos(_ nanos: UInt64) -> String {
     return NSString(format: "%f s", Double(nanos) * 1.0e-9) as String
@@ -175,24 +200,29 @@ public func NKOMTimestampWithNSDate(_ date: Date) -> NSNumber {
 }
 
 /// Format a number to two significant digits. See https://trac.rtr.at/iosrtrnetztest/ticket/17
-public func RMBTFormatNumber(_ number: NSNumber) -> String {
+public func RMBTFormatNumber(_ number: NSNumber, _ maxDigits: Int = 2) -> String {
     let formatter = NumberFormatter()
     
-    var signif = 2
+    var signif = maxDigits
 
-    if number.doubleValue < 1 {
-        signif = 1
+    if number.doubleValue > 10 {
+        signif -= 1
+    }
+    if number.doubleValue > 100 {
+        signif -= 1
+    }
+    
+    if signif < 0 {
+        signif = 0
     }
 
     // TODO: dispatch_once
     formatter.decimalSeparator = "."
-    formatter.usesSignificantDigits = true
-    formatter.minimumSignificantDigits = signif
-    formatter.maximumSignificantDigits = signif
+    formatter.minimumFractionDigits = signif
+    formatter.maximumFractionDigits = signif
+    formatter.minimumIntegerDigits = 1
     //
     
-    
-
     return formatter.string(from: number)!
 }
 

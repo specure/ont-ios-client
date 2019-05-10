@@ -20,6 +20,10 @@ import XCGLogger
 ///
 class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSControlConnectionTaskDelegate {
 
+    func getTestObject() -> QOSTest {
+        return self.testObject
+    }
+    
     let RESULT_TEST_UID = "qos_test_uid"
 
     let RESULT_START_TIME = "start_time_ns"
@@ -32,7 +36,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     //
 
     ///
-    let controlConnection: QOSControlConnection
+    var controlConnection: QOSControlConnection?
 
     ///
     let delegateQueue: DispatchQueue
@@ -45,6 +49,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
     ///
     var finishCallback: ((QOSTestResult) -> ())!
+    var progressCallback: (_ executor: NSObject, _ percent: Float) -> Void = { _, _ in }
 
     ///
     var hasStarted: Bool = false
@@ -79,7 +84,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     //
 
     ///
-    init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         self.controlConnection = controlConnection
 
         //self.delegate = delegate
@@ -108,23 +113,37 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
         // set control connection task delegate if needed
         if needsControlConnection() {
-            controlConnection.registerTaskDelegate(self, forTaskId: testObject.qosTestId)
+            controlConnection?.registerTaskDelegate(self, forTaskId: testObject.qosTestId)
         }
 
         // create timeout timer
         timer.interval = timeoutInSec
-        timer.timerCallback = {
-            self.qosLog.error("TIMEOUT IN QOS TEST")
+        timer.timerCallback = { [weak self] in
+            self?.qosLog.error("TIMEOUT IN QOS TEST")
 
-            if !self.hasFinished {
-                self.delegateQueue.async {
+            if self?.hasFinished == false {
+                self?.delegateQueue.async {
                     //assert(self.finishCallback != nil)
-                    self.testDidTimeout()
+                    self?.testDidTimeout()
                 }
             }
         }
     }
+    
+    func testExecutorHasFinished() -> Bool {
+        return self.hasFinished
+    }
 
+    func testObjectType() -> QosMeasurementType {
+        return testObject.getType()
+    }
+    
+    func setControlConnection(_ controlConnection: QOSControlConnection) {
+        if needsControlConnection() {
+            self.controlConnection = controlConnection
+            self.controlConnection?.registerTaskDelegate(self, forTaskId: testObject.qosTestId)
+        }
+    }
     ///
     func setCurrentTestToken(_ testToken: String) {
         self.testToken = testToken
@@ -134,7 +153,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     func startTimer() {
         timer.start()
 
-        timeoutDuration = getCurrentTimeTicks()
+        timeoutDuration = UInt64.getCurrentTimeTicks()
     }
 
     ///
@@ -142,16 +161,16 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         timer.stop()
 
         if let _ = timeoutDuration {
-            logger.info("stopped timeout timer after \((getTimeDifferenceInNanoSeconds(self.timeoutDuration)) / NSEC_PER_MSEC)ms")
+            Log.logger.info("stopped timeout timer after \((UInt64.getTimeDifferenceInNanoSeconds(self.timeoutDuration)) / NSEC_PER_MSEC)ms")
         }
     }
 
     ///
     func startTest() {
         // set start time in nanoseconds minus start time of complete test
-        testStartTimeTicks = getCurrentTimeTicks()
+        testStartTimeTicks = UInt64.getCurrentTimeTicks()
 
-        testResult.set(RESULT_START_TIME, number: ticksToNanoTime(testStartTimeTicks) - speedtestStartTime) // test start time is relative to speedtest start time
+        testResult.set(RESULT_START_TIME, number: UInt64.ticksToNanoTime(testStartTimeTicks) - speedtestStartTime) // test start time is relative to speedtest start time
 
         // start timeout timer
         if !needsCustomTimeoutHandling() {
@@ -162,12 +181,16 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     ///
     func endTest() {
         // put duration
-        let duration: UInt64 = getTimeDifferenceInNanoSeconds(testStartTimeTicks)
+        let duration: UInt64 = UInt64.getTimeDifferenceInNanoSeconds(testStartTimeTicks)
         testResult.set(RESULT_DURATION, number: duration)
+    }
+    
+    func setProgressCallback(progressCallback: @escaping (_ executor: NSObject, _ percent: Float) -> Void) {
+        self.progressCallback = progressCallback
     }
 
     ///
-    func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ()) {
+    func execute(finish finishCallback: @escaping (QOSTestResult) -> ()) {
         self.finishCallback = finishCallback
 
         // call startTest method
@@ -178,7 +201,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
 //        if (!timeoutCountDownLatch.await(testObject.timeout)) {
 //            // got timeout
-//            logger.debug("QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT ")
+//            Log.logger.debug("QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT QOS TEST TIMEOUT ")
 //            self.callFinishCallback()
 //        }
     }
@@ -193,19 +216,20 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
     func callFinishCallback() {
 //        timeoutCountDownLatch.countDown()
 
-        objc_sync_enter(self)
+//        objc_sync_enter(self)
 
         // TODO: IMPROVE...let tests don't do anything if there are finished!
 
         // return if already finished
         if hasFinished {
-            objc_sync_exit(self)
+//            objc_sync_exit(self)
             return
         }
         hasFinished = true
 
-        let serialQueue = DispatchQueue(label: "test-executor-queue")
-        serialQueue.sync {
+//        let serialQueue = DispatchQueue(label: "test-executor-queue")
+//        serialQueue.sync {
+        
             
             self.stopTimer()
 
@@ -217,16 +241,16 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
             // unregister controlConnection delegate if needed
             if needsControlConnection() {
-                logger.debug("\(self.controlConnection)")
+                Log.logger.debug("\(String(describing: self.controlConnection))")
 
-                self.controlConnection.unregisterTaskDelegate(forTaskId: self.testObject.qosTestId)
+                self.controlConnection?.unregisterTaskDelegate(self, forTaskId: self.testObject.qosTestId)
             }
 
             // call finish callback saved in finishCallback variable
             qosLog.debug("calling finish callback")
             self.finishCallback(self.testResult) // TODO: run this in delegate queue?
-        }
-        objc_sync_exit(self)
+//        }
+//        objc_sync_exit(self)
     }
 
     ///
@@ -272,7 +296,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
     ///
     func sendTaskCommand(_ command: String, withTimeout timeout: TimeInterval, tag: Int) {
-        controlConnection.sendTaskCommand(command, withTimeout: timeout, forTaskId: testObject.qosTestId, tag: tag)
+        controlConnection?.sendTaskCommand(command, withTimeout: timeout, forTaskId: testObject.qosTestId, tag: tag)
     }
 
     /// deprecated
@@ -297,6 +321,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         // let test timeout
         testDidTimeout()
     }
+
 }
 
 ///
@@ -351,7 +376,7 @@ class QOSLog {
 //        let sString:StaticString = s
         
         if QOS_ENABLED_TESTS_LOG.contains(testType) {
-            // logger.logln(logMessage, level: logLevel, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+            // Log.logger.logln(logMessage, level: logLevel, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
         }
     }
 }

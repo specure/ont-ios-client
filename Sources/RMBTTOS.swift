@@ -24,10 +24,10 @@ open class RMBTTOS: NSObject {
     @objc open dynamic var lastAcceptedVersion: Int
 
     ///
-    open let currentVersion: Int = RMBT_TOS_VERSION
+    public let currentVersion: Int = RMBT_TOS_VERSION
 
     ///
-    open static let sharedTOS = RMBTTOS()
+    public static let sharedTOS = RMBTTOS()
 
     ///
     override public init() {

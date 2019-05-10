@@ -57,7 +57,7 @@ class QOSVOIPTest: QOSTest {
         if let portOutString = testParameters[PARAM_PORT_OUT] as? String {
             if let portOut = UInt16(portOutString) {
                 self.portOut = portOut
-                // logger.debug("setting portOut: \(self.portOut)")
+                // Log.logger.debug("setting portOut: \(self.portOut)")
             }
         }
 
@@ -65,7 +65,7 @@ class QOSVOIPTest: QOSTest {
         if let portInString = testParameters[PARAM_PORT_IN] as? String {
             if let portIn = UInt16(portInString) {
                 self.portIn = portIn
-                // logger.debug("setting portIn: \(self.portIn)")
+                // Log.logger.debug("setting portIn: \(self.portIn)")
             } else {
                 self.portIn = self.portOut  // use outPort also as inPort if no inPort was set
             }
@@ -76,7 +76,7 @@ class QOSVOIPTest: QOSTest {
             let delay = delayString.longLongValue
             if delay > 0 {
                 self.delay = UInt64(delay)
-                // logger.debug("setting delay: \(self.delay)")
+                // Log.logger.debug("setting delay: \(self.delay)")
             }
         }
 
@@ -85,7 +85,7 @@ class QOSVOIPTest: QOSTest {
             let callDuration = callDurationString.longLongValue
             if callDuration > 0 {
                 self.callDuration = UInt64(callDuration)
-                // logger.debug("setting callDuration: \(self.callDuration)")
+                // Log.logger.debug("setting callDuration: \(self.callDuration)")
             }
         }
 
@@ -93,7 +93,7 @@ class QOSVOIPTest: QOSTest {
         if let sampleRateString = testParameters[PARAM_SAMPLE_RATE] as? String {
             if let sampleRate = UInt16(sampleRateString) {
                 self.sampleRate = sampleRate
-                // logger.debug("setting sampleRate: \(self.sampleRate)")
+                // Log.logger.debug("setting sampleRate: \(self.sampleRate)")
             }
         }
 
@@ -101,7 +101,7 @@ class QOSVOIPTest: QOSTest {
         if let bitsPerSampleString = testParameters[PARAM_BITS_PER_SAMLE] as? String {
             if let bitsPerSample = UInt8(bitsPerSampleString) {
                 self.bitsPerSample = bitsPerSample
-                // logger.debug("setting bitsPerSample: \(self.bitsPerSample)")
+                // Log.logger.debug("setting bitsPerSample: \(self.bitsPerSample)")
             }
         }
 
@@ -109,7 +109,7 @@ class QOSVOIPTest: QOSTest {
         if let payloadTypeString = testParameters[PARAM_PAYLOAD] as? String {
             if let payloadType = UInt8(payloadTypeString) {
                 self.payloadType = payloadType
-                // logger.debug("setting payloadType: \(self.payloadType)")
+                // Log.logger.debug("setting payloadType: \(self.payloadType)")
             }
         }
 

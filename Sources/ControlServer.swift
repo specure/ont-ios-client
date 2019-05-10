@@ -164,7 +164,7 @@ class ControlServer {
                 }
             }
             
-            logger.info("Control Server base url = \(self.baseUrl)")
+            Log.logger.info("Control Server base url = \(self.baseUrl)")
 
 //            self.mapServerBaseUrl = RMBTConfig.sharedInstance.RMBT_MAP_SERVER_PATH_URL
             
@@ -200,7 +200,7 @@ class ControlServer {
         ////
         // NKOM solution
         let successFunc: (_ response: SettingsReponse) -> () = { response in
-            logger.debug("settings: \(String(describing: response.client))")
+            Log.logger.debug("settings: \(String(describing: response.client))")
             
             // set uuid
             self.uuid = response.client?.uuid
@@ -241,7 +241,7 @@ class ControlServer {
         ////
         // ONT and all other project solution
         let successFuncOld: (_ response: SettingsReponse_Old) -> () = { response in
-            logger.debug("settings: \(response)")
+            Log.logger.debug("settings: \(response)")
             
             if let set = response.settings?.first {
                 // set uuid
@@ -287,7 +287,7 @@ class ControlServer {
                 
                 //
                 if let checkip4 = set.urls?.ipv4IpCheck {
-                    RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR = checkip4
+                    RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL = checkip4
                 }
                 
                 
@@ -304,7 +304,7 @@ class ControlServer {
                     }
                     
                     self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
-                    logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
+                    Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
                 }
             }
             
@@ -314,7 +314,7 @@ class ControlServer {
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
         
             request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
-                logger.debug("settings error")
+                Log.logger.debug("settings error")
                 
                 failure(error)
             })
@@ -327,7 +327,7 @@ class ControlServer {
             settingsRequest_Old.uuid = self.uuid
             
             request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
-                logger.debug("settings error")
+                Log.logger.debug("settings error")
                 
                 failure(error)
             })
@@ -338,7 +338,7 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_ULR, success: successCallback, error: failure)
+        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL, success: successCallback, error: failure)
     }
 
     /// no NAT
@@ -364,9 +364,9 @@ class ControlServer {
             speedMeasurementRequest.uuid = uuid
             speedMeasurementRequest.anonymous = RMBTSettings.sharedSettings.anonymousModeEnabled
 
-            logger.debugExec {
+            Log.logger.debugExec {
                 if speedMeasurementRequest.anonymous {
-                    logger.debug("CLIENT IS ANONYMOUS!")
+                    Log.logger.debug("CLIENT IS ANONYMOUS!")
                 }
             }
 
@@ -575,8 +575,8 @@ class ControlServer {
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
-            logger.debug("wfewfwfwef3")
-            logger.debug("\(error)")
+            Log.logger.debug("wfewfwfwef3")
+            Log.logger.debug("\(error)")
             
             errorCallback(error)
         })
@@ -594,8 +594,8 @@ class ControlServer {
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
-            logger.debug("wfewfwfwef3")
-            logger.debug("\(error)")
+            Log.logger.debug("wfewfwfwef3")
+            Log.logger.debug("\(error)")
             
             errorCallback(error)
         })

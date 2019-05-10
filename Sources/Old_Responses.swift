@@ -38,7 +38,30 @@ open class MeasurementServerInfoResponse: BasicResponse {
         ///
         open var id: NSNumber?
 
+        open var country: String?
+        open var distance: String?
+        open var city: String?
+        open var sponsor: String?
         
+        open var fullNameWithDistance: String? {
+            let country = self.country?.uppercased()
+            return "\(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+        }
+        
+        open var fullName: String? {
+            let country = self.country?.uppercased()
+            return "\(city ?? ""), \(country ?? "")"
+        }
+        
+        open var fullNameWithSponsor: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "")"
+        }
+        
+        open var fullNameWithDistanceAndSponsor: String? {
+            let country = self.country?.uppercased()
+            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+        }
         ///
         init() {
             
@@ -52,9 +75,13 @@ open class MeasurementServerInfoResponse: BasicResponse {
         ///
         public func mapping(map: Map) {
             address     <- map["address"]
-            port     <- map["port"]
-            name     <- map["name"]
-            id     <- map["id"]
+            port        <- map["port"]
+            name        <- map["name"]
+            id          <- map["id"]
+            country     <- map["country"]
+            distance    <- map["distance"]
+            city        <- map["city"]
+            sponsor     <- map["sponsor"]
         }
     }
 }
@@ -274,7 +301,7 @@ open class SettingsReponse_Old: BasicResponse {
     
     
     ///
-    class Settings: Mappable {
+    open class Settings: Mappable {
         
         ///
         var urls: UrlSettings?
@@ -297,19 +324,18 @@ open class SettingsReponse_Old: BasicResponse {
         ///
         var history: HistoryFilterType?
         
-        
         ///
         init() {
             
         }
         
         ///
-        required init?(map: Map) {
+        required public init?(map: Map) {
             
         }
         
         ///
-        func mapping(map: Map) {
+        public func mapping(map: Map) {
             advertised_speed_option <- map["advertised_speed_option"]
             qosMeasurementTypes <- map["qostesttype_desc"]
             urls <- map["urls"]

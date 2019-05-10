@@ -179,14 +179,14 @@ extension ConnectivityService {
                                 if addr?.sa_family == UInt8(AF_INET) {
                                     if self.connectivityInfo.ipv4.internalIp != address {
                                         self.connectivityInfo.ipv4.internalIp = address
-                                        logger.debug("local ipv4 address from getifaddrs: \(address)")
+                                        Log.logger.debug("local ipv4 address from getifaddrs: \(address)")
                                     }
                                 }
                                 if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp != address {
                                         self.connectivityInfo.ipv6.internalIp = address
                                         self.connectivityInfo.ipv6.externalIp = address
-                                        logger.debug("local ipv6 address from getifaddrs: \(address)")
+                                        Log.logger.debug("local ipv6 address from getifaddrs: \(address)")
                                     }
                                 }
                             }
@@ -217,7 +217,7 @@ extension ConnectivityService {
             udpSocket.setPreferIPv6()
         }
         
-        logger.debug("get local address from socket is prefered IPv4:\(udpSocket.isIPv4Preferred()), prefered IPv6:\(udpSocket.isIPv6Preferred()), enabled IPv4:\(udpSocket.isIPv4Enabled()), enabled IPv6: \(udpSocket.isIPv6Enabled())")
+        Log.logger.debug("get local address from socket is prefered IPv4:\(udpSocket.isIPv4Preferred()), prefered IPv6:\(udpSocket.isIPv6Preferred()), enabled IPv4:\(udpSocket.isIPv4Enabled()), enabled IPv6: \(udpSocket.isIPv6Enabled())")
         let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"
 
         // connect to any host
@@ -245,22 +245,22 @@ extension ConnectivityService: GCDAsyncUdpSocketDelegate {
             connectivityInfo.ipv6.externalIp = ip
         }
 
-        logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")
-        logger.debug("local ipv6 address from socket: \(String(describing: self.connectivityInfo.ipv6.internalIp))")
+        Log.logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")
+        Log.logger.debug("local ipv6 address from socket: \(String(describing: self.connectivityInfo.ipv6.internalIp))")
 
         sock.close()
     }
 
     ///
     @nonobjc public func udpSocket(_ sock: GCDAsyncUdpSocket, didNotConnect error: NSError?) {
-        logger.debug("didNotConnect: \(String(describing: error))")
+        Log.logger.debug("didNotConnect: \(String(describing: error))")
 
         getLocalIpAddresses() // fallback
     }
 
     ///
     @nonobjc public func udpSocketDidClose(_ sock: GCDAsyncUdpSocket, withError error: NSError?) {
-        logger.debug("udpSocketDidClose: \(String(describing: error))")
+        Log.logger.debug("udpSocketDidClose: \(String(describing: error))")
 
         getLocalIpAddresses() // fallback
     }

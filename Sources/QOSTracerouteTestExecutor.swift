@@ -56,7 +56,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
     fileprivate var currentPingStartTimeTicks: UInt64!
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
 
         pingUtilDelegateBridge = PingUtilDelegateBridge(obj: self)
@@ -106,9 +106,9 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
             pingUtil.start()
 
             repeat { // needed for CFRunLoop things...
-                // logger.debug("executing run loop")
-                RunLoop.current.run(mode: RunLoopMode.defaultRunLoopMode, before: Date.distantFuture)
-                // logger.debug("run loop ran")
+                // Log.logger.debug("executing run loop")
+                RunLoop.current.run(mode: RunLoop.Mode.default, before: Date.distantFuture)
+                // Log.logger.debug("run loop ran")
             } while self.pingUtil != nil
         }
     }
@@ -190,7 +190,7 @@ class QOSTracerouteTestExecutor<T: QOSTracerouteTest>: QOSTestExecutorClass<T> {
         qosLog.debug("pinging with ttl: \(ttl)/\(testObject.maxHops), try: \(ttlCurrentTry)/\(testObject.triesPerTTL)")
 
         // store start nanoseconds
-        currentPingStartTimeTicks = getCurrentTimeTicks()
+        currentPingStartTimeTicks = UInt64.getCurrentTimeTicks()
 
         // start timer
         timer.start()
@@ -250,7 +250,7 @@ extension QOSTracerouteTestExecutor: PingUtilSwiftDelegate {
 
         // fill current hop detail
         currentHopDetail.fromIp = fromIp
-        currentHopDetail.addTry(getTimeDifferenceInNanoSeconds(currentPingStartTimeTicks))
+        currentHopDetail.addTry(UInt64.getTimeDifferenceInNanoSeconds(currentPingStartTimeTicks))
 
         // check for icmp reply
         if type == UInt8(kICMPTypeEchoReply) {

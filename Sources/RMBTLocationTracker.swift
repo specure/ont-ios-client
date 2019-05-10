@@ -25,10 +25,10 @@ public let RMBTLocationTrackerNotification = "RMBTLocationTrackerNotification"
 open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
-    open static let sharedTracker = RMBTLocationTracker()
+    public static let sharedTracker = RMBTLocationTracker()
 
     ///
-    open let locationManager: CLLocationManager
+    public let locationManager: CLLocationManager
 
     ///
     open var authorizationCallback: EmptyCallback?
@@ -96,7 +96,7 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
             locationManager.requestWhenInUseAuthorization()
             #endif
         } else {
-            logger.warning("User hasn't enabled or authorized location services")
+            Log.logger.warning("User hasn't enabled or authorized location services")
             callback()
         }
     }
@@ -128,13 +128,17 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
     ///
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        logger.error("Failed to obtain location \(error)")
+        Log.logger.error("Failed to obtain location \(error)")
     }
 
     ///
     open func forceUpdate() {
         stop()
         _ = startIfAuthorized()
+    }
+    
+    open func isLocationManagerEnabled() -> Bool {
+        return CLLocationManager.authorizationStatus() == .authorizedAlways || CLLocationManager.authorizationStatus() == .authorizedWhenInUse
     }
 }
 

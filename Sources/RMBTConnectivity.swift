@@ -23,13 +23,13 @@ import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 
 ///
-open class RMBTConnectivity {
+open class RMBTConnectivity: NSObject {
 
     ///
-    open let networkType: RMBTNetworkType
+    public let networkType: RMBTNetworkType
 
     ///
-    open let timestamp: Date
+    public let timestamp: Date
 
     ///
     open var networkTypeDescription: String {
@@ -45,7 +45,7 @@ open class RMBTConnectivity {
                 return NSLocalizedString("connectivity.cellular", tableName: nil, bundle: Bundle.main, value: "Cellular", comment: "network type description cellular")
             }
         default:
-            logger.warning("Invalid network type \(self.networkType)")
+            Log.logger.warning("Invalid network type \(self.networkType)")
             return NSLocalizedString("intro.network.connection.name-unknown", tableName: nil, bundle: Bundle.main, value: "Unknown", comment: "network type description unknown")
         }
     }
@@ -106,7 +106,7 @@ open class RMBTConnectivity {
     public init(networkType: RMBTNetworkType) {
         self.networkType = networkType
         timestamp = Date()
-
+        super.init()
         getNetworkDetails()
     }
 
@@ -133,7 +133,7 @@ open class RMBTConnectivity {
             
             // action while changing provider
             netinfo.subscriberCellularProviderDidUpdateNotifier = { carrier in
-                
+                print(carrier)
                 // TODO
                     
             }
@@ -172,21 +172,18 @@ open class RMBTConnectivity {
         #if os(OSX)
         // TODO
         #else
-            if let interfaces = CNCopySupportedInterfaces() {
-                for i in 0..<CFArrayGetCount(interfaces) {
-                    let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interfaces, i)
-                    let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
-                    if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString) {
-                        let interfaceData = unsafeInterfaceData as! [AnyHashable: Any]
-
-                        if let currentSSID = interfaceData[kCNNetworkInfoKeySSID as AnyHashable] as? String,
-                            let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID as AnyHashable] as? String {
-                                return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
-                        }
-                    }
+        #if os(iOS)
+        if let interfaces = CNCopySupportedInterfaces() as? [CFString] {
+            for interface in interfaces {
+                if let interfaceData = CNCopyCurrentNetworkInfo(interface) as? [CFString: Any],
+                let currentSSID = interfaceData[kCNNetworkInfoKeySSID] as? String,
+                let currentBSSID = interfaceData[kCNNetworkInfoKeyBSSID] as? String {
+                    return (ssid: currentSSID, bssid: RMBTReformatHexIdentifier(currentBSSID))
                 }
             }
-            #endif
+        }
+        #endif
+        #endif
         //}
 
         return nil

@@ -21,14 +21,34 @@ protocol WriteToNSMutableData {
 
 }
 
+extension Data: WriteToNSMutableData {
+    ///
+    public mutating func appendValue<T>(_ data: T) {
+        var incomeData = data
+        
+        withUnsafePointer(to: &incomeData) { p in
+            self.append(Data(bytes: p, count: MemoryLayout.size(ofValue: data)))
+        }
+    }
+    
+    ///
+    public mutating func appendValue<T>(_ data: T, size: Int) {
+        var data = data
+        
+        withUnsafePointer(to: &data) { p in
+            self.append(Data(bytes: p, count: size))
+        }
+    }
+}
+
 ///
 extension NSMutableData: WriteToNSMutableData {
 
     ///
     public func appendValue<T>(_ data: T) {
-        var data = data
+        var incomeData = data
 
-        withUnsafePointer(to: &data) { p in
+        withUnsafePointer(to: &incomeData) { p in
             self.append(p, length: MemoryLayout.size(ofValue: data))
         }
     }

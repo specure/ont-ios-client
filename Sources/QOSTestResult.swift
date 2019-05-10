@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-open class QOSTestResult {
+open class QOSTestResult: NSObject {
 
     ///
     open var resultDictionary = QOSTestResults()
@@ -55,10 +55,10 @@ open class QOSTestResult {
 // MARK: Printable methods
 
 ///
-extension QOSTestResult: CustomStringConvertible {
+extension QOSTestResult {
 
     ///
-    public var description: String {
+    open override var description: String {
         return "QOSTestResult: type: \(testType.rawValue), fatalError: \(fatalError), resultDictionary: \(resultDictionary)"
     }
 }

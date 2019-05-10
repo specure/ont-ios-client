@@ -1,6 +1,0 @@
-framework module RMBTClient {
-  umbrella header "RMBTClient-umbrella.h"
-
-  export *
-  module * { export * }
-}

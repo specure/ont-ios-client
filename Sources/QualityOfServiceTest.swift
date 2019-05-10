@@ -15,22 +15,53 @@
  *****************************************************************************************************/
 
 import Foundation
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-private func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
+
+class RMBTConcurencyGroup {
+    var identifier: UInt = 0
+    private(set) var testExecutors: [QOSTestExecutorProtocol] = []
+    
+    var passedExecutors: Int = 0
+    
+    var percent: Float {
+        return Float(self.passedExecutors) / Float(self.testExecutors.count)
+    }
+    
+    let mutualQuery = DispatchQueue(label: "Add executors")
+    
+    func addTestExecutor(testExecutor: QOSTestExecutorProtocol) {
+        mutualQuery.sync {
+            testExecutors.append(testExecutor)
+        }
+    }
+    
+    func removeTestExecutor(testExecutor: QOSTestExecutorProtocol) {
+        mutualQuery.sync {
+            if let index = testExecutors.index(where: { (executor) -> Bool in
+                return testExecutor === executor
+            }) {
+                testExecutors.remove(at: index)
+            }
+        }
+    }
+    
+    func countExecutors(of type: QosMeasurementType) -> (passed: Int, total: Int) {
+        var totalCount = 0
+        var passedCount = 0
+        for executor in testExecutors {
+            if executor.testObjectType() == type {
+                totalCount += 1
+                if executor.testExecutorHasFinished() {
+                    passedCount += 1
+                }
+            }
+        }
+        
+        return (passedCount, totalCount)
+    }
 }
 
-
 ///
-open class QualityOfServiceTest {
+open class QualityOfServiceTest: NSObject {
 
     ///
     public typealias ConcurrencyGroup = UInt
@@ -41,16 +72,19 @@ open class QualityOfServiceTest {
     //
 
     ///
-    private let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue", attributes: DispatchQueue.Attributes.concurrent)
+    private let executorQueue = DispatchQueue(label: "com.specure.rmbt.executorQueue")
+    
+    private let delegateQueue = DispatchQueue(label: "com.specure.rmbt.delegateQueue", attributes: DispatchQueue.Attributes.concurrent)
 
+    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue")
+    
     ///
     private let qosQueue = DispatchQueue(label: "com.specure.rmbt.qosQueue", attributes: DispatchQueue.Attributes.concurrent)
 
+    var concurencyGroups: [RMBTConcurencyGroup] = []
+    
     ///
-    private let mutualExclusionQueue = DispatchQueue(label: "com.specure.rmbt.qos.mutualExclusionQueue", attributes: [])
-
-    ///
-    open var delegate: QualityOfServiceTestDelegate?
+    open weak var delegate: QualityOfServiceTestDelegate?
     
     ///
     var isPartOfMainTest = false
@@ -74,25 +108,32 @@ open class QualityOfServiceTest {
     private var activeTestsInConcurrencyGroup = 0
 
     ///
-    private var controlConnectionMap = [String: QOSControlConnection]()
+    private var controlConnectionMap: [String: QOSControlConnection] = [:]
 
     ///
-    private var qosTestConcurrencyGroupMap = [ConcurrencyGroup: [QOSTest]]()
+    private var qosTestConcurrencyGroupMap: [ConcurrencyGroup: [QOSTest]] = [:]
+    private var qosTestExecutors: [String: QOSTestExecutorProtocol] = [:]
 
     ///
-    private var testTypeCountMap = [QosMeasurementType: UInt16]()
+    private var testTypeCountMap: [QosMeasurementType: UInt16] = [:]
 
     ///
-    private var sortedConcurrencyGroups = [ConcurrencyGroup]()
+    private var sortedConcurrencyGroups: [ConcurrencyGroup] = []
 
     ///
-    private var resultArray = [QOSTestResult]()
+    private var resultArray: [QOSTestResult] = []
 
     ///
     private var stopped = false
 
     //
-
+    deinit {
+        defer {
+            if self.stopped == false {
+                self.closeAllControlConnections()
+            }
+        }
+    }
     ///
     public init(testToken: String, measurementUuid: String, speedtestStartTime: UInt64, isPartOfMainTest: Bool) {
         self.testToken = testToken
@@ -100,7 +141,7 @@ open class QualityOfServiceTest {
         self.speedtestStartTime = speedtestStartTime
         self.isPartOfMainTest = isPartOfMainTest
 
-        logger.debug("QualityOfServiceTest initialized with test token: \(testToken) at start time \(speedtestStartTime)")
+        Log.logger.debug("QualityOfServiceTest initialized with test token: \(testToken) at start time \(speedtestStartTime)")
     }
 
     ///
@@ -114,19 +155,16 @@ open class QualityOfServiceTest {
 
     ///
     open func stop() {
-        logger.debug("ABORTING QOS TEST")
+        Log.logger.debug("ABORTING QOS TEST")
 
-        mutualExclusionQueue.sync {
-            self.stopped = true
-
+        self.stopped = true
+        DispatchQueue.main.async {
             // close all control connections
             self.closeAllControlConnections()
 
             // inform delegate
-            DispatchQueue.main.async {
                 self.delegate?.qualityOfServiceTestDidStop(self)
                 return
-            }
         }
     }
 
@@ -140,14 +178,32 @@ open class QualityOfServiceTest {
 
         let controlServer = ControlServer.sharedControlServer
 
-        controlServer.requestQosMeasurement(measurementUuid, success: { response in
-            self.qosQueue.async {
-                self.continueWithQOSParameters(response)
+        controlServer.requestQosMeasurement(measurementUuid, success: { [weak self] response in
+            self?.qosQueue.async {
+                if self?.isPartOfMainTest == true {
+                    if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
+                        if let firstParams = jitterParams.first {
+                            response.objectives = [QosMeasurementType.VOIP.rawValue: [firstParams]]
+                        }
+                    }
+                }
+                else {
+                    response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.UDP.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.TCP.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.HttpProxy.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.NonTransparentProxy.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.WEBSITE.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.DNS.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.VOIP.rawValue] = nil
+//                    response.objectives?[QosMeasurementType.TRACEROUTE.rawValue] = nil
+                }
+                self?.continueWithQOSParameters(response)
             }
-        }) { error in
-            logger.debug("ERROR fetching qosTestRequest")
+        }) { [weak self] error in
+            Log.logger.debug("ERROR fetching qosTestRequest")
 
-            self.fail(nil) // TODO: error message...
+            self?.fail(nil) // TODO: error message...
         }
     }
 
@@ -165,84 +221,144 @@ open class QualityOfServiceTest {
 
         parseRequestResult(responseObject)
         createTestTypeCountMap()
-        // openAllControlConnections() // open all control connections before tests
-        runQOSTests()
+        // openAllControlConnections() // open all control connections before tests    
+        self.runQOSTests()
+        
     }
 
+    func findNextTestExecutor(in group: RMBTConcurencyGroup) -> QOSTestExecutorProtocol? {
+        for testExecutor in group.testExecutors {
+            if !testExecutor.testExecutorHasFinished() {
+                return testExecutor
+            }
+        }
+        
+        return nil
+    }
+    
+    func findNextConcurencyGroup() -> RMBTConcurencyGroup? {
+        for group in concurencyGroups {
+            if group.passedExecutors != group.testExecutors.count {
+                return group
+            }
+        }
+        
+        return nil
+    }
+    
+    func findConcurencyGroup(with id: UInt) -> RMBTConcurencyGroup {
+        for group in concurencyGroups {
+            if group.identifier == id {
+                return group
+            }
+        }
+        
+        let group = RMBTConcurencyGroup()
+        group.identifier = id
+        concurencyGroups.append(group)
+        return group
+    }
+    
     ///
     private func parseRequestResult(_ responseObject: QosMeasurmentResponse) {
         if stopped {
             return
         }
 
-        // loop through objectives
-        if let objectives = responseObject.objectives {
-
-            // objective type is TCP, UDP, etc.
-            // objective values are arrays of dictionaries for each test
-            for (objectiveType, objectiveValues) in objectives {
-
-                // loop each test
-                for (objectiveParams) in objectiveValues {
-                    logger.verbose("-----")
-                    logger.verbose("\(objectiveType): \(objectiveParams)")
-                    logger.verbose("-------------------")
-
-                    // try to create qos test object from params
-                    if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams) {
-                        ///////////// ONT
-                        if isPartOfMainTest {
-                            
-                            if let type = QosMeasurementType(rawValue: objectiveType) {
-                                
-                                if type == .VOIP {
-                                
-                                    logger.debug("created VOIP test as the main test: \(qosTest)")
-                                    
-                                    var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                                    if concurrencyGroupArray == nil {
-                                        concurrencyGroupArray = [QOSTest]()
-                                    }
-                                    
-                                    concurrencyGroupArray!.append(qosTest)
-                                    qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-                                    
-                                    // increase test count
-                                    testCount += 1
-                                }
-                            }
-                        
-                        } else {
-                        
-                            logger.debug("created qos test: \(qosTest)")
-                            
-                            var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
-                            if concurrencyGroupArray == nil {
-                                concurrencyGroupArray = [QOSTest]()
-                            }
-                            
-                            concurrencyGroupArray!.append(qosTest)
-                            qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
-                            
-                            // increase test count
-                            testCount += 1
+        guard let objectives = responseObject.objectives else { return }
+        
+        for (objectiveType, objectiveValues) in objectives {
+            for (objectiveParams) in objectiveValues {
+                if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams),
+                    let testExecutor = QOSFactory.createTestExecutor(qosTest, delegateQueue: delegateQueue, speedtestStartTime: speedtestStartTime) {
+                    let group = self.findConcurencyGroup(with: qosTest.concurrencyGroup)
+                    group.addTestExecutor(testExecutor: testExecutor)
+                    testCount += 1
+                    if isPartOfMainTest == true && objectiveType == QosMeasurementType.VOIP.rawValue {
+                        testExecutor.setProgressCallback { [weak self] (_, percent) in
+                            guard let strongSelf = self else { return }
+                            strongSelf.delegate?.qualityOfServiceTest(strongSelf, didProgressToValue: percent)
                         }
-
-                        
-
-                    } else {
-                        logger.debug("unimplemented/unknown qos type: \(objectiveType)")
                     }
+                    testExecutor.setCurrentTestToken(self.testToken)
                 }
             }
         }
+        
+        self.concurencyGroups = self.concurencyGroups.sorted(by: { (group1, group2) -> Bool in
+            return group1.identifier < group2.identifier
+        })
+        return
+        // loop through objectives
 
-        currentTestCount = testCount
-
-        // create sorted array of keys to let the concurrencyGroups increase
-        sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sorted(by: <)
-
-        logger.debug("sorted concurrency groups: \(self.sortedConcurrencyGroups)")
+        // objective type is TCP, UDP, etc.
+        // objective values are arrays of dictionaries for each test
+//        for (objectiveType, objectiveValues) in objectives {
+//
+//            // loop each test
+//            for (objectiveParams) in objectiveValues {
+//                Log.logger.verbose("-----")
+//                Log.logger.verbose("\(objectiveType): \(objectiveParams)")
+//                Log.logger.verbose("-------------------")
+//
+//                // try to create qos test object from params
+//                if let qosTest = QOSFactory.createQOSTest(objectiveType, params: objectiveParams) {
+//                    ///////////// ONT
+//                    if isPartOfMainTest {
+//
+//                        if let type = QosMeasurementType(rawValue: objectiveType) {
+//
+//                            if type == .VOIP {
+//
+//                                Log.logger.debug("created VOIP test as the main test: \(qosTest)")
+//
+//                                var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+//                                if concurrencyGroupArray == nil {
+//                                    concurrencyGroupArray = []
+//                                }
+//
+//                                concurrencyGroupArray?.append(qosTest)
+//                                qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+//
+//                                // increase test count
+//                                testCount += 1
+//                            }
+//                        }
+//
+//                    } else {
+//
+//                        if let type = QosMeasurementType(rawValue: objectiveType) {
+//                            if type != .JITTER {
+//                                Log.logger.debug("created qos test: \(qosTest)")
+//
+//                                var concurrencyGroupArray: [QOSTest]? = qosTestConcurrencyGroupMap[qosTest.concurrencyGroup]
+//                                if concurrencyGroupArray == nil {
+//                                    concurrencyGroupArray = [QOSTest]()
+//                                }
+//
+//                                concurrencyGroupArray!.append(qosTest)
+//                                qosTestConcurrencyGroupMap[qosTest.concurrencyGroup] = concurrencyGroupArray // is this line needed? wasn't this passed by reference?
+//
+//                                // increase test count
+//                                testCount += 1
+//                            }
+//                        }
+//                    }
+//
+//
+//
+//                } else {
+//                    Log.logger.debug("unimplemented/unknown qos type: \(objectiveType)")
+//                }
+//            }
+//        }
+//
+//        currentTestCount = testCount
+//
+//        // create sorted array of keys to let the concurrencyGroups increase
+//        sortedConcurrencyGroups = Array(qosTestConcurrencyGroupMap.keys).sorted(by: <)
+//
+//        Log.logger.debug("sorted concurrency groups: \(self.sortedConcurrencyGroups)")
     }
 
     ///
@@ -251,48 +367,72 @@ open class QualityOfServiceTest {
             return
         }
 
-        var testTypeSortDictionary = [QosMeasurementType: ConcurrencyGroup]()
-
-        // fill testTypeCount map (used for displaying the finished test types in ui)
-        for (cg, testArray) in qosTestConcurrencyGroupMap { // loop each concurrency group
-            for test in testArray { // loop the tests inside each concurrency group
-                let testType = test.getType()
-
-                var count: UInt16? = testTypeCountMap[testType!]
-                if count == nil {
-                    count = 0
-                }
-
-                count! += 1
-
-                testTypeCountMap[testType!] = count!
-
-                //////
-
-                if testTypeSortDictionary[testType!] == nil {
-                    testTypeSortDictionary[testType!] = cg
-                }
+        let testTypeArray = NSMutableSet()
+        
+        for group in concurencyGroups {
+            for executor in group.testExecutors {
+                testTypeArray.add(executor.testObjectType())
             }
         }
-
-        // get test types and sort them according to their first execution
-        var testTypeArray = [QosMeasurementType](self.testTypeCountMap.keys)
-        testTypeArray.sort() { lhs, rhs in
-            testTypeSortDictionary[lhs] < testTypeSortDictionary[rhs]
-        }
-
-        // call didFetchTestTypes delegate method
+        
         DispatchQueue.main.async {
-            self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray)
-            return
+            self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray.map({ (type) -> String in
+                if let type = type as? QosMeasurementType {
+                    return type.rawValue
+                }
+                return ""
+            }))
         }
-
-        logger.debug("TEST TYPE COUNT MAP: \(self.testTypeCountMap)")
+        return
+//        var testTypeSortDictionary: [QosMeasurementType: ConcurrencyGroup] = [:]
+//
+//        // fill testTypeCount map (used for displaying the finished test types in ui)
+//        for (cg, testArray) in qosTestConcurrencyGroupMap { // loop each concurrency group
+//            for test in testArray { // loop the tests inside each concurrency group
+//                let testType = test.getType()
+//
+//                var count: UInt16? = testTypeCountMap[testType!]
+//                if count == nil {
+//                    count = 0
+//                }
+//
+//                count! += 1
+//
+//                testTypeCountMap[testType!] = count!
+//
+//                //////
+//
+//                if testTypeSortDictionary[testType!] == nil {
+//                    testTypeSortDictionary[testType!] = cg
+//                }
+//            }
+//        }
+//
+//        // get test types and sort them according to their first execution
+//        var testTypeArray = [QosMeasurementType](self.testTypeCountMap.keys)
+//        testTypeArray.sort { (lhs, rhs) -> Bool in
+//            guard let firstType = testTypeSortDictionary[lhs],
+//                let secondType = testTypeSortDictionary[rhs]
+//                else {
+//                    return false
+//            }
+//            return firstType < secondType
+//        }
+//
+//        // call didFetchTestTypes delegate method
+//        DispatchQueue.main.async {
+//            self.delegate?.qualityOfServiceTest(self, didFetchTestTypes: testTypeArray.map({ (type) -> String in
+//                return type.rawValue
+//            }))
+//            return
+//        }
+//
+//        Log.logger.debug("TEST TYPE COUNT MAP: \(self.testTypeCountMap)")
     }
 
     ///
     private func runQOSTests() {
-        logger.debug("RUN QOS TESTS (stopped: \(self.stopped))")
+        Log.logger.debug("RUN QOS TESTS (stopped: \(self.stopped))")
 
         if stopped {
             return
@@ -302,79 +442,166 @@ open class QualityOfServiceTest {
         runTestsOfNextConcurrencyGroup()
     }
 
+    private func runNextTest(in concurencyGroup: RMBTConcurencyGroup) {
+        if stopped {
+            return
+        }
+        if let testExecutor = self.findNextTestExecutor(in: concurencyGroup) {
+//            for testExecutor in concurencyGroup.testExecutors {
+                // execute test
+                executorQueue.async {
+                    testExecutor.execute { [weak self, weak concurencyGroup] (testResult: QOSTestResult) in
+                        self?.mutualExclusionQueue.sync { [weak self] in
+                            self?.resultArray.append(testResult)
+                            concurencyGroup?.passedExecutors += 1
+                            self?.checkProgress()
+                            if let concurencyGroup = concurencyGroup {
+                                self?.runNextTest(in: concurencyGroup)
+                            }
+//                            if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
+//                                self?.closeAllControlConnections()
+//                                self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
+//                                    self?.controlConnectionMap = [:]
+//                                    self?.runTestsOfNextConcurrencyGroup()
+//                                })
+//                            }
+                        }
+                    }
+                }
+//            }
+        }
+        else {
+            self.closeAllControlConnections()
+            self.controlConnectionMap = [:]
+            self.runTestsOfNextConcurrencyGroup()
+        }
+    }
     ///
     private func runTestsOfNextConcurrencyGroup() {
         if stopped {
             return
         }
 
-        if sortedConcurrencyGroups.count > 0 {
-            let concurrencyGroup = sortedConcurrencyGroups.remove(at: 0) // what happens if empty?
-
-            logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(self.sortedConcurrencyGroups.count))")
-
-            if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
-
-                // set count of tests
-                activeTestsInConcurrencyGroup = testArray.count
-
-                // calculate control connection timeout (TODO: improve)
-                // var controlConnectionTimeout: UInt64 = 0
-                // for qosTest in testArray {
-                //    controlConnectionTimeout += qosTest.timeout
-                // }
-                /////
-
-                // loop test array
-                for qosTest in testArray {
-                    if stopped {
-                        return
-                    }
-
-                    // get previously opened control connection
-                    let controlConnection = getControlConnection(qosTest) // blocking if new connection has to be established
-
-                    // get test executor
-                    if let testExecutor = QOSFactory.createTestExecutor(qosTest, controlConnection: controlConnection, delegateQueue: executorQueue, speedtestStartTime: speedtestStartTime) {
-                        // TODO: which queue?
-
-                        // set test token (TODO: IMPROVE)
-                        testExecutor.setCurrentTestToken(self.testToken)
-
-                        if testExecutor.needsControlConnection() {
-                            // set control connection timeout (TODO: compute better! (not all tests may use same control connection))
-                            logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
-                            controlConnection.setTimeout(qosTest.timeout)
-
-                            // TODO: DETERMINE IF TEST NEEDS CONTROL CONNECTION
-                            // IF IT NEEDS IT, AND CONTROL CONNECTION CONNECT FAILED THEN SKIP THIS TEST AND DON'T SEND RESULT TO SERVER
-                            if !controlConnection.connected {
-                                // don't do this test
-                                logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
-
-                                self.mutualExclusionQueue.sync {
-                                    self.qosTestFinishedWithResult(qosTest.getType(), withTestResult: nil) // no result because test didn't run
-                                }
-
-                                continue
-                            }
+        if let concurencyGroup = self.findNextConcurencyGroup() {
+            for testExecutor in concurencyGroup.testExecutors {
+                if testExecutor.needsControlConnection() {
+                    let qosTest = testExecutor.getTestObject()
+                    
+                    if let controlConnection = getControlConnection(qosTest) {
+                        if !testExecutor.needsCustomTimeoutHandling() {
+                            controlConnection.setTimeout(QOS_CONTROL_CONNECTION_TIMEOUT_NS)
                         }
-
-                        logger.debug("starting execution of test: \(qosTest)")
-
-                        // execute test
-                        self.executorQueue.async {
-                            testExecutor.execute { (testResult: QOSTestResult) in
-
-                                self.mutualExclusionQueue.sync {
-                                    self.qosTestFinishedWithResult(testResult.testType, withTestResult: testResult)
-                                }
+                        testExecutor.setControlConnection(controlConnection)
+                    }
+                    else {
+                        // don't do this test
+                        Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
+                        concurencyGroup.removeTestExecutor(testExecutor: testExecutor)
+                        testCount -= 1
+                        continue
+                    }
+                    
+                }
+            }
+            
+//            self.runNextTest(in: concurencyGroup)
+//            return
+            
+            for testExecutor in concurencyGroup.testExecutors {
+                // execute test
+                executorQueue.async {
+                    testExecutor.execute { [weak self, weak concurencyGroup] (testResult: QOSTestResult) in
+                        self?.mutualExclusionQueue.sync { [weak self] in
+                            self?.resultArray.append(testResult)
+                            concurencyGroup?.passedExecutors += 1
+                            self?.checkProgress()
+                            if concurencyGroup?.passedExecutors == concurencyGroup?.testExecutors.count {
+                                self?.mutualExclusionQueue.asyncAfter(deadline: .now() + 0.5, execute: {
+                                    self?.runTestsOfNextConcurrencyGroup()
+                                })
                             }
                         }
                     }
                 }
             }
         }
+        else {
+            self.finalizeQOSTests()
+        }
+//        if sortedConcurrencyGroups.count > 0 {
+//            let concurrencyGroup = sortedConcurrencyGroups.remove(at: 0) // what happens if empty?
+//
+//            Log.logger.debug("run tests of next concurrency group: \(concurrencyGroup) (\(self.sortedConcurrencyGroups.count))")
+//
+//            if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
+//
+//                // set count of tests
+//                activeTestsInConcurrencyGroup = testArray.count
+//
+//                // calculate control connection timeout (TODO: improve)
+//                // var controlConnectionTimeout: UInt64 = 0
+//                // for qosTest in testArray {
+//                //    controlConnectionTimeout += qosTest.timeout
+//                // }
+//                /////
+//
+//                // loop test array
+//                for qosTest in testArray {
+//                    if stopped {
+//                        return
+//                    }
+//
+//                    // get previously opened control connection
+//                    let controlConnection = getControlConnection(qosTest) // blocking if new connection has to be established
+//
+//                    // get test executor
+//                    if let testExecutor = QOSFactory.createTestExecutor(qosTest, controlConnection: controlConnection, delegateQueue: executorQueue, speedtestStartTime: speedtestStartTime) {
+//                        // TODO: which queue?
+//
+//                        let key = UUID().uuidString
+//                        self.qosTestExecutors[key] = testExecutor //Need keep it in memory
+//
+//                        // set test token (TODO: IMPROVE)
+//                        testExecutor.setCurrentTestToken(self.testToken)
+//
+//                        if testExecutor.needsControlConnection() {
+//                            // set control connection timeout (TODO: compute better! (not all tests may use same control connection))
+//                            Log.logger.debug("setting control connection timeout to \(nsToMs(qosTest.timeout)) ms")
+//                            controlConnection.setTimeout(qosTest.timeout)
+//
+//                            // TODO: DETERMINE IF TEST NEEDS CONTROL CONNECTION
+//                            // IF IT NEEDS IT, AND CONTROL CONNECTION CONNECT FAILED THEN SKIP THIS TEST AND DON'T SEND RESULT TO SERVER
+//                            if !controlConnection.connected {
+//                                // don't do this test
+//                                Log.logger.info("skipping test because it needs control connection but we don't have this connection. \(qosTest)")
+//
+//                                self.mutualExclusionQueue.sync {
+//                                    self.qosTestFinishedWithResult(qosTest.getType(), withTestResult: nil) // no result because test didn't run
+//                                }
+//
+//                                continue
+//                            }
+//                        }
+//
+//                        Log.logger.debug("starting execution of test: \(qosTest)")
+//
+//                        // execute test
+//                        self.executorQueue.async {
+//                            testExecutor.execute { [weak self] (testResult: QOSTestResult) in
+//
+//                                self?.mutualExclusionQueue.sync { [weak self] in
+//                                    self?.qosTestExecutors[key] = nil
+//                                    self?.qosTestFinishedWithResult(testResult.testType, withTestResult: testResult)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        else {
+//            fail(nil)
+//        }
     }
 
     ///
@@ -383,7 +610,7 @@ open class QualityOfServiceTest {
             return
         }
 
-        logger.debug("qos test finished with result: \(String(describing: testResult))")
+        Log.logger.debug("qos test finished with result: \(String(describing: testResult))")
 
         if let testResult = testResult {
 
@@ -401,7 +628,7 @@ open class QualityOfServiceTest {
 
         checkProgress()
         checkTypeCount(testType)
-        checkTestState()
+//        checkTestState()
     }
 
     ///
@@ -410,14 +637,21 @@ open class QualityOfServiceTest {
             return
         }
 
-        // decrement test counts
-        self.currentTestCount -= 1
+//        if self.currentTestCount > 0 {
+//        // decrement test counts
+//            self.currentTestCount -= 1
+//        }
+//        // check for progress
+//        let testsLeft = self.testCount - self.currentTestCount
+//        let percent: Float = Float(testsLeft) / Float(self.testCount)
 
-        // check for progress
-        let testsLeft = self.testCount - self.currentTestCount
-        let percent: Float = Float(testsLeft) / Float(self.testCount)
-
-        logger.debug("QOS: increasing progress to \(percent)")
+        var percent: Float = 0.0
+        for group in concurencyGroups {
+            percent += group.percent
+        }
+        
+        percent /= Float(concurencyGroups.count)
+        Log.logger.debug("QOS: increasing progress to \(percent)")
 
         DispatchQueue.main.async {
             self.delegate?.qualityOfServiceTest(self, didProgressToValue: percent)
@@ -431,17 +665,35 @@ open class QualityOfServiceTest {
             return
         }
 
-        // check for finished test type
-        self.testTypeCountMap[testType]! -= 1
-        if self.testTypeCountMap[testType]! == 0 {
-
-            logger.debug("QOS: finished test type: \(testType)")
-
+        var totalTests: Int = 0
+        var passedTests: Int = 0
+        for group in concurencyGroups {
+            let counts = group.countExecutors(of: testType)
+            totalTests += counts.total
+            passedTests += counts.passed
+        }
+        
+        if totalTests == passedTests {
             DispatchQueue.main.async {
-                self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType)
-                return
+                self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType.rawValue)
             }
         }
+        
+//        // check for finished test type
+//        if let count = self.testTypeCountMap[testType] {
+//            if count > 0 {
+//                self.testTypeCountMap[testType] = count - 1
+//            }
+//            if count == 0 {
+//
+//                Log.logger.debug("QOS: finished test type: \(testType)")
+//
+//                DispatchQueue.main.async {
+//                    self.delegate?.qualityOfServiceTest(self, didFinishTestType: testType.rawValue)
+//                    return
+//                }
+//            }
+//        }
     }
 
     ///
@@ -477,7 +729,7 @@ open class QualityOfServiceTest {
             return
         }
 
-        logger.debug("ALL FINISHED")
+        Log.logger.debug("ALL FINISHED")
 
         closeAllControlConnections()
 
@@ -486,38 +738,34 @@ open class QualityOfServiceTest {
     }
 
     ///
-    private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection {
+    private func getControlConnection(_ qosTest: QOSTest) -> QOSControlConnection? {
         // determine control connection
         let controlConnectionKey: String = "\(qosTest.serverAddress)_\(qosTest.serverPort)"
 
         // TODO: make instantiation of control connection synchronous with locks!
-        var conn: QOSControlConnection! = self.controlConnectionMap[controlConnectionKey]
+        var conn: QOSControlConnection? = self.controlConnectionMap[controlConnectionKey]
         if conn == nil {
-            logger.debug("\(controlConnectionKey): trying to open new control connection")
-            // logger.debug("NO CONTROL CONNECTION PRESENT FOR \(controlConnectionKey), creating a new one")
-            logger.debug("\(controlConnectionKey): BEFORE LOCK")
+            Log.logger.debug("\(controlConnectionKey): trying to open new control connection")
+            // Log.logger.debug("NO CONTROL CONNECTION PRESENT FOR \(controlConnectionKey), creating a new one")
+            Log.logger.debug("\(controlConnectionKey): BEFORE LOCK")
 
             // TODO: fail after timeout if qos server not available
 
             conn = QOSControlConnection(testToken: testToken)
             // conn.delegate = self
-
-            // connect
-            /* let isConnected = */_ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort) // blocking
-
-            // logger.debug("AFTER LOCK: have control connection?: \(isConnected)")
-            // TODO: return nil? if not connected
-
-            logger.debug("\(controlConnectionKey): AFTER LOCK -> CONTROL CONNECTION READY TO USE")
-
+    
             controlConnectionMap[controlConnectionKey] = conn
         } else {
-            logger.debug("\(controlConnectionKey): control connection already opened")
+            Log.logger.debug("\(controlConnectionKey): control connection already opened")
         }
 
-        if !conn.connected {
+        if conn?.connected == false {
             // reconnect
-            _ = conn.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
+            let isConnected = conn?.connect(qosTest.serverAddress, onPort: qosTest.serverPort)
+            if isConnected == false {
+                controlConnectionMap[controlConnectionKey] = nil
+                conn = nil
+            }
         }
 
         return conn
@@ -525,14 +773,14 @@ open class QualityOfServiceTest {
 
     ///
     private func openAllControlConnections() {
-        logger.info("opening all control connections")
+        Log.logger.info("opening all control connections")
 
         for concurrencyGroup in self.sortedConcurrencyGroups {
             if let testArray = qosTestConcurrencyGroupMap[concurrencyGroup] {
                 for qosTest in testArray {
                     // dispatch_sync(mutualExclusionQueue) {
                         /* let controlConnection = */_ = self.getControlConnection(qosTest)
-                        // logger.debug("opened control connection for qosTest \(qosTest)")
+                        // Log.logger.debug("opened control connection for qosTest \(qosTest)")
                     // }
                 }
             }
@@ -541,13 +789,14 @@ open class QualityOfServiceTest {
 
     ///
     private func closeAllControlConnections() {
-        logger.info("closing all control connections")
+        Log.logger.info("closing all control connections")
 
         // TODO: if everything is done: close all control connections
         for (_, controlConnection) in self.controlConnectionMap {
-            logger.debug("closing control connection \(controlConnection)")
+            Log.logger.debug("closing control connection \(controlConnection)")
             controlConnection.disconnect()
         }
+        
     }
 
     ///////////////
@@ -571,8 +820,9 @@ open class QualityOfServiceTest {
         if stopped {
             return
         }
-
+        
         DispatchQueue.main.async {
+            self.closeAllControlConnections()
             self.delegate?.qualityOfServiceTest(self, didFinishWithResults: self.resultArray)
             return
         }
@@ -586,7 +836,7 @@ open class QualityOfServiceTest {
             return
         }
 
-        var _testResultArray = [QOSTestResults]()
+        var _testResultArray: [QOSTestResults] = []
 
         for testResult in resultArray { // TODO: resultArray == _testResultArray? just use resultArray?
             if !testResult.isEmpty() {
@@ -594,6 +844,8 @@ open class QualityOfServiceTest {
             }
         }
 
+        print("SUBMIT RESULTS")
+        print(_testResultArray)
         // don't send results if all results are empty (e.g. only tcp tests and no control connection) or added additional test as part of the main test group
         if _testResultArray.isEmpty || self.isPartOfMainTest {
             // inform delegate
@@ -607,21 +859,21 @@ open class QualityOfServiceTest {
         let qosMeasurementResult = QosMeasurementResultRequest()
         qosMeasurementResult.measurementUuid = measurementUuid
         qosMeasurementResult.testToken = testToken
-        qosMeasurementResult.time = NSNumber(value: currentTimeMillis() as UInt64).intValue // currently unused on server!
+        qosMeasurementResult.time = NSNumber(value: UInt64.currentTimeMillis()).intValue // currently unused on server!
         qosMeasurementResult.qosResultList = _testResultArray
 
         let controlServer = ControlServer.sharedControlServer
 
-        controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { response in
-            logger.debug("QOS TEST RESULT SUBMIT SUCCESS")
+        controlServer.submitQosMeasurementResult(qosMeasurementResult, success: { [weak self] response in
+            Log.logger.debug("QOS TEST RESULT SUBMIT SUCCESS")
 
             // now the test has finished...succeeding methods should go here
-            self.success()
-        }) { error in
-            logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
+            self?.success()
+        }) { [weak self] error in
+            Log.logger.debug("QOS TEST RESULT SUBMIT ERROR: \(error)")
 
             // here the test failed...
-            self.fail(error as NSError?)
+            self?.fail(error as NSError?)
         }
     }
 

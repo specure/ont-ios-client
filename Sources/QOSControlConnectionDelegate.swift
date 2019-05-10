@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-protocol QOSControlConnectionDelegate {
+protocol QOSControlConnectionDelegate: class {
 
     ///
     func controlConnectionReadyToUse(_ connection: QOSControlConnection)

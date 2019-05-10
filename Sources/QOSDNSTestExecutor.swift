@@ -44,7 +44,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
     //
 
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -58,13 +58,15 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
         testResult.set(RESULT_DNS_TIMEOUT,  number: testObject.timeout)
     }
 
+    var dnsClientNameserver: DNSClient?
+    var dnsClientQuery: DNSClient?
+    
     ///
     override func executeTest() {
-
         if let host = testObject.host {
             qosLog.debug("EXECUTING DNS TEST")
 
-            let startTimeTicks = getCurrentTimeTicks()
+            let startTimeTicks = UInt64.getCurrentTimeTicks()
 
             // do dns query
             // TODO: improve
@@ -72,22 +74,29 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
             // TODO: check if record is supported (in map)
 
             // do {
+            DispatchQueue.main.async {
                 if let resolver = self.testObject.resolver {
-                    /* try */ DNSClient.queryNameserver(resolver, serverPort: 53, forName: host, recordType: self.testObject.record!, success: { responseObj in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
-                    }, failure: { error in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
+                    /* try */self.dnsClientNameserver = DNSClient.queryNameserver(resolver, serverPort: 53, forName: host, recordType: self.testObject.record!, success: { [weak self] responseObj in
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
+                        }, failure: { [weak self] error in
+                            self?.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
                     })
                 } else {
-                    /* try */ DNSClient.query(host, recordType: self.testObject.record!, success: { responseObj in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
-                    }, failure: { error in
-                        self.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
+                    /* try */ self.dnsClientQuery = DNSClient.query(host, recordType: self.testObject.record!, success: { [weak self] responseObj in
+                        self?.try_afterDNSResolution(startTimeTicks, responseObj: responseObj, error: nil)
+                        }, failure: { [weak self] error in
+                            self?.try_afterDNSResolution(startTimeTicks, responseObj: nil, error: error)
                     })
+                    // } catch {
+                    //    testDidFail()
+                    // }
                 }
-            // } catch {
-            //    testDidFail()
-            // }
+            }
+            
+            
+        }
+        else {
+            testDidFail()
         }
     }
 
@@ -103,7 +112,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
     ///
     private func afterDNSResolution(_ startTimeTicks: UInt64, responseObj: DNSRecordClass?) throws {
 
-        self.testResult.set(self.RESULT_DNS_DURATION, number: getTimeDifferenceInNanoSeconds(startTimeTicks))
+        self.testResult.set(self.RESULT_DNS_DURATION, number: UInt64.getTimeDifferenceInNanoSeconds(startTimeTicks))
 
         //
 
@@ -136,7 +145,7 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
                         case kDNSServiceType_AAAA:
                             resultRecord[RESULT_DNS_ADDRESS] = jsonValueOrNull(response.ipAddress as String?)
                         default:
-                            qosLog.debug("unknown result record type \(response.qType), skipping")
+                            qosLog.debug("unknown result record type \(response.qType ?? 0), skipping")
                     }
 
                     resultRecord[RESULT_DNS_TTL] = "\(response.ttl!)" as AnyObject
@@ -161,6 +170,10 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
     ///
     override func testDidSucceed() {
+        self.dnsClientNameserver?.stop()
+        self.dnsClientNameserver = nil
+        self.dnsClientQuery?.stop()
+        self.dnsClientQuery = nil
         testResult.set(RESULT_DNS_QUERY, value: "OK")
 
         super.testDidSucceed()
@@ -168,6 +181,10 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
     ///
     override func testDidTimeout() {
+        self.dnsClientNameserver?.stop()
+        self.dnsClientNameserver = nil
+        self.dnsClientQuery?.stop()
+        self.dnsClientQuery = nil
         testResult.set(RESULT_DNS_QUERY, value: "TIMEOUT")
 
         testResult.set(RESULT_DNS_ENTRY, value: /* [] as NSArray */nil)
@@ -178,6 +195,10 @@ class QOSDNSTestExecutor<T: QOSDNSTest>: QOSTestExecutorClass<T> {
 
     ///
     override func testDidFail() {
+        self.dnsClientNameserver?.stop()
+        self.dnsClientNameserver = nil
+        self.dnsClientQuery?.stop()
+        self.dnsClientQuery = nil
         testResult.set(RESULT_DNS_QUERY, value: "ERROR")
 
         testResult.set(RESULT_DNS_ENTRY, value: nil)

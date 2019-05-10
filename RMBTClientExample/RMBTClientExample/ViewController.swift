@@ -107,7 +107,7 @@ extension ViewController: RMBTClientDelegate {
     //
     func speedMeasurementDidMeasureSpeed(throughputs: [RMBTThroughput], inPhase phase: SpeedMeasurementPhase) {
         
-        var kbps: UInt32 = 0
+        var kbps: Double = 0
         
         //logger.debug("THROUGHPUTS COUNT: \(throughputs.count)")
         
@@ -117,8 +117,8 @@ extension ViewController: RMBTClientDelegate {
             
             if i == 0 {
                 switch phase {
-                case .down: self.downloadResultLabel?.text = RMBTSpeedMbpsString(Int(kbps), withMbps: false)
-                case .up: self.uploadResultLabel?.text = RMBTSpeedMbpsString(Int(kbps), withMbps: false)
+                case .down: self.downloadResultLabel?.text = RMBTSpeedMbpsString(kbps, withMbps: false)
+                case .up: self.uploadResultLabel?.text = RMBTSpeedMbpsString(kbps, withMbps: false)
                 default:
                     break
                 }
@@ -132,8 +132,9 @@ extension ViewController: RMBTClientDelegate {
             makeManageMeasurementButton(available:true)
         }
     }
+    
     //
-    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Int) {
+    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Double) {
         
         switch phase {
         case .down: downloadResultLabel.text = RMBTSpeedMbpsString(result, withMbps: false)

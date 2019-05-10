@@ -36,7 +36,7 @@ let QOS_TLS_SETTINGS: [String: NSNumber] = [
 ]
 
 ///
-let WALLED_GARDEN_URL: String = "http://nettest.specure.com/generate_204" // TODO: use url from settings request
+let WALLED_GARDEN_URL: String = "http://nettest.org/generate_204" // TODO: use url from settings request
 
 ///
 let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
@@ -45,14 +45,15 @@ let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
 #if DEBUG
 
 let QOS_ENABLED_TESTS: [QosMeasurementType] = [
+    .JITTER,
     .HttpProxy,
-//    .NonTransparentProxy,
-    //.WEBSITE,
-//    .DNS,
-//    .TCP,
-//    .UDP,
-//    .VOIP,
-//    .TRACEROUTE
+    .NonTransparentProxy,
+    .WEBSITE,
+    .DNS,
+    .TCP,
+    .UDP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
+    .TRACEROUTE
 ]
 
 /// determine the tests which should show log messages
@@ -63,7 +64,7 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 //    .DNS,
 //    .TCP,
 //    .UDP,
-//    .VOIP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
 //    .TRACEROUTE
 ]
 
@@ -72,13 +73,14 @@ let QOS_ENABLED_TESTS_LOG: [QosMeasurementType] = [
 // BETA / PRODUCTION
 
 let QOS_ENABLED_TESTS: [QosMeasurementType] = [
+    .JITTER,
     .HttpProxy,
     .NonTransparentProxy,
     .WEBSITE,
     .DNS,
     .TCP,
     .UDP,
-    .VOIP,
+    .VOIP, //Must be uncommented. Without it we can't get jitter and packet loss
     .TRACEROUTE
 ]
 

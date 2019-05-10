@@ -18,32 +18,34 @@ import Foundation
 import CocoaAsyncSocket
 
 /// contains convenience methods for working with sockets
-class SocketUtils {
-
+extension GCDAsyncSocket {
     ///
-    class func writeLine(_ sock: GCDAsyncSocket, line: String, withTimeout timeout: TimeInterval, tag: Int) { // TODO: use nano seconds timeouts
+    func writeLine(line: String, withTimeout timeout: TimeInterval, tag: Int) { // TODO: use nano seconds timeouts
         var line = line
-
+        
         // append \n to command if not already done
         if !line.hasSuffix("\n") {
             line = line + "\n"
         }
-
-        logger.verbose("-- writing line '\(line)'")
-
+        
+        Log.logger.verbose("-- writing line '\(line)'")
+        
         if let lineData = line.data(using: String.Encoding.utf8) {
-            sock.write(lineData, withTimeout: timeout, tag: tag)
+            self.write(lineData, withTimeout: timeout, tag: tag)
         } else {
             // TODO: return false or error?
         }
     }
-
+    
     ///
-    class func readLine(_ sock: GCDAsyncSocket, tag: Int, withTimeout timeout: TimeInterval) {
+    func readLine(tag: Int, withTimeout timeout: TimeInterval) {
         if let data = "\n".data(using: String.Encoding(rawValue: QOS_SOCKET_DEFAULT_CHARACTER_ENCODING)) {
-            sock.readData(to: data, withTimeout: timeout, tag: tag)
+            self.readData(to: data, withTimeout: timeout, tag: tag)
         }
     }
+}
+
+class SocketUtils {
 
     /// parses NSData object to String using default encoding
     class func parseResponseToString(_ data: Data) -> String? {

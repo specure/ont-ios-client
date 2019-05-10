@@ -42,7 +42,9 @@ class GCDTimer {
 
     ///
     deinit {
-        stop()
+        defer {
+            stop()
+        }
     }
 
     ///
@@ -52,7 +54,7 @@ class GCDTimer {
 
             // start new timer
             timerSource = createTimer(interval, timerQueue: timerQueue) {
-                logger.debug("timer fired")
+                Log.logger.debug("timer fired")
                 self.stop()
 
                 self.timerCallback?()

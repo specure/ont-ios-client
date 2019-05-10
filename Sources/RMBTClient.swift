@@ -24,11 +24,11 @@ public enum SpeedMeasurementPhase: Int {
     case wait
     case Init
     case latency
+    case jitter
+    case packLoss
     case down
     case initUp
     case up
-    case jitter
-    case packLoss
     case submittingTestResult
 
     ///
@@ -93,7 +93,7 @@ public protocol RMBTClientDelegate {
     func speedMeasurementDidStartPhase(_ phase: SpeedMeasurementPhase)
 
     ///
-    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Int)
+    func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Double)
 
 // MARK: Qos
 
@@ -127,15 +127,18 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     
     // RMBTMainTestExtendedDelegate
     func runVOIPTest() {
-        
-        startQosMeasurement(inMain:true)
+        startQosMeasurement(inMain: true)
+    }
+    
+    func shouldRunQOSTest() -> Bool {
+        return self.isQOSEnabled
     }
 
     ///
     open var testRunner: RMBTTestRunner?
     
     /// init
-    private var clientType:RMBTClientType = .standard
+    private var clientType: RMBTClientType = .standard
 
     ///
     internal var qualityOfServiceTestRunner: QualityOfServiceTest?
@@ -144,9 +147,17 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var delegate: RMBTClientDelegate?
     
     open var isStoreZeroMeasurement = false
+    
+    open var isQOSEnabled = false
 
     ///
     var resultUuid: String?
+    
+    open var loopModeUUID: String? {
+        didSet {
+            self.testRunner?.loopModeUUID = loopModeUUID
+        }
+    }
 
     ///
     open var running: Bool {
@@ -168,7 +179,6 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     public init(withClient:RMBTClientType) {
-        
         //
         defer {
             clientType = withClient
@@ -193,6 +203,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     private func startSpeedMeasurement() {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
+        testRunner?.loopModeUUID = self.loopModeUUID
         testRunner?.start()
         
         if clientType == .standard {
@@ -205,7 +216,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     }
 
     ///
-    func startQosMeasurement(inMain:Bool) {
+    open func startQosMeasurement(inMain: Bool) {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
@@ -214,6 +225,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
             qualityOfServiceTestRunner?.delegate = self
 
+            _running = true
             qualityOfServiceTestRunner?.start()
         }
     }
@@ -252,7 +264,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     @objc func hardwareUsageTimerFired() {
         if let testStartNanos = testRunner?.testStartNanos() {
 
-            let relativeNanos = nanoTime() - testStartNanos
+            let relativeNanos = UInt64.nanoTime() - testStartNanos
 
             //////////////////
             // CPU
@@ -260,7 +272,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
             if let cpuUsage = cpuMonitor.getCPUUsage() as? [NSNumber], cpuUsage.count > 0 {
                 testRunner?.addCpuUsage(cpuUsage[0].doubleValue, atNanos: relativeNanos)
 
-                logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
+                Log.logger.debug("ADDING CPU USAGE: \(cpuUsage[0].floatValue) atNanos: \(relativeNanos)")
             } else {
                 // TODO: else write implausible error, or use previous value
             }
@@ -271,7 +283,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
             let ramUsagePercentFree = ramMonitor.getRAMUsagePercentFree()
 
             testRunner?.addMemoryUsage(Double(ramUsagePercentFree), atNanos: relativeNanos)
-            logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
+            Log.logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
         }
     }
 }
@@ -281,7 +293,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidDetectConnectivity(_ connectivity: RMBTConnectivity) {
-        logger.debug("TESTRUNNER: CONNECTIVITY")
+        Log.logger.debug("TESTRUNNER: CONNECTIVITY")
     }
 
     ///
@@ -291,7 +303,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidStartPhase(_ phase: RMBTTestRunnerPhase) {
-        //logger.debug("TESTRUNNER: DID START PHASE: \(phase)")
+        //Log.logger.debug("TESTRUNNER: DID START PHASE: \(phase)")
         delegate?.speedMeasurementDidStartPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
     }
 
@@ -306,39 +318,39 @@ extension RMBTClient: RMBTTestRunnerDelegate {
             }
         case .down:
             if let r = testRunner?.downloadKilobitsPerSecond() {
-                result = Int(r)
+                result = r
             }
         case .up:
             if let r = testRunner?.uploadKilobitsPerSecond() {
-                result = Int(r)
+                result = r
             }
         case .jitter:
             if let r = testRunner?.meanJitterNanos() {
-                result = Int(r)
+                result = r
             }
             
         case .packLoss:
             if let r = testRunner?.packetLossPercentage() {
-                result = Int(r)
+                result = r
             }
             
         default:
             break
         }
 
-        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
-        //logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
+        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: Double(result))
+        //Log.logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
 
     ///
     public func testRunnerDidFinishInit(_ time: UInt64) {
-        //logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
+        //Log.logger.debug("TESTRUNNER: DID FINISH INIT: \(time)")
         self.delegate?.measurementDidStart(client: self)
     }
 
     ///
     public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
-        //logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
+        //Log.logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
         self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
         
         
@@ -361,7 +373,7 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
         self.resultUuid = uuid
 
-        if RMBTSettings.sharedSettings.nerdModeQosEnabled {
+        if self.isQOSEnabled {
             startQosMeasurement(inMain: false) // continue with qos measurement
         } else {
             finishMeasurement()
@@ -413,10 +425,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 //                    return
                 //                }
                 
-                // delegate to runner to submit VOIP results
-                self.testRunner?.jpl = result
+                // delegate to runner to submit VOIP results               
+                self.testRunner?.jpl = SpeedMeasurementJPLResult(JSON: result)
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
-                
+                self.testRunner?.continueFromDownload()
             } else {
                 self.delegate?.measurementDidFail(self, withReason: .unknownError)
             }
@@ -435,12 +447,19 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType]) {
-        //logger.debug("QOS: DID FETCH TYPES: \(time)")
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [String]) {
+        //Log.logger.debug("QOS: DID FETCH TYPES: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             
             if testTypes.count > 0 {
-                delegate?.qosMeasurementList(self, list: testTypes)
+                delegate?.qosMeasurementList(self, list: testTypes.map({ (string) -> QosMeasurementType in
+                    if let type = QosMeasurementType(rawValue: string) {
+                        return type
+                    }
+                    else {
+                        return QosMeasurementType.HttpProxy
+                    }
+                }))
             } else {
                 //
                 delegate?.measurementDidFail(self, withReason: .errorFetchingQosMeasurementParams)
@@ -449,10 +468,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     }
 
     ///
-    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType) {
-        //logger.debug("QOS: DID FINISH TYPE: \(time)")
+    public func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: String) {
+        //Log.logger.debug("QOS: DID FINISH TYPE: \(time)")
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
-            self.delegate?.qosMeasurementFinished(self, type: testType)
+            self.delegate?.qosMeasurementFinished(self, type: QosMeasurementType(rawValue: testType) ?? QosMeasurementType.HttpProxy)
         }
     }
 
@@ -460,6 +479,8 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+        } else {
+            delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: .jitter)
         }
     }
 

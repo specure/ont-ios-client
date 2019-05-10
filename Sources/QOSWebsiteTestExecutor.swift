@@ -35,7 +35,7 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
     private var requestStartTimeTicks: UInt64 = 0
     
     ///
-    override init(controlConnection: QOSControlConnection, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
+    override init(controlConnection: QOSControlConnection?, delegateQueue: DispatchQueue, testObject: T, speedtestStartTime: UInt64) {
         super.init(controlConnection: controlConnection, delegateQueue: delegateQueue, testObject: testObject, speedtestStartTime: speedtestStartTime)
     }
 
@@ -57,22 +57,23 @@ class QOSWebsiteTestExecutor<T: QOSWebsiteTest>: QOSTestExecutorClass<T> {
             let request: URLRequest = URLRequest(url: NSURL(string: url)! as URL)
             let session = URLSession.shared
             
-            requestStartTimeTicks = getCurrentTimeTicks()
+            requestStartTimeTicks = UInt64.getCurrentTimeTicks()
             
-            session.dataTask(with: request, completionHandler: {(data, response, error) in
+            session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
 //                print(data as Any)
 //                print(response as Any)
 //                print(error as Any)
                 
-                let durationInNanoseconds = getTimeDifferenceInNanoSeconds(self.requestStartTimeTicks)
-                self.testResult.resultDictionary[self.RESULT_WEBSITE_DURATION] = NSNumber(value: durationInNanoseconds)
+                guard let strongSelf = self else { return }
+                let durationInNanoseconds = UInt64.getTimeDifferenceInNanoSeconds(strongSelf.requestStartTimeTicks)
+                strongSelf.testResult.resultDictionary[strongSelf.RESULT_WEBSITE_DURATION] = NSNumber(value: durationInNanoseconds)
                 
                 if let httpResponse = response as? HTTPURLResponse {
                     let status = httpResponse.statusCode
-                    self.testResult.resultDictionary[self.RESULT_WEBSITE_STATUS] = String(status)
+                    strongSelf.testResult.resultDictionary[strongSelf.RESULT_WEBSITE_STATUS] = String(status)
                 }
                 
-                self.callFinishCallback()
+                strongSelf.callFinishCallback()
                 
             }).resume()
         }

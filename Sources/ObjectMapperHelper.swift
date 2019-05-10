@@ -19,3 +19,48 @@ import ObjectMapper
 
 ///
 let UInt64NSNumberTransformOf = TransformOf<UInt64, NSNumber>(fromJSON: { $0?.uint64Value }, toJSON: { $0.map { NSNumber(value: $0) } })
+
+let DateStringTransformOf = TransformOf<Date, String>(fromJSON: {
+    let defaultDateFormatter = DateFormatter()
+//    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    if let date = $0 {
+        return defaultDateFormatter.date(from: date)
+    }
+    else {
+        return Date()
+    }
+}, toJSON: {
+    let defaultDateFormatter = DateFormatter()
+//    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+    if let date = $0 {
+        return defaultDateFormatter.string(from: date)
+    }
+    else {
+        return ""
+    }
+})
+
+let IntDateStringTransformOf = TransformOf<Int, String>(fromJSON: {
+    let defaultDateFormatter = DateFormatter()
+    defaultDateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    if let date = $0 {
+        return Int(defaultDateFormatter.date(from: date)?.timeIntervalSince1970 ?? 0.0)
+    }
+    else {
+        return Int(Date().timeIntervalSince1970)
+    }
+}, toJSON: {
+    let defaultDateFormatter = DateFormatter()
+    defaultDateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    if let timestamp = $0 {
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+        return defaultDateFormatter.string(from: date)
+    }
+    else {
+        return ""
+    }
+})

@@ -1,5 +1,5 @@
 /*****************************************************************************************************
- * Copyright 2014-2016 SPECURE GmbH
+ * Copyright 2016 SPECURE GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,38 @@
  *****************************************************************************************************/
 
 import Foundation
+import ObjectMapper
 
 ///
-public enum QosMeasurementType: String {
-    case HttpProxy              = "http_proxy"
-    case NonTransparentProxy    = "non_transparent_proxy"
-    case WEBSITE                = "website"
-    case DNS                    = "dns"
-    case TCP                    = "tcp"
-    case UDP                    = "udp"
-    case VOIP                   = "voip"
-    case JITTER                 = "jitter"
-    case TRACEROUTE             = "traceroute"
+open class OperatorsRequest: BasicRequest {
 
+    public enum ProviderType: String {
+        case all = "MFT_ALL"
+        case WLAN = "MFT_WLAN"
+        case mobile = "MFT_MOBILE"
+        case browser = "MFT_BROWSER"
+    }
     ///
-    static var localizedNameDict = [QosMeasurementType: String]()
-}
+    var countryCode: String?
+    var providerType: ProviderType = .mobile
 
-///
-extension QosMeasurementType: CustomStringConvertible {
-
+    init(countryCode: String = "all", type: ProviderType = .mobile) {
+        super.init()
+        self.countryCode = countryCode
+        self.providerType = type
+    }
+    
     ///
-    public var description: String {
-        return QosMeasurementType.localizedNameDict[self] ?? self.rawValue
+    required public init?(map: Map) {
+        super.init(map: map)
+    }
+    
+    ///
+    override public func mapping(map: Map) {
+        super.mapping(map: map)
+
+        language <- map["language"]
+        countryCode <- map["country_code"]
+        providerType <- map["provider_type"]
     }
 }

@@ -20,8 +20,14 @@ import Foundation
 ///
 open class RMBTSettings: NSObject {
 
+    public enum NerdModeQosMode: Int {
+        case manually
+        case newNetwork
+        case always
+    }
+    
     ///
-    open static let sharedSettings = RMBTSettings()
+    public static let sharedSettings = RMBTSettings()
 
 // MARK: Temporary app state (global variables)
 
@@ -41,7 +47,7 @@ open class RMBTSettings: NSObject {
     ///
     @objc open dynamic var publishPublicData = false // only for akos
     
-    @objc open dynamic var submitZeroTesting = false
+    @objc open dynamic var submitZeroTesting = true
 
     /// anonymous mode
     @objc open dynamic var anonymousModeEnabled = false
@@ -56,9 +62,11 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var nerdModeForceIPv6 = false
+    
+    @objc open dynamic var isDarkMode = false
 
     ///
-    @objc open dynamic var nerdModeQosEnabled = false // Enable QoS
+    @objc open dynamic var nerdModeQosEnabled = NerdModeQosMode.newNetwork.rawValue // Enable QoS
 
 // MARK: Debug properties
 
@@ -75,6 +83,12 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var debugLoopModeMinDelay: UInt = 0
+    
+    @objc open dynamic var debugLoopModeSkipQOS: Bool = false
+    
+    @objc open dynamic var debugLoopModeDistance: UInt = 0
+    
+    @objc open dynamic var debugLoopModeIsStartImmedatelly: Bool = true
 
     // control server
 
@@ -108,6 +122,15 @@ open class RMBTSettings: NSObject {
 
     ///
     @objc open dynamic var debugLoggingEnabled = false
+    
+    @objc open dynamic var previousNetworkName: String?
+    @objc open dynamic var isAdsRemoved: Bool = false
+    
+    @objc open dynamic var isClientPersistent: Bool = true
+    @objc open dynamic var isAnalyticsEnabled: Bool = true
+    
+    @objc open dynamic var countMeasurements: Int = 0
+    @objc open dynamic var isDevModeEnabled: Bool = false
 
     ///
     private override init() {
@@ -168,7 +191,22 @@ open class RMBTSettings: NSObject {
 
             // logging
 
-            "debugLoggingEnabled"
+            "debugLoggingEnabled",
+            "previousNetworkName",
+            "isAdsRemoved",
+            
+            //Loop mode
+            "debugLoopMode",
+            "debugLoopModeMaxTests",
+            "debugLoopModeMinDelay",
+            "debugLoopModeSkipQOS",
+            "debugLoopModeDistance",
+            "debugLoopModeIsStartImmedatelly",
+            "isDarkMode",
+            "isClientPersistent",
+            "isAnalyticsEnabled",
+            "countMeasurements",
+            "isDevModeEnabled"
         ])
     }
 
@@ -180,16 +218,17 @@ open class RMBTSettings: NSObject {
             }
 
             // Start observing
-            addObserver(self, forKeyPath: keyPath, options: .new, context: nil)
+//            addObserver(self, forKeyPath: keyPath, options: .new, context: nil)
+            self.addObserver(self, forKeyPath: keyPath, options: [.new], context: nil)
         }
     }
 
     ///
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let newValue = change?[NSKeyValueChangeKey.newKey], let kp = keyPath {
-            logger.debugExec() {
+            Log.logger.debugExec() {
                 let oldValue = UserDefaults.getDataFor(key: kp)
-                logger.debug("Settings changed for keyPath '\(String(describing: keyPath))' from '\(String(describing: oldValue))' to '\(newValue)'")
+                Log.logger.debug("Settings changed for keyPath '\(String(describing: keyPath))' from '\(String(describing: oldValue))' to '\(newValue)'")
             }
 
             UserDefaults.storeDataFor(key: kp, obj: newValue)

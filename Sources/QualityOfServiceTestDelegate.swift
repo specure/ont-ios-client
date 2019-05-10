@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-public protocol QualityOfServiceTestDelegate {
+@objc public protocol QualityOfServiceTestDelegate {
 
     ///
     func qualityOfServiceTestDidStart(_ test: QualityOfServiceTest)
@@ -32,10 +32,10 @@ public protocol QualityOfServiceTestDelegate {
     func qualityOfServiceTest(_ test: QualityOfServiceTest, didFailWithError: NSError!) // TODO: remove !
 
     ///
-    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [QosMeasurementType])
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFetchTestTypes testTypes: [String]) //testTypes is array of QosMeasurementType
 
     ///
-    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: QosMeasurementType)
+    func qualityOfServiceTest(_ test: QualityOfServiceTest, didFinishTestType testType: String) //testType is QosMeasurementType
 
     ///
     func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float)

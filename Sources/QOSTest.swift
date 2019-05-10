@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-class QOSTest: CustomStringConvertible { /* TODO: declarations in extensions cannot be overriden yet */ // should be abstract
+open class QOSTest: CustomStringConvertible { /* TODO: declarations in extensions cannot be overriden yet */ // should be abstract
 
     let PARAM_TEST_UID = "qos_test_uid"
     let PARAM_CONCURRENCY_GROUP = "concurrency_group"
@@ -53,7 +53,7 @@ class QOSTest: CustomStringConvertible { /* TODO: declarations in extensions can
     //
 
     ///
-    var description: String {
+    public var description: String {
         return "QOSTest(\(String(describing: getType()?.rawValue))) [id: \(qosTestId), concurrencyGroup: \(concurrencyGroup), serverAddress: \(serverAddress), serverPort: \(serverPort), timeout: \(timeout)]"
     }
 

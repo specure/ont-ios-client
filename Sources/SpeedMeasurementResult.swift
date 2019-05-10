@@ -37,7 +37,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 class SpeedMeasurementResult: BasicRequest {
 
     ///
-    var jpl:[String:Any]?
+    var jpl: SpeedMeasurementJPLResult?
 
     ///
     var clientUuid: String?
@@ -190,7 +190,7 @@ class SpeedMeasurementResult: BasicRequest {
     let totalUploadHistory: RMBTThroughputHistory
 
     ///
-    weak var totalCurrentHistory: RMBTThroughputHistory!
+    var totalCurrentHistory: RMBTThroughputHistory?
 
     ///
     var currentHistories: NSMutableArray!//[RMBTThroughputHistory]!
@@ -285,7 +285,7 @@ class SpeedMeasurementResult: BasicRequest {
                     length += UInt64(factor) * threadLastPut.length
                 }
 
-                totalCurrentHistory.addLength(length, atNanos: minEndNanos)
+                totalCurrentHistory?.addLength(length, atNanos: minEndNanos)
             } else {
                 var length: UInt64 = 0
 
@@ -293,22 +293,23 @@ class SpeedMeasurementResult: BasicRequest {
                     let tt = (currentHistories[threadIndex] as! RMBTThroughputHistory).periods[i]
                     length += tt.length
 
-                    assert(totalCurrentHistory.totalThroughput.endNanos == tt.startNanos, "Period start time mismatch")
+                    assert(totalCurrentHistory?.totalThroughput.endNanos == tt.startNanos, "Period start time mismatch")
                 }
 
-                totalCurrentHistory.addLength(length, atNanos: UInt64(i + 1) * resolutionNanos)
+                totalCurrentHistory?.addLength(length, atNanos: UInt64(i + 1) * resolutionNanos)
             }
         }
 
-        let result = (totalCurrentHistory.periods as NSArray).subarray(
-            with: NSRange(location: maxFrozenPeriodIndex + 1, length: commonFrozenPeriodIndex - maxFrozenPeriodIndex)
-            ) as! [RMBTThroughput]
+        let result = (totalCurrentHistory?.periods as NSArray?)?.subarray(
+            with: NSRange(location: maxFrozenPeriodIndex + 1,
+                          length: commonFrozenPeriodIndex - maxFrozenPeriodIndex)
+            ) as? [RMBTThroughput]
         //var result = Array(totalCurrentHistory.periods[Int(maxFrozenPeriodIndex + 1)...Int(commonFrozenPeriodIndex - maxFrozenPeriodIndex)])
         // TODO: why is this not optional? does this return an empty array? see return statement
 
         maxFrozenPeriodIndex = commonFrozenPeriodIndex
 
-        return result.count > 0 ? result : nil
+        return result?.count ?? 0 > 0 ? result : nil
     }
 
     //////////
@@ -349,11 +350,11 @@ class SpeedMeasurementResult: BasicRequest {
 
         result = updateTotalHistory()
 
-        totalCurrentHistory.freeze()
+        totalCurrentHistory?.freeze()
 
-        let totalPeriodCount = totalCurrentHistory.periods.count
+        let totalPeriodCount = totalCurrentHistory?.periods.count ?? 0
 
-        totalCurrentHistory.squashLastPeriods(1)
+        totalCurrentHistory?.squashLastPeriods(1)
 
         // Squash last two periods in all histories
         for h in currentHistories {
@@ -361,9 +362,9 @@ class SpeedMeasurementResult: BasicRequest {
         }
 
         // Remove last measurement from result, as we don't want to plot that one as it's usually too short
-        if result.count > 0 {
-            result = Array(result[0..<(result.count - 1)])
-        }
+//        if result.count > 0 {
+//            result = Array(result[0..<(result.count - 1)])
+//        }
 
         return result
     }
@@ -513,7 +514,7 @@ class SpeedMeasurementResult: BasicRequest {
             }
         }
         #else
-        networkType = RMBTNetworkType.WiFi.rawValue // TODO: correctly set on macos and tvOS
+        networkType = RMBTNetworkType.wiFi.rawValue // TODO: correctly set on macos and tvOS
         #endif
     }
 
@@ -524,6 +525,7 @@ class SpeedMeasurementResult: BasicRequest {
         super.mapping(map: map)
         
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+            
             
             clientUuid              <- map["client_uuid"]
             extendedTestStat        <- map["extended_test_stat"]

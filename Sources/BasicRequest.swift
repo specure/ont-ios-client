@@ -22,6 +22,7 @@ open class BasicRequest: Mappable {
     
     /// for compatibility reasons delete when needed
     var uuid:String?
+    var loopUuid:String?
 
     ///
     var apiLevel: String?
@@ -86,6 +87,7 @@ open class BasicRequest: Mappable {
     public func mapping(map: Map) {
         //
         uuid            <- map["uuid"]
+        loopUuid            <- map["loop_uuid"]
         //
         apiLevel            <- map["api_level"]
         clientName          <- map["client_name"]
@@ -97,7 +99,7 @@ open class BasicRequest: Mappable {
         model               <- map["model"]
         osVersion           <- map["os_version"]
         platform            <- map["platform"]
-        plattform            <- map["plattform"]
+        plattform           <- map["plattform"]
         product             <- map["product"]
         previousTestStatus  <- map["previous_test_status"]
         softwareRevision    <- map["software_revision"]
