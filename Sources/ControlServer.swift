@@ -93,10 +93,10 @@ class ControlServer {
     private var uuidKey: String? // TODO: unique for each control server?
 
     ///
-    var baseUrl = "https://ont.specure.com"+"\(RMBT_CONTROL_SERVER_PATH)"///"https://netcouch.specure.com/api/v1"
+    var baseUrl = "https://test.nettest.org"+"\(RMBT_CONTROL_SERVER_PATH)"///"https://netcouch.specure.com/api/v1"
 
     ///
-    private var defaultBaseUrl = "https://netcouch.specure.com/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
+    private var defaultBaseUrl = "https://test.nettest.org/api/v1" /*"http://localhost:8080/api/v1"*/ //RMBT_CONTROL_SERVER_URL
 
     // TODO: HTTP/2, NGINX, IOS PROBLEM! http://stackoverflow.com/questions/36907767/nsurlerrordomain-code-1004-for-few-seconds-after-app-start-up
 

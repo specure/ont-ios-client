@@ -53,9 +53,9 @@ public class RMBTConfig {
     //
     var RMBT_CONTROL_SERVER_IPV6_URL   = "\(RMBT_URL_HOST)\(RMBT_CONTROL_SERVER_PATH)"// "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_SUFFIX)"
     //
-    var RMBT_MAP_SERVER_PATH_URL       = "https://netcouch.specure.com\(RMBT_MAP_SERVER_PATH)"
+    var RMBT_MAP_SERVER_PATH_URL       = "https://test.nettest.org\(RMBT_MAP_SERVER_PATH)"
     //
-    var RMBT_CHECK_IPV4_URL            = "https://netcouch.specure.com\(RMBT_CONTROL_SERVER_PATH)/ip"
+    var RMBT_CHECK_IPV4_URL            = "https://test.nettest.org\(RMBT_CONTROL_SERVER_PATH)/ip"
     
     // Server to be used for a measurement
     public var measurementServer: MeasurementServerInfoResponse.Servers?
@@ -152,7 +152,7 @@ let RMBT_TEST_UPLOAD_MAX_WAIT_S    = 3
 let RMBT_TEST_SAMPLING_RESOLUTION_MS = 250
 
 ///
-let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer"
+let RMBT_CONTROL_SERVER_PATH = "/RMBTControlServer/V2"
 
 let RMBT_CONTROL_MEASUREMENT_SERVER_PATH = "/RMBTControlServer/V2"
 
@@ -160,13 +160,13 @@ let RMBT_CONTROL_MEASUREMENT_SERVER_PATH = "/RMBTControlServer/V2"
 let RMBT_CONTROL_SERVER_SUFFIX = "/api/v1"
 
 ///
-var RMBT_MAP_SERVER_PATH = "/RMBTMapServer"
+var RMBT_MAP_SERVER_PATH = "/RMBTMapServer/V2"
 
 
 
 // MARK:- Other URLs used in the app
 
-let RMBT_URL_HOST = "https://qos01.akostest.net"
+let RMBT_URL_HOST = "https://test.nettest.org"
 
 /// Note: $lang will be replaced by the device language (de, en, sl, etc.)
 let RMBT_STATS_URL       = "\(RMBT_URL_HOST)/$lang/statistics"

@@ -36,7 +36,7 @@ let QOS_TLS_SETTINGS: [String: NSNumber] = [
 ]
 
 ///
-let WALLED_GARDEN_URL: String = "http://nettest.org/generate_204" // TODO: use url from settings request
+let WALLED_GARDEN_URL: String = "http://test.nettest.org/generate_204" // TODO: use url from settings request
 
 ///
 let WALLED_GARDEN_SOCKET_TIMEOUT_MS: Double = 10_000
