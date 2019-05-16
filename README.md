@@ -1,10 +1,14 @@
 #   rmbt-ios-client
-![Swift Version 4](https://img.shields.io/badge/Swift-v4-yellow.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+This project contains the source code of the following iOS apps:
+* AKOS Test Net, https://itunes.apple.com/us/app/akos-test-net/id990167713?mt=8
+* EKIP NetTest, https://itunes.apple.com/us/app/ekip-nettest/id1454680085?mt=8
+* Nettfart Mobile, https://itunes.apple.com/us/app/nettfart-mobile/id1208455381?mt=8
+* Open Nettest, https://itunes.apple.com/us/app/open-nettest/id965195186?mt=8
+* Ratel NetTest, https://itunes.apple.com/us/app/ratel-nettest/id1121140747?mt=8
 
 ## Background Info
 System APIs includes the network performance tests (upload, download, ping delay, jitter, etc.) and communition with servers(control, measurement, map) based on REST/JSON. Simple example of use is available (RMBTClientExample.xcworkspace).
 
 ## License
-This project is released under the [Apache license.](LICENSE.txt)
+This project is released under the [Apache 2.0 license.](LICENSE.txt)
 
