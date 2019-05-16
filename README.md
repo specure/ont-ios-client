@@ -22,7 +22,9 @@ The platform also contains visualization of aggregated data allowing end users a
 
 For more information, please visit the project website https://moqos.eu and the web based tool with maps and statistics at https://nettest.org
 
-## Background Info
+The project MoQoS was co-financed by the Connecting Europe Facility of the European Union (CEF).
+
+## Technical Info
 System APIs includes the network performance tests (upload, download, ping delay, jitter, etc.) and communition with servers(control, measurement, map) based on REST/JSON. Simple example of use is available (RMBTClientExample.xcworkspace).
 
 ## License
