@@ -27,6 +27,6 @@ The project MoQoS was co-financed by the Connecting Europe Facility of the Europ
 ## Technical Info
 System APIs includes the network performance tests (upload, download, ping delay, jitter, etc.) and communition with servers(control, measurement, map) based on REST/JSON. Simple example of use is available (RMBTClientExample.xcworkspace).
 
-## License
-This project is released under the [Apache 2.0 license.](LICENSE.txt)
+## Licence
+The source code published here is licensed under the [Apache 2.0 licence.](LICENSE.txt)
 
