@@ -89,6 +89,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     
     private let uniqueQueue = DispatchQueue(label: "Change rtpControlDataList")
 
+    private var numPackets: UInt16 = 0
     ///
 //    private var cdl: CountDownLatch! {
 //        didSet {
@@ -193,6 +194,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         let dBitsPerSample  = Double(testObject.bitsPerSample)
         let dCallDuration   = Double(testObject.callDuration / NSEC_PER_MSEC)
         let numPackets      = UInt16(dCallDuration / dDelay)
+        self.numPackets = numPackets
 
         qosLog.debug("dDelay: \(dDelay)")
         qosLog.debug("dSampleRate: \(dSampleRate)")
@@ -230,7 +232,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
             portIn: testObject.portIn
         )
 
-        qosLog.debug("=================numPackets=======\(numPackets)")
+        NSLog("=================numPackets=======\(numPackets)")
         udpStreamSender = UDPStreamSender(settings: settings)
         udpStreamSender.delegate = self
 
@@ -453,6 +455,15 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         return msDiff - tsDiff
     }
 
+    private func updateProgress(packetNumber: UInt16) {
+        let timeProgress: Float = Float(UInt64.getTimeDifferenceInNanoSeconds(self.testStartTimeTicks)) /   Float(self.testObject.timeout)
+        let packetProgress: Float = Float(packetNumber) / Float(self.numPackets)
+        if timeProgress > packetProgress {
+            self.progressCallback(self, timeProgress)
+        } else {
+            self.progressCallback(self, packetProgress)
+        }
+    }
 // MARK: QOSControlConnectionDelegate methods
 
     ///
@@ -519,7 +530,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         if let rtpPacket = RTPPacket.fromData(packetData) {
             // put packet in data list
             uniqueQueue.sync {
-                qosLog.debug("======Receive===========sequenceNumber=======\(rtpPacket.header.sequenceNumber)")
+                NSLog("======Receive===========sequenceNumber=======\(rtpPacket.header.sequenceNumber)")
                 rtpControlDataList[rtpPacket.header.sequenceNumber] = RTPControlData(rtpPacket: rtpPacket, receivedNS: receivedNS)
             }
             // !! TODO: EXC_BAD_ACCESS at this line?
@@ -544,8 +555,7 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
         }
         // generate random bytes
 
-        
-        qosLog.debug("======Send===========sequenceNumber=======\(packet.header.sequenceNumber)")
+            self.updateProgress(packetNumber: packet.header.sequenceNumber)
 //        let payloadBytes = UnsafeMutableRawPointer.allocate(byteCount: payloadSize, alignment: 0)
 //        let customDealocator = Data.Deallocator.custom { (ptr, length) in
 //            ptr.deallocate()

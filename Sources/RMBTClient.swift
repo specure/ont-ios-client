@@ -24,11 +24,11 @@ public enum SpeedMeasurementPhase: Int {
     case wait
     case Init
     case latency
+    case jitter
+    case packLoss
     case down
     case initUp
     case up
-    case jitter
-    case packLoss
     case submittingTestResult
 
     ///
@@ -479,6 +479,8 @@ extension RMBTClient: QualityOfServiceTestDelegate {
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
         if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
             delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+        } else {
+            delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: .jitter)
         }
     }
 

@@ -21,6 +21,7 @@ protocol QOSTestExecutorProtocol: class {
 
     ///
     func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ())
+    func setProgressCallback(progressCallback: @escaping (_ executor: NSObject, _ percent: Float) -> Void)
 
     ///
     func needsControlConnection() -> Bool

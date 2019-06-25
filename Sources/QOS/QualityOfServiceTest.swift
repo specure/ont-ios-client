@@ -274,7 +274,12 @@ open class QualityOfServiceTest: NSObject {
                     let group = self.findConcurencyGroup(with: qosTest.concurrencyGroup)
                     group.addTestExecutor(testExecutor: testExecutor)
                     testCount += 1
-                    
+                    if isPartOfMainTest == true && objectiveType == QosMeasurementType.VOIP.rawValue {
+                        testExecutor.setProgressCallback { [weak self] (_, percent) in
+                            guard let strongSelf = self else { return }
+                            strongSelf.delegate?.qualityOfServiceTest(strongSelf, didProgressToValue: percent)
+                        }
+                    }
                     testExecutor.setCurrentTestToken(self.testToken)
                 }
             }

@@ -19,6 +19,7 @@ import XCGLogger
 
 ///
 class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSControlConnectionTaskDelegate {
+
     func getTestObject() -> QOSTest {
         return self.testObject
     }
@@ -48,6 +49,7 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
 
     ///
     var finishCallback: ((QOSTestResult) -> ())!
+    var progressCallback: (_ executor: NSObject, _ percent: Float) -> Void = { _, _ in }
 
     ///
     var hasStarted: Bool = false
@@ -182,9 +184,13 @@ class QOSTestExecutorClass<T: QOSTest>: NSObject, QOSTestExecutorProtocol, QOSCo
         let duration: UInt64 = UInt64.getTimeDifferenceInNanoSeconds(testStartTimeTicks)
         testResult.set(RESULT_DURATION, number: duration)
     }
+    
+    func setProgressCallback(progressCallback: @escaping (_ executor: NSObject, _ percent: Float) -> Void) {
+        self.progressCallback = progressCallback
+    }
 
     ///
-    func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ()) {
+    func execute(finish finishCallback: @escaping (QOSTestResult) -> ()) {
         self.finishCallback = finishCallback
 
         // call startTest method
