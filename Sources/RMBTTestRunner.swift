@@ -404,9 +404,48 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
     
     func startLatencyPhase() {
-        startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
+        self.phase = .latency
+        DispatchQueue.main.async {
+            self.delegate?.testRunnerDidStartPhase(.latency)
+            self.delegate?.testRunnerDidUpdateProgress(0.0, inPhase: .latency)
+        }
+        
+        activeWorkers = 1
+        workers.first?.startLatencyTest(progress: { [weak self] percent, serverNanos, clientNanos in
+            DispatchQueue.main.async {
+                self?.delegate?.testRunnerDidUpdateProgress(percent, inPhase: .latency)
+            }
+            
+            guard let `self` = self else { return }
+            assert(self.phase == .latency, "Invalid state")
+            assert(!self.dead, "Invalid state")
+            
+            self.speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
+        }, complete: { [weak self] in
+            DispatchQueue.main.async {
+                self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .latency)
+                self?.delegate?.testRunnerDidFinishPhase(.latency)
+            }
+            
+            guard let `self` = self else { return }
+            if self.isNewVersion {
+                self.del?.runVOIPTest() //TODO: Remake to call run Packet Loss and Jitter tests
+            }
+            else {
+                if self.markWorkerAsFinished() {
+                    self.startDownlinkTest()
+                }
+            }
+        })
+        
+        return
+//        startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
     }
 
+    func startDownlinkTest() {
+        //                    startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+
+    }
 
 // MARK: Test worker delegate method
 

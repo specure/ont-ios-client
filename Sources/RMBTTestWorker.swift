@@ -213,6 +213,8 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     open var serverIp: String!
     
     private var downlinkPretestCompleteHandler: (_ chunks: UInt64, _ duration: UInt64) -> Void = { _, _ in }
+    private var latencyProgressHandler: (_ percent: Float, _ serverNanos: UInt64, _ clientNanos: UInt64) -> Void = { _, _, _ in }
+    private var latencyCompleteHandler: () -> Void = { }
 
     ///
     //private let serverConnectionFailedTimer = GCDTimer()
@@ -253,11 +255,14 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
 
     ///
-    @objc open func startLatencyTest() {
+    @objc open func startLatencyTest(progress: @escaping (_ percent: Float, _ serverNanos: UInt64, _ clientNanos: UInt64) -> Void, complete: @escaping () -> Void) {
         assert(state == .downlinkPretestFinished, "Invalid state")
 
         state = .latencyTestStarted
-
+        
+        self.latencyProgressHandler = progress
+        self.latencyCompleteHandler = complete
+        
         pingSeq = 0
         writeLine("PING", withTag: .txPing)
 
@@ -590,7 +595,10 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             assert(ns > 0, "Invalid latency time")
 
             delegate?.testWorker(self, didMeasureLatencyWithServerNanos: UInt64(ns), clientNanos: pingPongNanos - pingStartNanos)
-
+            
+            let percent = Float(pingSeq) / Float(params.numPings)
+            self.latencyProgressHandler(percent, UInt64(ns), pingPongNanos - pingStartNanos)
+            
             readLineWithTag(.rxPongAccept)
         } else if tag == .rxPongAccept {
             // <- ACCEPT
@@ -599,6 +607,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             if pingSeq == UInt(params.numPings) { // TODO
                 state = .latencyTestFinished
                 delegate?.testWorkerDidFinishLatencyTest(self)
+                self.latencyCompleteHandler()
             } else {
                 // Send PING again
                 delegate?.testWorker(self, startPing: Int(pingSeq), totalPings: params.numPings)
