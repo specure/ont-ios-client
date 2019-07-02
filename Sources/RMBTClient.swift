@@ -286,6 +286,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
             Log.logger.debug("ADDING RAM USAGE: \(ramUsagePercentFree) atNanos: \(relativeNanos)")
         }
     }
+    
 }
 
 ///

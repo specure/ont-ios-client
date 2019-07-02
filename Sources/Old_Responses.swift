@@ -286,6 +286,30 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
     }
 }
 
+extension SpeedMeasurementResponse_Old {
+    func toSpeedMeasurementResponse() -> SpeedMeasurementResponse {
+        let r = SpeedMeasurementResponse()
+        r.clientRemoteIp = self.clientRemoteIp
+        r.duration = self.duration
+        r.pretestDuration = self.pretestDuration
+        r.numPings = Int(self.numPings)!
+        r.numThreads = Int(self.numThreads)!
+        r.testToken = self.testToken
+        r.testUuid = self.testUuid
+        
+        let measure = TargetMeasurementServer()
+        measure.port = self.port?.intValue
+        measure.address = self.serverAddress
+        measure.name = self.serverName
+        measure.encrypted = self.serverEncryption
+        measure.uuid = self.testUuid
+        
+        r.add(details:measure)
+        
+        return r
+    }
+}
+
 ///
 open class SettingsReponse_Old: BasicResponse {
     

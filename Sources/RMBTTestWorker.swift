@@ -85,10 +85,11 @@ public enum RMBTTestTag: Int {
 }
 
 /// All delegate methods are dispatched on the supplied delegate queue
-public protocol RMBTTestWorkerDelegate: class {
+@objc public protocol RMBTTestWorkerDelegate: class {
 
     ///
-    func testWorker(_ worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
+    
+    @objc optional func testWorker(_ worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
 
     ///
     func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
@@ -210,6 +211,8 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
     ///
     open var serverIp: String!
+    
+    private var downlinkPretestCompleteHandler: (_ chunks: UInt64, _ duration: UInt64) -> Void = { _, _ in }
 
     ///
     //private let serverConnectionFailedTimer = GCDTimer()
@@ -229,12 +232,13 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 // MARK: State handling
 
     ///
-    @objc open func startDownlinkPretest() {
+    @objc open func startDownlinkPretest(complete: @escaping (_ chunks: UInt64, _ duration: UInt64) -> Void = {_,_ in }) {
         if state != .aborted && state != .failed {
             assert(state == .initialized, "Invalid state")
-
+            
+            self.downlinkPretestCompleteHandler = complete
             state = .downlinkPretestStarted
-
+            
             connect()
         }
     }
@@ -542,7 +546,8 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             // Did we run out of time?
             if RMBTCurrentNanos() - pretestStartNanos >= UInt64(params.pretestDuration * Double(NSEC_PER_SEC)) {
                 state = .downlinkPretestFinished
-                delegate?.testWorker(self, didFinishDownlinkPretestWithChunkCount: pretestChunksCount, withTime: RMBTCurrentNanos() - pretestStartNanos)
+                self.downlinkPretestCompleteHandler(UInt64(pretestChunksCount), RMBTCurrentNanos() - pretestStartNanos)
+                delegate?.testWorker?(self, didFinishDownlinkPretestWithChunkCount: pretestChunksCount, withTime: RMBTCurrentNanos() - pretestStartNanos)
             } else {
                 // ..no, get more chunks
                 pretestChunksCount *= 2
