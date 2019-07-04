@@ -208,7 +208,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     open func continueFromDownload() {
         if markWorkerAsFinished() {
-            startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+            self.startDownlinkTest()
         }
     }
     
@@ -299,12 +299,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 
                 self?.startInitPhase()
             })
-                      
-//            startPhase(.wait, withAllWorkers: false, performingSelector: nil, expectedDuration: testParams.testWait, completion: startInit)
-            
         } else {
             startInitPhase()
-//            self.startPhase(.Init, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkPretest), expectedDuration: testParams.pretestDuration, completion: nil)
         }
     }
     
@@ -411,8 +407,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
         
         activeWorkers = 1
+        finishedWorkers = 0
         workers.first?.startLatencyTest(progress: { [weak self] percent, serverNanos, clientNanos in
             DispatchQueue.main.async {
+                print("latency percent")
+                print(percent)
                 self?.delegate?.testRunnerDidUpdateProgress(percent, inPhase: .latency)
             }
             
@@ -422,14 +421,15 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             self.speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
         }, complete: { [weak self] in
+            guard let `self` = self else { return }
             DispatchQueue.main.async {
-                self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .latency)
-                self?.delegate?.testRunnerDidFinishPhase(.latency)
+                self.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .latency)
+                self.delegate?.testRunnerDidFinishPhase(.latency)
             }
             
-            guard let `self` = self else { return }
             if self.isNewVersion {
                 self.del?.runVOIPTest() //TODO: Remake to call run Packet Loss and Jitter tests
+                self.phase = .jitter
             }
             else {
                 if self.markWorkerAsFinished() {
@@ -437,9 +437,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 }
             }
         })
-        
-        return
-//        startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
     }
 
     func startDownlinkTest() {
@@ -460,43 +457,28 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if markWorkerAsFinished() {
             // We stopped all but one workers because of slow connection. Proceed to latency with single worker.
-            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
-        }
-    }
-
-    ///
-    open func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64) {
-        //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .latency, "Invalid state")
-        assert(!dead, "Invalid state")
-
-        Log.logger.debug("Thread \(worker.index): pong (server = \(serverNanos), client = \(clientNanos))")
-
-        speedMeasurementResult.addPingWithServerNanos(serverNanos, clientNanos: clientNanos)
-
-        let p = Double(speedMeasurementResult.pings.count) / Double(testParams.numPings)
-        DispatchQueue.main.async {
-            self.delegate?.testRunnerDidUpdateProgress(Float(p), inPhase: self.phase)
+            self.startLatencyPhase()
+//            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
         }
     }
 
     open func testWorker(_ worker: RMBTTestWorker, startPing: Int, totalPings: Int) {
     }
-    ///
-    open func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker) {
-        //ASSERT_ON_WORKER_QUEUE();
-        assert(phase == .latency, "Invalid state")
-        assert(!dead, "Invalid state")
-
-        if isNewVersion {
-            del?.runVOIPTest()
-        }
-        else {
-            if markWorkerAsFinished() {
-                startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
-            }
-        }
-    }
+//    ///
+//    open func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker) {
+//        //ASSERT_ON_WORKER_QUEUE();
+//        assert(phase == .latency, "Invalid state")
+//        assert(!dead, "Invalid state")
+//
+//        if isNewVersion {
+//            del?.runVOIPTest()
+//        }
+//        else {
+//            if markWorkerAsFinished() {
+//                startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
+//            }
+//        }
+//    }
 
     ///
     open func testWorker(_ worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
@@ -1060,6 +1042,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     
     ///
     open func meanJitterNanos() -> Int {
+        if let inJiter = jpl?.resultInMeanJitter,
+            let outJiter = jpl?.resultOutMeanJitter {
+            let j = (inJiter + outJiter) / 2
+            return Int(j)
+        }
         return 30000
     }
     

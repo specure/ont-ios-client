@@ -92,13 +92,13 @@ public enum RMBTTestTag: Int {
     @objc optional func testWorker(_ worker: RMBTTestWorker, didFinishDownlinkPretestWithChunkCount chunks: UInt, withTime duration: UInt64)
 
     ///
-    func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
+    @objc optional func testWorker(_ worker: RMBTTestWorker, didMeasureLatencyWithServerNanos serverNanos: UInt64, clientNanos: UInt64)
 
     ///
     func testWorker(_ worker: RMBTTestWorker, startPing: Int, totalPings: Int)
     
     ///
-    func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker)
+    @objc optional func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker)
 
     ///
     func testWorker(_ worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64
@@ -594,7 +594,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             assert(ns > 0, "Invalid latency time")
 
-            delegate?.testWorker(self, didMeasureLatencyWithServerNanos: UInt64(ns), clientNanos: pingPongNanos - pingStartNanos)
+            delegate?.testWorker?(self, didMeasureLatencyWithServerNanos: UInt64(ns), clientNanos: pingPongNanos - pingStartNanos)
             
             let percent = Float(pingSeq) / Float(params.numPings)
             self.latencyProgressHandler(percent, UInt64(ns), pingPongNanos - pingStartNanos)
@@ -606,8 +606,8 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             if pingSeq == UInt(params.numPings) { // TODO
                 state = .latencyTestFinished
-                delegate?.testWorkerDidFinishLatencyTest(self)
                 self.latencyCompleteHandler()
+                delegate?.testWorkerDidFinishLatencyTest?(self)
             } else {
                 // Send PING again
                 delegate?.testWorker(self, startPing: Int(pingSeq), totalPings: params.numPings)

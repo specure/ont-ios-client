@@ -24,11 +24,11 @@ public enum SpeedMeasurementPhase: Int {
     case wait
     case Init
     case latency
-    case jitter
-    case packLoss
     case down
     case initUp
     case up
+    case jitter
+    case packLoss
     case submittingTestResult
 
     ///
@@ -220,6 +220,13 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
         if let testToken = testRunner?.testParams.testToken,
                let measurementUuid = testRunner?.testParams.testUuid,
                let testStartNanos = testRunner?.testStartNanos() {
+            
+            if inMain == true {
+                DispatchQueue.main.async {
+                    self.testRunnerDidStartPhase(.jitter)
+                    self.testRunnerDidUpdateProgress(0.0, inPhase: .jitter)
+                }
+            }
 
             qualityOfServiceTestRunner = QualityOfServiceTest(testToken: testToken, measurementUuid: measurementUuid, speedtestStartTime: testStartNanos, isPartOfMainTest: inMain)
 
@@ -310,36 +317,36 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidFinishPhase(_ phase: RMBTTestRunnerPhase) {
-        var result = -1
+        var result: Double = -1
 
         switch phase {
         case .latency:
             if let r = testRunner?.medianPingNanos() {
-                result = Int(r)
+                result = Double(r)
             }
         case .down:
             if let r = testRunner?.downloadKilobitsPerSecond() {
-                result = r
+                result = Double(r)
             }
         case .up:
             if let r = testRunner?.uploadKilobitsPerSecond() {
-                result = r
+                result = Double(r)
             }
         case .jitter:
             if let r = testRunner?.meanJitterNanos() {
-                result = r
+                result = Double(r)
             }
             
         case .packLoss:
             if let r = testRunner?.packetLossPercentage() {
-                result = r
+                result = Double(r)
             }
             
         default:
             break
         }
 
-        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: Double(result))
+        delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
         //Log.logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
 
@@ -429,6 +436,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
                 // delegate to runner to submit VOIP results               
                 self.testRunner?.jpl = SpeedMeasurementJPLResult(JSON: result)
                 self.delegate?.measurementDidCompleteVoip(self, withResult: result)
+                DispatchQueue.main.async {
+                    self.testRunnerDidUpdateProgress(1.0, inPhase: .jitter)
+                    self.testRunnerDidFinishPhase(.jitter)
+                }
                 self.testRunner?.continueFromDownload()
             } else {
                 self.delegate?.measurementDidFail(self, withReason: .unknownError)
@@ -437,7 +448,6 @@ extension RMBTClient: QualityOfServiceTestDelegate {
         } else {
             self.finishMeasurement()
         }
-        
     }
 
     ///
@@ -478,10 +488,10 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
-        if !(self.qualityOfServiceTestRunner?.isPartOfMainTest)! {
-            delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
-        } else {
+        if self.qualityOfServiceTestRunner?.isPartOfMainTest == true {
             delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: .jitter)
+        } else {
+            delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
         }
     }
 
