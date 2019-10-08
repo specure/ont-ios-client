@@ -358,10 +358,10 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 
     ///
     public func testRunnerDidUpdateProgress(_ progress: Float, inPhase phase: RMBTTestRunnerPhase) {
-        //Log.logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
-        self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
-        
-        
+        DispatchQueue.main.async {
+            //Log.logger.debug("TESTRUNNER: DID UPDATE PROGRESS: \(progress)")
+            self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
+        }
     }
 
     ///
@@ -488,10 +488,12 @@ extension RMBTClient: QualityOfServiceTestDelegate {
 
     ///
     public func qualityOfServiceTest(_ test: QualityOfServiceTest, didProgressToValue progress: Float) {
-        if self.qualityOfServiceTestRunner?.isPartOfMainTest == true {
-            delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: .jitter)
-        } else {
-            delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+        DispatchQueue.main.async {
+            if self.qualityOfServiceTestRunner?.isPartOfMainTest == true {
+                self.delegate?.speedMeasurementDidUpdateWith(progress: progress, inPhase: .jitter)
+            } else {
+                self.delegate?.qosMeasurementDidUpdateProgress(self, progress: progress)
+            }
         }
     }
 

@@ -101,3 +101,39 @@ extension Data: ReadFromNSData {
     }
 
 }
+
+extension Data {
+    func extractFirstDNSResourceName(separator: UInt8) -> (string: String?, offset: Int) {
+        if self.count > 0,
+            self[0] == separator {
+            return (nil, 0)
+        }
+        
+        let values = self.split(separator: separator)
+        
+        if let value = values.first,
+            values.count > 1 {
+            return (String(data: value, encoding: .utf8), value.count)
+        } else {
+            return (nil, 0)
+        }
+    }
+    
+    func extractStringByOctets() -> (string: String?, offset: Int) {
+        var offset = 0
+        var strings: [String] = []
+        while offset < self.count {
+            let value: Int = Int(self[offset])
+            offset += 1
+            guard value != 0 else { break }
+            
+            if let string = String(data: self.subdata(in: offset..<(offset + value)), encoding: .utf8) {
+                strings.append(string)
+            }
+            offset += value
+        }
+        
+        return (strings.joined(separator: "."), offset)
+    }
+}
+
