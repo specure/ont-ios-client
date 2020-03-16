@@ -596,7 +596,11 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
             delegate?.testWorker?(self, didMeasureLatencyWithServerNanos: UInt64(ns), clientNanos: pingPongNanos - pingStartNanos)
             
-            let percent = Float(pingSeq) / Float(params.numPings)
+            var percent: Float = 0
+            if params.numPings > 0 {
+                percent = Float(pingSeq) / Float(params.numPings)
+            }
+            
             self.latencyProgressHandler(percent, UInt64(ns), pingPongNanos - pingStartNanos)
             
             readLineWithTag(.rxPongAccept)

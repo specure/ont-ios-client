@@ -241,7 +241,10 @@ open class RMBTConnectivityTracker: NSObject {
         
         if let lastConnection = self.lastConnectivity,
             lastConnection.networkType != .none {
-            self.delegate?.connectivityNetworkTypeDidChange(connectivity: lastConnectivity)
+            DispatchQueue.main.async {
+                self.delegate?.connectivityNetworkTypeDidChange(connectivity: self.lastConnectivity)
+            }
+            
         }
         
         if stopOnMixed {

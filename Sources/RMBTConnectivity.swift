@@ -128,7 +128,14 @@ open class RMBTConnectivity: NSObject {
             if let carrier = netinfo.subscriberCellularProvider {
                 networkName = carrier.carrierName
                 telephonyNetworkSimCountry = carrier.isoCountryCode
-                telephonyNetworkSimOperator = "\(carrier.mobileCountryCode!)-\(carrier.mobileNetworkCode!)" // TODO: !
+                var codes: [String] = []
+                if let mobileCountryCode = carrier.mobileCountryCode {
+                    codes.append(mobileCountryCode)
+                }
+                if let mobileNetworkCode = carrier.mobileNetworkCode {
+                    codes.append(mobileNetworkCode)
+                }
+                telephonyNetworkSimOperator = codes.joined(separator: "-") // TODO: !
             }
             
             // action while changing provider
