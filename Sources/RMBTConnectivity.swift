@@ -57,7 +57,7 @@ open class RMBTConnectivity: NSObject {
     open var bssid: String!
 
     ///
-    var cellularCode: NSNumber!
+    var cellularCode: NSNumber?
 
     ///
     var cellularCodeDescription: String!

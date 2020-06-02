@@ -72,7 +72,7 @@ class Signal: Mappable {
         time = Int(connectivity.timestamp.timeIntervalSince1970)// as Date
 
         if connectivity.networkType == .cellular {
-            networkTypeId = connectivity.cellularCode.intValue
+            networkTypeId = connectivity.cellularCode?.intValue ?? -1
         } else {
             networkTypeId = connectivity.networkType.rawValue
         }

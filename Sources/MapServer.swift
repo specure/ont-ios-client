@@ -27,7 +27,7 @@ open class MapServer {
     public static let sharedMapServer = MapServer()
 
     ///
-    private let alamofireManager: Alamofire.SessionManager
+    private let alamofireManager: Alamofire.Session
 
     ///
     private let settings = RMBTSettings.sharedSettings

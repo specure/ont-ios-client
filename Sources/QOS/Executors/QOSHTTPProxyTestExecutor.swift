@@ -37,7 +37,7 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
     fileprivate var requestStartTimeTicks: UInt64 = 0
 
     ///
-    fileprivate var alamofireManager: Alamofire.SessionManager! // !
+    fileprivate var alamofireManager: Alamofire.Session! // !
     
     fileprivate var request: DataRequest?
 
@@ -90,15 +90,21 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
             }
 
             configuration.httpAdditionalHeaders = additonalHeaderFields
+            
+            //It could be wrong update
+            let redirector = Redirector(behavior: .modify({ (task, request, response) -> URLRequest? in
+                return URLRequest(url: URL(string: url)!)
+            }))
+            
+            alamofireManager = Session(configuration: configuration, redirectHandler: redirector)
 
-            alamofireManager = Alamofire.SessionManager(configuration: configuration)
-
+            
             // prevent redirect
             let delegate = alamofireManager.delegate
 
-            delegate.taskWillPerformHTTPRedirection = { session, task, response, request in
-                return URLRequest(url: URL(string: url)!) // see https://github.com/Alamofire/Alamofire/pull/424/files
-            }
+//            delegate.taskWillPerformHTTPRedirection = { session, task, response, request in
+//                return URLRequest(url: URL(string: url)!) // see https://github.com/Alamofire/Alamofire/pull/424/files
+//            }
 
             ////
 
@@ -152,10 +158,12 @@ class QOSHTTPProxyTestExecutor<T: QOSHTTPProxyTest>: QOSTestExecutorClass<T> {
                             // timeout
                             strongSelf.testDidTimeout()
                         default:
-                            Log.logger.debug("error msg from server: \(String(describing: response.result.value))")
+                            let value = try? response.result.get()
+                            Log.logger.debug("error msg from server: \(String(describing: value))")
+
                             
                             //to get JSON return value
-                            if let result = response.result.value {
+                            if let result = value {
                                 if let JSON = result as? NSDictionary {
                                     print(JSON)
                                 }

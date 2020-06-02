@@ -15,6 +15,7 @@
  *****************************************************************************************************/
 
 import Foundation
+import Alamofire
 
 ///
 open class WalledGardenTest {
@@ -35,15 +36,15 @@ open class WalledGardenTest {
 // Original solution 
             
             // send async request // TODO: or send sync request?
-            NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue(), completionHandler: { (response: URLResponse?, data: Data?, error: Error?) -> Void in
-                if let res = response as? HTTPURLResponse {
+            AF.request(request as URLRequest).response(queue: .main) { (response) in
+                if let res = response.response {
                     let httpResponse = res
 
                     callback((httpResponse.statusCode == 204))
                 } else {
                     callback(false) // request failed (probably due to no network connection)
                 }
-            } )
+            }
             
 //            var newRequest = URLRequest(url: url)
 //            newRequest.httpMethod = "GET"

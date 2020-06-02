@@ -29,12 +29,6 @@ open class RMBTZeroMeasurementSynchronizer: NSObject {
     }
     override init() {
         super.init()
-        
-        reachabilityManager?.listener = { [weak self] status in
-            if (status != .notReachable) {
-                self?.tick(timer: self?.timer)
-            }
-        }
     }
     
     open func startSynchronization() {
@@ -42,7 +36,14 @@ open class RMBTZeroMeasurementSynchronizer: NSObject {
             timer?.invalidate()
         }
         
-        reachabilityManager?.startListening()
+        reachabilityManager?.startListening(onUpdatePerforming: { [weak self] (status) in
+            guard let self = self else { return }
+            
+            if (status != .notReachable) {
+                self.tick(timer: self.timer)
+            }
+        })
+
         
         timer = Timer.scheduledTimer(timeInterval: self.duration, target: self, selector: #selector(tick(timer:)), userInfo: nil, repeats: true)
         self.tick(timer: timer)

@@ -22,7 +22,7 @@ class RMBTNominatim: NSObject {
     func reverseGeocodeLocation(location: CLLocation, completionHandler: @escaping ((_ address: RMBTNominatimAddress?, _ error: Error?)-> Void)) {
         
         let url = self.url(with: location)
-        Alamofire.request(url).responseJSON { (response) in
+        AF.request(url).responseJSON { (response) in
             if let error = response.error {
                 completionHandler(nil, error)
             }

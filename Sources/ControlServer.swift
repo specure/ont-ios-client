@@ -76,7 +76,7 @@ class ControlServer {
     static let sharedControlServer = ControlServer()
 
     ///
-    private let alamofireManager: Alamofire.SessionManager
+    private let alamofireManager: Alamofire.Session
 
     ///
     private let settings = RMBTSettings.sharedSettings

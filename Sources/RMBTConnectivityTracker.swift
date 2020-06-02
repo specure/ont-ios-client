@@ -68,7 +68,7 @@ open class RMBTConnectivityTracker: NSObject {
     private weak var delegate: RMBTConnectivityTrackerDelegate?
 
     ///
-    private var lastConnectivity: RMBTConnectivity! {
+    private var lastConnectivity: RMBTConnectivity? {
         didSet {
             print("lastConnectivity changed")
         }
@@ -81,7 +81,7 @@ open class RMBTConnectivityTracker: NSObject {
     private var started = false
 
     ///
-    private var lastRadioAccessTechnology: String!
+    private var lastRadioAccessTechnology: String?
 
     ///
     struct Static {
@@ -172,7 +172,8 @@ open class RMBTConnectivityTracker: NSObject {
         queue.async {
             #if os(iOS)
             assert(self.lastConnectivity != nil, "Connectivity should be known by now")
-            self.delegate?.connectivityTracker(self, didDetectConnectivity: self.lastConnectivity)
+            guard let connectivity = self.lastConnectivity else { return }
+            self.delegate?.connectivityTracker(self, didDetectConnectivity: connectivity)
             #endif
         }
     }
@@ -196,7 +197,7 @@ open class RMBTConnectivityTracker: NSObject {
                 return
             }
 
-            self.lastRadioAccessTechnology = (n.object as? String) ?? ""
+            self.lastRadioAccessTechnology = n.object as? String
 
             #if os(iOS)
             self.reachabilityDidChangeToStatus(RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus())
@@ -242,7 +243,7 @@ open class RMBTConnectivityTracker: NSObject {
         if let lastConnection = self.lastConnectivity,
             lastConnection.networkType != .none {
             DispatchQueue.main.async {
-                self.delegate?.connectivityNetworkTypeDidChange(connectivity: self.lastConnectivity)
+                self.delegate?.connectivityNetworkTypeDidChange(connectivity: lastConnection)
             }
             
         }
@@ -252,11 +253,12 @@ open class RMBTConnectivityTracker: NSObject {
             var compatible = true
 
             if lastConnectivity != nil {
-                if connectivity.networkType != lastConnectivity.networkType {
-                    Log.logger.debug("Connectivity network mismatched \(self.lastConnectivity.networkTypeDescription) -> \(connectivity.networkTypeDescription)")
+                if connectivity.networkType != lastConnectivity?.networkType {
+                    Log.logger.debug("Connectivity network mismatched \(self.lastConnectivity?.networkTypeDescription ?? "unkowed") -> \(connectivity.networkTypeDescription)")
+
                     compatible = false
-                } else if connectivity.networkName != lastConnectivity.networkName {
-                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity.networkName ?? "") -> \(connectivity.networkName ?? "")")
+                } else if connectivity.networkName != lastConnectivity?.networkName {
+                    Log.logger.debug("Connectivity network name mismatched \(self.lastConnectivity?.networkName ?? "unkowed") -> \(connectivity.networkName ?? "")")
                     compatible = false
                 }
             }

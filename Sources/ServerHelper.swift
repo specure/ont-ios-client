@@ -23,7 +23,7 @@ import ObjectMapper
 class ServerHelper {
 
     ///
-    class func configureAlamofireManager() -> Alamofire.SessionManager {
+    class func configureAlamofireManager() -> Alamofire.Session {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 30 // seconds
         configuration.timeoutIntervalForResource = 30
@@ -41,11 +41,11 @@ class ServerHelper {
         
         // print(Bundle.main.preferredLocalizations)
 
-        return Alamofire.SessionManager(configuration: configuration)
+        return Alamofire.Session(configuration: configuration)
     }
 
     ///
-    class func requestArray<T: BasicResponse>(_ manager: Alamofire.SessionManager, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
+    class func requestArray<T: BasicResponse>(_ manager: Alamofire.Session, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success: @escaping (_ response: [T]) -> (), error failure: @escaping ErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
 
         var parameters: [String: AnyObject]?
@@ -81,24 +81,20 @@ class ServerHelper {
                     return "Response for \(path): \n\(response.result.value)"
                 }
             }*/
-            
-            .responseArray { (response: DataResponse<[T]>) in
+            .responseArray(completionHandler: { (response: AFDataResponse<[T]>) in
                 switch response.result {
-                case .success:
-                    if let responseArray: [T] = response.result.value {
+                case .success(let responseArray):
+                    Log.logger.debug {
+                        debugPrint(response)
 
-                        Log.logger.debug {
-                            debugPrint(response)
-
-                            if let jsonString = Mapper().toJSONString(responseArray, prettyPrint: true) {
-                                return "Response for \(path) with object: \n\(jsonString)"
-                            }
-
-                            return "Response for \(path) with object: <json serialization failed>"
+                        if let jsonString = Mapper().toJSONString(responseArray, prettyPrint: true) {
+                            return "Response for \(path) with object: \n\(jsonString)"
                         }
 
-                        success(responseArray)
+                        return "Response for \(path) with object: <json serialization failed>"
                     }
+
+                    success(responseArray)
                 case .failure(let error):
                     Log.logger.debug("\(error)") // TODO: error callback
 
@@ -108,11 +104,39 @@ class ServerHelper {
 
                     failure(error as Error)
                 }
-            }
+            })
+            
+//            .responseArray { (response: DataResponse<[T]>, error) in
+//                switch response.result {
+//                case .success:
+//                    if let responseArray: [T] = response.result.value {
+//
+//                        Log.logger.debug {
+//                            debugPrint(response)
+//
+//                            if let jsonString = Mapper().toJSONString(responseArray, prettyPrint: true) {
+//                                return "Response for \(path) with object: \n\(jsonString)"
+//                            }
+//
+//                            return "Response for \(path) with object: <json serialization failed>"
+//                        }
+//
+//                        success(responseArray)
+//                    }
+//                case .failure(let error):
+//                    Log.logger.debug("\(error)") // TODO: error callback
+//
+//                    /*if let responseObj = response.result.value as? String {
+//                     Log.logger.debug("error msg from server: \(responseObj)")
+//                     }*/
+//
+//                    failure(error as Error)
+//                }
+//            }
     }
 
     ///
-    class func request<T: BasicResponse>(_ manager: Alamofire.SessionManager, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success:  @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+    class func request<T: BasicResponse>(_ manager: Alamofire.Session, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObject: BasicRequest?, success:  @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
 
         var parameters: [String: AnyObject]?
@@ -143,24 +167,21 @@ class ServerHelper {
     // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
         
-            .responseObject { (response: DataResponse<T>) in
+            .responseObject { (response: AFDataResponse<T>) in
                 print(String(data: response.data ?? Data(), encoding: .utf8))
                 switch response.result {
-                case .success:
-                    if let responseObj: T = response.result.value {
-                        
-                        Log.logger.debug {
-                            debugPrint(response)
+                case .success(let responseObj):
+                    Log.logger.debug {
+                        debugPrint(response)
 
-                            if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
-                                return "Response for \(path) with object: \n\(jsonString)"
-                            }
-
-                            return "Response for \(path) with object: <json serialization failed>"
+                        if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
+                            return "Response for \(path) with object: \n\(jsonString)"
                         }
 
-                        success(responseObj)
+                        return "Response for \(path) with object: <json serialization failed>"
                     }
+
+                    success(responseObj)
                 case .failure(let error):
                     Log.logger.debug("\(error)") // TODO: error callback
                     debugPrint(response)
@@ -170,12 +191,13 @@ class ServerHelper {
                     let jsonDictionary = jsonObject as? [String: Any] {
                         print(jsonDictionary)
                         if let errorString = jsonDictionary["error"] as? String {
-                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString])
+                            NSError().asAFError(orFailWith: errorString)
+                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString]).asAFError ?? resultError
                         }
                         if let errorArray = jsonDictionary["error"] as? [String],
                             errorArray.count > 0,
                             let errorString = errorArray.first {
-                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString])
+                            resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString]).asAFError ?? resultError
                         }
                     }
                     /*if let responseObj = response.result.value as? String {
@@ -188,7 +210,7 @@ class ServerHelper {
     }
     
     ///
-    class func request<T: BasicResponse>(_ manager: Alamofire.SessionManager, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObjects: [BasicRequest]?, key: String?, success:  @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
+    class func request<T: BasicResponse>(_ manager: Alamofire.Session, baseUrl: String?, method: Alamofire.HTTPMethod, path: String, requestObjects: [BasicRequest]?, key: String?, success:  @escaping (_ response: T) -> (), error failure: @escaping ErrorCallback) {
         // add basic request values (TODO: make device independent -> for osx, tvos)
         
         var parameters: [String: AnyObject]?
@@ -226,23 +248,20 @@ class ServerHelper {
             // maybe use alamofire router later? (https://grokswift.com/router/)
             .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)
             
-            .responseObject { (response: DataResponse<T>) in
+            .responseObject { (response: AFDataResponse<T>) in
                 switch response.result {
-                case .success:
-                    if let responseObj:T = response.result.value {
+                case .success(let responseObj):
+                    Log.logger.debug {
+                        debugPrint(response)
                         
-                        Log.logger.debug {
-                            debugPrint(response)
-                            
-                            if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
-                                return "Response for \(path) with object: \n\(jsonString)"
-                            }
-                            
-                            return "Response for \(path) with object: <json serialization failed>"
+                        if let jsonString = Mapper().toJSONString(responseObj, prettyPrint: true) {
+                            return "Response for \(path) with object: \n\(jsonString)"
                         }
                         
-                        success(responseObj)
+                        return "Response for \(path) with object: <json serialization failed>"
                     }
+                    
+                    success(responseObj)
                 case .failure(let error):
                     Log.logger.debug("\(error)") // TODO: error callback
                     debugPrint(response)
