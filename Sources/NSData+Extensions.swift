@@ -111,9 +111,8 @@ extension Data {
         
         let values = self.split(separator: separator)
         
-        if let value = values.first,
-            values.count > 1 {
-            return (String(data: value, encoding: .utf8), value.count)
+        if let value = values.first {
+            return Data(value).extractStringByOctets()
         } else {
             return (nil, 0)
         }

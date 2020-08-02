@@ -111,6 +111,7 @@ class QOSNonTransparentProxyTestExecutor<T: QOSNonTransparentProxyTest>: QOSTest
 
                 // create client socket
                 ntpTestSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: socketQueue)
+                ntpTestSocket?.setupSocket()
 
                 // connect client socket
                 do {

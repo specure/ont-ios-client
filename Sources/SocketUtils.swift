@@ -45,6 +45,43 @@ extension GCDAsyncSocket {
     }
 }
 
+extension GCDAsyncSocket {
+    func setupSocket() {
+        if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
+            self.isIPv6Enabled = false
+            self.isIPv4Enabled = true
+            self.isIPv4PreferredOverIPv6 = true
+        }
+        if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+            self.isIPv4Enabled = false
+            self.isIPv6Enabled = true
+            self.isIPv4PreferredOverIPv6 = false
+        }
+        if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+            self.isIPv4Enabled = true
+            self.isIPv6Enabled = true
+            self.isIPv4PreferredOverIPv6 = false
+        }
+    }
+}
+
+extension GCDAsyncUdpSocket {
+    func setupSocket() {
+        if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
+            self.setIPv6Enabled(false)
+            self.setPreferIPv4()
+        }
+        if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+            self.setIPv4Enabled(false)
+            self.setPreferIPv6()
+        }
+        if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+            self.setIPv6Enabled(true)
+            self.setPreferIPv6()
+        }
+    }
+}
+
 class SocketUtils {
 
     /// parses NSData object to String using default encoding

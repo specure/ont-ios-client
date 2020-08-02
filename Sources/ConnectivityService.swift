@@ -103,6 +103,7 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
         getLocalIpAddresses()
         getLocalIpAddressesFromSocket()
 
+        
         checkIPV4()
         checkIPV6()
     }
@@ -179,12 +180,20 @@ extension ConnectivityService {
                                         Log.logger.debug("local ipv4 address from getifaddrs: \(address)")
                                     }
                                 }
+                                
                                 if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp != address {
                                         self.connectivityInfo.ipv6.internalIp = address
                                         self.connectivityInfo.ipv6.externalIp = address
                                         Log.logger.debug("local ipv6 address from getifaddrs: \(address)")
                                     }
+                                }
+                                
+                                //If IPv4 mode only
+                                if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
+                                    self.connectivityInfo.ipv6.internalIp = nil
+                                    self.connectivityInfo.ipv6.externalIp = nil
+                                    self.connectivityInfo.ipv6.connectionAvailable = false
                                 }
                             }
                         }
@@ -203,18 +212,7 @@ extension ConnectivityService {
             self.updateConnectivityInfo(with: self.udpSocket)
         }
         else {
-            if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
-                udpSocket.setIPv6Enabled(false)
-                udpSocket.setPreferIPv4()
-            }
-            if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
-                udpSocket.setIPv4Enabled(false)
-                udpSocket.setPreferIPv6()
-            }
-            if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
-                udpSocket.setIPv6Enabled(true)
-                udpSocket.setPreferIPv6()
-            }
+            udpSocket.setupSocket()
             
             Log.logger.debug("get local address from socket is prefered IPv4:\(udpSocket.isIPv4Preferred()), prefered IPv6:\(udpSocket.isIPv6Preferred()), enabled IPv4:\(udpSocket.isIPv4Enabled()), enabled IPv6: \(udpSocket.isIPv6Enabled())")
             let host = URL(string: RMBT_URL_HOST)?.host ?? "specure.com"

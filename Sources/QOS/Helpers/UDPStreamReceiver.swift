@@ -69,7 +69,7 @@ class UDPStreamReceiver: NSObject {
     fileprivate func connect() {
         Log.logger.debug("connecting udp socket")
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: settings.delegateQueue, socketQueue: socketQueue)
-
+        udpSocket.setupSocket()
         do {
             try udpSocket.bind(toPort: settings.port)
             try udpSocket.beginReceiving()

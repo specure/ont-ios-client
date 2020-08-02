@@ -76,7 +76,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
         // create udpSocket
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: delegateQueue)
-
+        udpSocket.setupSocket()
         do {
             // bind to port
             Log.logger.debug("- binding to port 0")
@@ -282,6 +282,9 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             let range = NSRange(location: 0, length: MemoryLayout<DNSHeader>.size)
             // let newRange: Range<Int> = 0..<MemoryLayout<DNSHeader>.size
 
+            if currentData.count < range.length {
+                return
+            }
             let headerData = (currentData as NSData).subdata(with: range)
 
             //Log.logger.debug("\(subdata.base64EncodedString())")
@@ -332,9 +335,9 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 (currentData as NSData).getBytes(&qclass, range: NSRange(location: offset, length:  MemoryLayout<UInt16>.size))
                 offset += MemoryLayout<UInt16>.size
                 
-                print("qname \(qname)")
-                print("qtype \(qtype)")
-                print("qclass \(qclass)")
+                Log.logger.debug("qname \(qname)")
+                Log.logger.debug("qtype \(qtype)")
+                Log.logger.debug("qclass \(qclass)")
                 
                 dnsQuestion.dnsType = CFSwapInt16BigToHost(qtype)
                 dnsQuestion.dnsClass = CFSwapInt16BigToHost(qclass)
@@ -345,6 +348,9 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
 
             Log.logger.debug("\(dnsQuestion)")
 
+//            if dnsQuestionName == "wikipedia.org" || dnsQuestionName == "slovenskenovice.si" || dnsQuestionName == "apple.com" {
+//                print("")
+//            }
             ///
             let callbackKey = "\(dnsQuestionName)_\(dnsQuestion.dnsType)"
             ///
@@ -354,6 +360,16 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
             if dnsHeader.anCount > 0 {
                 let nameExtract = currentData.extractFirstDNSResourceName(separator: 192)
                 var offset = nameExtract.offset
+                var isSkipName = false
+                
+                if nameExtract.string != nil,
+                    nameExtract.offset > 0 {
+                    isSkipName = true
+                }
+                if nameExtract.string == nil,
+                    currentData[0] == 192 {
+                    currentData = currentData[1..<currentData.count]
+                }
                 
                 //println("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
                 Log.logger.debug("trying to get \(dnsHeader.anCount) rr (currently one first one...)")
@@ -372,7 +388,7 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 
                 //let ddr = dd.subdata(in: 0..<MemoryLayout<DNSResourceRecord>.size)
 
-                print("ddr: \(currentData.base64EncodedString())")
+                Log.logger.debug("ddr: \(currentData.base64EncodedString())")
 
                 var dnsResourceRecord = DNSResourceRecord()
 
@@ -384,9 +400,11 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 var ttlBytes = dnsResourceRecord.ttl
                 var dataLength = dnsResourceRecord.dataLength
                 
-                size = MemoryLayout<UInt16>.size
-                (currentData as NSData).getBytes(&namePointer, range: NSRange(location: offset, length: size))
-                offset += size
+                if !isSkipName {
+                    size = MemoryLayout<UInt8>.size
+                    (currentData as NSData).getBytes(&namePointer, range: NSRange(location: offset, length: size))
+                    offset += size
+                }
                 
                 size = MemoryLayout<UInt16>.size
                 (currentData as NSData).getBytes(&dnsType, range: NSRange(location: offset, length: size))
@@ -404,12 +422,19 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 (currentData as NSData).getBytes(&dataLength, range: NSRange(location: offset, length: size))
                 offset += size
 
-                dnsResourceRecord.namePointer = CFSwapInt16BigToHost(namePointer)
+                dnsResourceRecord.namePointer = namePointer
                 dnsResourceRecord.dnsType = CFSwapInt16BigToHost(dnsType)
                 dnsResourceRecord.dnsClass = CFSwapInt16BigToHost(dnsClass)
                 dnsResourceRecord.ttl = CFSwapInt32BigToHost(ttlBytes)
                 dnsResourceRecord.dataLength = CFSwapInt16BigToHost(dataLength)
 
+//                if !isSkipName {
+//                    print(nameExtract.string)
+//                } else {
+//                    let someName = (Data(data[Int(dnsResourceRecord.namePointer)..<data.count])).extractStringByOctets()
+//                    print(someName.string)
+//                }
+                
                 // TODO: ttl!! and dataLength showing wrong numbers!!
                 // TODO: bug is because ttl is uint32, but why is this not working?
                 // -> see struct alignment...do it the other way with getBytes(..., range)
@@ -429,7 +454,6 @@ class DNSClient: NSObject, GCDAsyncUdpSocketDelegate {
                 Log.logger.debug("rr is of type \(String(describing: strType))")
 
                 //
-
                 var ipStr: String!
                 var preferenceNum: UInt16!
 

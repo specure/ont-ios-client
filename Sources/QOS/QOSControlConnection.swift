@@ -95,6 +95,7 @@ class QOSControlConnection: NSObject {
         let connectTimeout = nsToSec(timeout)
 
         do {
+            qosControlConnectionSocket.setupSocket()
             try qosControlConnectionSocket.connect(toHost: host, onPort: port, withTimeout: connectTimeout)
         } catch {
             // there was an error

@@ -146,6 +146,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 
                     // create client socket
                     tcpTestOutSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: outSocketQueue)
+                    tcpTestOutSocket?.setupSocket()
 
                     // connect client socket
                     do {
@@ -171,6 +172,7 @@ class QOSTCPTestExecutor<T: QOSTCPTest>: QOSTestExecutorClass<T>, GCDAsyncSocket
 
                 // create server socket
                 tcpTestInSocket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue, socketQueue: inSocketQueue)
+                tcpTestInSocket?.setupSocket()
 
                 do {
                     if let portIn = testObject.portIn {

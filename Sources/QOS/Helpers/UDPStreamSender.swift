@@ -107,6 +107,7 @@ class UDPStreamSender: NSObject {
         Log.logger.debug("connecting udp socket")
         stop()
         udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: streamSenderQueue)
+        udpSocket?.setupSocket()
         isStopped = false
         //
 

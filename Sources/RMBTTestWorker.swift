@@ -229,6 +229,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         super.init()
 
         socket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue)
+        socket.setupSocket()
     }
 
 // MARK: State handling

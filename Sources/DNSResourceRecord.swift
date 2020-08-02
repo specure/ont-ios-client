@@ -18,7 +18,7 @@ import Foundation
 
 ///
 struct DNSResourceRecord: CustomStringConvertible {
-    var namePointer: UInt16
+    var namePointer: UInt8
     var dnsType: UInt16
     var dnsClass: UInt16
     var ttl: UInt32
@@ -31,7 +31,7 @@ struct DNSResourceRecord: CustomStringConvertible {
         // return "DNSResourceRecord: [namePointer: \(namePointer), dnsType: \(dnsType), dnsClass: \(dnsClass), ttl: \(ttl1), \(ttl2), dataLength: \(dataLength)]"
     }
 
-    // 16 bit => name pointer?
+    // 8 bit => name pointer?
     // 16 bit => service type
     // 16 bit => service class
     // 32 bit => ttl
