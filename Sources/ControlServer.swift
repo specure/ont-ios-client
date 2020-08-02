@@ -149,16 +149,15 @@ class ControlServer {
         
         // get settings of control server
         getSettings(success: {
+            // check for ip version force
+            if self.settings.nerdModeForceIPv6 {
+                self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL
+            } else if self.settings.nerdModeForceIPv4 {
+                self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL
+            }
+            
             // 
-            if self.settings.debugUnlocked {
-                
-                // check for ip version force
-                if self.settings.nerdModeForceIPv6 {
-                    self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL
-                } else if self.settings.nerdModeForceIPv4 {
-                    self.baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV4_URL
-                }
-                
+            if self.settings.debugUnlocked {    
                 // check for custom control server
                 if self.settings.debugControlServerCustomizationEnabled {
                     let scheme = self.settings.debugControlServerUseSSL ? "https" : "http"
@@ -206,7 +205,8 @@ class ControlServer {
             req.geoLocation = geoLocation
         }
         
-        let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
+//        let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
+//        self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
         self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }
 
