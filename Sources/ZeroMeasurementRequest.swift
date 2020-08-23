@@ -25,11 +25,48 @@ class ZeroMeasurementRequest: BasicRequest {
     ///
     var signals = [Signal]()
     
-    ///
-    var telephonyInfo: TelephonyInfo?
+    /// Telephony Info properties
+    var telephonyInfo: TelephonyInfo? {
+        didSet {
+            self.telephonyDataState = telephonyInfo?.dataState
+            self.telephonyNetworkCountry = telephonyInfo?.networkCountry
+            self.telephonyNetworkIsRoaming = telephonyInfo?.networkIsRoaming
+            self.telephonyNetworkOperator = telephonyInfo?.networkOperator
+            self.telephonyNetworkOperatorName = telephonyInfo?.networkOperatorName
+            self.telephonyNetworkSimCountry = telephonyInfo?.networkSimCountry
+            self.telephonyNetworkSimOperator = telephonyInfo?.networkSimOperator
+            self.telephonyNetworkSimOperatorName = telephonyInfo?.networkSimOperatorName
+            self.telephonyPhoneType = telephonyInfo?.phoneType
+        }
+    }
+
+    var telephonyDataState: Int?
+    var telephonyNetworkCountry: String?
+    var telephonyNetworkIsRoaming: Bool?
+    var telephonyNetworkOperator: String?
+    var telephonyNetworkOperatorName: String?
+    var telephonyNetworkSimCountry: String?
+    var telephonyNetworkSimOperator: String?
+    var telephonyNetworkSimOperatorName: String?
+    var telephonyPhoneType: Int?
     
-    ///
-    var wifiInfo: WifiInfo?
+    ///WiFi Info Properties
+    var wifiInfo: WifiInfo? {
+        didSet {
+            self.wifiSsid = wifiInfo?.ssid
+            self.wifiBssid = wifiInfo?.bssid
+            self.wifiNetworkId = wifiInfo?.networkId
+            self.wifiSupplicantState = wifiInfo?.supplicantState
+            self.wifiSupplicantStateDetail = wifiInfo?.supplicantStateDetail
+        }
+    }
+    
+    var wifiSsid: String?
+    var wifiBssid: String?
+    var wifiNetworkId: String?
+    var wifiSupplicantState: String?
+    var wifiSupplicantStateDetail: String?
+    
     
     #endif
     
@@ -88,8 +125,26 @@ class ZeroMeasurementRequest: BasicRequest {
         
         #if os(iOS)
             signals             <- map["signals"]
-            telephonyInfo       <- map["telephony_info"]
-            wifiInfo            <- map["wifi_info"]
+//            telephonyInfo       <- map["telephony_info"]
+//            wifiInfo            <- map["wifi_info"]
+        //Telephony Info Properties
+            telephonyDataState <- map["telephony_data_state"]
+            telephonyNetworkCountry <- map["telephony_network_country"]
+            telephonyNetworkIsRoaming <- map["telephony_network_is_roaming"]
+            telephonyNetworkOperator <- map["telephony_network_operator"]
+            telephonyNetworkOperatorName <- map["telephony_network_operator_name"]
+            telephonyNetworkSimCountry <- map["telephony_network_sim_country"]
+            telephonyNetworkSimOperator <- map["telephony_network_sim_operator"]
+            telephonyNetworkSimOperatorName <- map["telephony_network_sim_operator_name"]
+            telephonyPhoneType <- map["telephony_phone_type"]
+
+        //WiFi Info Properties
+            wifiSsid <- map["wifi_ssid"]
+            wifiBssid <- map["wifi_bssid"]
+            wifiNetworkId <- map["wifi_network_id"]
+            wifiSupplicantState <- map["wifi_supplicant_state"]
+            wifiSupplicantStateDetail <- map["wifi_supplicant_state_detail"]
+        
             cellLocations       <- map["cellLocations"]
         #endif
     }
