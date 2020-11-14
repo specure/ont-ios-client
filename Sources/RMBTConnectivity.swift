@@ -71,35 +71,51 @@ open class RMBTConnectivity: NSObject {
     #if os(iOS)
 
     ///
-    fileprivate let cellularCodeTable = [
-        CTRadioAccessTechnologyGPRS:         1,
-        CTRadioAccessTechnologyEdge:         2,
-        CTRadioAccessTechnologyWCDMA:        3,
-        CTRadioAccessTechnologyCDMA1x:       4,
-        CTRadioAccessTechnologyCDMAEVDORev0: 5,
-        CTRadioAccessTechnologyCDMAEVDORevA: 6,
-        CTRadioAccessTechnologyHSDPA:        8,
-        CTRadioAccessTechnologyHSUPA:        9,
-        CTRadioAccessTechnologyCDMAEVDORevB: 12,
-        CTRadioAccessTechnologyLTE:          13,
-        CTRadioAccessTechnologyeHRPD:        14
-    ]
+    fileprivate var cellularCodeTable: [String: Int] {
+        var table = [
+            CTRadioAccessTechnologyGPRS:         1,
+            CTRadioAccessTechnologyEdge:         2,
+            CTRadioAccessTechnologyWCDMA:        3,
+            CTRadioAccessTechnologyCDMA1x:       4,
+            CTRadioAccessTechnologyCDMAEVDORev0: 5,
+            CTRadioAccessTechnologyCDMAEVDORevA: 6,
+            CTRadioAccessTechnologyHSDPA:        8,
+            CTRadioAccessTechnologyHSUPA:        9,
+            CTRadioAccessTechnologyCDMAEVDORevB: 12,
+            CTRadioAccessTechnologyLTE:          13,
+            CTRadioAccessTechnologyeHRPD:        14
+        ]
+        
+        if #available(iOS 14.0, *) {
+            table[CTRadioAccessTechnologyNRNSA] = 15
+            table[CTRadioAccessTechnologyNR] = 16
+        }
+        return table
+    }
 
     ///
-    fileprivate let cellularCodeDescriptionTable = [
-        CTRadioAccessTechnologyGPRS:            "GPRS (2G)",
-        CTRadioAccessTechnologyEdge:            "EDGE (2G)",
-        CTRadioAccessTechnologyWCDMA:           "UMTS (3G)",
-        CTRadioAccessTechnologyCDMA1x:          "CDMA (2G)",
-        CTRadioAccessTechnologyCDMAEVDORev0:    "EVDO0 (2G)",
-        CTRadioAccessTechnologyCDMAEVDORevA:    "EVDOA (2G)",
-        CTRadioAccessTechnologyHSDPA:           "HSDPA (3G)",
-        CTRadioAccessTechnologyHSUPA:           "HSUPA (3G)",
-        CTRadioAccessTechnologyCDMAEVDORevB:    "EVDOB (2G)",
-        CTRadioAccessTechnologyLTE:             "LTE (4G)",
-        CTRadioAccessTechnologyeHRPD:           "HRPD (2G)"
-    ]
-
+    fileprivate var cellularCodeDescriptionTable: [String: String] {
+        var table = [
+            CTRadioAccessTechnologyGPRS:            "GPRS (2G)",
+            CTRadioAccessTechnologyEdge:            "EDGE (2G)",
+            CTRadioAccessTechnologyWCDMA:           "UMTS (3G)",
+            CTRadioAccessTechnologyCDMA1x:          "CDMA (2G)",
+            CTRadioAccessTechnologyCDMAEVDORev0:    "EVDO0 (2G)",
+            CTRadioAccessTechnologyCDMAEVDORevA:    "EVDOA (2G)",
+            CTRadioAccessTechnologyHSDPA:           "HSDPA (3G)",
+            CTRadioAccessTechnologyHSUPA:           "HSUPA (3G)",
+            CTRadioAccessTechnologyCDMAEVDORevB:    "EVDOB (2G)",
+            CTRadioAccessTechnologyLTE:             "LTE (4G)",
+            CTRadioAccessTechnologyeHRPD:           "HRPD (2G)",
+        ]
+        
+        if #available(iOS 14.0, *) {
+            table[CTRadioAccessTechnologyNRNSA] = "NRNSA (5G)"
+            table[CTRadioAccessTechnologyNR] = "NR (5G)"
+        }
+        
+        return table
+    }
     #endif
 
     ///
