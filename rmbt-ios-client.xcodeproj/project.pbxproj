@@ -1098,6 +1098,7 @@
 				E0B1C7DF1CF4ADBA00F19282 /* Products */,
 				396D510CBBF7097CD1BAC7F4 /* Pods */,
 				2BCE53BE0C8C1F8DF2447450 /* Frameworks */,
+				E95E86E32565692E003B1F4E /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1344,6 +1345,14 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		E95E86E32565692E003B1F4E /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		E9C41DF62053C88500162C87 /* RMBTClientTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1526,6 +1535,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -2216,7 +2226,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2253,7 +2263,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

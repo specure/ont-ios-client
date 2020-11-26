@@ -57,7 +57,7 @@ open class RMBTConnectivity: NSObject {
     open var bssid: String!
 
     ///
-    var cellularCode: NSNumber?
+    var cellularCode: Int?
 
     ///
     var cellularCodeDescription: String!
@@ -72,6 +72,7 @@ open class RMBTConnectivity: NSObject {
 
     ///
     fileprivate var cellularCodeTable: [String: Int] {
+        //https://specure.atlassian.net/wiki/spaces/NT/pages/144605185/Network+types
         var table = [
             CTRadioAccessTechnologyGPRS:         1,
             CTRadioAccessTechnologyEdge:         2,
@@ -87,8 +88,8 @@ open class RMBTConnectivity: NSObject {
         ]
         
         if #available(iOS 14.0, *) {
-            table[CTRadioAccessTechnologyNRNSA] = 15
-            table[CTRadioAccessTechnologyNR] = 16
+            table[CTRadioAccessTechnologyNRNSA] = 41
+            table[CTRadioAccessTechnologyNR] = 20
         }
         return table
     }
@@ -213,14 +214,12 @@ open class RMBTConnectivity: NSObject {
     }
 
     ///
-    fileprivate func cellularCodeForCTValue(_ value: String!) -> NSNumber? {
-        if value == nil {
-            return nil
-        }
+    fileprivate func cellularCodeForCTValue(_ value: String?) -> Int? {
+        guard let value = value else { return nil }
 
         #if os(iOS)
             //??????
-        return (cellularCodeTable[value] as AnyObject) as? NSNumber
+        return cellularCodeTable[value]
         #else
         return nil
         #endif
