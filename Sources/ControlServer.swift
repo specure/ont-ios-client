@@ -235,27 +235,6 @@ class ControlServer {
         }, error: failure)
     }
     
-// MARK: Badges
-
-    func getBadges(success successCallback: @escaping (_ response: BadgesResponse?) -> (), error failure: @escaping ErrorCallback) {
-        let badgesRequest = BasicRequest()
-        badgesRequest.uuid = uuid
-        
-        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            successCallback(nil)
-        }
-        else {
-            let successFunc: (_ response: BadgesResponse) -> () = { response in
-                successCallback(response)
-            }
-            request(.post, path: "/badges", requestObject: badgesRequest, success: successFunc, error: { error in
-                Log.logger.debug("badges error " + error.localizedDescription)
-                
-                failure(error)
-            })
-        }
-    }
-    
 // MARK: Settings
 
     ///
