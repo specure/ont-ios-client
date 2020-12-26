@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 10/4/17.
 //
 
-import UIKit
 import Alamofire
 
 open class RMBTZeroMeasurementSynchronizer: NSObject {

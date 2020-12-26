@@ -19,10 +19,6 @@ import Foundation
 import CoreLocation
 import ObjectMapper
 
-#if os(iOS)
-    import UIKit
-#endif
-
 ///
 public enum RMBTTestStatus: String {
     case None              = "NONE"

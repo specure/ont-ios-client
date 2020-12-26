@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 11/10/17.
 //
 
-import UIKit
 import CoreLocation
 import Alamofire
 

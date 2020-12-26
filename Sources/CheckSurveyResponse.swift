@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 2/5/18.
 //
 
-import UIKit
 import ObjectMapper
 
 open class CheckSurveyResponse: BasicResponse {

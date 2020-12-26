@@ -471,6 +471,15 @@
 		E92F3253207477B400F0CC9E /* RMBTQosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F3252207477B400F0CC9E /* RMBTQosTests.swift */; };
 		E92F32552074827000F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
 		E92F327420749D1D00F0CC9E /* RMBTQoSTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */; };
+		E965D7E8258F21D000007AE1 /* GCDProgressTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7E7258F21D000007AE1 /* GCDProgressTimer.swift */; };
+		E965D7EF258F221200007AE1 /* ControlServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7EE258F221100007AE1 /* ControlServerHelper.swift */; };
+		E965D7F5258F221F00007AE1 /* ControlServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7EE258F221100007AE1 /* ControlServerHelper.swift */; };
+		E965D7F6258F221F00007AE1 /* ControlServerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7EE258F221100007AE1 /* ControlServerHelper.swift */; };
+		E965D7FC258F222200007AE1 /* GCDProgressTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7E7258F21D000007AE1 /* GCDProgressTimer.swift */; };
+		E965D7FD258F222200007AE1 /* GCDProgressTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D7E7258F21D000007AE1 /* GCDProgressTimer.swift */; };
+		E965D804258F229100007AE1 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D803258F229100007AE1 /* General.swift */; };
+		E965D805258F229100007AE1 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D803258F229100007AE1 /* General.swift */; };
+		E965D806258F229100007AE1 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E965D803258F229100007AE1 /* General.swift */; };
 		E9A21D2021513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
 		E9A21D2121513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
 		E9A21D2221513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */; };
@@ -492,7 +501,6 @@
 		E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */; };
 		E9C7AF871FB5FF33005DCEA7 /* RMBTNominatim.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */; };
 		E9F5BC9F21557D6700832594 /* AdvertisingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */; };
-		E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -711,6 +719,9 @@
 		E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedMeasurementJPLResult.swift; sourceTree = "<group>"; };
 		E92F3252207477B400F0CC9E /* RMBTQosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQosTests.swift; sourceTree = "<group>"; };
 		E92F32542074827000F0CC9E /* RMBTQoSTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMBTQoSTestHelper.swift; sourceTree = "<group>"; };
+		E965D7E7258F21D000007AE1 /* GCDProgressTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDProgressTimer.swift; sourceTree = "<group>"; };
+		E965D7EE258F221100007AE1 /* ControlServerHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlServerHelper.swift; sourceTree = "<group>"; };
+		E965D803258F229100007AE1 /* General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		E9A21D1F21513CDE00EB8CB2 /* AdvertisingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingRequest.swift; sourceTree = "<group>"; };
 		E9A21D2321513CE500EB8CB2 /* AdvertisingResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingResponse.swift; sourceTree = "<group>"; };
 		E9B92F2B207DC1F8007D190F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -731,7 +742,6 @@
 		E9C7AF841FB5FF33005DCEA7 /* RMBTNominatimAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatimAddress.swift; sourceTree = "<group>"; };
 		E9C7AF851FB5FF33005DCEA7 /* RMBTNominatim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatim.swift; sourceTree = "<group>"; };
 		E9F5BC9E21557D6700832594 /* AdvertisingResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingResponse.swift; sourceTree = "<group>"; };
-		E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvertisingRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1098,7 +1108,6 @@
 				E0B1C7DF1CF4ADBA00F19282 /* Products */,
 				396D510CBBF7097CD1BAC7F4 /* Pods */,
 				2BCE53BE0C8C1F8DF2447450 /* Frameworks */,
-				E95E86E32565692E003B1F4E /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1135,6 +1144,9 @@
 				E02D18271CF59262002A02FE /* RMBTLocationTracker.swift */,
 				E02D18431CF59262002A02FE /* RMBTSettings.swift */,
 				E02D184D1CF59262002A02FE /* RMBTTestRunner.swift */,
+				E965D803258F229100007AE1 /* General.swift */,
+				E965D7EE258F221100007AE1 /* ControlServerHelper.swift */,
+				E965D7E7258F21D000007AE1 /* GCDProgressTimer.swift */,
 				E92F324E2074767400F0CC9E /* SpeedMeasurementJPLResult.swift */,
 				E00C20B21D19654400720394 /* RMBTClient.swift */,
 				E02D18511CF59262002A02FE /* RMBTTestWorker.swift */,
@@ -1345,14 +1357,6 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		E95E86E32565692E003B1F4E /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				E9F5BCA021557D6F00832594 /* AdvertisingRequest.swift */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		E9C41DF62053C88500162C87 /* RMBTClientTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1486,7 +1490,6 @@
 				E9C41DF12053C88500162C87 /* Sources */,
 				E9C41DF22053C88500162C87 /* Frameworks */,
 				E9C41DF32053C88500162C87 /* Resources */,
-				A4C9180425A37F28DA1C2381 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1671,40 +1674,6 @@
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap\"\ncat <<EOF > \"${BUILT_PRODUCTS_DIR}/CommonCryptoModuleMap/module.modulemap\"\nmodule CommonCrypto [system] {\n    header \"${SDKROOT}/usr/include/CommonCrypto/CommonCrypto.h\"\n    export *\n}\nEOF";
 		};
-		A4C9180425A37F28DA1C2381 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
-				"${BUILT_PRODUCTS_DIR}/GCNetworkReachability-iOS/GCNetworkReachability.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjcExceptionBridging/ObjcExceptionBridging.framework",
-				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/XCGLogger/XCGLogger.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GCNetworkReachability.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjcExceptionBridging.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RMBTClientTests/Pods-RMBTClientTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1734,7 +1703,6 @@
 				E0FC4CAE1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
 				E02D19091CF59262002A02FE /* UInt+Extensions.swift in Sources */,
 				E9C7AF861FB5FF33005DCEA7 /* RMBTNominatimAddress.swift in Sources */,
-				E9F5BCA121557D6F00832594 /* AdvertisingRequest.swift in Sources */,
 				E08EA6A61D88179E000F916A /* StoredHistoryItem.swift in Sources */,
 				E02D189C1CF59262002A02FE /* QOSTCPTest.swift in Sources */,
 				E02D19A51CF5AACF002A02FE /* QOSWebsiteTestExecutor.swift in Sources */,
@@ -1773,6 +1741,7 @@
 				E02D188C1CF59262002A02FE /* OrderedDictionary.swift in Sources */,
 				E0FC4C431D6C82BE00D5D236 /* MapMeasurementRequest.swift in Sources */,
 				E02D190A1CF59262002A02FE /* WalledGardenTest.swift in Sources */,
+				E965D7EF258F221200007AE1 /* ControlServerHelper.swift in Sources */,
 				E02D19A81CF5AAD7002A02FE /* RMBTConnectivity.swift in Sources */,
 				E02D18A01CF59262002A02FE /* QOSTestExecutorProtocol.swift in Sources */,
 				E02D19A01CF5AAB8002A02FE /* ConnectivityServiceDelegate.swift in Sources */,
@@ -1796,6 +1765,7 @@
 				E02D189F1CF59262002A02FE /* QOSTestExecutorClass.swift in Sources */,
 				E92F324F2074767400F0CC9E /* SpeedMeasurementJPLResult.swift in Sources */,
 				E02D19031CF59262002A02FE /* TrafficClassification.swift in Sources */,
+				E965D804258F229100007AE1 /* General.swift in Sources */,
 				E09B78891D5B162E00CC1129 /* MapServer.swift in Sources */,
 				E021304B1D786FA80034C378 /* StoredMeasurement.swift in Sources */,
 				E0FC4C8E1D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
@@ -1841,6 +1811,7 @@
 				E9A21D2021513CDE00EB8CB2 /* AdvertisingRequest.swift in Sources */,
 				A1696C041F9FD328003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E02D189E1CF59262002A02FE /* QOSTest.swift in Sources */,
+				E965D7E8258F21D000007AE1 /* GCDProgressTimer.swift in Sources */,
 				E02D18A11CF59262002A02FE /* QOSTestResult.swift in Sources */,
 				E02D18941CF59262002A02FE /* QOSDNSTest.swift in Sources */,
 				E02D18C51CF59262002A02FE /* RMBTMapOptions.swift in Sources */,
@@ -1924,6 +1895,7 @@
 				E0FC4CE31D6C8B3600D5D236 /* MapServer.swift in Sources */,
 				E0FC4D021D6D994200D5D236 /* QOSControlConnectionTaskDelegate.swift in Sources */,
 				E0FC4D1B1D6DCD1F00D5D236 /* WifiInfo.swift in Sources */,
+				E965D806258F229100007AE1 /* General.swift in Sources */,
 				E0FC4C5B1D6C841C00D5D236 /* MeasurementSpeedRawItem.swift in Sources */,
 				E0FC4CD41D6C88FB00D5D236 /* QOSNonTransparentProxyTest.swift in Sources */,
 				E0FC4D121D6DC70600D5D236 /* RMBTTestWorker.swift in Sources */,
@@ -1953,6 +1925,7 @@
 				E0FC4D061D6D995B00D5D236 /* DNSClient.swift in Sources */,
 				E0FC4C941D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E0FC4C4F1D6C834000D5D236 /* GeoLocation.swift in Sources */,
+				E965D7FD258F222200007AE1 /* GCDProgressTimer.swift in Sources */,
 				E0FC4D0B1D6D996800D5D236 /* ServiceTypeMapping.swift in Sources */,
 				E0FC4CED1D6D97A000D5D236 /* RMBTThroughput.swift in Sources */,
 				E0FC4CFA1D6D991E00D5D236 /* QOSNonTransparentProxyTestExecutor.swift in Sources */,
@@ -2006,6 +1979,7 @@
 				E0FC4CE81D6D975E00D5D236 /* RMBTMapOptions.swift in Sources */,
 				E0FC4CF61D6D990D00D5D236 /* UDPStreamSender.swift in Sources */,
 				E0FC4D011D6D994000D5D236 /* QOSControlConnectionDelegate.swift in Sources */,
+				E965D7F6258F221F00007AE1 /* ControlServerHelper.swift in Sources */,
 				E0FC4CDD1D6C89EE00D5D236 /* RMBTSSLHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2068,6 +2042,7 @@
 				E02D1A1C1CFC95D7002A02FE /* GetDNSIP.m in Sources */,
 				E02D1A241CFC9D0B002A02FE /* StringMD5Extension.swift in Sources */,
 				E0FC4CEC1D6D979A00D5D236 /* RMBTHistoryResult.swift in Sources */,
+				E965D805258F229100007AE1 /* General.swift in Sources */,
 				E02D19611CF5A457002A02FE /* RTPResult.swift in Sources */,
 				E02D19681CF5A471002A02FE /* RMBTNetworkType.swift in Sources */,
 				E0FC4CAF1D6C86B200D5D236 /* HistoryItem.swift in Sources */,
@@ -2097,6 +2072,7 @@
 				E02D197F1CF5A4FC002A02FE /* QOSTestExecutorProtocol.swift in Sources */,
 				E02D19751CF5A4D5002A02FE /* RMBTSSLHelper.swift in Sources */,
 				E0FC4C7F1D6C856300D5D236 /* IpResponse.swift in Sources */,
+				E965D7FC258F222200007AE1 /* GCDProgressTimer.swift in Sources */,
 				E0FC4CC21D6C886D00D5D236 /* RTPHeader.swift in Sources */,
 				E0FC4C8B1D6C85B400D5D236 /* ClientSettings.swift in Sources */,
 				E0FC4CE41D6C8B4000D5D236 /* ServerHelper.swift in Sources */,
@@ -2150,6 +2126,7 @@
 				E0FC4C9F1D6C864300D5D236 /* SpeedMeasurementDetailResultResponse.swift in Sources */,
 				E0B1C82A1CF4B5D800F19282 /* News.swift in Sources */,
 				E02D19761CF5A4D9002A02FE /* RMBTSettings.swift in Sources */,
+				E965D7F5258F221F00007AE1 /* ControlServerHelper.swift in Sources */,
 				E02D1A271CFC9D18002A02FE /* ConnectivityServiceDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2223,7 +2200,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_VERSION = 5.0;
@@ -2259,7 +2236,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2316,7 +2293,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2381,7 +2357,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Configuration/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

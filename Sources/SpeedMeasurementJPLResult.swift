@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 3/20/18.
 //
 
-import UIKit
 import ObjectMapper
 
 class SpeedMeasurementJPLResult: Mappable {

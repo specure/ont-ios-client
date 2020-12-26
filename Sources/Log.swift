@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 4/4/18.
 //
 
-import UIKit
 import XCGLogger
 
 public class Log: NSObject {

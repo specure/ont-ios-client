@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 10/4/17.
 //
 
-import UIKit
 import ObjectMapper
 
 class ZeroMeasurementRequest: BasicRequest {

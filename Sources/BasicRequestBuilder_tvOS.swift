@@ -15,7 +15,6 @@
  *****************************************************************************************************/
 
 import Foundation
-import UIKit
 
 ///
 class BasicRequestBuilder: AbstractBasicRequestBuilder {

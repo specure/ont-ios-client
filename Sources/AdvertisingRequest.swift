@@ -5,7 +5,6 @@
 //  Created by Sergey Glushchenko on 6/30/18.
 //
 
-import UIKit
 import ObjectMapper
 
 class AdvertisingRequest: BasicRequest {

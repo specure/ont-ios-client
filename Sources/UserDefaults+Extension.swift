@@ -6,8 +6,11 @@
 //  Copyright © 2017 SPECURE GmbH. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
 import UIKit
+#endif
+
+import Foundation
 
 ///
 let TOS_VERSION_KEY = "tos_version"

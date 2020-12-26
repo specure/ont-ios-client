@@ -6,7 +6,9 @@
 //  Copyright © 2018 Mousavian. Distributed under MIT license.
 //
 
+#if os(iOS)
 import UIKit
+#endif
 import ObjectiveC
 
 // MARK: -Languages

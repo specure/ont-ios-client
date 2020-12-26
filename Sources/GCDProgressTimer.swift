@@ -5,8 +5,6 @@
 //  Created by Sergey Glushchenko on 7/2/19.
 //
 
-import UIKit
-
 class GCDProgressTimer {
     private var timer: DispatchSourceTimer?
     

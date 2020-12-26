@@ -5,8 +5,6 @@
 //  Created by Sergey Glushchenko on 11/10/17.
 //
 
-import UIKit
-
 class RMBTNominatimAddress: NSObject {
 
     var neighbourhood: String?

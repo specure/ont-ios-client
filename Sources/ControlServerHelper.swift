@@ -5,8 +5,6 @@
 //  Created by Sergey Glushchenko on 7/1/19.
 //
 
-import UIKit
-
 internal class ControlServerHelper: NSObject {
     internal func requestSpeedMeasurement(completionHandler: @escaping (_ response: SpeedMeasurementResponse?, _ error: Error?) -> Void) {
         ////////////////
