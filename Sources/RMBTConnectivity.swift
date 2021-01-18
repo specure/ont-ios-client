@@ -139,37 +139,7 @@ open class RMBTConnectivity: NSObject {
         switch networkType {
 
         case .cellular:
-            #if os(iOS)
-            // Get carrier name
-            let netinfo = CTTelephonyNetworkInfo()
-            if let carrier = netinfo.subscriberCellularProvider {
-                networkName = carrier.carrierName
-                telephonyNetworkSimCountry = carrier.isoCountryCode
-                var codes: [String] = []
-                if let mobileCountryCode = carrier.mobileCountryCode {
-                    codes.append(mobileCountryCode)
-                }
-                if let mobileNetworkCode = carrier.mobileNetworkCode {
-                    codes.append(mobileNetworkCode)
-                }
-                telephonyNetworkSimOperator = codes.joined(separator: "-") // TODO: !
-            }
-            
-            // action while changing provider
-            netinfo.subscriberCellularProviderDidUpdateNotifier = { carrier in
-                print(carrier)
-                // TODO
-                    
-            }
-
-            if netinfo.responds(to: #selector(getter: CTTelephonyNetworkInfo.currentRadioAccessTechnology)) {
-                // iOS 7
-                cellularCode = cellularCodeForCTValue(netinfo.currentRadioAccessTechnology)
-                cellularCodeDescription = cellularCodeDescriptionForCTValue(netinfo.currentRadioAccessTechnology)
-            }
-            #else
-            break
-            #endif
+            updateCellularInfo()
         case .wiFi:
             // If WLAN, then show SSID as network name. Fetching SSID does not work on the simulator.
             if let wifiParams = getWiFiParameters() {
@@ -186,6 +156,53 @@ open class RMBTConnectivity: NSObject {
         }
     }
 
+    fileprivate func getNetworkInfo(for carrier: CTCarrier) -> (networkName: String?, telephonyNetworkSimCountry: String?, telephonyNetworkSimOperator: String?) {
+        let networkName = carrier.carrierName
+        let telephonyNetworkSimCountry = carrier.isoCountryCode
+        var codes: [String] = []
+        if let mobileCountryCode = carrier.mobileCountryCode {
+            codes.append(mobileCountryCode)
+        }
+        if let mobileNetworkCode = carrier.mobileNetworkCode {
+            codes.append(mobileNetworkCode)
+        }
+        let telephonyNetworkSimOperator = codes.joined(separator: "-") // TODO: !
+        return (networkName, telephonyNetworkSimCountry, telephonyNetworkSimOperator)
+    }
+    
+    fileprivate func updateCellularInfo() {
+        #if os(iOS)
+        let netinfo = CTTelephonyNetworkInfo()
+        var carrier: CTCarrier?
+        var radioAccessTechnology: String?
+        
+        if #available(iOS 13.0, *) {
+            if let providers = netinfo.serviceSubscriberCellularProviders,
+               let dataIndetifier = netinfo.dataServiceIdentifier {
+                carrier = providers[dataIndetifier]
+                radioAccessTechnology = netinfo.serviceCurrentRadioAccessTechnology?[dataIndetifier]
+            }
+        } else {
+            carrier = netinfo.subscriberCellularProvider
+            if netinfo.responds(to: #selector(getter: CTTelephonyNetworkInfo.currentRadioAccessTechnology)) {
+                radioAccessTechnology = netinfo.currentRadioAccessTechnology
+            }
+        }
+        //Get carrier name
+        if let carrier = carrier {
+            let network = getNetworkInfo(for: carrier)
+            networkName = network.networkName
+            telephonyNetworkSimCountry = network.telephonyNetworkSimCountry
+            telephonyNetworkSimOperator = network.telephonyNetworkSimOperator
+        }
+        //Get access technology
+        if let radioAccessTechnology = radioAccessTechnology {
+            cellularCode = cellularCodeForCTValue(radioAccessTechnology)
+            cellularCodeDescription = cellularCodeDescriptionForCTValue(radioAccessTechnology)
+        }
+        #endif
+    }
+    
     ///
     fileprivate func getWiFiParameters() -> (ssid: String, bssid: String)? {
         //if #available(iOS 9, *) {
