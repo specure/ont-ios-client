@@ -468,6 +468,9 @@
 		E95F272925B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
 		E95F272A25B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
 		E95F272B25B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
+		E95F273C25B577AF0085F50A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F273B25B577AF0085F50A /* Log.swift */; };
+		E95F273D25B577AF0085F50A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F273B25B577AF0085F50A /* Log.swift */; };
+		E95F273E25B577AF0085F50A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F273B25B577AF0085F50A /* Log.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -678,6 +681,7 @@
 		E95F271A25B576310085F50A /* OperatorsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OperatorsResponse.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/OperatorsResponse.swift"; sourceTree = "<group>"; };
 		E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpeedMeasurementJPLResult.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/SpeedMeasurementJPLResult.swift"; sourceTree = "<group>"; };
 		E95F272825B576840085F50A /* General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = General.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/General.swift"; sourceTree = "<group>"; };
+		E95F273B25B577AF0085F50A /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -920,6 +924,7 @@
 				E02D19281CF59F6F002A02FE /* QOSConfig.swift */,
 				E02D19291CF59F6F002A02FE /* RMBTConfig.swift */,
 				E02D17EA1CF59262002A02FE /* LogConfig.swift */,
+				E95F273B25B577AF0085F50A /* Log.swift */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -1561,6 +1566,7 @@
 				E02D188B1CF59262002A02FE /* NSString+IPAddress.m in Sources */,
 				E02D18FB1CF59262002A02FE /* RTPSequence.swift in Sources */,
 				E0B1C8261CF4B5A200F19282 /* Speed.swift in Sources */,
+				E95F273C25B577AF0085F50A /* Log.swift in Sources */,
 				E02D18E31CF59262002A02FE /* RMBTSSLHelper.swift in Sources */,
 				E02130451D75D2110034C378 /* SpeedMeasurementDisassociateResponse.swift in Sources */,
 				E02D18A21CF59262002A02FE /* QOSMeasurementType.swift in Sources */,
@@ -1777,6 +1783,7 @@
 				E0FC4CF41D6D990900D5D236 /* UDPStreamReceiver.swift in Sources */,
 				E0FC4CCD1D6C88C700D5D236 /* CountDownLatch.swift in Sources */,
 				E0FC4CFF1D6D992B00D5D236 /* QOSWebsiteTestExecutor.swift in Sources */,
+				E95F273E25B577AF0085F50A /* Log.swift in Sources */,
 				E0FC4CCB1D6C88BB00D5D236 /* CLLocation+RMBTFormat.swift in Sources */,
 				A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E0FC4D151D6DCA2200D5D236 /* RMBTConnectivityTracker.swift in Sources */,
@@ -1921,6 +1928,7 @@
 				E02D19731CF5A4CE002A02FE /* UDPStreamReceiver.swift in Sources */,
 				E02D1A261CFC9D14002A02FE /* ConnectivityService.swift in Sources */,
 				E0FC4D1F1D6DCDD100D5D236 /* RMBTLocationTracker.swift in Sources */,
+				E95F273D25B577AF0085F50A /* Log.swift in Sources */,
 				E0FC4C561D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D19781CF5A4E1002A02FE /* RMBTMapOptions.swift in Sources */,

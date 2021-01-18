@@ -17,11 +17,6 @@
 import Foundation
 import XCGLogger
 
-class Log {
-    ///
-    static let logger = XCGLogger.default
-}
-
 ///
 class LogConfig {
 
@@ -41,13 +36,13 @@ class LogConfig {
         #if RELEASE
             // Release config
             // 1 logfile per day
-            logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
+        Log.logger.setup(.Info, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath) /* .Error */
         #elseif DEBUG
             // Debug config
-            logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: nil) // don't need log to file
+        Log.logger.setup(level: .verbose, showLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: nil) // don't need log to file
         #elseif BETA
             // Beta config
-            logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
+        Log.logger.setup(.Debug, showLogLevel: true, showFileNames: false, showLineNumbers: true, writeToFile: logFilePath)
 
             uploadOldLogs()
         #endif
