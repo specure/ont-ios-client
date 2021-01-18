@@ -456,6 +456,18 @@
 		E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00C20B21D19654400720394 /* RMBTClient.swift */; };
 		E94B72EF1FBF779400AC545E /* RMBTNominatim.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B72ED1FBF779400AC545E /* RMBTNominatim.swift */; };
 		E94B72F01FBF779400AC545E /* RMBTNominatimAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B72EE1FBF779400AC545E /* RMBTNominatimAddress.swift */; };
+		E95F271425B575E70085F50A /* OperatorsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271325B575E70085F50A /* OperatorsRequest.swift */; };
+		E95F271525B575E70085F50A /* OperatorsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271325B575E70085F50A /* OperatorsRequest.swift */; };
+		E95F271625B575E70085F50A /* OperatorsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271325B575E70085F50A /* OperatorsRequest.swift */; };
+		E95F271B25B576310085F50A /* OperatorsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271A25B576310085F50A /* OperatorsResponse.swift */; };
+		E95F271C25B576310085F50A /* OperatorsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271A25B576310085F50A /* OperatorsResponse.swift */; };
+		E95F271D25B576310085F50A /* OperatorsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F271A25B576310085F50A /* OperatorsResponse.swift */; };
+		E95F272225B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */; };
+		E95F272325B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */; };
+		E95F272425B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */; };
+		E95F272925B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
+		E95F272A25B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
+		E95F272B25B576840085F50A /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95F272825B576840085F50A /* General.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -662,6 +674,10 @@
 		E0FC4CC01D6C886D00D5D236 /* RTPHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTPHeader.swift; sourceTree = "<group>"; };
 		E94B72ED1FBF779400AC545E /* RMBTNominatim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatim.swift; sourceTree = "<group>"; };
 		E94B72EE1FBF779400AC545E /* RMBTNominatimAddress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMBTNominatimAddress.swift; sourceTree = "<group>"; };
+		E95F271325B575E70085F50A /* OperatorsRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OperatorsRequest.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/OperatorsRequest.swift"; sourceTree = "<group>"; };
+		E95F271A25B576310085F50A /* OperatorsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OperatorsResponse.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/OperatorsResponse.swift"; sourceTree = "<group>"; };
+		E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpeedMeasurementJPLResult.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/SpeedMeasurementJPLResult.swift"; sourceTree = "<group>"; };
+		E95F272825B576840085F50A /* General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = General.swift; path = "../../nettest-ios/rmbt-ios-client/Sources/General.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1089,6 +1105,7 @@
 		E0B1C8291CF4B5C500F19282 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				E95F272825B576840085F50A /* General.swift */,
 				E02D18481CF59262002A02FE /* RMBTSSLHelper.swift */,
 				E02D186F1CF59262002A02FE /* WalledGardenTest.swift */,
 				E02D18641CF59262002A02FE /* SocketUtils.swift */,
@@ -1172,6 +1189,7 @@
 				E0FC4C691D6C84B100D5D236 /* WifiInfo.swift */,
 				E0FC4C891D6C85B400D5D236 /* ClientSettings.swift */,
 				E0B1C82E1CF4B63700F19282 /* Ping.swift */,
+				E95F272125B576630085F50A /* SpeedMeasurementJPLResult.swift */,
 			);
 			name = Domain;
 			sourceTree = "<group>";
@@ -1192,6 +1210,7 @@
 		E0FC4C4A1D6C82F400D5D236 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				E95F271325B575E70085F50A /* OperatorsRequest.swift */,
 				A1696BFD1F9FD2B9003A257A /* ZeroMeasurementRequest.swift */,
 				A1F97F591EB0A95C00FCAFBE /* IPRequest.swift */,
 				E0FC4C3D1D6C826C00D5D236 /* BasicRequest.swift */,
@@ -1210,6 +1229,7 @@
 			isa = PBXGroup;
 			children = (
 				E0FC4C791D6C854A00D5D236 /* BasicResponse.swift */,
+				E95F271A25B576310085F50A /* OperatorsResponse.swift */,
 				E0FC4C7D1D6C856300D5D236 /* IpResponse.swift */,
 				E0FC4C811D6C857B00D5D236 /* MapOptionResponse.swift */,
 				E0FC4C851D6C859900D5D236 /* MapMeasurementResponse.swift */,
@@ -1387,6 +1407,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = E0B1C7D21CF4AC8800F19282;
@@ -1522,6 +1543,7 @@
 				E02D1A081CFC8E90002A02FE /* DNSClient.swift in Sources */,
 				E0FC4C511D6C83C400D5D236 /* SpeedMeasurementRequest.swift in Sources */,
 				A1696C001F9FD305003A257A /* FakeCellLocation.swift in Sources */,
+				E95F272925B576840085F50A /* General.swift in Sources */,
 				A1F97F5A1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D1A5D1CFDD632002A02FE /* BasicRequestBuilder_iOS.swift in Sources */,
 				E02D18751CF59262002A02FE /* ConversionUtility.swift in Sources */,
@@ -1533,6 +1555,8 @@
 				E02D18701CF59262002A02FE /* AtomicBoolean.swift in Sources */,
 				E00C20B31D19654400720394 /* RMBTClient.swift in Sources */,
 				E02D18CB1CF59262002A02FE /* RMBTNetworkType.swift in Sources */,
+				E95F271B25B576310085F50A /* OperatorsResponse.swift in Sources */,
+				E95F271425B575E70085F50A /* OperatorsRequest.swift in Sources */,
 				A1696C021F9FD31A003A257A /* StoredZeroMeasurement.swift in Sources */,
 				E02D188B1CF59262002A02FE /* NSString+IPAddress.m in Sources */,
 				E02D18FB1CF59262002A02FE /* RTPSequence.swift in Sources */,
@@ -1572,6 +1596,7 @@
 				E0FC4C8E1D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
 				E0FC4C921D6C85EF00D5D236 /* SpeedMeasurementResponse.swift in Sources */,
 				E02D19021CF59262002A02FE /* SwiftExactTime.swift in Sources */,
+				E95F272225B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */,
 				E02D18831CF59262002A02FE /* HopDetail.swift in Sources */,
 				E0FC4C661D6C848900D5D236 /* TelephonyInfo.swift in Sources */,
 				E0FC4C761D6C852600D5D236 /* QosMeasurementResultRequest.swift in Sources */,
@@ -1665,11 +1690,13 @@
 				E0FC4CDE1D6C89F100D5D236 /* SocketUtils.swift in Sources */,
 				E0FC4C741D6C850D00D5D236 /* QosMeasurementRequest.swift in Sources */,
 				E0FC4CBF1D6C882400D5D236 /* RTPSequence.swift in Sources */,
+				E95F271625B575E70085F50A /* OperatorsRequest.swift in Sources */,
 				E0FC4CD81D6C891300D5D236 /* RMBTTOS.swift in Sources */,
 				E0FC4CF71D6D990F00D5D236 /* UDPStreamSenderDelegate.swift in Sources */,
 				E0FC4C2C1D6C811700D5D236 /* RMBTRAMMonitor.m in Sources */,
 				E0FC4CD21D6C88F700D5D236 /* QOSDNSTest.swift in Sources */,
 				E0FC4CDC1D6C89E300D5D236 /* WalledGardenTest.swift in Sources */,
+				E95F272B25B576840085F50A /* General.swift in Sources */,
 				E0FC4C491D6C82EB00D5D236 /* SettingsRequest.swift in Sources */,
 				E0FC4C2B1D6C811500D5D236 /* RMBTTrafficCounter.m in Sources */,
 				E0FC4CDA1D6C892300D5D236 /* RMBTHelpers.swift in Sources */,
@@ -1709,6 +1736,7 @@
 				E0FC4CAC1D6C868D00D5D236 /* QosMeasurementResultResponse.swift in Sources */,
 				A1696C071F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E08EA6AC1D88189B000F916A /* HistoryFilter.swift in Sources */,
+				E95F271D25B576310085F50A /* OperatorsResponse.swift in Sources */,
 				E0FC4CE71D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0FC4CBC1D6C881C00D5D236 /* RTPControlData.swift in Sources */,
 				E0FC4CF01D6D98B300D5D236 /* ConnectivityService.swift in Sources */,
@@ -1752,6 +1780,7 @@
 				E0FC4CCB1D6C88BB00D5D236 /* CLLocation+RMBTFormat.swift in Sources */,
 				A1F97F5C1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E0FC4D151D6DCA2200D5D236 /* RMBTConnectivityTracker.swift in Sources */,
+				E95F272425B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */,
 				A165FCEB1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */,
 				E0FC4CC41D6C88A300D5D236 /* UInt+Extensions.swift in Sources */,
 				E0FC4CC71D6C88AE00D5D236 /* String+Extensions.swift in Sources */,
@@ -1805,11 +1834,13 @@
 				E0FC4D211D6DCEAF00D5D236 /* RMBTClient.swift in Sources */,
 				E0FC4C7B1D6C854A00D5D236 /* BasicResponse.swift in Sources */,
 				E02D19701CF5A4C5002A02FE /* UDPStreamSenderDelegate.swift in Sources */,
+				E95F271525B575E70085F50A /* OperatorsRequest.swift in Sources */,
 				E02D1A251CFC9D0E002A02FE /* GCDTimer.swift in Sources */,
 				E02D19651CF5A468002A02FE /* RMBTThroughputHistory.swift in Sources */,
 				E02D196F1CF5A4BF002A02FE /* UIDeviceHardware.swift in Sources */,
 				E02D1A2B1CFC9D2F002A02FE /* QOSHTTPProxyTestExecutor.swift in Sources */,
 				E0FC4C8F1D6C85CA00D5D236 /* SettingsReponse.swift in Sources */,
+				E95F272A25B576840085F50A /* General.swift in Sources */,
 				E0FC4CE21D6C8B3500D5D236 /* MapServer.swift in Sources */,
 				E0FC4CE11D6C8B3200D5D236 /* ControlServer.swift in Sources */,
 				E02D1A1A1CFC95D3002A02FE /* PingUtil.m in Sources */,
@@ -1849,6 +1880,7 @@
 				E02D1A1B1CFC95D5002A02FE /* NSString+IPAddress.m in Sources */,
 				A1696C081F9FD37E003A257A /* RMBTZeroMeasurementSynchronizer.swift in Sources */,
 				E08EA6AB1D88189B000F916A /* HistoryFilter.swift in Sources */,
+				E95F271C25B576310085F50A /* OperatorsResponse.swift in Sources */,
 				E0FC4C4E1D6C834000D5D236 /* GeoLocation.swift in Sources */,
 				E0FC4CE61D6D8E1900D5D236 /* AbstractBasicRequestBuilder.swift in Sources */,
 				E0B1C8301CF4B65A00F19282 /* Ping.swift in Sources */,
@@ -1892,6 +1924,7 @@
 				E0FC4C561D6C83FB00D5D236 /* ExtendedTestStat.swift in Sources */,
 				A1F97F5B1EB0A95C00FCAFBE /* IPRequest.swift in Sources */,
 				E02D19781CF5A4E1002A02FE /* RMBTMapOptions.swift in Sources */,
+				E95F272325B576630085F50A /* SpeedMeasurementJPLResult.swift in Sources */,
 				A165FCEA1F1F59D70094602A /* UserDefaults+Extension.swift in Sources */,
 				E02D19601CF5A455002A02FE /* RTPSequence.swift in Sources */,
 				E02D19891CF5A51E002A02FE /* CountDownLatch.swift in Sources */,
@@ -1946,7 +1979,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -1980,7 +2013,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

@@ -17,8 +17,10 @@
 import Foundation
 import XCGLogger
 
-///
-let logger = XCGLogger.default
+class Log {
+    ///
+    static let logger = XCGLogger.default
+}
 
 ///
 class LogConfig {
