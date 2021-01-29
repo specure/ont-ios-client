@@ -87,7 +87,7 @@ open class RMBTConnectivity: NSObject {
             CTRadioAccessTechnologyeHRPD:        14
         ]
         
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.1, *) {
             table[CTRadioAccessTechnologyNRNSA] = 41
             table[CTRadioAccessTechnologyNR] = 20
         }
@@ -110,7 +110,7 @@ open class RMBTConnectivity: NSObject {
             CTRadioAccessTechnologyeHRPD:           "HRPD (2G)",
         ]
         
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14.1, *) {
             table[CTRadioAccessTechnologyNRNSA] = "NRNSA (5G)"
             table[CTRadioAccessTechnologyNR] = "NR (5G)"
         }
