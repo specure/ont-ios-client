@@ -633,7 +633,6 @@ class ControlServer {
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
-            Log.logger.debug("wfewfwfwef3")
             Log.logger.debug("\(error)")
             
             errorCallback(error)
@@ -652,7 +651,6 @@ class ControlServer {
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
         }, error: { error in
-            Log.logger.debug("wfewfwfwef3")
             Log.logger.debug("\(error)")
             
             errorCallback(error)

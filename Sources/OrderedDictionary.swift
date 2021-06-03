@@ -25,7 +25,7 @@ struct OrderedDictionary<KeyType: Hashable, ValueType> {
     let existingValue = self.dictionary[key]
     if existingValue != nil {
       // 3
-      let existingIndex = self.array.index(of: key)!
+        let existingIndex = self.array.firstIndex(of: key)!
 
       // 4
       if existingIndex < index {
@@ -67,10 +67,10 @@ struct OrderedDictionary<KeyType: Hashable, ValueType> {
     // 2(b)
     set {
       // 4
-      if let _ = self.array.index(of: key) {
-      } else {
+        if let _ = self.array.firstIndex(of: key) {
+    } else {
         self.array.append(key)
-      }
+    }
 
       // 5
       self.dictionary[key] = newValue

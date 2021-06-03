@@ -85,7 +85,7 @@ public enum RMBTTestTag: Int {
 }
 
 /// All delegate methods are dispatched on the supplied delegate queue
-@objc public protocol RMBTTestWorkerDelegate: class {
+@objc public protocol RMBTTestWorkerDelegate: AnyObject {
 
     ///
     

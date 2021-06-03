@@ -449,7 +449,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         Log.logger.debug("Thread \(worker.index): stopped")
 
-        workers.remove(at: workers.index(of: worker)!) // !
+        workers.remove(at: workers.firstIndex(of: worker)!) // !
 
         if markWorkerAsFinished() {
             // We stopped all but one workers because of slow connection. Proceed to latency with single worker.

@@ -36,7 +36,7 @@ class RMBTConcurencyGroup {
     
     func removeTestExecutor(testExecutor: QOSTestExecutorProtocol) {
         mutualQuery.sync {
-            if let index = testExecutors.index(where: { (executor) -> Bool in
+            if let index = testExecutors.firstIndex(where: { (executor) -> Bool in
                 return testExecutor === executor
             }) {
                 testExecutors.remove(at: index)

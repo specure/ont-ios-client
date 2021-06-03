@@ -17,7 +17,7 @@
 import Foundation
 
 ///
-protocol QOSTestExecutorProtocol: class {
+protocol QOSTestExecutorProtocol: AnyObject {
 
     ///
     func execute(finish finishCallback: @escaping (_ testResult: QOSTestResult) -> ())

@@ -150,7 +150,7 @@ class QOSControlConnection: NSObject {
             var observers = arrayOfObservers.value
             for observer in arrayOfObservers.value {
                 if observer.delegate == nil {
-                    if let index = observers.index(of: observer) {
+                    if let index = observers.firstIndex(of: observer) {
                         observers.remove(at: index)
                     }
                 }
@@ -181,7 +181,7 @@ class QOSControlConnection: NSObject {
         self.mutableQueue.sync {
             if let tempObservers = taskDelegateDictionary[taskId] {
                 var observers = tempObservers
-                if let index = observers.index(where: { (observer) -> Bool in
+                if let index = observers.firstIndex(where: { (observer) -> Bool in
                     return observer.delegate! === delegate
                 }) {
                     observers.remove(at: index)

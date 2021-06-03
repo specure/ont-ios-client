@@ -104,8 +104,6 @@ open class MapOptionResponse: BasicResponse {
                 return OperatorsRequest.ProviderType.mobile
             case .wifi:
                 return OperatorsRequest.ProviderType.WLAN
-            case .mobile:
-                return OperatorsRequest.ProviderType.mobile
             case .cell:
                 return OperatorsRequest.ProviderType.mobile
             case .browser:

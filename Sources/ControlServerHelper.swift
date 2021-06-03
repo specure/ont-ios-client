@@ -25,9 +25,9 @@ internal class ControlServerHelper: NSObject {
         
         /////!!!!!!!!!!!
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { [weak self] response in
+            controlServer.requestSpeedMeasurement(speedMeasurementRequest, success: { response in
                 completionHandler(response, nil)
-            }) { [weak self] error in
+            }) { error in
                 completionHandler(nil, error)
             }
         } else {
@@ -48,10 +48,10 @@ internal class ControlServerHelper: NSObject {
             }
             
             // workaround - nasty :(
-            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { [weak self] response in
+            controlServer.requestSpeedMeasurement_Old(speedMeasurementRequestOld, success: { response in
                 let r = response.toSpeedMeasurementResponse()
                 completionHandler(r, nil)
-            }) { [weak self] error in
+            }) { error in
                 completionHandler(nil, error)
             }
         }
