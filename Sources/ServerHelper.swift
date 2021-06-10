@@ -31,17 +31,29 @@ class ServerHelper {
         configuration.allowsCellularAccess = true
         configuration.httpShouldUsePipelining = true
 
+        let alamofireManager = Alamofire.Session(configuration: configuration)
+
+        updateHeadersAlamofireManager(alamofireManager)
+        // print(Bundle.main.preferredLocalizations)
+
+        return alamofireManager
+    }
+    
+    class func updateHeadersAlamofireManager(_ alamofireManager: Alamofire.Session) {
+        var headers: [AnyHashable: Any] = [:]
         // Set user agent
         if let userAgent = UserDefaults.getRequestUserAgent() {
-            configuration.httpAdditionalHeaders = [
+            headers = [
                 "User-Agent": userAgent,
-                "Accept-Language":PREFFERED_LANGUAGE
+                "Accept-Language": PREFFERED_LANGUAGE
             ]
         }
         
-        // print(Bundle.main.preferredLocalizations)
-
-        return Alamofire.Session(configuration: configuration)
+        if let clientIdentifier = RMBTConfig.sharedInstance.clientIdentifier {
+            headers["X-Nettest-Client"] = clientIdentifier
+        }
+        
+        alamofireManager.sessionConfiguration.httpAdditionalHeaders = headers
     }
 
     ///
@@ -191,7 +203,7 @@ class ServerHelper {
                     let jsonDictionary = jsonObject as? [String: Any] {
                         print(jsonDictionary)
                         if let errorString = jsonDictionary["error"] as? String {
-                            NSError().asAFError(orFailWith: errorString)
+//                            NSError().asAFError(orFailWith: errorString)
                             resultError = NSError(domain: "error", code: -1, userInfo: [NSLocalizedDescriptionKey : errorString]).asAFError ?? resultError
                         }
                         if let errorArray = jsonDictionary["error"] as? [String],

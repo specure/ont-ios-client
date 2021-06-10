@@ -70,6 +70,8 @@ public class RMBTConfig {
     
     public var settingsMode: SettingsMode = .remotely
     
+    public var clientIdentifier: String?
+    
     //
     public func configNewCS(server: String) {
         RMBT_CONTROL_SERVER_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
@@ -89,6 +91,10 @@ public class RMBTConfig {
 
     public func configNewCS_checkIPv4(server: String) {
         RMBT_CHECK_IPV4_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
+    }
+    
+    public func configClientIdentifier(_ clientIdentifier: String?) {
+        self.clientIdentifier = clientIdentifier
     }
     
     //
