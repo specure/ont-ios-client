@@ -68,6 +68,10 @@ public class RMBTConfig {
     public var RMBT_USE_MAIN_LANGUAGE = false
     public var RMBT_MAIN_LANGUAGE = "en"
     
+    public var RMBT_CMS_ABOUT_URL   = "about"
+    public var RMBT_CMS_PRIVACY_URL = "privacy-policy"
+    public var RMBT_CMS_TERMS_URL   = "terms-of-use"
+    
     public var settingsMode: SettingsMode = .remotely
     
     //
