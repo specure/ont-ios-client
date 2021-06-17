@@ -45,13 +45,27 @@ open class MeasurementServerInfoResponse: BasicResponse {
         open var company: String?
         
         open var fullNameWithDistance: String? {
-            let country = self.country?.uppercased()
-            return "\(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+            let name = fullName
+            if let distance = distance {
+                return "\(name) (\(distance))"
+            } else {
+                return name
+            }
         }
         
-        open var fullName: String? {
-            let country = self.country?.uppercased()
-            return "\(city ?? ""), \(country ?? "")"
+        open var fullName: String {
+            var parts: [String] = []
+            
+            if let city = self.city {
+                parts.append(city)
+            }
+            
+            if let country = self.country {
+                parts.append(country)
+            }
+            
+            let name = parts.joined(separator: ", ")
+            return name
         }
         
         open var fullNameWithSponsor: String {
