@@ -51,6 +51,8 @@ public enum RMBTTestTag: Int {
 
     case rxBanner = 1
     case rxBannerAccept
+    case txUpgrade
+    case rxUpgradeResponse
     case txToken
     case rxTokenOK
     case rxChunksize
@@ -384,6 +386,15 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             socket.disconnect()
         }
     }
+    
+    open func start() {
+        if params.isRmbtHTTP {
+            let line = "GET /rmbt HTTP/1.1\r\nConnection: Upgrade\r\nUpgrade: RMBT\r\nRMBT-Version: 1.2.0@\r\n\r\n"
+            self.writeLine(line, withTag: .txUpgrade)
+        } else {
+            self.readLineWithTag(.rxBanner)
+        }
+    }
 
 // MARK: Socket delegate methods
 
@@ -404,7 +415,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
                 GCDAsyncSocketManuallyEvaluateTrust: true as NSObject
             ])
         } else {
-            readLineWithTag(.rxBanner)
+            self.start()
         }
     }
 
@@ -423,7 +434,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             }
         }
 
-        readLineWithTag(.rxBanner)
+        self.start()
     }
 
     ///
@@ -471,7 +482,14 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         let tag = RMBTTestTag(rawValue: tagRaw)!
 
         // Pretest
-        if tag == .rxBanner {
+        if tag == .txUpgrade {
+            // -> ...Upgrade..
+            self.readLine("Upgrade: RMBT\r\n\r\n", tag: .rxUpgradeResponse)
+        } else if (tag == .rxUpgradeResponse) {
+            // <- HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: RMBT\r\n\r\n
+            // Upgraded. Proceed to read banner:
+            self.readLineWithTag(.rxBanner)
+        } else if tag == .rxBanner {
             // <- RMBTv0.3
             readLineWithTag(.rxBannerAccept)
         } else if tag == .rxBannerAccept {
@@ -823,6 +841,13 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     ///
     private func readLineWithTag(_ tag: RMBTTestTag) {
         if let data = "\n".data(using: String.Encoding.ascii) {
+            socket.readData(to: data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
+        }
+    }
+    
+    ///
+    private func readLine(_ line: String, tag: RMBTTestTag) {
+        if let data = line.data(using: String.Encoding.ascii) {
             socket.readData(to: data, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S, tag: tag.rawValue)
         }
     }

@@ -23,7 +23,7 @@ class QOSVOIPTest: QOSTest {
     private let PARAM_SAMPLE_RATE = "sample_rate"
     private let PARAM_DURATION = "call_duration" //call duration in ns
     private let PARAM_PORT_OUT = "out_port"
-    private let PARAM_PORT_IN = "in_port"
+    private let PARAM_PORT_IN = "server_port"
     private let PARAM_DELAY = "delay"
     private let PARAM_PAYLOAD = "payload"
 

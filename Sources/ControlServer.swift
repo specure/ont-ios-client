@@ -207,7 +207,14 @@ class ControlServer {
         
 //        let baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_MEASUREMENT_SERVER_URL
 //        self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
-        self.request(baseUrl, .post, path: "/measurementServer", requestObject: req, success: success, error: failure)
+//        self.request(baseUrl, .get, path: "/measurementServer", requestObject: req, success: success, error: failure)
+        
+        let success: (_ response: [MeasurementServerInfoResponse.Servers]) -> () = { response in
+            let measurementResponse = MeasurementServerInfoResponse()
+            measurementResponse.servers = response
+            success(measurementResponse)
+        }
+        ServerHelper.requestCustomArray(self.alamofireManager, baseUrl: baseUrl, method: .get, path: "/measurementServer", requestObject: req, success: success, error: failure)
     }
 
 // MARK: Advertising
@@ -348,17 +355,17 @@ class ControlServer {
                     
                     // check for map server from settings
                     if let mapServer = set.map_server {
-                        let host = mapServer.host
+                        let host = mapServer.host ?? ""
                         let scheme = mapServer.useTls ? "https" : "http"
                         //
-                        var port = (mapServer.port! as NSNumber).stringValue
+                        var port = (mapServer.port as NSNumber?)?.stringValue ?? ""
                         if (port == "80" || port == "443") {
                             port = ""
                         } else {
                             port = ":\(port)"
                         }
                         
-                        self.mapServerBaseUrl = "\(scheme)://\(host!)\(port)\(RMBT_MAP_SERVER_PATH)"
+                        self.mapServerBaseUrl = "\(scheme)://\(host)\(port)\(RMBT_MAP_SERVER_PATH)"
                         Log.logger.debug("setting map server url to \(String(describing: self.mapServerBaseUrl)) from settings request")
                     }
                 } else {
@@ -371,7 +378,7 @@ class ControlServer {
 
         if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
         
-            request(.post, path: "/settings", requestObject: settingsRequest, success: successFunc, error: { error in
+            request(.post, path: "/mobile/settings", requestObject: settingsRequest, success: successFunc, error: { error in
                 Log.logger.debug("settings error")
                 
                 failure(error)
@@ -384,7 +391,7 @@ class ControlServer {
             settingsRequest_Old.termsAndConditionsAccepted_Version = 1
             settingsRequest_Old.uuid = self.uuid
             
-            request(.post, path: "/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
+            request(.post, path: "/mobile/settings", requestObject: settingsRequest_Old, success: successFuncOld, error: { error in
                 Log.logger.debug("settings error")
                 
                 failure(error)
@@ -439,7 +446,7 @@ class ControlServer {
             speedMeasurementRequest.ndt = false
             speedMeasurementRequest.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
             
-            self.request(.post, path: "/", requestObject: speedMeasurementRequest, success: success, error: failure)
+            self.request(.post, path: "/mobile/testRequest", requestObject: speedMeasurementRequest, success: success, error: failure)
         }, error: failure)
     }
 
@@ -470,7 +477,7 @@ class ControlServer {
                 RMBTConfig.sharedInstance.RMBT_VERSION_NEW ?
                 self.request(.put, path: "/measurements/speed/\(measurementUuid)", requestObject: speedMeasurementResult, success: success, error: failure)
                 :
-                self.request(.post, path: "/result", requestObject: speedMeasurementResult, success: success, error: failure)
+                self.request(.post, path: "/mobile/result", requestObject: speedMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
             }
@@ -483,7 +490,7 @@ class ControlServer {
             if speedMeasurementResult.uuid != nil {
                 speedMeasurementResult.clientUuid = uuid
                 
-                self.request(.post, path: "/result", requestObject: speedMeasurementResult, success: success, error: failure)
+                self.request(.post, path: "/mobile/result", requestObject: speedMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134534, userInfo: nil)) // give error if no uuid was provided by caller
             }
@@ -493,21 +500,21 @@ class ControlServer {
     ///
     func getSpeedMeasurement(_ uuid: String, success: @escaping (_ response: SpeedMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { _ in
-            self.request(.get, path: "/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
+            self.request(.get, path: "/mobile/measurements/speed/\(uuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
     ///
     func getSpeedMeasurementDetails(_ uuid: String, success: @escaping (_ response: SpeedMeasurementDetailResultResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { _ in
-            self.request(.get, path: "/measurements/speed/\(uuid)/details", requestObject: nil, success: success, error: failure)
+            self.request(.get, path: "/mobile/measurements/speed/\(uuid)/details", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
     ///
     func disassociateMeasurement(_ measurementUuid: String, success: @escaping (_ response: SpeedMeasurementDisassociateResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { clientUuid in
-            self.request(.delete, path: "/clients/\(clientUuid)/measurements/\(measurementUuid)", requestObject: nil, success: success, error: failure)
+            self.request(.delete, path: "/mobile/clients/\(clientUuid)/measurements/\(measurementUuid)", requestObject: nil, success: success, error: failure)
         }, error: failure)
     }
 
@@ -523,9 +530,9 @@ class ControlServer {
             qosMeasurementRequest.measurementUuid = measurementUuid
 
             self.request(.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ?
-                "/measurements/qos"
+                "/mobile/measurements/qos"
                 :
-                "/qosTestRequest"
+                "/mobile/qosTestRequest"
                 , requestObject: qosMeasurementRequest, success: success, error: failure)
         }, error: failure)
     }
@@ -537,7 +544,7 @@ class ControlServer {
                 qosMeasurementResult.clientUuid = uuid
                 // qosMeasurementResult.measurementUuid = measurementUuid
 
-                self.request(RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? .put:.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/measurements/qos/\(measurementUuid)":"/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
+                self.request(RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? .put:.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/mobile/measurements/qos/\(measurementUuid)":"/mobile/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
             } else {
                 failure(NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
             }
@@ -571,7 +578,7 @@ class ControlServer {
             let r = HistoryWithQOS()
             r.testUUID = testUuid
 
-            self.request(.post, path: "/qosTestResult", requestObject: r, success: success, error: failure)
+            self.request(.post, path: "/mobile/qosTestResult", requestObject: r, success: success, error: failure)
             
         }, error: failure)
         
@@ -616,14 +623,14 @@ class ControlServer {
                 }
             }
             
-            self.request(.post, path: "/history", requestObject: req, success: success, error: errorCallback)
+            self.request(.post, path: "/mobile/history", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }
     
     //
     ///
     func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error errorCallback: @escaping ErrorCallback) {
-        let key = fullDetails ? "/testresultdetail" : "/testresult"
+        let key = fullDetails ? "/mobile/testresultdetail" : "/mobile/testresult"
         
         ensureClientUuid(success: { theUuid in
             
@@ -641,7 +648,7 @@ class ControlServer {
     
     ///
     func getHistoryResultWithUUID_Full(uuid: String, success: @escaping (_ response: SpeedMeasurementDetailResultResponse) -> (), error errorCallback: @escaping ErrorCallback) {
-        let key = "/testresultdetail"
+        let key = "/mobile/testresultdetail"
         
         ensureClientUuid(success: { theUuid in
             

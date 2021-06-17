@@ -20,7 +20,7 @@ open class MeasurementServerInfoResponse: BasicResponse {
     override open func mapping(map: Map) {
         super.mapping(map: map)
         
-        servers <- map["servers"]
+//        servers <- map["servers"]
     }
     
     ///
@@ -42,6 +42,7 @@ open class MeasurementServerInfoResponse: BasicResponse {
         open var distance: String?
         open var city: String?
         open var sponsor: String?
+        open var company: String?
         
         open var fullNameWithDistance: String? {
             let country = self.country?.uppercased()
@@ -53,14 +54,33 @@ open class MeasurementServerInfoResponse: BasicResponse {
             return "\(city ?? ""), \(country ?? "")"
         }
         
-        open var fullNameWithSponsor: String? {
-            let country = self.country?.uppercased()
-            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "")"
+        open var fullNameWithSponsor: String {
+            var parts: [String] = []
+            if let sponsor = self.sponsor {
+                parts.append(sponsor)
+            } else if let company = self.company {
+                parts.append(company)
+            }
+            
+            if let city = self.city {
+                parts.append(city)
+            }
+            
+            if let country = self.country {
+                parts.append(country)
+            }
+            
+            let name = parts.joined(separator: ", ")
+            return name
         }
         
         open var fullNameWithDistanceAndSponsor: String? {
-            let country = self.country?.uppercased()
-            return "\(sponsor ?? ""), \(city ?? ""), \(country ?? "") (\(distance ?? ""))"
+            let name = fullNameWithSponsor
+            if let distance = distance {
+                return "\(name) (\(distance))"
+            } else {
+                return name
+            }
         }
         ///
         init() {
@@ -82,6 +102,7 @@ open class MeasurementServerInfoResponse: BasicResponse {
             distance    <- map["distance"]
             city        <- map["city"]
             sponsor     <- map["sponsor"]
+            company     <- map["company"]
         }
     }
 }
@@ -260,6 +281,10 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
     ///
     open var waitDuration:Int?
     
+    open var testServerType: String?
+    
+    open var isRmbtHTTP: Bool { return testServerType == "RMBThttp" }
+    
     ///
     override open func mapping(map: Map) {
         super.mapping(map: map)
@@ -278,6 +303,8 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
         serverAddress       <- map["test_server_address"]
         serverEncryption    <- map["test_server_encryption"]
         serverName          <- map["test_server_name"]
+        testServerType      <- map["test_server_type"]
+        
 
         
         resultURLString <- map["result_url"]
@@ -296,6 +323,7 @@ extension SpeedMeasurementResponse_Old {
         r.numThreads = Int(self.numThreads)!
         r.testToken = self.testToken
         r.testUuid = self.testUuid
+        r.testServerType = self.testServerType
         
         let measure = TargetMeasurementServer()
         measure.port = self.port?.intValue

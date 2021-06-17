@@ -50,6 +50,10 @@ open class SpeedMeasurementResponse: BasicResponse {
     ///
     open var measurementServer: TargetMeasurementServer?
     
+    open var testServerType: String?
+    
+    open var isRmbtHTTP: Bool { return testServerType == "RMBThttp" }
+    
     ///
     open func add(details:TargetMeasurementServer) {
         self.measurementServer = details
@@ -69,7 +73,7 @@ open class SpeedMeasurementResponse: BasicResponse {
         numPings            <- map["num_pings"]
         testWait            <- map["test_wait"]
         measurementServer   <- map["target_measurement_server"]
-
+        measurementServer   <- map["test_server_type"]
     }
 
     ///

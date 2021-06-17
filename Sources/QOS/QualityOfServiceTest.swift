@@ -181,13 +181,15 @@ open class QualityOfServiceTest: NSObject {
         controlServer.requestQosMeasurement(measurementUuid, success: { [weak self] response in
             self?.qosQueue.async {
                 if self?.isPartOfMainTest == true {
-                    if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue] {
-                        if let firstParams = jitterParams.first {
+                    if let jitterParams = response.objectives?[QosMeasurementType.JITTER.rawValue],
+                       let firstParams = jitterParams.first {
                             response.objectives = [QosMeasurementType.VOIP.rawValue: [firstParams]]
-                        }
+                    } else if let voipParams = response.objectives?[QosMeasurementType.VOIP.rawValue] {
+                        response.objectives = [QosMeasurementType.VOIP.rawValue: voipParams]
+                    } else {
+                        response.objectives = [:]
                     }
-                }
-                else {
+                } else {
                     response.objectives?[QosMeasurementType.JITTER.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.UDP.rawValue] = nil
 //                    response.objectives?[QosMeasurementType.TCP.rawValue] = nil

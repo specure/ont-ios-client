@@ -64,3 +64,18 @@ let IntDateStringTransformOf = TransformOf<Int, String>(fromJSON: {
         return ""
     }
 })
+
+let DateMilisecondsTransformOf = TransformOf<Date, Int64>(fromJSON: {
+    if let milliseconds = $0 {
+        let seconds: TimeInterval = Double(milliseconds) / 1000.0
+        return Date(timeIntervalSince1970: seconds)
+    }
+    return nil
+}, toJSON: {
+    if let date = $0 {
+        return Int64(date.timeIntervalSince1970) * 1000
+    }
+    else {
+        return 0
+    }
+})

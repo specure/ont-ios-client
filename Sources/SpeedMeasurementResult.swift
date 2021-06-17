@@ -576,7 +576,9 @@ class SpeedMeasurementResult: BasicRequest {
             ipLocal                 <- map["ip_local"]
             ipServer                <- map["ip_server"]
             durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
+            durationUploadNs        <- (map["test_nsec_upload"], UInt64NSNumberTransformOf)
             durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
+            durationDownloadNs      <- (map["test_nsec_download"], UInt64NSNumberTransformOf)
             numThreads              <- map["num_threads"]
             numThreadsUl            <- map["num_threads_ul"]
             pingShortest            <- map["ping_shortest"]
@@ -586,7 +588,9 @@ class SpeedMeasurementResult: BasicRequest {
             
             token                   <- map["token"]
             totalBytesDownload      <- map["total_bytes_download"]
+            totalBytesDownload      <- map["test_bytes_download"]
             totalBytesUpload        <- map["total_bytes_upload"]
+            totalBytesUpload        <- map["test_bytes_upload"]
             interfaceTotalBytesDownload  <- map["interface_total_bytes_download"]
             interfaceTotalBytesUpload    <- map["interface_total_bytes_upload"]
             interfaceDltestBytesDownload <- map["interface_dltest_bytes_download"]
@@ -647,6 +651,8 @@ class SpeedMeasurementResult: BasicRequest {
             ipServer                <- map["ip_server"]
             durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
             durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
+            durationUploadNs        <- (map["test_nsec_upload"], UInt64NSNumberTransformOf)
+            durationDownloadNs        <- (map["test_nsec_download"], UInt64NSNumberTransformOf)
             numThreads              <- map["test_num_threads"]
             numThreadsUl            <- map["num_threads_ul"]
             pingShortest            <- map["test_ping_shortest"]
@@ -657,6 +663,8 @@ class SpeedMeasurementResult: BasicRequest {
             token                   <- map["test_token"]
             totalBytesDownload      <- map["test_total_bytes_download"]
             totalBytesUpload        <- map["test_total_bytes_upload"]
+            totalBytesDownload      <- map["test_bytes_download"]
+            totalBytesUpload        <- map["test_bytes_upload"]
             interfaceTotalBytesDownload  <- map["test_if_bytes_download"]
             interfaceTotalBytesUpload    <- map["test_if_bytes_upload"]
             interfaceDltestBytesDownload <- map["testdl_if_bytes_download"]
@@ -664,7 +672,7 @@ class SpeedMeasurementResult: BasicRequest {
             interfaceUltestBytesDownload <- map["testul_if_bytes_download"]
             interfaceUltestBytesUpload   <- map["testul_if_bytes_upload"]
             
-            time              <- map["time"]
+            time              <- (map["time"], DateMilisecondsTransformOf)
             relativeTimeDlNs  <- map["test_dl_ns"]
             relativeTimeUlNs  <- map["test_ul_ns"]
             

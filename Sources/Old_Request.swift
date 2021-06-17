@@ -131,6 +131,8 @@ class SpeedMeasurementRequest_Old: BasicRequest {
     ///
     var client = "RMBT"
     
+    var measurementTypeFlag = "dedicated"
+    
     ///
     var measurementServerId: UInt64?
     
@@ -154,7 +156,7 @@ class SpeedMeasurementRequest_Old: BasicRequest {
         
         //
         measurementServerId <- map["measurement_server_id"]
-
+        measurementTypeFlag <- map["measurement_type_flag"]
     }
 }
 
