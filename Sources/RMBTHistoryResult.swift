@@ -93,18 +93,17 @@ open class RMBTHistoryResult {
     open var uuid: String!
     
     ///
-    open var timestamp: Date!
+    open var timestamp: Date?
     
     ///
     open var timeString: String = ""
     
     ///
-    open var downloadSpeedMbpsString: String!
+    open var downloadSpeedMbpsString: String = "-"
     
     ///
-    open var uploadSpeedMbpsString: String!
+    open var uploadSpeedMbpsString: String = "-"
     
-    ////
     ///
     open var jitterMsString: String = "-"
     
@@ -112,13 +111,11 @@ open class RMBTHistoryResult {
     open var packetLossPercentageString: String = "-"
     
     ///
-    open var jpl:VoipTest?
+    open var shortestPingMillisString: String = "-"
     
+    open var qosPercentString: String = "-"
     ///
-    open var shortestPingMillisString: String!
-    
-    ///
-    open var deviceModel: String!
+    open var deviceModel: String = ""
     
     ///
     open var coordinate: CLLocationCoordinate2D!
@@ -131,19 +128,7 @@ open class RMBTHistoryResult {
     
     /// Available in basic details
     open var networkType: RMBTNetworkType!
-    
-    open var networkName: String? {
-        get {
-            return operatorName == nil ? _networkName : operatorName
-        }
-        set {
-            _networkName = newValue
-        }
-    }
-    open var operatorName: String?
-    open var _networkName: String?
-    
-    open var qosResults: String? = "-"
+    open var networkName: String?
     
     ///
     open var shareText: String!
@@ -161,6 +146,8 @@ open class RMBTHistoryResult {
     open var fullDetailsItems = [RMBTHistoryResultItem]() //[SpeedMeasurementDetailItem]()
     
     //
+    open var isHistorySpeedGraphRequested: Bool = false
+    open var historySpeedGraph: RMBTHistorySpeedGraph?
     
     ///
     private var currentYearFormatter = DateFormatter()
@@ -172,44 +159,40 @@ open class RMBTHistoryResult {
     ///
     public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
         
-        operatorName = response.operatorName
-        _networkName = response.networkName
-        qosResults = response.qosResult
-        downloadSpeedMbpsString = response.speedDownload
-        uploadSpeedMbpsString = response.speedUpload
-        shortestPingMillisString = response.pingShortest
+        uuid = response.testUuid
         
         // Note: here network_type is a string with full description (i.e. "WLAN") and in the basic details response it's a numeric code
         networkTypeServerDescription = response.networkType
-        uuid = response.testUuid
+        networkName = response.networkName
+        
         
         if let model = response.model {
             self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(model)
-        }/* else {
-         self.deviceModel = "Unknown" // TODO: translate?
-         } */
-        
-        if let time = response.time as NSNumber? {
-            let t: TimeInterval = time.doubleValue / 1000.0
-            self.timestamp = Date(timeIntervalSince1970: t)
+        } else if let device = response.device {
+            self.deviceModel = device
         }
         
+        self.timestamp = response.measurementDate
+        
+        if let speedUpload = response.speedUpload {
+            self.uploadSpeedMbpsString = RMBTSpeedMbpsString(Double(speedUpload), withMbps: false)
+        }
+        if let speedDownload = response.speedDownload {
+            self.downloadSpeedMbpsString = RMBTSpeedMbpsString(Double(speedDownload), withMbps: false)
+        }
+        if let ping = response.ping {
+            self.shortestPingMillisString = "\(ping)"
+        }
+        if let jitter = response.jitter {
+            self.jitterMsString = "\(jitter)"
+        }
+        if let packetLoss = response.packetLoss {
+            self.packetLossPercentageString = "\(packetLoss)"
+        }
+        if let qos = response.qos {
+            self.packetLossPercentageString = "\(qos)"
+        }
         coordinate = kCLLocationCoordinate2DInvalid
-        
-        if let theJpl = response.jpl {
-            
-            if let resultJitter = theJpl.voip_result_jitter {
-                jitterMsString = resultJitter
-            }
-        
-            if let resultPackeLoss = theJpl.voip_result_packet_loss {
-                packetLossPercentageString = resultPackeLoss
-            }
-            
-            jpl = theJpl
-        }
-        
-        //
         
         currentYearFormatter.dateFormat = "MMM dd HH:mm"
         previousYearFormatter.dateFormat = "MMM dd YYYY"
@@ -257,6 +240,7 @@ open class RMBTHistoryResult {
     
     ///
     open func formattedTimestamp() -> String {
+        guard let timestamp = self.timestamp else { return "" }
         let historyDateComponents = (Calendar.current as NSCalendar).components([.day, .month, .year], from: timestamp)
         let currentDateComponents = (Calendar.current as NSCalendar).components([.day, .month, .year], from: Date())
         
@@ -272,6 +256,18 @@ open class RMBTHistoryResult {
         return result.replacingOccurrences(of: ".", with: "")
     }
     
+    open func ensureGraphs(_ success: @escaping EmptyCallback) {
+        if isHistorySpeedGraphRequested {
+            success()
+        } else {
+            MeasurementHistory.sharedMeasurementHistory.getMeasurementGrahs(uuid) { response in
+                self.historySpeedGraph = response
+                success()
+            } error: { error in
+                Log.logger.error(error)
+            }
+        }
+    }
     ///
     open func ensureBasicDetails(_ success: @escaping EmptyCallback) { // TODO: rewrite, always get full results...
         if dataState != .index {

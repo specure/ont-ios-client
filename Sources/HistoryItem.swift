@@ -17,86 +17,49 @@
 import Foundation
 import ObjectMapper
 
+///{
+///    "device": "string",
+///    "measurement_date": "string",
+///    "network_type": "string",
+///    "ping": 0,
+///    "qos": 0,
+///    "speed_download": 0,
+///    "speed_upload": 0,
+///    "test_uuid": "string",
+///    "voip_result_jitter_millis": 0,
+///    "voip_result_packet_loss_percents": 0
+///  }
 ///
 open class HistoryItem: BasicResponse {
-    
-    /// ONT
-    open var jpl:VoipTest?
-
-    ///
     open var testUuid: String?
-
-    ///
-    open var time: UInt64?
-
-    ///
-    open var timeZone: String?
-
-    ///
-    open var timeString: String?
-
-    ///
-    open var qosResultAvailable = false
-
-    ///
-    open var speedDownload: String?
-
-    ///
-    open var speedUpload: String?
-
-    ///
-    open var ping: String?
-
-    ///
-    open var pingShortest: String?
-
-    ///
+    open var measurementDate: Date?
+    open var device: String?
     open var model: String?
-
-    ///
+    
+    open var speedDownload: Int?
+    open var speedUpload: Int?
+    open var ping: Int?
+    open var qos: Int?
+    open var jitter: Int?
+    open var packetLoss: Int?
+    
     open var networkType: String?
-
-    ///
-    open var speedDownloadClassification: Int?
-
-    ///
-    open var speedUploadClassification: Int?
-
-    ///
-    open var pingClassification: Int?
-
-    ///
-    open var pingShortClassification: Int?
-    
     open var networkName: String?
-    open var operatorName: String?
-    
-    open var qosResult: String?
 
     ///
     override open func mapping(map: Map) {
         super.mapping(map: map)
-        //
-        jpl           <- map["jpl"]
-        //
-
         testUuid           <- map["test_uuid"]
-        time               <- (map["time"], UInt64NSNumberTransformOf)
-        timeZone           <- map["time_zone"]
-        timeString         <- map["time_string"]
-        qosResultAvailable <- map["qos_result_available"]
-        speedDownload      <- map["speed_download"]
-        speedUpload        <- map["speed_upload"]
+        measurementDate    <- (map["measurement_date"], DateStringTimezoneTransformOf)
+        device             <- map["device"]
+        model             <- map["model"]
         ping               <- map["ping"]
-        pingShortest       <- map["ping_shortest"]
-        model              <- map["model"]
+        qos                <- map["qos"]
+        speedUpload        <- map["speed_upload"]
+        speedDownload      <- map["speed_download"]
+        jitter             <- map["voip_result_jitter_millis"]
+        packetLoss         <- map["voip_result_packet_loss_percents"]
         networkType        <- map["network_type"]
-        speedDownloadClassification <- map["speed_download_classification"]
-        speedUploadClassification   <- map["speed_upload_classification"]
-        pingClassification          <- map["ping_classification"]
-        pingShortClassification     <- map["ping_short_classification"]
-        networkName         <- map["network_name"]
-        operatorName         <- map["operator"]
-        qosResult           <- map["qos_result"]
+        networkName        <- map["network_name"]
     }
 }

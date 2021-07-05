@@ -246,6 +246,14 @@ open class MeasurementHistory {
     }
     
     ///
+    open func getMeasurementGrahs(_ uuid: String, success: @escaping (_ response: RMBTHistorySpeedGraph) -> (), error failure: @escaping ErrorCallback) {
+        Log.logger.debug("NEED TO LOAD MEASUREMENT Graphs \(uuid) FROM SERVER")
+        ControlServer.sharedControlServer.getHistoryResultGraphs(by: uuid, success: { response in
+            success(response)
+        }, error: failure)
+    }
+    
+    ///
     open func syncDevicesWith(code:String, success : @escaping (_ response: SyncCodeResponse) -> (), error failure: @escaping ErrorCallback) {
         ControlServer.sharedControlServer.syncWithCode(code: code, success: success, error: failure)
     
@@ -463,9 +471,7 @@ open class MeasurementHistory {
                         
                         storedHistoryItem.model = item.model
                         
-                        if let t = item.time {
-                            storedHistoryItem.timestamp = NSDate(timeIntervalSince1970: Double(t)) as Date
-                        }
+                        storedHistoryItem.timestamp = item.measurementDate
                         
                         storedHistoryItem.jsonData = Mapper<HistoryItem>().toJSONString(item)
 

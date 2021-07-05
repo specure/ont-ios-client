@@ -575,7 +575,7 @@ class ControlServer {
     func getQOSHistoryResultWithUUID(testUuid: String, success: @escaping (_ response: QosMeasurementResultResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { _ in
             
-            let r = HistoryWithQOS()
+            let r = HistoryWithQOSRequest()
             r.testUUID = testUuid
 
             self.request(.post, path: "/mobile/qosTestResult", requestObject: r, success: success, error: failure)
@@ -634,7 +634,7 @@ class ControlServer {
         
         ensureClientUuid(success: { theUuid in
             
-            let r = HistoryWithQOS()
+            let r = HistoryWithQOSRequest()
             r.testUUID = uuid
             
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
@@ -652,10 +652,24 @@ class ControlServer {
         
         ensureClientUuid(success: { theUuid in
             
-            let r = HistoryWithQOS()
+            let r = HistoryWithQOSRequest()
             r.testUUID = uuid
             
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
+            
+        }, error: { error in
+            Log.logger.debug("\(error)")
+            
+            errorCallback(error)
+        })
+    }
+    
+    ///
+    func getHistoryResultGraphs(by uuid: String, success: @escaping (_ response: RMBTHistorySpeedGraph) -> (), error errorCallback: @escaping ErrorCallback) {
+        let key = "/mobile/graphs/\(uuid)"
+        
+        ensureClientUuid(success: { theUuid in
+            self.request(.get, path: key, requestObject: nil, success: success, error: errorCallback)
             
         }, error: { error in
             Log.logger.debug("\(error)")

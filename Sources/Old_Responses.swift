@@ -132,7 +132,7 @@ open class HistoryWithFiltersResponse: BasicResponse {
     override open func mapping(map: Map) {
         super.mapping(map: map)
         
-        records <- map["history"]
+        records <- map["history.content"]
     }
 }
 

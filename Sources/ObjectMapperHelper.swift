@@ -42,6 +42,28 @@ let DateStringTransformOf = TransformOf<Date, String>(fromJSON: {
     }
 })
 
+let DateStringTimezoneTransformOf = TransformOf<Date, String>(fromJSON: {
+    let defaultDateFormatter = DateFormatter()
+//    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+    if let date = $0 {
+        return defaultDateFormatter.date(from: date)
+    }
+    else {
+        return Date()
+    }
+}, toJSON: {
+    let defaultDateFormatter = DateFormatter()
+//    defaultDateFormatter.locale = NSLocale.current
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+    if let date = $0 {
+        return defaultDateFormatter.string(from: date)
+    }
+    else {
+        return ""
+    }
+})
+
 let IntDateStringTransformOf = TransformOf<Int, String>(fromJSON: {
     let defaultDateFormatter = DateFormatter()
     defaultDateFormatter.locale = Locale(identifier: "en_US_POSIX")

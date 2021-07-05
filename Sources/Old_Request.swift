@@ -25,14 +25,19 @@ open class MeasurementServerInfoRequest: BasicRequest {
 }
 
 ///
-open class HistoryWithQOS: BasicRequest {
+open class HistoryWithQOSRequest: BasicRequest {
 
-    var testUUID:String?
+    var testUUID: String?
+    var capabilities: [String: Any] = [
+        "classification": [ "count": 4 ],
+        "qos": [ "supports_info": true ],
+        "RMBThttp": true
+    ]
     
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        
+        capabilities <- map["capabilities"]
         testUUID <- map["test_uuid"]
     }
 }
@@ -51,9 +56,9 @@ open class HistoryWithFiltersRequest: BasicRequest {
     override public func mapping(map: Map) {
         super.mapping(map: map)
         
-        resultOffset <- map["result_offset"]
-        resultLimit <- map["result_limit"]
-        networks <- map["networks"]
+        resultOffset <- map["offset"]
+        resultLimit <- map["pageSize"]
+        networks <- map["network_types"]
         devices <- map["devices"]
     }
 }
