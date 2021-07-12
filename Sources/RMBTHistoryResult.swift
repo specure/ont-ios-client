@@ -311,7 +311,6 @@ open class RMBTHistoryResult {
                         self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
                     }
                     
-//                    for r in (res.classifiedMeasurementDataList)! {
                     if let downloadValue = res.result?.download {
                         let download = SpeedMeasurementResultResponse.ClassifiedResultItem()
                         download.title = "history.header.download"
@@ -335,15 +334,6 @@ open class RMBTHistoryResult {
                         ping.classification = res.result?.pingClassification
                         self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: ping))
                     }
-                    
-                    
-//                        let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
-//                        i.classification = r.classification
-//                        i.title = r.title
-//                        i.value = r.value
-//
-//                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
-//                    }
                     
                     let jitter = res.classifiedMeasurementDataList?.filter({ item in
                         return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")}).first
