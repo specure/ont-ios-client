@@ -169,7 +169,7 @@ open class RMBTHistoryResult {
         if let model = response.model {
             self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(model)
         } else if let device = response.device {
-            self.deviceModel = device
+            self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(device)
         }
         
         self.timestamp = response.measurementDate
@@ -311,15 +311,39 @@ open class RMBTHistoryResult {
                         self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
                     }
                     
-                    for r in (res.classifiedMeasurementDataList)! {
-                        
-                        let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        i.classification = r.classification
-                        i.title = r.title
-                        i.value = r.value
-                
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
+//                    for r in (res.classifiedMeasurementDataList)! {
+                    if let downloadValue = res.result?.download {
+                        let download = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        download.title = "history.header.download"
+                        download.value = RMBTSpeedMbpsString(Double(downloadValue), withMbps: true)
+                        download.classification = res.result?.downloadClassification
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: download))
                     }
+                    
+                    if let uploadValue = res.result?.upload {
+                        let upload = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        upload.title = "history.header.upload"
+                        upload.value = RMBTSpeedMbpsString(Double(uploadValue), withMbps: true)
+                        upload.classification = res.result?.uploadClassification
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: upload))
+                    }
+                    
+                    if let pingValue = res.result?.ping {
+                        let ping = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                        ping.title = "history.header.ping"
+                        ping.value = "\(pingValue) ms"
+                        ping.classification = res.result?.pingClassification
+                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: ping))
+                    }
+                    
+                    
+//                        let i = SpeedMeasurementResultResponse.ClassifiedResultItem()
+//                        i.classification = r.classification
+//                        i.title = r.title
+//                        i.value = r.value
+//
+//                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:i))
+//                    }
                     
                     let jitter = res.classifiedMeasurementDataList?.filter({ item in
                         return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")}).first

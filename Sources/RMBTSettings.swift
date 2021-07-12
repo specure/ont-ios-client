@@ -133,6 +133,8 @@ open class RMBTSettings: NSObject {
     
     @objc open dynamic var countMeasurements: Int = 0
     @objc open dynamic var isDevModeEnabled: Bool = false
+    @objc open dynamic var serverIdentifier: String?
+    @objc open dynamic var isOverrideServer: Bool = false
 
     ///
     private override init() {
@@ -210,7 +212,9 @@ open class RMBTSettings: NSObject {
             "isClientPersistent",
             "isAnalyticsEnabled",
             "countMeasurements",
-            "isDevModeEnabled"
+            "isDevModeEnabled",
+            "serverIdentifier",
+            "isOverrideServer"
         ])
     }
 

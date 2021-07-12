@@ -260,6 +260,11 @@ class ServerHelper {
         }
         let url = (baseUrl != nil ? baseUrl! : "") + path
         
+        var headers: HTTPHeaders?
+        if let clientIdentifier = RMBTConfig.sharedInstance.clientIdentifier {
+            headers = HTTPHeaders(["X-Nettest-Client": clientIdentifier])
+        }
+        
         manager
             .request(url, method: method, parameters: parameters, encoding: encoding, headers: nil)
             // maybe use alamofire router later? (https://grokswift.com/router/)
@@ -318,8 +323,13 @@ class ServerHelper {
         }
         let url = (baseUrl != nil ? baseUrl! : "") + path
         
+        var headers: HTTPHeaders?
+        if let clientIdentifier = RMBTConfig.sharedInstance.clientIdentifier {
+            headers = HTTPHeaders(["X-Nettest-Client": clientIdentifier])
+        }
+        
         manager
-            .request(url, method: method, parameters: parameters, encoding: encoding, headers: nil)
+            .request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
             
     // maybe use alamofire router later? (https://grokswift.com/router/)
 //            .validate() // https://github.com/Alamofire/Alamofire#validation // need custom code to get body from error (see https://github.com/Alamofire/Alamofire/issues/233)

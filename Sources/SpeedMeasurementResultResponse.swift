@@ -99,14 +99,48 @@ open class VoipTest: Mappable {
     }
 }
 
+final public class MeasurementResult: NSObject, Mappable {
+//    "measurement_result":{"download_kbit":17733,"download_classification":3,"upload_kbit":25622,"upload_classification":4,"ping_ms":252.753083,"ping_classification":1,"signal_strength":null,"signal_classification":null,"lte_rsrp":null,"voip_result_jitter_millis":null,"voip_result_packet_loss_percents":null}
+    
+    public var download: Int?
+    public var upload: Int?
+    public var downloadClassification: Int?
+    public var uploadClassification: Int?
+    public var ping: Int?
+    public var pingClassification: Int?
+    public var signal: Int?
+    public var signalClassification: Int?
+    public var lte_rsrp: Int?
+    public var jitter: Int?
+    public var packetLoss: Int?
+    
+    public init?(map: Map) { }
+    
+    public func mapping(map: Map) {
+        download <- map["download_kbit"]
+        upload <- map["upload_kbit"]
+        downloadClassification <- map["download_classification"]
+        uploadClassification <- map["upload_classification"]
+        ping <- map["ping_ms"]
+        pingClassification <- map["ping_classification"]
+        signal <- map["signal_strength"]
+        signalClassification <- map["signal_classification"]
+        lte_rsrp <- map["lte_rsrp"]
+        jitter <- map["voip_result_jitter_millis"]
+        packetLoss <- map["voip_result_packet_loss_percents"]
+    }
+    
+    
+}
+
 ///
 open class SpeedMeasurementResultResponse: BasicResponse {
     
     /// ONT
-    open var jpl:VoipTest?
-    
+    open var jpl: VoipTest?
+    open var result: MeasurementResult?
     ///
-    open var device:[ResultItem]?
+    open var device: [ResultItem]?
 
     ///
     open var classifiedMeasurementDataList: [ClassifiedResultItem]?
@@ -183,6 +217,7 @@ open class SpeedMeasurementResultResponse: BasicResponse {
         // only for map
         highlight <- map["highlight"]
         measurementUuid <- map["measurement_uuid"]
+        result <- map["measurement_result"]
     }
 
     ///
