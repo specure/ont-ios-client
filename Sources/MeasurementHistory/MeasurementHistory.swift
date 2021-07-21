@@ -186,6 +186,14 @@ open class MeasurementHistory {
             success(response)
         }, error: failure)
     }
+    
+    ///
+    open func getBasicHistoryResult(with uuid: String, success: @escaping (_ response: HistoryItem) -> Void, error failure: @escaping ErrorCallback) {
+
+        Log.logger.debug("NEED TO LOAD MEASUREMENT DETAILS \(uuid) FROM SERVER")
+        
+        ControlServer.sharedControlServer.getBasicHistoryResult(with: uuid, success: success, error: failure)
+    }
 
     ///
     open func getMeasurementDetails(_ uuid: String, success: @escaping (_ response: SpeedMeasurementDetailResultResponse) -> (), error failure: @escaping ErrorCallback) {

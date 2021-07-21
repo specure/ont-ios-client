@@ -30,6 +30,21 @@ import ObjectMapper
 ///    "voip_result_packet_loss_percents": 0
 ///  }
 ///
+
+open class QosTestResultCounter: BasicResponse {
+    open var successCount: Int?
+    open var testType: String?
+    open var totalCount: Int?
+    
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        successCount           <- map["successCount"]
+        testType               <- map["testType"]
+        totalCount             <- map["totalCount"]
+    }
+}
+
 open class HistoryItem: BasicResponse {
     open var testUuid: String?
     open var measurementDate: Date?
@@ -45,6 +60,8 @@ open class HistoryItem: BasicResponse {
     
     open var networkType: String?
     open var networkName: String?
+    
+    open var qosTestResultCounters: [QosTestResultCounter]?
 
     ///
     override open func mapping(map: Map) {
@@ -52,7 +69,7 @@ open class HistoryItem: BasicResponse {
         testUuid           <- map["test_uuid"]
         measurementDate    <- (map["measurement_date"], DateStringTimezoneTransformOf)
         device             <- map["device"]
-        model             <- map["model"]
+        model              <- map["model"]
         ping               <- map["ping"]
         qos                <- map["qos"]
         speedUpload        <- map["speed_upload"]
@@ -61,5 +78,6 @@ open class HistoryItem: BasicResponse {
         packetLoss         <- map["voip_result_packet_loss_percents"]
         networkType        <- map["network_type"]
         networkName        <- map["network_name"]
+        qosTestResultCounters <- map["qosTestResultCounters"]
     }
 }

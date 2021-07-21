@@ -151,6 +151,20 @@ open class MapMeasurementResponse_Old: BasicResponse {
 }
 
 ///
+open class BasicMeasurementResponse: BasicResponse {
+    
+    ///
+    open var measurements: [SpeedMeasurementResultResponse]?
+    
+    ///
+    override open func mapping(map: Map) {
+        super.mapping(map: map)
+        
+        measurements <- map["testresult"]
+    }
+}
+
+///
 open class IpResponse_Old: BasicResponse {
     
     ///

@@ -113,10 +113,15 @@ final public class MeasurementResult: NSObject, Mappable {
     public var lte_rsrp: Int?
     public var jitter: Int?
     public var packetLoss: Int?
+    public var device: String?
+    public var measurementDate: Date?
     
     public init?(map: Map) { }
     
     public func mapping(map: Map) {
+        device <- map["device"]
+        measurementDate <- map["measurement_date"]
+        
         download <- map["download_kbit"]
         upload <- map["upload_kbit"]
         downloadClassification <- map["download_classification"]

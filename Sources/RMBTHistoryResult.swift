@@ -124,7 +124,7 @@ open class RMBTHistoryResult {
     open var locationString: String!
     
     /// "WLAN", "2G/3G" etc.
-    public let networkTypeServerDescription: String!
+    public var networkTypeServerDescription: String!
     
     /// Available in basic details
     open var networkType: RMBTNetworkType!
@@ -155,6 +155,8 @@ open class RMBTHistoryResult {
     ///
     private var previousYearFormatter = DateFormatter()
     //
+    
+    open var qosTestResultCounters: [QosTestResultCounter]?
     
     ///
     public init(response: HistoryItem) { // this methods takes only ["test_uuid": ...] after a new test...
@@ -274,107 +276,61 @@ open class RMBTHistoryResult {
             success()
         } else {
             
-            MeasurementHistory.sharedMeasurementHistory.getMeasurementDetails_Old(uuid, full: false, success: { response in
+            MeasurementHistory.sharedMeasurementHistory.getBasicHistoryResult(with: uuid, success: { response in
                 
-                if let res = response.measurements?.first {
-                    self.networkType = res.networkType.map { RMBTNetworkType(rawValue: $0) }!
-                    //
-                    self.shareText = nil
+                self.qosTestResultCounters = response.qosTestResultCounters
+                
+                if let networkTypeValue = response.networkType {
+                    self.networkType = RMBTNetworkType(rawValue: Int(networkTypeValue) ?? 0)
+                    self.networkTypeServerDescription = networkTypeValue
+                    let i = SpeedMeasurementResultResponse.ResultItem()
+                    i.title = "Connection"
+                    i.value = networkTypeValue
                     
-                    self.shareText = res.shareText
-                    
-                    do {
-                        let linkDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-                        
-                        let matches = linkDetector.matches(in: self.shareText, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSRange(location: 0, length: self.shareText.count))
-                        
-                        if matches.count > 0 {
-                            let r = matches.last!
-                            
-                            assert(r.resultType == NSTextCheckingResult.CheckingType.link, "Invalid match type")
-                            
-                            self.shareText = (self.shareText as NSString).replacingCharacters(in: r.range, with: "")
-                            self.shareURL = r.url
-                        }
-                        
-                    } catch {
-                        
-                    }
-                    
-                    // Add items
-                    for r in res.networkDetailList! {
-                        
-                        let i = SpeedMeasurementResultResponse.ResultItem()
-                        i.title = r.title
-                        i.value = r.value
-                        
-                        self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
-                    }
-                    
-                    if let downloadValue = res.result?.download {
-                        let download = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        download.title = "history.header.download"
-                        download.value = RMBTSpeedMbpsString(Double(downloadValue), withMbps: true)
-                        download.classification = res.result?.downloadClassification
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: download))
-                    }
-                    
-                    if let uploadValue = res.result?.upload {
-                        let upload = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        upload.title = "history.header.upload"
-                        upload.value = RMBTSpeedMbpsString(Double(uploadValue), withMbps: true)
-                        upload.classification = res.result?.uploadClassification
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: upload))
-                    }
-                    
-                    if let pingValue = res.result?.ping {
-                        let ping = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        ping.title = "history.header.ping"
-                        ping.value = "\(pingValue) ms"
-                        ping.classification = res.result?.pingClassification
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: ping))
-                    }
-                    
-                    let jitter = res.classifiedMeasurementDataList?.filter({ item in
-                        return  item.title == NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")}).first
-                    // TODO
-                    // delete after the new server version that has jpl in the loop above comes alive
-                    if let theJpl = res.jpl, jitter == nil {
-                        
-                        //
-                        let itemJitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        itemJitter.classification = theJpl.classification_jitter as? Int
-                        itemJitter.title = NSLocalizedString("RBMT-BASE-JITTER", comment: "JITTER")
-                        itemJitter.value = theJpl.voip_result_jitter?.addMsString()
-                        
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemJitter))
-                        
-                        //
-                        let itemPacketLoss = SpeedMeasurementResultResponse.ClassifiedResultItem()
-                        itemPacketLoss.classification = response.measurements?[0].jpl?.classification_packet_loss as? Int
-                        itemPacketLoss.title = NSLocalizedString("RBMT-BASE-PACKETLOSS", comment: "Packet loss")
-                        itemPacketLoss.value = theJpl.voip_result_packet_loss?.addPercentageString()
-                        
-                        self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem:itemPacketLoss))
-                    }
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////
-                    
-                    if let geoLat = res.latitude{
-                        if let geoLon = response.measurements?[0].longitude {
-                            self.coordinate = CLLocationCoordinate2DMake(geoLat, geoLon)
-                        }
-                    }
-                    
-                    if let timeString = res.timeString {
-                        self.timeString = timeString
-                    }
-                    
-                    self.locationString = res.location
-                    
-                    self.dataState = .basic
+                    self.netItems.append(RMBTHistoryResultItem(withResultItem:i))
                 }
-
                 
+                if let downloadValue = response.speedDownload {
+                    let download = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    download.title = "history.header.download"
+                    download.value = RMBTSpeedMbpsString(Double(downloadValue), withMbps: true)
+                    download.classification = 0
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: download))
+                }
+                
+                if let uploadValue = response.speedUpload {
+                    let upload = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    upload.title = "history.header.upload"
+                    upload.value = RMBTSpeedMbpsString(Double(uploadValue), withMbps: true)
+                    upload.classification = 0
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: upload))
+                }
+                
+                if let pingValue = response.ping {
+                    let ping = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    ping.title = "history.header.ping"
+                    ping.value = "\(pingValue) ms"
+                    ping.classification = 0
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: ping))
+                }
+                
+                if let jitterValue = response.jitter {
+                    let jitter = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    jitter.title = "RBMT-BASE-JITTER"
+                    jitter.value = "\(jitterValue) ms"
+                    jitter.classification = 0
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: jitter))
+                }
+                
+                if let packetLossValue = response.packetLoss {
+                    let packetLoss = SpeedMeasurementResultResponse.ClassifiedResultItem()
+                    packetLoss.title = "RBMT-BASE-PACKETLOSS"
+                    packetLoss.value = "\(packetLossValue) %"
+                    packetLoss.classification = 0
+                    self.measurementItems.append(RMBTHistoryResultItem(withClassifiedResultItem: packetLoss))
+                }
+                    
+                self.dataState = .basic
                 success()
                 
             }, error: { error in

@@ -630,7 +630,7 @@ class ControlServer {
     //
     ///
     func getHistoryResultWithUUID(uuid: String, fullDetails: Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error errorCallback: @escaping ErrorCallback) {
-        let key = fullDetails ? "/mobile/testresultdetail" : "/mobile/testresult"
+        let key = fullDetails ? "/mobile/testresultdetail" : "/mobile/history/\(uuid)"
         
         ensureClientUuid(success: { theUuid in
             
@@ -639,6 +639,18 @@ class ControlServer {
             
             self.request(.post, path: key, requestObject: r, success: success, error: errorCallback)
             
+        }, error: { error in
+            Log.logger.debug("\(error)")
+            
+            errorCallback(error)
+        })
+    }
+    
+    ///
+    func getBasicHistoryResult(with uuid: String, success: @escaping (_ response: HistoryItem) -> (), error errorCallback: @escaping ErrorCallback) {
+        ensureClientUuid(success: { theUuid in
+            let path = "/mobile/history/\(uuid)"
+            self.request(.get, path: path, requestObject: nil, success: success, error: errorCallback)
         }, error: { error in
             Log.logger.debug("\(error)")
             
