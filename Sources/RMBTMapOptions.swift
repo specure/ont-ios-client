@@ -18,8 +18,6 @@
 import Foundation
 
 // TODO: rewrite to seperate files
-
-///
 public enum RMBTMapOptionsMapViewType: Int {
     case standard = 0
     case satellite = 1
@@ -28,40 +26,41 @@ public enum RMBTMapOptionsMapViewType: Int {
 
 public let MapOptionResponseOverlayAuto = MapOptionResponse.MapOverlays(identifier: "auto", title: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description"), isDefault: true)
 
-///
 public let RMBTMapOptionsOverlayAuto = RMBTMapOptionsOverlay (
     identifier: "auto",
     localizedDescription: NSLocalizedString("map.options.overlay.auto", value: "Auto", comment: "Map overlay description")
 )
 
-///
 public let RMBTMapOptionsOverlayHeatmap = RMBTMapOptionsOverlay(
     identifier: "heatmap",
     localizedDescription: NSLocalizedString("map.options.overlay.heatmap", value: "Heatmap", comment: "Map overlay description")
 )
 
-///
 public let RMBTMapOptionsOverlayPoints = RMBTMapOptionsOverlay(
     identifier: "points",
     localizedDescription: NSLocalizedString("map.options.overlay.points", value: "Points", comment: "Map overlay description")
 )
+
 public let RMBTMapOptionsOverlayShapes = RMBTMapOptionsOverlay(
     identifier: "shapes",
     localizedDescription: NSLocalizedString("map.options.overlay.shapes", value: "Shapes", comment: "Map overlay description")
 )
- //
+
 public let RMBTMapOptionsOverlayRegions = RMBTMapOptionsOverlay(
     identifier: "regions",
     localizedDescription: NSLocalizedString("map.options.overlay.regions", value: "Regions", comment: "Map overlay description")
 )
+
 public let RMBTMapOptionsOverlayMunicipality = RMBTMapOptionsOverlay(
     identifier: "municipality",
     localizedDescription: NSLocalizedString("map.options.overlay.municipality", value: "Municipality", comment: "Map overlay description")
 )
+
 public let RMBTMapOptionsOverlaySettlements = RMBTMapOptionsOverlay(
     identifier: "settlements",
     localizedDescription: NSLocalizedString("map.options.overlay.settlements", value: "Settlements", comment: "Map overlay description")
 )
+
 public let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
     identifier: "whitespots",
     localizedDescription: NSLocalizedString("map.options.overlay.whitespots", value: "White spots", comment: "Map overlay description")
@@ -69,16 +68,12 @@ public let RMBTMapOptionsOverlayWhitespots = RMBTMapOptionsOverlay(
 
 public let RMBTMapOptionCountryAll = RMBTMapOptionCountry(code: "all", name: NSLocalizedString("map.options.filter.all_countries", comment: "All Countries"))
 
-///
 public let RMBTMapOptionsToastInfoTitle = "title"
 
-///
 public let RMBTMapOptionsToastInfoKeys = "keys"
 
-///
 public let RMBTMapOptionsToastInfoValues = "values"
 
-///
 open class RMBTMapOptions {
     open var mapViewType: RMBTMapOptionsMapViewType = .standard
 
@@ -388,14 +383,9 @@ open class RMBTMapOptionsSelection: NSObject {
 
 ///
 open class RMBTMapOptionsOverlay: NSObject {
-
-    ///
     open var identifier: String
-
-    ///
     open var localizedDescription: String
 
-    ///
     public init(identifier: String, localizedDescription: String) {
         self.identifier = identifier
         self.localizedDescription = localizedDescription
