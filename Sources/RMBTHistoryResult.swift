@@ -262,7 +262,7 @@ open class RMBTHistoryResult {
         if isHistorySpeedGraphRequested {
             success()
         } else {
-            MeasurementHistory.sharedMeasurementHistory.getMeasurementGrahs(uuid) { response in
+            MeasurementHistory.sharedMeasurementHistory.getMeasurementGraphs(uuid) { response in
                 self.historySpeedGraph = response
                 success()
             } error: { error in

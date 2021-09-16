@@ -254,7 +254,7 @@ open class MeasurementHistory {
     }
     
     ///
-    open func getMeasurementGrahs(_ uuid: String, success: @escaping (_ response: RMBTHistorySpeedGraph) -> (), error failure: @escaping ErrorCallback) {
+    open func getMeasurementGraphs(_ uuid: String, success: @escaping (_ response: RMBTHistorySpeedGraph) -> (), error failure: @escaping ErrorCallback) {
         Log.logger.debug("NEED TO LOAD MEASUREMENT Graphs \(uuid) FROM SERVER")
         ControlServer.sharedControlServer.getHistoryResultGraphs(by: uuid, success: { response in
             success(response)
