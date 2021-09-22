@@ -85,16 +85,14 @@ class Signal: Mappable {
 
     ///
     func mapping(map: Map) {
+        time            <- map["time"]
+        
+        /*
         relativeTimeNs  <- map["relative_time_ns"]
         networkType     <- map["network_type"]
         networkTypeId   <- map["network_type_id"]
         catTechnology   <- map["cat_technology"]
-        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            time            <- (map["time"], IntDateStringTransformOf)
-        }
-        else {
-            time            <- map["time"]
-        }
+        
         signalStrength  <- map["signal_strength"]
         wifiLinkSpeed   <- map["wifi_link_speed"]
         wifiRssi        <- map["wifi_rssi"]
@@ -103,5 +101,13 @@ class Signal: Mappable {
         lteRsrq         <- map["lte_rsrq"]
         lteRssnr        <- map["lte_rssnr"]
         lteCqi          <- map["lte_cqi"]
+         */
     }
+    
+    /* {
+      "time": 1571665024591,
+      "timezone": "Europe/Prague",
+      "uuid": "68796996-5f40-11eb-ae93-0242ac130002"
+    }
+     */
 }

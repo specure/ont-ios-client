@@ -25,10 +25,10 @@ open class BasicRequest: Mappable {
     var loopUuid:String?
 
     ///
-    var apiLevel: String?
+    var apiLevel: String = ""
 
     ///
-    var clientName: String?
+    var clientName: String = "RMBT"
 
     ///
     var device: String?

@@ -17,22 +17,26 @@
 import Foundation
 import ObjectMapper
 
-///
-class SpeedRawItem: MeasurementSpeedRawItem {
-
-    ///
+final class SpeedRawItem: MeasurementSpeedRawItem {
+    enum SpeedRawItemDirection: String {
+        case Download = "download"
+        case Upload = "upload"
+    }
+    
     var direction: SpeedRawItemDirection?
 
-    ///
     override func mapping(map: Map) {
         super.mapping(map: map)
 
         direction <- map["direction"]
     }
 
-    ///
-    enum SpeedRawItemDirection: String {
-        case Download = "download"
-        case Upload = "upload"
+    /*
+    {
+      "direction": "download",
+      "thread": 0,
+      "time": 0,
+      "bytes": 0
     }
+     */
 }

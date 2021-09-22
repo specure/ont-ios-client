@@ -17,42 +17,37 @@
 import Foundation
 import ObjectMapper
 
-///
-open class Ping: Mappable, CustomStringConvertible {
-
-    ///
+final class Ping: Mappable, CustomStringConvertible {
     var serverNanos: UInt64?
-
-    ///
     var clientNanos: UInt64?
 
     /// relative to test start
     var relativeTimestampNanos: UInt64?
 
-    //
-
-    ///
+    public var description: String {
+        //return String(format: "RMBTPing (server=%" PRIu64 ", client=%" PRIu64 ")", serverNanos, clientNanos)
+        return "RMBTPing  (server = \(String(describing: serverNanos)), client = \(String(describing: clientNanos)))"
+    }
+    
     init(serverNanos: UInt64, clientNanos: UInt64, relativeTimestampNanos timestampNanos: UInt64) {
         self.serverNanos = serverNanos
         self.clientNanos = clientNanos
         self.relativeTimestampNanos = timestampNanos
     }
 
-    ///
-    required public init?(map: Map) {
+    required public init?(map: Map) {}
 
-    }
-
-    ///
-    open func mapping(map: Map) {
+    public func mapping(map: Map) {
         serverNanos             <- (map["value_server"], UInt64NSNumberTransformOf)
         clientNanos             <- (map["value"], UInt64NSNumberTransformOf)
-        relativeTimestampNanos  <- (map["relative_time_ns"], UInt64NSNumberTransformOf)
+        relativeTimestampNanos  <- (map["time_ns"], UInt64NSNumberTransformOf)
     }
-
-    ///
-    open var description: String {
-        //return String(format: "RMBTPing (server=%" PRIu64 ", client=%" PRIu64 ")", serverNanos, clientNanos)
-        return "RMBTPing  (server = \(String(describing: serverNanos)), client = \(String(describing: clientNanos)))"
-    }
+    
+    /*
+     {
+       "value": 0,
+       "value_server": 0,
+       "time_ns": 0
+     }
+     */
 }

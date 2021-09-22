@@ -23,8 +23,6 @@ class AbstractBasicRequestBuilder {
     class func addBasicRequestValues(_ basicRequest: BasicRequest) {
         let infoDictionary = Bundle.main.infoDictionary! // !
 
-        basicRequest.apiLevel = "" // always null on iOS...
-        basicRequest.clientName = "RMBT"
         if RMBTConfig.sharedInstance.RMBT_USE_MAIN_LANGUAGE == true {
             basicRequest.language = RMBTConfig.sharedInstance.RMBT_MAIN_LANGUAGE
         } else {

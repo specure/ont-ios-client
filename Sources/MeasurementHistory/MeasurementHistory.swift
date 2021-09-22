@@ -174,7 +174,7 @@ open class MeasurementHistory {
     }
     
     ///
-    open func getMeasurementDetails_Old(_ uuid: String, full:Bool, success: @escaping (_ response: MapMeasurementResponse_Old) -> (), error failure: @escaping ErrorCallback) {
+    open func getMeasurementDetails_Old(_ uuid: String, full:Bool, success: @escaping (_ response: HistoryItem) -> (), error failure: @escaping ErrorCallback) {
 
         
         

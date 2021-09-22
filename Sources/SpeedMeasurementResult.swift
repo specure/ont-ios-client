@@ -36,8 +36,40 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 ///
 class SpeedMeasurementResult: BasicRequest {
 
-    ///
-    var jpl: SpeedMeasurementJPLResult?
+    var isDualSim: Bool = false // TODO: Implement it
+    var geoLocations: [GeoLocation] = []
+    var networkType: Int?
+    var pings: [Ping] = []
+    var speedDetail: [SpeedRawItem] = []
+    
+    var loopMode: Bool?
+    var userServerSelection: Bool?
+
+    var jpl: SpeedMeasurementJPLResult? {
+        didSet {
+            if let inJiter = jpl?.resultOutMeanJitter,
+               let outJiter = jpl?.resultInMeanJitter {
+                self.jitter = String(format: "%.1f", Double(inJiter + outJiter) / 2_000_000)
+            }
+            
+            // compute packet loss (both directions) as outcome
+            if let inPL = jpl?.resultInNumPackets,
+               let outPL = jpl?.resultOutNumPackets,
+               let objDelay = jpl?.objectiveDelay,
+               let objCallDuration = jpl?.objectiveCallDuration,
+                objDelay != 0,
+                objCallDuration != 0 {
+
+                let total = Double(objCallDuration) / Double(objDelay)
+
+                let packetLossUp = (total - Double(outPL)) / total
+                let packetLossDown = (total - Double(inPL)) / total
+
+                self.packetLoss = String(format: "%0.1f", ((packetLossUp + packetLossDown) / 2) * 100)
+            }
+        }
+    }
+    
 
     ///
     var clientUuid: String?
@@ -45,19 +77,10 @@ class SpeedMeasurementResult: BasicRequest {
     ///
     var extendedTestStat = ExtendedTestStat()
 
-    ///
-    var geoLocations = [GeoLocation]()
-
-    ///
-    var networkType: Int?
-
-    ///
-    var pings = [Ping]()
-
-    ///
-    var speedDetail = [SpeedRawItem]()
-
-    ///
+    var jitter: String?
+    
+    var packetLoss: String?
+    
     var bytesDownload: UInt64?
 
     ///
@@ -554,154 +577,251 @@ class SpeedMeasurementResult: BasicRequest {
         #endif
     }
 
+    
     /////////
 
     ///
     override func mapping(map: Map) {
         super.mapping(map: map)
         
-        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            
-            
-            clientUuid              <- map["client_uuid"]
-            extendedTestStat        <- map["extended_test_stat"]
-            geoLocations            <- map["geo_locations"]
-            networkType             <- map["network_type"]
-            pings                   <- map["pings"]
-            
-            speedDetail             <- map["speed_detail"]
-            bytesDownload           <- (map["bytes_download"], UInt64NSNumberTransformOf)
-            bytesUpload             <- (map["bytes_upload"], UInt64NSNumberTransformOf)
-            encryption              <- map["encryption"]
-            ipLocal                 <- map["ip_local"]
-            ipServer                <- map["ip_server"]
-            durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
-            durationUploadNs        <- (map["test_nsec_upload"], UInt64NSNumberTransformOf)
-            durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
-            durationDownloadNs      <- (map["test_nsec_download"], UInt64NSNumberTransformOf)
-            numThreads              <- map["num_threads"]
-            numThreadsUl            <- map["num_threads_ul"]
-            pingShortest            <- map["ping_shortest"]
-            portRemote              <- map["port_remote"]
-            speedDownload           <- (map["speed_download"], UInt64NSNumberTransformOf)
-            speedUpload             <- (map["speed_upload"], UInt64NSNumberTransformOf)
-            
-            token                   <- map["token"]
-            totalBytesDownload      <- map["total_bytes_download"]
-            totalBytesDownload      <- map["test_bytes_download"]
-            totalBytesUpload        <- map["total_bytes_upload"]
-            totalBytesUpload        <- map["test_bytes_upload"]
-            interfaceTotalBytesDownload  <- map["interface_total_bytes_download"]
-            interfaceTotalBytesUpload    <- map["interface_total_bytes_upload"]
-            interfaceDltestBytesDownload <- map["interface_dltest_bytes_download"]
-            interfaceDltestBytesUpload   <- map["interface_dltest_bytes_upload"]
-            interfaceUltestBytesDownload <- map["interface_ultest_bytes_download"]
-            interfaceUltestBytesUpload   <- map["interface_ultest_bytes_upload"]
-            
-            time              <- map["time"]
-            relativeTimeDlNs  <- map["relative_time_dl_ns"]
-            relativeTimeUlNs  <- map["relative_time_ul_ns"]
-            
-            publishPublicData <- map["publish_public_data"]
-            
-            #if os(iOS)
-                signals       <- map["signals"]
-//                telephonyInfo <- map["telephony_info"]
-//                wifiInfo      <- map["wifi_info"]
-            //Telephony Info Properties
-                telephonyDataState <- map["telephony_data_state"]
-                telephonyNetworkCountry <- map["telephony_network_country"]
-                telephonyNetworkIsRoaming <- map["telephony_network_is_roaming"]
-                telephonyNetworkOperator <- map["telephony_network_operator"]
-                telephonyNetworkOperatorName <- map["telephony_network_operator_name"]
-                telephonyNetworkSimCountry <- map["telephony_network_sim_country"]
-                telephonyNetworkSimOperator <- map["telephony_network_sim_operator"]
-                telephonyNetworkSimOperatorName <- map["telephony_network_sim_operator_name"]
-                telephonyPhoneType <- map["telephony_phone_type"]
-
-            //WiFi Info Properties
-                wifiSsid <- map["wifi_ssid"]
-                wifiBssid <- map["wifi_bssid"]
-                wifiNetworkId <- map["wifi_network_id"]
-                wifiSupplicantState <- map["wifi_supplicant_state"]
-                wifiSupplicantStateDetail <- map["wifi_supplicant_state_detail"]
-            
-                //cellLocations   <- map["cell_locations"]
-            #endif
+        clientUuid              <- map["client_uuid"]
+        isDualSim               <- map["dual_sim"] // TODO: //
+        geoLocations            <- map["geoLocations"]
+        networkType             <- map["network_type"]
+        pings                   <- map["pings"]
+        speedDetail             <- map["speed_detail"]
         
-        } else {
-            
+        totalBytesDownload      <- map["test_total_bytes_download"]
+        totalBytesUpload        <- map["test_total_bytes_upload"]
+        totalBytesDownload      <- map["test_bytes_download"]
+        totalBytesUpload        <- map["test_bytes_upload"]
+        interfaceDltestBytesDownload <- map["testdl_if_bytes_download"]
+        interfaceDltestBytesUpload   <- map["testdl_if_bytes_upload"]
+        interfaceUltestBytesDownload <- map["testul_if_bytes_download"]
+        interfaceUltestBytesUpload   <- map["testul_if_bytes_upload"]
         
-            jpl                     <- map["jpl"]
-        //
-            clientUuid              <- map["client_uuid"]
-            extendedTestStat        <- map["extended_test_stat"]
-
-            geoLocations            <- map["geoLocations"]
-            networkType             <- map["network_type"]
-            pings                   <- map["pings"]
-            
-            speedDetail             <- map["speed_detail"]
-            
-            //
-            bytesDownload           <- (map["test_bytes_download"], UInt64NSNumberTransformOf)
-            bytesUpload             <- (map["test_bytes_upload"], UInt64NSNumberTransformOf)
-            encryption              <- map["test_encryption"]
-            ipLocal                 <- map["test_ip_local"]
-            ipServer                <- map["ip_server"]
-            durationUploadNs        <- (map["duration_upload_ns"], UInt64NSNumberTransformOf)
-            durationDownloadNs      <- (map["duration_download_ns"], UInt64NSNumberTransformOf)
-            durationUploadNs        <- (map["test_nsec_upload"], UInt64NSNumberTransformOf)
-            durationDownloadNs        <- (map["test_nsec_download"], UInt64NSNumberTransformOf)
-            numThreads              <- map["test_num_threads"]
-            numThreadsUl            <- map["num_threads_ul"]
-            pingShortest            <- map["test_ping_shortest"]
-            portRemote              <- map["port_remote"]
-            speedDownload           <- (map["test_speed_download"], UInt64NSNumberTransformOf)
-            speedUpload             <- (map["test_speed_upload"], UInt64NSNumberTransformOf)
-            
-            token                   <- map["test_token"]
-            totalBytesDownload      <- map["test_total_bytes_download"]
-            totalBytesUpload        <- map["test_total_bytes_upload"]
-            totalBytesDownload      <- map["test_bytes_download"]
-            totalBytesUpload        <- map["test_bytes_upload"]
-            interfaceTotalBytesDownload  <- map["test_if_bytes_download"]
-            interfaceTotalBytesUpload    <- map["test_if_bytes_upload"]
-            interfaceDltestBytesDownload <- map["testdl_if_bytes_download"]
-            interfaceDltestBytesUpload   <- map["testdl_if_bytes_upload"]
-            interfaceUltestBytesDownload <- map["testul_if_bytes_download"]
-            interfaceUltestBytesUpload   <- map["testul_if_bytes_upload"]
-            
-            time              <- (map["time"], DateMilisecondsTransformOf)
-            relativeTimeDlNs  <- map["test_dl_ns"]
-            relativeTimeUlNs  <- map["test_ul_ns"]
-            
-            publishPublicData <- map["publish_public_data"]
-            
-            #if os(iOS)
-                signals       <- map["signals"]
-//                telephonyInfo <- map["telephony_info"]
-//                wifiInfo      <- map["wifi_info"]
-                //Telephony Info Properties
-                    telephonyDataState <- map["telephony_data_state"]
-                    telephonyNetworkCountry <- map["telephony_network_country"]
-                    telephonyNetworkIsRoaming <- map["telephony_network_is_roaming"]
-                    telephonyNetworkOperator <- map["telephony_network_operator"]
-                    telephonyNetworkOperatorName <- map["telephony_network_operator_name"]
-                    telephonyNetworkSimCountry <- map["telephony_network_sim_country"]
-                    telephonyNetworkSimOperator <- map["telephony_network_sim_operator"]
-                    telephonyNetworkSimOperatorName <- map["telephony_network_sim_operator_name"]
-                    telephonyPhoneType <- map["telephony_phone_type"]
-
-                //WiFi Info Properties
-                    wifiSsid <- map["wifi_ssid"]
-                    wifiBssid <- map["wifi_bssid"]
-                    wifiNetworkId <- map["wifi_network_id"]
-                    wifiSupplicantState <- map["wifi_supplicant_state"]
-                    wifiSupplicantStateDetail <- map["wifi_supplicant_state_detail"]
-                //cellLocations   <- map["cell_locations"]
-            #endif
+        encryption              <- map["test_encryption"]
         
-        }
+        interfaceTotalBytesDownload  <- map["test_if_bytes_download"]
+        interfaceTotalBytesUpload    <- map["test_if_bytes_upload"]
+        
+        ipLocal                 <- map["test_ip_local"]
+        ipServer                <- map["test_ip_server"]
+        portRemote              <- map["test_port_remote"]
+        
+        durationDownloadNs      <- (map["test_nsec_download"], UInt64NSNumberTransformOf)
+        durationUploadNs        <- (map["test_nsec_upload"], UInt64NSNumberTransformOf)
+        
+        pingShortest            <- map["test_ping_shortest"]
+        speedDownload           <- (map["test_speed_download"], UInt64NSNumberTransformOf)
+        speedUpload             <- (map["test_speed_upload"], UInt64NSNumberTransformOf)
+        jitter                  <-  map["voip_result_jitter_millis"] // TODO: //
+        packetLoss              <- map["voip_result_packet_loss_percents"] // TODO: //
+    
+        time              <- (map["time"], DateMilisecondsTransformOf)
+        
+        token                   <- map["test_token"]
+        relativeTimeDlNs  <- map["time_dl_ns"]
+        relativeTimeUlNs  <- map["time_ul_ns"]
+        
+        loopMode <- map["user_loop_mode"] // TODO: //
+        userServerSelection <- map["user_server_selection"] // TODO: //
+        
+//        jpl                     <- map["jpl"]
+#if os(iOS)
+        signals       <- map["signals"]
+        
+        telephonyDataState <- map["telephony_data_state"]
+        telephonyNetworkCountry <- map["telephony_network_country"]
+        telephonyNetworkIsRoaming <- map["telephony_network_is_roaming"]
+        telephonyNetworkOperator <- map["telephony_network_operator"]
+        telephonyNetworkOperatorName <- map["telephony_network_operator_name"]
+        telephonyNetworkSimCountry <- map["telephony_network_sim_country"]
+        telephonyNetworkSimOperator <- map["telephony_network_sim_operator"]
+        telephonyPhoneType <- map["telephony_phone_type"]
+        numThreads              <- map["test_num_threads"]
+        
+        //WiFi Info Properties
+        wifiSsid <- map["wifi_ssid"]
+        wifiBssid <- map["wifi_bssid"]
+        wifiNetworkId <- map["wifi_network_id"]
+        wifiSupplicantState <- map["wifi_supplicant_state"]
+        wifiSupplicantStateDetail <- map["wifi_supplicant_state_detail"]
+        
+#endif
+//        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
+//            extendedTestStat        <- map["extended_test_stat"]
+//            publishPublicData <- map["publish_public_data"]
+//        } else {
+//            extendedTestStat        <- map["extended_test_stat"]
+//            publishPublicData <- map["publish_public_data"]
+//        }
     }
 }
+
+
+/*
+ {
+   "android_permission_status": [
+     {
+       "permission": "android.permission.ACCESS_FINE_LOCATION",
+       "status": true
+     }
+   ],
+   "api_level": "string",
+   "capabilities": {
+     "classification": {
+       "count": 5
+     },
+     "qos": {
+       "supports_info": true
+     },
+     "RMBThttp": true
+   },
+   "cellLocations": [
+     {
+       "primary_scrambling_code": 0,
+       "time": 0,
+       "time_ns": 0,
+       "area_code": 0,
+       "location_id": 0
+     }
+   ],
+   "client_language": "string",
+   "client_name": "RMBT",
+   "client_software_version": "string",
+   "client_uuid": "string",
+   "client_version": "1.2.1",
+   "developer_mode": true,
+   "device": "string",
+   
+   "geoLocations": [
+     {
+       "geo_lat": 0,
+       "geo_long": 0,
+       "accuracy": 0,
+       "altitude": 0,
+       "bearing": 0,
+       "speed": 0,
+       "tstamp": "2021-09-22T11:28:23.984Z",
+       "provider": "string"
+     }
+   ],
+   
+   "model": "string",
+   "network_type": 0,
+   "os_version": "string",
+   "pings": [
+     {
+       "value": 0,
+       "value_server": 0,
+       "time_ns": 0
+     }
+   ],
+   "plattform": "Android",
+   "product": "string",
+   "signals": [
+     {
+       "time": 1571665024591,
+       "timezone": "Europe/Prague",
+       "uuid": "68796996-5f40-11eb-ae93-0242ac130002"
+     }
+   ],
+   "speed_detail": [
+     {
+       "direction": "download",
+       "thread": 0,
+       "time": 0,
+       "bytes": 0
+     }
+   ],
+   "telephony_data_state": 2,
+   "telephony_network_country": "string",
+   "telephony_network_is_roaming": true,
+   "telephony_network_operator": "231-06",
+   "telephony_network_operator_name": "O2 - SK",
+   "telephony_network_sim_country": "sk",
+   "telephony_network_sim_operator": "O2 - SK",
+   "telephony_network_sim_operator_name": "O2 - SK",
+   
+   "telephony_phone_type": 1,
+   "test_bytes_download": 0,
+   "test_bytes_upload": 0,
+   "test_encryption": "TLSv1.2 (TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256)",
+   "test_if_bytes_download": 0,
+   "test_if_bytes_upload": 0,
+   "test_ip_local": "192.168.1.100",
+   "test_ip_server": "81.16.157.221",
+   "test_nsec_download": 0,
+   "test_nsec_upload": 0,
+   "test_num_threads": 0,
+   "test_ping_shortest": 29783021,
+   "test_port_remote": 0,
+   "test_speed_download": 7170,
+   "test_speed_upload": 15061,
+   "test_token": "8628925b-eda5-4500-9bbc-365f592470ce_1614328561_Dggllgjl/4zMNl97cNab2wgUb8k=",
+   "test_total_bytes_download": 0,
+   "test_total_bytes_upload": 0,
+   "testdl_if_bytes_download": 0,
+   "testdl_if_bytes_upload": 0,
+   "testul_if_bytes_download": 0,
+   "testul_if_bytes_upload": 0,
+   "time": 0,
+   "time_dl_ns": 0,
+   "time_ul_ns": 0,
+   "user_loop_mode": true,
+   "user_server_selection": true,
+   "voip_result_jitter_millis": "string",
+   "voip_result_packet_loss_percents": "string",
+   "wifi_bssid": "string",
+   "wifi_network_id": "string",
+   "wifi_ssid": "string",
+   "wifi_supplicant_state": "COMPLETED",
+   "wifi_supplicant_state_detail": "OBTAINING_IPADDR"
+ 
+ //Not implemented
+ "dual_sim": true,
+ "dual_sim_detection_method": "string",
+ "last_client_status": "WAIT",
+ "last_qos_status": "WAIT",
+   "radioInfo": {
+     "cells": [
+       {
+         "active": true,
+         "area_code": 0,
+         "location_id": 0,
+         "mcc": 0,
+         "mnc": 0,
+         "primary_scrambling_code": 0,
+         "registered": true,
+         "technology": "G2",
+         "uuid": "string",
+         "channel_number": 0
+       }
+     ],
+     "signals": [
+       {
+         "bit_error_rate": 0,
+         "cell_uuid": "string",
+         "network_type_id": 0,
+         "signal": 0,
+         "time_ns_last": 0,
+         "time_ns": 0,
+         "wifi_link_speed": 0,
+         "lte_rsrp": 0,
+         "lte_rsrq": 0,
+         "lte_rssnr": 0,
+         "lte_cqi": 0,
+         "timing_advance": 0
+       }
+     ]
+   },
+ "tag": "string",
+ "telephony_apn": "o2internet",
+"telephony_nr_connection": "string",
+"telephony_sim_count": 0,
+"test_error_cause": "string",
+"test_status": 0,
+"test_submission_retry_count": 0,
+ }
+ */

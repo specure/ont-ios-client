@@ -673,6 +673,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
     ///
     private func resultObject() -> SpeedMeasurementResult {
+        AbstractBasicRequestBuilder.addBasicRequestValues(speedMeasurementResult)
         speedMeasurementResult.token = testParams?.testToken ?? ""
         speedMeasurementResult.uuid = testParams?.testUuid ?? ""
         speedMeasurementResult.loopUuid = loopModeUUID

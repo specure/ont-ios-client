@@ -18,42 +18,19 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 
-///
-class GeoLocation: Mappable {
-
-    ///
+final class GeoLocation: Mappable {
     var latitude: Double?
-
-    ///
     var longitude: Double?
-
-    ///
     var accuracy: Double?
-
-    ///
     var altitude: Double?
-
-    ///
     var heading: Double?
-
-    ///
     var speed: Double?
-
-    ///
     var provider: String?
-
-    ///
     var relativeTimeNs: Int?
+    var time: Date?
 
-    /// NKOM uses  Date, the old solution NSNumber
-    var time:  NSNumber? // Date? //
+    init() { }
 
-    ///
-    init() {
-
-    }
-
-    ///
     init(location: CLLocation) {
         latitude        = location.coordinate.latitude
         longitude       = location.coordinate.longitude
@@ -67,54 +44,34 @@ class GeoLocation: Mappable {
         #else
         provider        = "WiFi"
         #endif
-
-        relativeTimeNs  = 0 // TODO?
-//        time            = location.timestamp
         
-        if !RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            time = RMBTTimestampWithNSDate(location.timestamp as Date)
-        }
+        time = location.timestamp
     }
+    
+    required init?(map: Map) { }
 
-    ///
-    required init?(map: Map) {
-
-    }
-
-    ///
     func mapping(map: Map) {
-        
-        if !RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-            latitude        <- map["geo_lat"]
-            longitude       <- map["geo_long"]
-            accuracy        <- map["accuracy"]
-            altitude        <- map["altitude"]
-            heading         <- map["heading"]
-            speed           <- map["speed"]
-            provider        <- map["provider"]
-            time            <- map["tstamp"]
-            relativeTimeNs  <- map["time_ns"]
-            
-//            latitude        <- map["lat"]
-//            longitude       <- map["long"]
-//            accuracy        <- map["accuracy"]
-//            altitude        <- map["altitude"]
-//            heading         <- map["heading"]
-//            speed           <- map["speed"]
-//            provider        <- map["provider"]
-//            time            <- map["time"]
-//            relativeTimeNs  <- map["time_ns"]
-            
-        } else {
-            latitude        <- map["latitude"]
-            longitude       <- map["longitude"]
-            accuracy        <- map["accuracy"]
-            altitude        <- map["altitude"]
-            heading         <- map["heading"]
-            speed           <- map["speed"]
-            provider        <- map["provider"]
-            time            <- map["time"]
-            relativeTimeNs  <- map["relative_time_ns"]
-        }
+        latitude        <- map["geo_lat"]
+        longitude       <- map["geo_long"]
+        accuracy        <- map["accuracy"]
+        altitude        <- map["altitude"]
+        speed           <- map["speed"]
+        time            <- (map["tstamp"], DateStringTimezoneTransformOf)
+        provider        <- map["provider"]
+        heading         <- map["heading"] // ???
+        heading         <- map["bearing"] // ???
     }
+    
+    /*
+    {
+      "geo_lat": 0,
+      "geo_long": 0,
+      "accuracy": 0,
+      "altitude": 0,
+      "bearing": 0,
+      "speed": 0,
+      "tstamp": "2021-09-22T11:28:23.984Z",
+      "provider": "string"
+    }
+     */
 }
