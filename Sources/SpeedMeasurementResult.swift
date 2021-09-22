@@ -626,8 +626,6 @@ class SpeedMeasurementResult: BasicRequest {
         
         loopMode <- map["user_loop_mode"] // TODO: //
         userServerSelection <- map["user_server_selection"] // TODO: //
-        
-//        jpl                     <- map["jpl"]
 #if os(iOS)
         signals       <- map["signals"]
         
@@ -647,15 +645,7 @@ class SpeedMeasurementResult: BasicRequest {
         wifiNetworkId <- map["wifi_network_id"]
         wifiSupplicantState <- map["wifi_supplicant_state"]
         wifiSupplicantStateDetail <- map["wifi_supplicant_state_detail"]
-        
 #endif
-//        if RMBTConfig.sharedInstance.RMBT_VERSION_NEW {
-//            extendedTestStat        <- map["extended_test_stat"]
-//            publishPublicData <- map["publish_public_data"]
-//        } else {
-//            extendedTestStat        <- map["extended_test_stat"]
-//            publishPublicData <- map["publish_public_data"]
-//        }
     }
 }
 
