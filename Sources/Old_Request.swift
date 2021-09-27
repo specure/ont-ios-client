@@ -42,7 +42,7 @@ open class HistoryWithQOSRequest: BasicRequest {
     }
 }
 ///
-open class HistoryWithFiltersRequest: BasicRequest {
+final class HistoryWithFiltersRequest: BasicRequest {
     //
     var resultOffset:NSNumber?
     //

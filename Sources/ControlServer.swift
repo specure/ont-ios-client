@@ -540,14 +540,9 @@ class ControlServer {
     ///
     func submitQosMeasurementResult(_ qosMeasurementResult: QosMeasurementResultRequest, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
-            if let measurementUuid = qosMeasurementResult.measurementUuid {
-                qosMeasurementResult.clientUuid = uuid
-                // qosMeasurementResult.measurementUuid = measurementUuid
-
-                self.request(RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? .put:.post, path: RMBTConfig.sharedInstance.RMBT_VERSION_NEW ? "/mobile/measurements/qos/\(measurementUuid)":"/mobile/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
-            } else {
-                failure(NSError(domain: "controlServer", code: 134535, userInfo: nil)) // TODO: give error if no measurement uuid was provided by caller
-            }
+            qosMeasurementResult.clientUuid = uuid
+            // qosMeasurementResult.measurementUuid = measurementUuid
+            self.request(.post, path: "/mobile/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
         }, error: failure)
     }
     
@@ -623,7 +618,7 @@ class ControlServer {
                 }
             }
             
-            self.request(.post, path: "/mobile/history", requestObject: req, success: success, error: errorCallback)
+            self.request(.post, path: "/mobile/history?offset=\(offset)&pageSize=\(length)", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }
     

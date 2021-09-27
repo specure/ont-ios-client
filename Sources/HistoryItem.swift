@@ -54,8 +54,8 @@ open class HistoryItem: BasicResponse {
     open var speedDownload: Int?
     open var speedUpload: Int?
     open var ping: Int?
-    open var qos: Int?
-    open var jitter: Int?
+    open var qos: Double?
+    open var jitter: Double?
     open var packetLoss: Int?
     
     open var networkType: String?

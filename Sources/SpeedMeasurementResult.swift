@@ -17,7 +17,6 @@
 import Foundation
 import ObjectMapper
 import CoreLocation
-import RealmSwift
 
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
@@ -282,7 +281,7 @@ class SpeedMeasurementResult: BasicRequest {
         self.totalUploadHistory = RMBTThroughputHistory(resolutionNanos: nanos)
         super.init(map: map)
     }
-
+    
     //////////
 
     ///

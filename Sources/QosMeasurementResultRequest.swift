@@ -30,7 +30,7 @@ class QosMeasurementResultRequest: BasicRequest {
     var testToken: String?
 
     ///
-    var time: Int?
+    var time: UInt64?
 
     ///
     var qosResultList: [QOSTestResults]?
@@ -40,12 +40,28 @@ class QosMeasurementResultRequest: BasicRequest {
         super.mapping(map: map)
 
         measurementUuid <- map["uuid"]
-        clientUuid      <- map["client_uuid"]
-
         testToken       <- map["test_token"]
-
-        time            <- map["time"]
-
+        clientUuid      <- map["client_uuid"]
+        time            <- (map["time"], UInt64NSNumberTransformOf)
         qosResultList   <- map["qos_result"]
     }
+    
+    /*
+     {
+       "test_token": "string",
+       "client_uuid": "string",
+       "time": 0,
+       "client_version": "string",
+       "qos_result": [
+         {
+           "test_type": "string",
+           "qosTestUid": 0,
+           "durationNs": 0,
+           "startTimeNs": 0
+         }
+       ],
+       "client_name": "string",
+       "client_language": "string"
+     }
+     */
 }

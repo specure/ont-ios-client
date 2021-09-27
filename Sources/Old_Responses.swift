@@ -122,14 +122,10 @@ open class MeasurementServerInfoResponse: BasicResponse {
 }
 
 ///
-open class HistoryWithFiltersResponse: BasicResponse {
+final public class HistoryWithFiltersResponse: BasicResponse {
+    public var records: [HistoryItem] = []
 
-    ///
-    open var records: [HistoryItem] = []
-
-    
-    ///
-    override open func mapping(map: Map) {
+    override public func mapping(map: Map) {
         super.mapping(map: map)
         
         records <- map["history.content"]

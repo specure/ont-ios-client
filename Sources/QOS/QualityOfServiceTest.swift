@@ -861,7 +861,8 @@ open class QualityOfServiceTest: NSObject {
         let qosMeasurementResult = QosMeasurementResultRequest()
         qosMeasurementResult.measurementUuid = measurementUuid
         qosMeasurementResult.testToken = testToken
-        qosMeasurementResult.time = NSNumber(value: UInt64.currentTimeMillis()).intValue // currently unused on server!
+//        RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
+        qosMeasurementResult.time = UInt64.currentTimeMillis() // currently unused on server!
         qosMeasurementResult.qosResultList = _testResultArray
 
         let controlServer = ControlServer.sharedControlServer

@@ -167,6 +167,7 @@ open class RMBTHistoryResult {
         networkTypeServerDescription = response.networkType
         networkName = response.networkName
         
+        qosTestResultCounters = response.qosTestResultCounters
         
         if let model = response.model {
             self.deviceModel = UIDeviceHardware.getDeviceNameFromPlatform(model)
@@ -192,7 +193,8 @@ open class RMBTHistoryResult {
             self.packetLossPercentageString = "\(packetLoss)"
         }
         if let qos = response.qos {
-            self.packetLossPercentageString = "\(qos)"
+            let value = RMBTFormatNumber(NSNumber(value: qos), 2)
+            self.qosPercentString = "\(value)"
         }
         coordinate = kCLLocationCoordinate2DInvalid
         
