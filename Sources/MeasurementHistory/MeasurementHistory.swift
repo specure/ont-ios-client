@@ -249,8 +249,8 @@ open class MeasurementHistory {
     }
     
     /// OLD history
-    open func getHistoryWithFilters(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
-        ControlServer.sharedControlServer.getHistoryWithFilters(filters: filters, length: length, offset: offset, success: success, error: errorCallback)
+    open func getHistoryWithFilters(filters: HistoryFilterType?, size: UInt, page: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+        ControlServer.sharedControlServer.getHistoryWithFilters(filters: filters, size: size, page: page, success: success, error: errorCallback)
     }
     
     ///

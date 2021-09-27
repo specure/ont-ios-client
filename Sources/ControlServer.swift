@@ -597,13 +597,13 @@ class ControlServer {
     
     // OLD
     ///
-    func getHistoryWithFilters(filters: HistoryFilterType?, length: UInt, offset: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
+    func getHistoryWithFilters(filters: HistoryFilterType?, size: UInt, page: UInt, success: @escaping (_ response: HistoryWithFiltersResponse) -> (), error errorCallback: @escaping ErrorCallback) {
 
         ensureClientUuid(success: { uuid in
             let req = HistoryWithFiltersRequest()
             req.uuid = uuid
-            req.resultLimit = NSNumber(value: length)
-            req.resultOffset = NSNumber(value: offset)
+//            req.resultLimit = NSNumber(value: length)
+//            req.resultOffset = NSNumber(value: offset)
             //
             if let theFilters = filters {
                 for filter in theFilters {
@@ -618,7 +618,7 @@ class ControlServer {
                 }
             }
             
-            self.request(.post, path: "/mobile/history?offset=\(offset)&pageSize=\(length)", requestObject: req, success: success, error: errorCallback)
+            self.request(.post, path: "/mobile/history?page=\(page)&size=\(size)&sort=measurementDate", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }
     

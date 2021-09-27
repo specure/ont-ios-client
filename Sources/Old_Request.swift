@@ -43,21 +43,11 @@ open class HistoryWithQOSRequest: BasicRequest {
 }
 ///
 final class HistoryWithFiltersRequest: BasicRequest {
-    //
-    var resultOffset:NSNumber?
-    //
-    var resultLimit:NSNumber?
-    //
     var networks:[String]?
-    //
     var devices: [String]?
-    
-    ///
+
     override public func mapping(map: Map) {
         super.mapping(map: map)
-        
-        resultOffset <- map["offset"]
-        resultLimit <- map["pageSize"]
         networks <- map["network_types"]
         devices <- map["devices"]
     }
