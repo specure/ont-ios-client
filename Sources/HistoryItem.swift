@@ -56,7 +56,7 @@ open class HistoryItem: BasicResponse {
     open var ping: Int?
     open var qos: Double?
     open var jitter: Double?
-    open var packetLoss: Int?
+    open var packetLoss: Double?
     
     open var networkType: String?
     open var networkName: String?
