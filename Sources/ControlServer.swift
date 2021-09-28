@@ -541,7 +541,6 @@ class ControlServer {
     func submitQosMeasurementResult(_ qosMeasurementResult: QosMeasurementResultRequest, success: @escaping (_ response: QosMeasurementSubmitResponse) -> (), error failure: @escaping ErrorCallback) {
         ensureClientUuid(success: { uuid in
             qosMeasurementResult.clientUuid = uuid
-            // qosMeasurementResult.measurementUuid = measurementUuid
             self.request(.post, path: "/mobile/resultQoS", requestObject: qosMeasurementResult, success: success, error: failure)
         }, error: failure)
     }
@@ -602,16 +601,11 @@ class ControlServer {
         ensureClientUuid(success: { uuid in
             let req = HistoryWithFiltersRequest()
             req.uuid = uuid
-//            req.resultLimit = NSNumber(value: length)
-//            req.resultOffset = NSNumber(value: offset)
-            //
             if let theFilters = filters {
                 for filter in theFilters {
-                    //
                     if filter.key == "devices" {
                       req.devices = filter.value
                     }
-                    //
                     if filter.key == "networks" {
                         req.networks = filter.value
                     }
