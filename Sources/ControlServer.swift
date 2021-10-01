@@ -612,7 +612,7 @@ class ControlServer {
                 }
             }
             
-            self.request(.post, path: "/mobile/history?page=\(page)&size=\(size)&sort=measurementDate", requestObject: req, success: success, error: errorCallback)
+            self.request(.post, path: "/mobile/history?page=\(page)&size=\(size)&sort=measurementDate,desc", requestObject: req, success: success, error: errorCallback)
         }, error: errorCallback)
     }
     
