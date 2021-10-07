@@ -32,7 +32,7 @@ class AbstractBasicRequestBuilder {
 
         Log.logger.debug("ADDING PREVIOUS TEST STATUS: \(String(describing: RMBTSettings.sharedSettings.previousTestStatus))")
 
-        basicRequest.previousTestStatus = RMBTSettings.sharedSettings.previousTestStatus ?? RMBTTestStatus.None.rawValue
+        basicRequest.previousTestStatus = RMBTSettings.sharedSettings.previousTestStatus
         basicRequest.softwareRevision = RMBTBuildInfoString()
         basicRequest.softwareVersion = infoDictionary["CFBundleShortVersionString"] as? String
         basicRequest.softwareVersionCode = infoDictionary["CFBundleVersion"] as? Int
