@@ -403,7 +403,7 @@ class ControlServer {
 
     ///
     func getIpv4( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
-        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CHECK_IPV4_URL, success: successCallback, error: failure)
+        ServerHelper.request(alamofireManager, baseUrl: "https://api.ipify.org?format=json", method: .get, path: "", requestObject: nil, success: successCallback , error: failure)
     }
 
     /// no NAT
