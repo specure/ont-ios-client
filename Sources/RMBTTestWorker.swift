@@ -388,6 +388,12 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     }
     
     open func start() {
+        guard params.testToken != nil else {
+            Log.logger.error("testToken is nil")
+            fail()
+            return
+        }
+        
         if params.isRmbtHTTP {
             let line = "GET /rmbt HTTP/1.1\r\nConnection: Upgrade\r\nUpgrade: RMBT\r\nRMBT-Version: 1.2.0@\r\n\r\n"
             self.writeLine(line, withTag: .txUpgrade)
@@ -494,7 +500,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             readLineWithTag(.rxBannerAccept)
         } else if tag == .rxBannerAccept {
             // <- ACCEPT
-            writeLine("TOKEN \(params.testToken!)", withTag: .txToken) // TODO: optionals!!!
+            writeLine("TOKEN \(params.testToken ?? "")", withTag: .txToken) // TODO: optionals!!!
         } else if tag == .txToken {
             // -> TOKEN ...
             readLineWithTag(.rxTokenOK)
