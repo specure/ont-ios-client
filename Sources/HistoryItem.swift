@@ -67,7 +67,7 @@ open class HistoryItem: BasicResponse {
     override open func mapping(map: Map) {
         super.mapping(map: map)
         testUuid           <- map["test_uuid"]
-        measurementDate    <- (map["measurement_date"], DateStringTimezoneTransformOf)
+        measurementDate    <- (map["measurement_date"], DateStringMillisecondsTimezoneTransformOf)
         device             <- map["device"]
         model              <- map["model"]
         ping               <- map["ping"]

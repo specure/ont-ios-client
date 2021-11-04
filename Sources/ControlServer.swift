@@ -100,7 +100,7 @@ class ControlServer {
     var openTestBaseURL: String?
     
     ///
-    private var uuidKey: String? // TODO: unique for each control server?
+    private let uuidKey: String = "client_uuid" // TODO: unique for each control server?
 
     ///
     var baseUrl = "https://netcouch.specure.com/api/v1"
@@ -129,10 +129,7 @@ class ControlServer {
         alamofireManager.session.invalidateAndCancel()
     }
     
-    func clearStoredUUID() {
-        baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
-        
+    func clearStoredUUID() {        
         UserDefaults.clearStoredUUID(uuidKey: uuidKey)
         self.uuid = nil
     }
@@ -141,10 +138,18 @@ class ControlServer {
     func updateWithCurrentSettings(success successCallback: @escaping EmptyCallback, error failure: @escaping ErrorCallback) {
         
         baseUrl = RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_URL
-        uuidKey = "\(storeUUIDKey)\(URL(string: baseUrl)!.host!)"
-        
+
         if self.uuid == nil {
             uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
+        }
+        
+        // Check for old NKOM
+        if self.uuid == nil {
+            let uuidKey = "uuid_nettest-p-web.nettfart.no"
+            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
+            if let uuid = self.uuid {
+                UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: uuid)
+            }
         }
         
         // get settings of control server
@@ -178,7 +183,6 @@ class ControlServer {
                     theUrl.path = "/api/v1"/*RMBT_CONTROL_SERVER_PATH*/
                     
                     self.baseUrl = (theUrl.url?.absoluteString)! // !
-                    self.uuidKey = "\(self.storeUUIDKey)\(theUrl.host!)"
                 }
             }
             
@@ -264,8 +268,8 @@ class ControlServer {
             
             // save uuid
             
-            if let uuidKey = self.uuidKey, let u = self.uuid {
-                UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
+            if let u = self.uuid {
+                UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: u)
             }
             // set control server version
             self.version = response.settings?.versions?.controlServerVersion
@@ -311,8 +315,8 @@ class ControlServer {
                 }
                 
                 // save uuid
-                if let uuidKey = self.uuidKey, let u = self.uuid {
-                    UserDefaults.storeNewUUID(uuidKey: uuidKey, uuid: u)
+                if let u = self.uuid {
+                    UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: u)
                 }
                 
                 self.surveySettings = set.surveySettings
