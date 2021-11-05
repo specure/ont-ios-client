@@ -66,16 +66,22 @@ let DateStringTimezoneTransformOf = TransformOf<Date, String>(fromJSON: {
 
 let DateStringMillisecondsTimezoneTransformOf = TransformOf<Date, String>(fromJSON: {
     let defaultDateFormatter = DateFormatter()
+    // From old NKOM server measurements with milliseconds, so support both formats
     defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
     if let date = $0 {
-        return defaultDateFormatter.date(from: date)
-    }
-    else {
+        if let result = defaultDateFormatter.date(from: date) {
+            return result
+        } else {
+            let defaultDateFormatter = DateFormatter()
+            defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+            return defaultDateFormatter.date(from: date)
+        }
+    } else {
         return Date()
     }
 }, toJSON: {
     let defaultDateFormatter = DateFormatter()
-    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    defaultDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
     if let date = $0 {
         return defaultDateFormatter.string(from: date)
     }
