@@ -51,8 +51,11 @@ final class GeoLocation: Mappable {
     required init?(map: Map) { }
 
     func mapping(map: Map) {
+        //Duplicate coordinates because some api requered lat and long and another geo_lat and geo_long
         latitude        <- map["geo_lat"]
         longitude       <- map["geo_long"]
+        latitude        <- map["lat"]
+        longitude       <- map["long"]
         accuracy        <- map["accuracy"]
         altitude        <- map["altitude"]
         speed           <- map["speed"]
