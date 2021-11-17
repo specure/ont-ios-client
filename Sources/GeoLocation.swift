@@ -30,6 +30,8 @@ final class GeoLocation: Mappable {
     var time: Date?
     var postalCode: String?
     var city: String?
+    var country: String?
+    var county: String?
 
     init() { }
 
@@ -66,6 +68,8 @@ final class GeoLocation: Mappable {
         heading         <- map["heading"] // ???
         heading         <- map["bearing"] // ???
         city            <- map["city"]
+        country         <- map["country"]
+        county          <- map["county"]
         postalCode      <- map["postalCode"]
     }
     

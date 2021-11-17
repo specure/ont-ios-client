@@ -19,6 +19,8 @@ internal class ControlServerHelper: NSObject {
                 } else if let placemarks = placemarks, placemarks.count > 0  {
                     location.postalCode = placemarks[0].postalCode
                     location.city = placemarks[0].locality
+                    location.country = placemarks[0].country
+                    location.county = placemarks[0].administrativeArea
                 }
                 self.requestWithLocation(location, completionHandler: completionHandler)
             }
