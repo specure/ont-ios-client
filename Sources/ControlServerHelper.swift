@@ -13,16 +13,20 @@ internal class ControlServerHelper: NSObject {
             let location = GeoLocation(location: l)
             let geocoder = CLGeocoder()
             
-            geocoder.reverseGeocodeLocation(l) { [unowned self] placemarks, error in
-                if let error = error {
-                    print("RMBTTestRunner.reverseGeocodeLocation: \(error)")
-                } else if let placemarks = placemarks, placemarks.count > 0  {
-                    location.postalCode = placemarks[0].postalCode
-                    location.city = placemarks[0].locality
-                    location.country = placemarks[0].country
-                    location.county = placemarks[0].administrativeArea
+            if #available(iOS 11.0, *) {
+                geocoder.reverseGeocodeLocation(l, preferredLocale: Locale(identifier: "en_US")) { [unowned self] placemarks, error in
+                    if let error = error {
+                        print("RMBTTestRunner.reverseGeocodeLocation: \(error)")
+                    } else if let placemarks = placemarks, placemarks.count > 0  {
+                        location.postalCode = placemarks[0].postalCode
+                        location.city = placemarks[0].locality
+                        location.country = placemarks[0].country
+                        location.county = placemarks[0].administrativeArea
+                    }
+                    self.requestWithLocation(location, completionHandler: completionHandler)
                 }
-                self.requestWithLocation(location, completionHandler: completionHandler)
+            } else {
+                // Fallback on earlier versions
             }
         } else {
             requestWithLocation(nil, completionHandler: completionHandler)
