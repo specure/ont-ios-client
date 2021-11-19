@@ -119,8 +119,15 @@ open class RMBTConnectivityTracker: NSObject {
 
     @objc func refreshTimerHandler(_ timer: Timer) {
         #if os(iOS)
-        if let reachability = GCNetworkReachability.forInternetConnection(),
-            reachability.currentReachabilityStatus() != RMBTConnectivityTracker.sharedReachability.currentReachabilityStatus() {
+        
+        let reachability = GCNetworkReachability.forInternetConnection()
+        
+        var currentConnectivity: RMBTConnectivity? = nil
+        if let reachability = reachability, let currentNetworkType = getNetworkType(from: reachability.currentReachabilityStatus()) {
+            currentConnectivity = RMBTConnectivity(networkType: currentNetworkType)
+        }
+        
+        if let reachability = reachability, let currentConnectivity = currentConnectivity, !currentConnectivity.isEqualToConnectivity(lastConnectivity) {
             RMBTConnectivityTracker.sharedReachability = reachability
             
             reachability.startMonitoringNetworkReachabilityWithNotification()
@@ -206,9 +213,12 @@ open class RMBTConnectivityTracker: NSObject {
     }
 
     #if os(iOS)
-
-    ///
-    private func reachabilityDidChangeToStatus(_ status: GCNetworkReachabilityStatus) {
+    
+    private func getNetworkType(from status: GCNetworkReachabilityStatus?) -> RMBTNetworkType? {
+        guard let status = status else {
+            return nil
+        }
+        
         let networkType: RMBTNetworkType
 
         if status == GCNetworkReachabilityStatusNotReachable {
@@ -219,6 +229,14 @@ open class RMBTConnectivityTracker: NSObject {
             networkType = .cellular
         } else {
             Log.logger.debug("Unknown reachability status \(status)")
+            return nil
+        }
+        return networkType
+    }
+
+    ///
+    private func reachabilityDidChangeToStatus(_ status: GCNetworkReachabilityStatus) {
+        guard let networkType: RMBTNetworkType = getNetworkType(from: status) else {
             return
         }
 
