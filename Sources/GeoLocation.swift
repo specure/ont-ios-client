@@ -18,7 +18,7 @@ import Foundation
 import ObjectMapper
 import CoreLocation
 
-final class GeoLocation: Mappable {
+public final class GeoLocation: Mappable {
     var latitude: Double?
     var longitude: Double?
     var accuracy: Double?
@@ -52,9 +52,11 @@ final class GeoLocation: Mappable {
         time = location.timestamp
     }
     
-    required init?(map: Map) { }
+    public required init?(map: Map) {
+        self.mapping(map: map)
+    }
 
-    func mapping(map: Map) {
+    public func mapping(map: Map) {
         //Duplicate coordinates because some api requered lat and long and another geo_lat and geo_long
         latitude        <- map["geo_lat"]
         longitude       <- map["geo_long"]

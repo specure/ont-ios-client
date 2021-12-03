@@ -9,7 +9,9 @@ import CoreLocation
 
 internal class ControlServerHelper: NSObject {
     internal func requestSpeedMeasurement(completionHandler: @escaping (_ response: SpeedMeasurementResponse?, _ error: Error?) -> Void) {
-        if let l = RMBTLocationTracker.sharedTracker.location {
+        if let l = RMBTLocationTracker.sharedTracker.predefinedGeoLocation {
+            requestWithLocation(l, completionHandler: completionHandler)
+        } else if let l = RMBTLocationTracker.sharedTracker.location {
             let location = GeoLocation(location: l)
             let geocoder = CLGeocoder()
             

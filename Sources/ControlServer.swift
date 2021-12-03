@@ -100,7 +100,7 @@ class ControlServer {
     var openTestBaseURL: String?
     
     ///
-    private let uuidKey: String = "client_uuid" // TODO: unique for each control server?
+    private var uuidKey: String = "client_uuid" // TODO: unique for each control server?
 
     ///
     var baseUrl = "https://netcouch.specure.com/api/v1"
@@ -204,7 +204,9 @@ class ControlServer {
         
         let req = MeasurementServerInfoRequest()
         
-        if let l = RMBTLocationTracker.sharedTracker.location {
+        if let l = RMBTLocationTracker.sharedTracker.predefinedGeoLocation {
+            req.geoLocation = l
+        } else if let l = RMBTLocationTracker.sharedTracker.location {
             let geoLocation = GeoLocation(location: l)
             req.geoLocation = geoLocation
         }

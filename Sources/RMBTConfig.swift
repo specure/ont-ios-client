@@ -121,6 +121,11 @@ public class RMBTConfig {
         })
     }
     
+    public static func updateUUID(_ uuid: String) {
+        ControlServer.sharedControlServer.uuid = uuid
+        ControlServer.sharedControlServer.baseUrl = sharedInstance.RMBT_CONTROL_SERVER_URL
+    }
+    
     public static func clearStoredUUID() {
         ControlServer.sharedControlServer.clearStoredUUID()
     }

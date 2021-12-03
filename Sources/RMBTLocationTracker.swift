@@ -41,6 +41,9 @@ open class RMBTLocationTracker: NSObject, CLLocationManagerDelegate {
 
         return nil
     }
+    
+    ///
+    open var predefinedGeoLocation: GeoLocation?
 
     ///
     override private init() {
