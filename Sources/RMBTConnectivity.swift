@@ -261,11 +261,8 @@ open class RMBTConnectivity: NSObject {
             if other === self {
                 return true
             }
-
-            // cannot compare two optional strings with ==, because one or both could be nil
-            if let oNetworkName = other.networkName, let sNetworkName = self.networkName {
-                return other.networkTypeDescription == self.networkTypeDescription && oNetworkName == sNetworkName
-            }
+            
+            return other.networkName == self.networkName && other.networkType == self.networkType
         }
 
         return false

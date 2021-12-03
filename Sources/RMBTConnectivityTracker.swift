@@ -128,6 +128,7 @@ open class RMBTConnectivityTracker: NSObject {
         }
         
         if let reachability = reachability, let currentConnectivity = currentConnectivity, !currentConnectivity.isEqualToConnectivity(lastConnectivity) {
+            lastConnectivity = currentConnectivity
             RMBTConnectivityTracker.sharedReachability = reachability
             
             reachability.startMonitoringNetworkReachabilityWithNotification()
