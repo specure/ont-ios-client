@@ -1,0 +1,6 @@
+module RMBTClientPrivate [system] [extern_c] {
+    header "/Applications/XCode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/ifaddrs.h"
+    header "/Applications/XCode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/CommonCrypto/CommonCrypto.h"
+    header "/Applications/XCode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/dns_sd.h"
+    export *
+}
