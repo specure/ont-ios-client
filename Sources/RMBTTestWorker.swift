@@ -243,7 +243,6 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             
             self.downlinkPretestCompleteHandler = complete
             state = .downlinkPretestStarted
-            
             connect()
         }
     }
@@ -262,6 +261,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         assert(state == .downlinkPretestFinished, "Invalid state")
 
         state = .latencyTestStarted
+        connect()
         
         self.latencyProgressHandler = progress
         self.latencyCompleteHandler = complete
@@ -278,6 +278,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             assert(state == .latencyTestFinished || state == .downlinkPretestFinished, "Invalid state")
 
             state = .downlinkTestStarted
+            connect()
 
             writeLine("GETTIME \(Int(params.duration))", withTag: .txGetTime)
         }
@@ -288,7 +289,6 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         assert(state == .downlinkTestFinished, "Invalid state")
 
         state = .uplinkPretestStarted
-
         connect()
     }
 
@@ -297,6 +297,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
         assert(state == .uplinkPretestFinished, "Invalid state")
 
         state = .uplinkTestStarted
+        connect()
 
         writeLine("PUT", withTag: .txPut)
     }
@@ -319,9 +320,12 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
         return nil
     }
+    
+    var connectAttempts = 3
 
     ///
     open func connect() {
+        guard socket.isDisconnected else { return }
         do {
             //setupConnectionFailedTimer()
 
@@ -337,13 +341,19 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             if let port = self.params.measurementServer?.port {
                 Log.logger.debug("Connecting to host \(sAddr):\(port)")
                 try socket.connect(toHost: sAddr, onPort: UInt16(port) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
+                connectAttempts = 3
             }
             else {
                 Log.logger.error("Connecting to host: Unknowed port and maybe host")
                 fail()
             }
         } catch {
-            fail()
+            if connectAttempts > 0 {
+                connectAttempts -= 1
+                connect()
+            } else {
+                fail()
+            }
         }
     }
 
