@@ -152,6 +152,15 @@ class ControlServer {
             }
         }
         
+        // Check for old ONT
+        if self.uuid == nil {
+            let uuidKey = "uuid_nettest.org"
+            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
+            if let uuid = self.uuid {
+                UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: uuid)
+            }
+        }
+        
         // get settings of control server
         getSettings(success: {
             // check for ip version force
