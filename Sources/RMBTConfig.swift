@@ -139,7 +139,7 @@ public class RMBTConfig {
 // MARK: Fixed test parameters
 
 ///
-let RMBT_TEST_SOCKET_TIMEOUT_S = 30.0
+let RMBT_TEST_SOCKET_TIMEOUT_S = 60.0
 
 /// Maximum number of tests to perform in loop mode
 let RMBT_TEST_LOOPMODE_LIMIT = 100

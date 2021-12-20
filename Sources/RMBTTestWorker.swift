@@ -217,6 +217,9 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     private var downlinkPretestCompleteHandler: (_ chunks: UInt64, _ duration: UInt64) -> Void = { _, _ in }
     private var latencyProgressHandler: (_ percent: Float, _ serverNanos: UInt64, _ clientNanos: UInt64) -> Void = { _, _, _ in }
     private var latencyCompleteHandler: () -> Void = { }
+    
+    private let defaultConnectAttempts = 3
+    private lazy var connectAttempts: Int = { defaultConnectAttempts }()
 
     ///
     //private let serverConnectionFailedTimer = GCDTimer()
@@ -320,8 +323,6 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
 
         return nil
     }
-    
-    var connectAttempts = 3
 
     ///
     open func connect() {
@@ -337,16 +338,12 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             if let ip = tryDNSLookup(sAddr) {
                 sAddr = ip
             }
+            
+            let port = self.params.measurementServer?.port ?? 443
 
-            if let port = self.params.measurementServer?.port {
-                Log.logger.debug("Connecting to host \(sAddr):\(port)")
-                try socket.connect(toHost: sAddr, onPort: UInt16(port) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
-                connectAttempts = 3
-            }
-            else {
-                Log.logger.error("Connecting to host: Unknowed port and maybe host")
-                fail()
-            }
+            Log.logger.debug("Connecting to host \(sAddr):\(port)")
+            try socket.connect(toHost: sAddr, onPort: UInt16(port) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
+            connectAttempts = defaultConnectAttempts
         } catch {
             if connectAttempts > 0 {
                 connectAttempts -= 1
