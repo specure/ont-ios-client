@@ -16,7 +16,8 @@ internal class ControlServerHelper: NSObject {
             let geocoder = CLGeocoder()
             
             if #available(iOS 11.0, *) {
-                geocoder.reverseGeocodeLocation(l, preferredLocale: Locale(identifier: "en_US")) { [unowned self] placemarks, error in
+                geocoder.reverseGeocodeLocation(l, preferredLocale: Locale(identifier: "en_US")) { [weak self] placemarks, error in
+                    guard let self = self else { return }
                     if let error = error {
                         print("RMBTTestRunner.reverseGeocodeLocation: \(error)")
                     } else if let placemarks = placemarks, placemarks.count > 0  {
