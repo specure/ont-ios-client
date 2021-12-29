@@ -70,7 +70,12 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
     public typealias ConnectivityInfoCallback = (_ connectivityInfo: ConnectivityInfo) -> ()
 
     fileprivate let socketQueue = DispatchQueue(label: "ConnectivityService.Queue")
-    fileprivate lazy var udpSocket = GCDAsyncUdpSocket(delegate: self, delegateQueue: self.socketQueue)
+    
+    private var isSocketCreated = false // Need for deinit method. If socket haven't been created then we will have crash in deinit method
+    fileprivate lazy var udpSocket: GCDAsyncUdpSocket = {
+        self.isSocketCreated = true
+        return GCDAsyncUdpSocket(delegate: self, delegateQueue: self.socketQueue)
+    }()
     
     ///
     var callback: ConnectivityInfoCallback?
@@ -87,11 +92,11 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
     var ipsWasChecked = false
 
     deinit {
-        defer {
+        if self.isSocketCreated {
             self.udpSocket.close()
             self.udpSocket.setDelegate(nil)
-            self.callback = nil
         }
+        self.callback = nil
     }
     ///
     open func checkConnectivity(_ callback: @escaping ConnectivityInfoCallback) {
