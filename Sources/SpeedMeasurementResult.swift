@@ -334,9 +334,10 @@ class SpeedMeasurementResult: BasicRequest {
                 var length: UInt64 = 0
 
                 for threadIndex in 0 ..< numThreads {
-                    let threadLastPut = (currentHistories[threadIndex] as! RMBTThroughputHistory).periods[Int(minPeriodIndex)]
+                    let threadHistory = currentHistories.object(at: threadIndex) as! RMBTThroughputHistory
+                    let threadLastPut = threadHistory.periods[Int(minPeriodIndex)]
                     // Factor = (t*-t(k,m-1)/t(k,m)-t(k,m-1))
-                    let factor = Double(minEndNanos - threadLastPut.startNanos) / Double(threadLastPut.durationNanos)
+                    let factor = (Double(minEndNanos) - Double(threadLastPut.startNanos)) / Double(threadLastPut.durationNanos)
 
                     assert(factor >= 0.0 && factor <= 1.0, "Invalid factor")
 
