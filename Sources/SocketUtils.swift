@@ -69,14 +69,17 @@ extension GCDAsyncUdpSocket {
     func setupSocket() {
         if RMBTSettings.sharedSettings.nerdModeForceIPv4 {
             self.setIPv6Enabled(false)
+            self.setIPv4Enabled(true)
             self.setPreferIPv4()
         }
         if RMBTSettings.sharedSettings.nerdModeForceIPv6 {
+            self.setIPv6Enabled(true)
             self.setIPv4Enabled(false)
             self.setPreferIPv6()
         }
         if !RMBTSettings.sharedSettings.nerdModeForceIPv4 && !RMBTSettings.sharedSettings.nerdModeForceIPv6 {
             self.setIPv6Enabled(true)
+            self.setIPv4Enabled(true)
             self.setPreferIPv6()
         }
     }
