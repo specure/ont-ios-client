@@ -116,7 +116,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var workers: [RMBTTestWorker] = []
 
     ///
-    private weak var delegate: RMBTTestRunnerDelegate?
+    internal weak var delegate: RMBTTestRunnerDelegate?
 
     ///
     private var phase: RMBTTestRunnerPhase = .none
@@ -153,7 +153,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     internal var loopModeUUID: String?
 
     ///
-    private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
+    internal let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
     private lazy var connectivityTracker: RMBTConnectivityTracker = RMBTConnectivityTracker(delegate: self, stopOnMixed: true)
@@ -253,6 +253,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         self.testParams = testParams
+        self.testParams.numThreads = 3
 
         speedMeasurementResult.markTestStart()
 
