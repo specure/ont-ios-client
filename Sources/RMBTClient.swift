@@ -190,7 +190,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
         startSpeedMeasurement()
         testRunner?.del = self
     }
-
+    
     ///
     open func stopMeasurement() {
         testRunner?.cancel()

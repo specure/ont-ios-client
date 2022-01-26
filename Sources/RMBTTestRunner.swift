@@ -116,7 +116,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var workers: [RMBTTestWorker] = []
 
     ///
-    private weak var delegate: RMBTTestRunnerDelegate?
+    internal weak var delegate: RMBTTestRunnerDelegate?
 
     ///
     private var phase: RMBTTestRunnerPhase = .none
@@ -153,7 +153,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     internal var loopModeUUID: String?
 
     ///
-    private let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
+    internal let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC) // TODO: remove public, maker better api
 
     ///
     private lazy var connectivityTracker: RMBTConnectivityTracker = RMBTConnectivityTracker(delegate: self, stopOnMixed: true)
@@ -253,6 +253,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         self.testParams = testParams
+        self.testParams.numThreads = 3
 
         speedMeasurementResult.markTestStart()
 
@@ -672,7 +673,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
 
     ///
-    private func resultObject() -> SpeedMeasurementResult {
+    internal func resultObject() -> SpeedMeasurementResult {
         AbstractBasicRequestBuilder.addBasicRequestValues(speedMeasurementResult)
         speedMeasurementResult.token = testParams?.testToken ?? ""
         speedMeasurementResult.uuid = testParams?.testUuid ?? ""
@@ -696,8 +697,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 //        assert(sumBytesUploaded > 0, "Total bytes uploaded <= 0")
 
         if let firstWorker = workers.first {
-            speedMeasurementResult.totalBytesDownload = NSNumber(value: sumBytesDownloaded).intValue // TODO: ?
-            speedMeasurementResult.totalBytesUpload = NSNumber(value: sumBytesUploaded).intValue // TODO: ?
+            speedMeasurementResult.totalBytesDownload = Int(speedMeasurementResult.totalDownloadHistory.totalThroughput.length)
+            speedMeasurementResult.totalBytesUpload = Int(speedMeasurementResult.totalUploadHistory.totalThroughput.length)
 
             speedMeasurementResult.encryption = firstWorker.negotiatedEncryptionString
 
