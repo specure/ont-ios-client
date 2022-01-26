@@ -187,50 +187,8 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     open func startMeasurement() {
-        test()
         startSpeedMeasurement()
         testRunner?.del = self
-    }
-
-    func test() {
-        let speedMeasurementResult = SpeedMeasurementResult(resolutionNanos: UInt64(RMBT_TEST_SAMPLING_RESOLUTION_MS) * NSEC_PER_MSEC)
-        
-        speedMeasurementResult.markTestStart()
-        speedMeasurementResult.startDownloadWithThreadCount(3)
-        
-        for i in 0..<3 {
-            
-            var bytes = 10000
-            var timeStep = 250 * NSEC_PER_MSEC
-            var bytesStep = 10000
-            var time = 0
-            for j in 0..<28 {
-                time += Int(timeStep)
-                
-                speedMeasurementResult.addLength(UInt64(bytes), atNanos: UInt64(time), forThreadIndex: i)
-            }
-        }
-
-        speedMeasurementResult.startUpload()
-        
-        for i in 0..<3 {
-            
-            var bytes = 10000
-            var timeStep = 250 * NSEC_PER_MSEC
-            var bytesStep = 10000
-            var time = 0
-            for j in 0..<28 {
-                time += Int(timeStep)
-                
-                speedMeasurementResult.addLength(UInt64(bytes), atNanos: UInt64(time), forThreadIndex: i)
-            }
-        }
-        
-        speedMeasurementResult.calculate()
-        print(RMBTSpeedMbpsString(speedMeasurementResult.totalDownloadHistory.totalThroughput.kilobitsPerSecond()))
-        print(RMBTSpeedMbpsString(speedMeasurementResult.totalUploadHistory.totalThroughput.kilobitsPerSecond()))
-        print(speedMeasurementResult.speedDownload)
-        print(speedMeasurementResult.speedUpload)
     }
     
     ///
