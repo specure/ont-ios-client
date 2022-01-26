@@ -243,7 +243,7 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     private func startSpeedMeasurement() {
-        testRunner = RMBTMockTestRunner(delegate: self)
+        testRunner = RMBTTestRunner(delegate: self)
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
         testRunner?.loopModeUUID = self.loopModeUUID
         testRunner?.start()
