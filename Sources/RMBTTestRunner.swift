@@ -253,7 +253,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
 
         self.testParams = testParams
-        self.testParams.numThreads = 3
 
         speedMeasurementResult.markTestStart()
 
