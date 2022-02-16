@@ -58,22 +58,5 @@ open class SpeedMeasurementDetailResultResponse: BasicResponse {
             value <- map["value"]
             title <- map["title"]
         }
-        
-        open var formattedValue: Any? {
-            guard let valueString = value as? String else { return value }
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-            dateFormatter.dateFormat = "dd.MM.yyyy, HH:mm:ss"
-            let rawDate = dateFormatter.date(from:valueString)
-            if let date = rawDate {
-                dateFormatter.timeZone = TimeZone.current
-                return dateFormatter.string(from:date)
-            } else if valueString.contains("UTC+") || valueString.contains("UTC-") {
-                let hourOffset = TimeZone.current.secondsFromGMT()/3600
-                return String(format: "UTC%+2dh", hourOffset)
-            } else {
-                return value
-            }
-        }
     }
 }

@@ -67,7 +67,7 @@ extension RMBTHistoryResultItem {
     ///
     init(withSpeedMeasurementDetailItem item: SpeedMeasurementDetailResultResponse.SpeedMeasurementDetailItem) {
         self.title = item.title
-        self.value = item.formattedValue
+        self.value = item.value
         //item.key
     }
 }
