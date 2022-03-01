@@ -97,13 +97,13 @@ open class MeasurementServerInfoResponse: BasicResponse {
             }
         }
         ///
-        init() {
-            
+        public init(id: NSNumber?) {
+            self.id = id
         }
         
         ///
         required public init?(map: Map) {
-            
+            self.mapping(map: map)
         }
         
         ///

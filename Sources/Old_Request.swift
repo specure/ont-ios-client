@@ -150,7 +150,7 @@ class SpeedMeasurementRequest_Old: BasicRequest {
         client <- map["client"]
         
         //
-        measurementServerId <- map["measurement_server_id"]
+        measurementServerId <- map["prefer_server"]
         measurementTypeFlag <- map["measurement_type_flag"]
     }
 }
