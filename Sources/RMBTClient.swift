@@ -349,12 +349,12 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         }
 
         delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
-        if (phase == .latency) {
+        if (phase == .jitter) {
             if let r = testRunner?.packetLossPercentage() {
                 let packetLoss = Double(r)
-//                 if (packetLoss >= 0.0) {
+                if (packetLoss >= 0.0) {
                     delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(.packLoss), withResult: packetLoss)
-//                 }
+                }
             }
         }
         delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)

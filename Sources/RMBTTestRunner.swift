@@ -1059,10 +1059,10 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
             let total = Double(objCallDuration) / Double(objDelay)
 
-            let packetLossUp = (total - Double(outPL) / total)
-            let packetLossDown = (total - Double(inPL) / total)
+            let packetLossUp = ((total - Double(outPL)) / total) * Double(100)
+            let packetLossDown = ((total - Double(inPL)) / total) * Double(100)
 
-            let packetLoss = ((packetLossUp + packetLossDown) / 2) * 100
+            let packetLoss = ((packetLossUp + packetLossDown) / Double(2))
             return packetLoss
         }
         return -1
