@@ -1044,12 +1044,28 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             let j = (inJiter + outJiter) / 2
             return Int(j)
         }
-        return 30000
+        return -1
     }
     
     ///
-    open func packetLossPercentage() -> Int {
-        return 3
+    open func packetLossPercentage() -> Double {
+        // compute packet loss (both directions) as outcome
+        if let inPL = jpl?.resultInNumPackets,
+           let outPL = jpl?.resultOutNumPackets,
+           let objDelay = jpl?.objectiveDelay ,
+           let objCallDuration = jpl?.objectiveCallDuration,
+            objDelay != 0,
+            objCallDuration != 0 {
+
+            let total = Double(objCallDuration) / Double(objDelay)
+
+            let packetLossUp = ((total - Double(outPL)) / total) * Double(100)
+            let packetLossDown = ((total - Double(inPL)) / total) * Double(100)
+
+            let packetLoss = ((packetLossUp + packetLossDown) / Double(2))
+            return packetLoss
+        }
+        return -1
     }
 
     ///
