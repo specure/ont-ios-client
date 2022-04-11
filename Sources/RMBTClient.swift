@@ -114,6 +114,11 @@ public protocol RMBTClientDelegate {
     func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
 }
 
+public extension RMBTClientDelegate {
+    // Not used in the native apps, used by the Flutter apps only
+    func speedMeasurementPhaseFinalResult(_ phase: SpeedMeasurementPhase, withResult result: Double) {}
+}
+
 //
 public enum RMBTClientType {
     ///
