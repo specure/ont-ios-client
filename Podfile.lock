@@ -9,11 +9,11 @@ PODS:
     - ObjcExceptionBridging/ObjcExceptionBridging (= 1.0.1)
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
   - ObjectMapper (3.5.3)
-  - Realm (10.11.0):
-    - Realm/Headers (= 10.11.0)
-  - Realm/Headers (10.11.0)
-  - RealmSwift (10.11.0):
-    - Realm (= 10.11.0)
+  - Realm (10.25.0):
+    - Realm/Headers (= 10.25.0)
+  - Realm/Headers (10.25.0)
+  - RealmSwift (10.25.0):
+    - Realm (= 10.25.0)
   - XCGLogger (7.0.1):
     - XCGLogger/Core (= 7.0.1)
   - XCGLogger/Core (7.0.1):
@@ -54,10 +54,10 @@ SPEC CHECKSUMS:
   GCNetworkReachability: 2a7dd53d362220326b3e38df68c91b3ef84418d1
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
-  Realm: 39ff23f0f709cd4ed93eb47ee6593c2158945b38
-  RealmSwift: 42713e09a8631070d6c12c3c5fb22b8edc1daa41
+  Realm: 22a82aaa0e73f3483e3a6df32549c4c5cd34aa63
+  RealmSwift: c2a635212400923edd3f828b8a37d55d3eb31863
   XCGLogger: 1943831ef907df55108b0b18657953f868de973b
 
 PODFILE CHECKSUM: 156bf9e0df74874145b08e0ed045b7a40d9bed05
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.3
