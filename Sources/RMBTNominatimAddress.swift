@@ -5,7 +5,9 @@
 //  Created by Sergey Glushchenko on 11/10/17.
 //
 
-class RMBTNominatimAddress: NSObject {
+import ObjectMapper
+
+class RMBTNominatimAddress: NSObject, Mappable {
 
     var neighbourhood: String?
     var road: String?
@@ -20,54 +22,28 @@ class RMBTNominatimAddress: NSObject {
     var city: String?
     var town: String?
     
-    init(dictionary: [String: Any]) {
-        if let city = dictionary["city"] as? String {
-            self.city = city
-        }
-        
-        if let town = dictionary["town"] as? String {
-            self.town = town
-        }
-        
-        if let suburb = dictionary["suburb"] as? String {
-            self.suburb = suburb
-        }
-        
-        if let neighbourhood = dictionary["neighbourhood"] as? String {
-            self.neighbourhood = neighbourhood
-        }
-        
-        if let cityDistrict = dictionary["city_district"] as? String {
-            self.cityDistrict = cityDistrict
-        }
-        
-        if let road = dictionary["road"] as? String {
-            self.road = road
-        }
-        
-        if let village = dictionary["village"] as? String {
-            self.village = village
-        }
-        
-        if let stateDistrict = dictionary["state_district"] as? String {
-            self.stateDistrict = stateDistrict
-        }
-        
-        if let state = dictionary["state"] as? String {
-            self.state = state
-        }
-        
-        if let postcode = dictionary["postcode"] as? String {
-            self.postcode = postcode
-        }
-        
-        if let country = dictionary["country"] as? String {
-            self.country = country
-        }
-        
-        if let countryCode = dictionary["country_code"] as? String {
-            self.countryCode = countryCode
-        }
+    required init?(map: Map) {
+        super.init()
+        self.mapping(map: map)
+    }
+    
+    convenience init?(dictionary: [String: Any]) {
+        self.init(map: Map(mappingType: .fromJSON, JSON: dictionary))
+    }
+    
+    func mapping(map: Map) {
+        city            <- map["city"]
+        town            <- map["town"]
+        suburb          <- map["suburb"]
+        neighbourhood   <- map["neighbourhood"]
+        cityDistrict    <- map["city_district"]
+        road            <- map["road"]
+        village         <- map["village"]
+        stateDistrict   <- map["state_district"]
+        state           <- map["state"]
+        postcode        <- map["postcode"]
+        country         <- map["country"]
+        countryCode     <- map["country_code"]
     }
     
     func cityDistrictAlias() -> String? {
