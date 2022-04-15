@@ -1038,13 +1038,13 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
     
     ///
-    open func meanJitterNanos() -> Int {
+    open func meanJitterNanos() -> UInt64 {
         if let inJiter = jpl?.resultInMeanJitter,
             let outJiter = jpl?.resultOutMeanJitter {
             let j = (inJiter + outJiter) / 2
-            return Int(j)
+            return UInt64(j)
         }
-        return -1
+        return 0
     }
     
     ///
