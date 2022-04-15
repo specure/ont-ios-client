@@ -354,14 +354,15 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         }
 
         delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
-        if (phase == .jitter) {
-            if let r = testRunner?.packetLossPercentage() {
-                let packetLoss = Double(r)
-                if (packetLoss >= 0.0) {
-                    delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(.packLoss), withResult: packetLoss)
-                }
-            }
-        }
+// TODO: enable back for the FLutter apps and recheck if works without issues
+//        if (phase == .jitter) {
+//            if let r = testRunner?.packetLossPercentage() {
+//                let packetLoss = Double(r)
+//                if (packetLoss >= 0.0) {
+//                    delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(.packLoss), withResult: packetLoss)
+//                }
+//            }
+//        }
         delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
         //Log.logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
