@@ -108,7 +108,6 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
         getLocalIpAddresses()
         getLocalIpAddressesFromSocket()
 
-        
         checkIPV4()
         checkIPV6()
     }
@@ -136,9 +135,25 @@ open class ConnectivityService: NSObject { // TODO: rewrite with ControlServerNe
 
     ///
     private func checkIPV6() {
-        
-        self.connectivityInfo.ipv6.connectionAvailable = (self.connectivityInfo.ipv6.internalIp != nil)
-        
+        if self.ipv6Finished == true {
+            self.ipv6Finished = false
+            ControlServer.sharedControlServer.getIpv6( success: { [weak self] response in
+                // Check return ipv6 or ipv4
+                if response.ip.components(separatedBy: ":").count > 4 {
+                    self?.connectivityInfo.ipv6.connectionAvailable = true
+                    self?.connectivityInfo.ipv6.externalIp = response.ip
+                } else {
+                    self?.connectivityInfo.ipv6.connectionAvailable = false
+                }
+                self?.finishIPv6Check()
+            }, error: { [weak self] error in
+                self?.connectivityInfo.ipv6.connectionAvailable = false
+                self?.finishIPv6Check()
+            })
+        }
+    }
+    
+    private func finishIPv6Check() {
         self.ipv6Finished = true
         self.callCallback()
     }
@@ -189,7 +204,6 @@ extension ConnectivityService {
                                 if addr?.sa_family == UInt8(AF_INET6) {
                                     if self.connectivityInfo.ipv6.internalIp != address {
                                         self.connectivityInfo.ipv6.internalIp = address
-                                        self.connectivityInfo.ipv6.externalIp = address
                                         Log.logger.debug("local ipv6 address from getifaddrs: \(address)")
                                     }
                                 }
@@ -239,7 +253,6 @@ extension ConnectivityService {
         }
         if let ip = sock.localHost_IPv6() {
             connectivityInfo.ipv6.internalIp = ip
-            connectivityInfo.ipv6.externalIp = ip
         }
         
         Log.logger.debug("local ipv4 address from socket: \(String(describing: self.connectivityInfo.ipv4.internalIp))")

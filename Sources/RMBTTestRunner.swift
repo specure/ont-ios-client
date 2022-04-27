@@ -591,7 +591,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         if markWorkerAsFinished() {
             // Stop observing now, test is finished
 
-            finalize()
+                finalize()
 
             uplinkEndInterfaceInfo = speedMeasurementResult.lastConnectivity()?.getInterfaceInfo()
 

@@ -425,9 +425,10 @@ class ControlServer {
     }
 
     /// no NAT
-//    func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
+    func getIpv6( success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
 //        getIpVersion(baseUrl: RMBTConfig.sharedInstance.RMBT_CONTROL_SERVER_IPV6_URL, success: successCallback, error: failure)
-//    }
+        ServerHelper.request(alamofireManager, baseUrl: "https://api64.ipify.org?format=json", method: .get, path: "", requestObject: nil, success: successCallback , error: failure)
+    }
 
     ///
     func getIpVersion(baseUrl:String, success successCallback: @escaping IpResponseSuccessCallback, error failure: @escaping ErrorCallback) {
