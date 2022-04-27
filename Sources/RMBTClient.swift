@@ -94,6 +94,8 @@ public protocol RMBTClientDelegate {
 
     ///
     func speedMeasurementDidFinishPhase(_ phase: SpeedMeasurementPhase, withResult result: Double)
+    
+    func speedMeasurementPhaseFinalResult(_ phase: SpeedMeasurementPhase, withResult result: Double)
 
 // MARK: Qos
 
@@ -110,6 +112,11 @@ public protocol RMBTClientDelegate {
     
     ///
     func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
+}
+
+public extension RMBTClientDelegate {
+    // Not used in the native apps, used by the Flutter apps only
+    func speedMeasurementPhaseFinalResult(_ phase: SpeedMeasurementPhase, withResult result: Double) {}
 }
 
 //
@@ -347,6 +354,15 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         }
 
         delegate?.speedMeasurementDidFinishPhase(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
+        if (phase == .jitter) {
+            if let r = testRunner?.packetLossPercentage() {
+                let packetLoss = Double(r)
+                if (packetLoss >= 0.0) {
+                    delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(.packLoss), withResult: packetLoss)
+                }
+            }
+        }
+        delegate?.speedMeasurementPhaseFinalResult(SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase), withResult: result)
         //Log.logger.debug("TESTRUNNER: DID FINISH PHASE: \(phase)")
     }
 

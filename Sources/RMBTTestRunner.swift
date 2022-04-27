@@ -1038,18 +1038,34 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     }
     
     ///
-    open func meanJitterNanos() -> Int {
+    open func meanJitterNanos() -> UInt64 {
         if let inJiter = jpl?.resultInMeanJitter,
             let outJiter = jpl?.resultOutMeanJitter {
             let j = (inJiter + outJiter) / 2
-            return Int(j)
+            return UInt64(j)
         }
-        return 30000
+        return 0
     }
     
     ///
-    open func packetLossPercentage() -> Int {
-        return 3
+    open func packetLossPercentage() -> Double {
+        // compute packet loss (both directions) as outcome
+        if let inPL = jpl?.resultInNumPackets,
+           let outPL = jpl?.resultOutNumPackets,
+           let objDelay = jpl?.objectiveDelay ,
+           let objCallDuration = jpl?.objectiveCallDuration,
+            objDelay != 0,
+            objCallDuration != 0 {
+
+            let total = Double(objCallDuration) / Double(objDelay)
+
+            let packetLossUp = ((total - Double(outPL)) / total) * Double(100)
+            let packetLossDown = ((total - Double(inPL)) / total) * Double(100)
+
+            let packetLoss = ((packetLossUp + packetLossDown) / Double(2))
+            return packetLoss
+        }
+        return -1
     }
 
     ///
