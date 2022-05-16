@@ -145,20 +145,27 @@ class ControlServer {
         
         // Check for old NKOM
         if self.uuid == nil {
-            let uuidKey = "uuid_nettest-p-web.nettfart.no"
-            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
-            if let uuid = self.uuid {
-                UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: uuid)
-            }
+            uuid = UserDefaults.checkStoredUUID(uuidKey: "uuid_nettest-p-web.nettfart.no")
         }
         
         // Check for old ONT
         if self.uuid == nil {
-            let uuidKey = "uuid_nettest.org"
-            uuid = UserDefaults.checkStoredUUID(uuidKey: uuidKey)
-            if let uuid = self.uuid {
-                UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: uuid)
-            }
+            uuid = UserDefaults.checkStoredUUID(uuidKey: "uuid_nettest.org")
+        }
+        
+        // Check for old RU
+        if self.uuid == nil {
+            uuid = UserDefaults.checkStoredUUID(uuidKey: "uuid_meracinternetu.sk")
+        }
+        if self.uuid == nil {
+            uuid = UserDefaults.checkStoredUUID(uuidKey: "uuid_ru.customers.nettest.org")
+        }
+        if self.uuid == nil {
+            uuid = UserDefaults.checkStoredUUID(uuidKey: "uuid_ru-beta.customers.nettest.org")
+        }
+
+        if let uuid = self.uuid {
+            UserDefaults.storeNewUUID(uuidKey: self.uuidKey, uuid: uuid)
         }
         
         // get settings of control server
