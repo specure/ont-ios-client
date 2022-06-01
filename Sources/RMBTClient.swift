@@ -61,6 +61,7 @@ public enum RMBTClientCancelReason: Int {
         case .noConnection: return .noConnection
         case .errorFetchingTestingParams: return .errorFetchingSpeedMeasurementParams
         case .errorSubmittingTestResult: return .errorSubmittingSpeedMeasurement
+        default: return .unknownError
         }
     }
 }
