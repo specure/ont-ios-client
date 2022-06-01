@@ -322,7 +322,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             var finishedWorkers: Float = 0
             let percentForWorker = (1.0 - percentAfterWait) / Float(self.workers.count)
             for w in self.workers {
-                w.startDownlinkPretest(complete: { [weak self] duration, chunks in
+                w.startDownlinkPretest(complete: { [weak self] chunks, duration in
                     finishedWorkers += 1
                     let currentPercent = percentAfterWait + percentForWorker * finishedWorkers
                     self?.delegate?.testRunnerDidUpdateProgress(currentPercent, inPhase: .Init)
@@ -636,6 +636,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     ///
     private func submitResult() {
         workerQueue.async {
+            // is set to true when one of the workers failes
             if self.dead {
                 return
             }
@@ -984,7 +985,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 }
             }
         }
-        Log.logger.debug("REASON: \(reason)")
+        Log.logger.debug("REASON: \(reason.rawValue)")
 
         finalize()
 
