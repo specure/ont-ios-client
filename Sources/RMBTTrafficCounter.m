@@ -157,8 +157,8 @@
                                                            ([name hasPrefix:@"pdp_ip"] && networkType == /*(long)RMBTNetworkTypeCellular*/105)
                                                            )) {
                 stats = (const struct if_data *) cursor->ifa_data;
-                result.bytesSent += stats->ifi_obytes;
-                result.bytesReceived += stats->ifi_ibytes;
+                result.bytesSent += (uint64_t)stats->ifi_obytes;
+                result.bytesReceived += (uint64_t)stats->ifi_ibytes;
             }
             cursor = cursor->ifa_next;
         }

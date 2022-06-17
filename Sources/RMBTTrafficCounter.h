@@ -20,8 +20,8 @@
 #include <net/if.h>
 
 typedef struct {
-    uint32_t bytesReceived;
-    uint32_t bytesSent;
+    uint64_t bytesReceived;
+    uint64_t bytesSent;
 } RMBTConnectivityInterfaceInfo;
 
 @interface RMBTTrafficCounter : NSObject
