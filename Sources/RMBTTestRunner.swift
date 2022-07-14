@@ -94,6 +94,8 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 
     ///
     func testRunnerDidFinishInit(_ time: UInt64)
+    
+    func testRunnerDidCatchError(_ error: Error)
 }
 
 @objc protocol RMBTMainTestExtendedDelegate {
@@ -659,12 +661,14 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                             self?.delegate?.testRunnerDidCompleteWithResult(uuid)
                         }
                     } else {
+                        self?.delegate?.testRunnerDidCatchError(NSError(domain: "testRunner", code: 1, userInfo: nil))
                         self?.workerQueue.async {
                             self?.cancelWithReason(.errorSubmittingTestResult) // TODO
                         }
                     }
                 }
             }, error: { [weak self] error in
+                self?.delegate?.testRunnerDidCatchError(error)
                 self?.workerQueue.async {
                     self?.cancelWithReason(.errorSubmittingTestResult)
                 }
