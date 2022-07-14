@@ -113,10 +113,17 @@ public protocol RMBTClientDelegate {
     
     ///
     func qosMeasurementFinished(_ client: RMBTClient, type: QosMeasurementType)
+    
+// MARK: Errors
+    
+    func didCatchError(_ error: Error)
 }
 
 public extension RMBTClientDelegate {
-    // Not used in the native apps, used by the Flutter apps only
+    
+    func didCatchError(_ error: Error) {}
+    
+    // Not used in the native apps, used in the Flutter apps only
     func speedMeasurementPhaseFinalResult(_ phase: SpeedMeasurementPhase, withResult result: Double) {}
 }
 
@@ -414,6 +421,10 @@ extension RMBTClient: RMBTTestRunnerDelegate {
         let reason = RMBTClientCancelReason.mapFromSpeedMesurementCancelReason(cancelReason)
 
         delegate?.measurementDidFail(self, withReason: reason)
+    }
+    
+    public func testRunnerDidCatchError(_ error: Error) {
+        delegate?.didCatchError(error)
     }
 
 }
