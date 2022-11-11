@@ -152,8 +152,7 @@ class UDPStreamSender: NSObject {
         let stopTimeMS: UInt64 = (timeoutMS > 0) ? timeoutMS + startTimeMS : 0
 
         //
-
-        var dataToSend = NSMutableData()
+        var dataToSend = Data()
         var shouldSend = false
 
         //
@@ -207,14 +206,14 @@ class UDPStreamSender: NSObject {
             // send packet
 
             if packetsSent < settings.maxPackets {
-                dataToSend = NSMutableData()
+                dataToSend = Data()
                 
-                shouldSend = self.delegate?.udpStreamSender(self, willSendPacketWithNumber: self.packetsSent, data: &dataToSend) ?? false
+                shouldSend = self.delegate?.udpStreamSender(self, willSendPacketWithNumber: self.packetsSent, data: dataToSend, onDataUpdate: {data in dataToSend = data}) ?? false
 
                 if shouldSend {
                     lastSentTimestampMS = UInt64.currentTimeMillis()
 
-                    udpSocket?.send(dataToSend as Data, withTimeout: timeoutSec, tag: Int(packetsSent)) // TAG == packet number
+                    udpSocket?.send(dataToSend, withTimeout: timeoutSec, tag: Int(packetsSent)) // TAG == packet number
 
                     packetsSent += 1
 
