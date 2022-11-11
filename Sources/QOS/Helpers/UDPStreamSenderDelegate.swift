@@ -24,7 +24,7 @@ public typealias NSMutableDataPointer = AutoreleasingUnsafeMutablePointer<NSMuta
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didReceivePacket packetData: Data) -> Bool
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: Data, onDataUpdate: (Data)->Void) -> Bool
 
     /// returns the port on which the socket has bound
     func udpStreamSender(_ udpStreamSender: UDPStreamSender, didBindToPort port: UInt16)

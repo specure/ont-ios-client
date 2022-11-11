@@ -395,10 +395,12 @@ class QOSUDPTestExecutor<T: QOSUDPTest>: QOSTestExecutorClass<T>, UDPStreamSende
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: Data, onDataUpdate: (Data)->Void) -> Bool {
         qosLog.debug("udpStreamSenderwillSendPacketWithNumber: \(packetNumber)")
 
-        appendPacketData(data, flag: FLAG_UDP_TEST_AWAIT_RESPONSE, packetNumber: packetNumber)
+        var updatedData = NSMutableData(data: data)
+        appendPacketData(&updatedData, flag: FLAG_UDP_TEST_AWAIT_RESPONSE, packetNumber: packetNumber)
+        onDataUpdate(updatedData as Data)
         
         return true
     }

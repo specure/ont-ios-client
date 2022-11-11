@@ -540,19 +540,19 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
     }
 
     /// returns false if the class should stop
-    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: NSMutableDataPointer) -> Bool {
+    func udpStreamSender(_ udpStreamSender: UDPStreamSender, willSendPacketWithNumber packetNumber: UInt16, data: Data, onDataUpdate: (Data)->Void) -> Bool {
         if hasFinished {
             return false
         }
         if let initialRTPPacket = self.initialRTPPacket {
-        var packet = initialRTPPacket
-        if packetNumber > 0 {
-            packet.header.increaseSequenceNumberBy(1)
-            packet.header.increaseTimestampBy(payloadTimestamp)
-            packet.header.marker = 0
-        } else {
-            packet.header.marker = 1
-        }
+            var packet = initialRTPPacket
+            if packetNumber > 0 {
+                packet.header.increaseSequenceNumberBy(1)
+                packet.header.increaseTimestampBy(payloadTimestamp)
+                packet.header.marker = 0
+            } else {
+                packet.header.marker = 1
+            }
         // generate random bytes
 
             self.updateProgress(packetNumber: packet.header.sequenceNumber)
@@ -567,22 +567,23 @@ class QOSVOIPTestExecutor<T: QOSVOIPTest>: QOSTestExecutorClass<T>, UDPStreamSen
 //        initialRTPPacket.payload = payload
 //        packet.payload = Data(bytes: [192, 108, 18, 0, 0, 96, 0, 0])
         
-        var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
+            var payloadBytes = malloc(payloadSize) // CAUTION! this sends memory dump to server...
 //        memset(payloadBytes, 0, payloadSize)
-        packet.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
+            packet.payload = Data(buffer: UnsafeBufferPointer(start: &payloadBytes, count: 1))
         // Data(bytes: UnsafePointer<UInt8>(&payloadBytes), count: Int(payloadSize))
-        free(payloadBytes)
+            free(payloadBytes)
 
         //
 
             self.initialRTPPacket = packet
-        data?.pointee.append(self.initialRTPPacket.toData())
+            var updatedData = data
+            updatedData.append(self.initialRTPPacket.toData())
+            onDataUpdate(updatedData)
         
         
 //        payloadBytes.deallocate()
             return true
-        }
-        else {
+        } else {
             return false
         }
         
