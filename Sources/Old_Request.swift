@@ -96,8 +96,10 @@ open class IPRequest_Old: BasicRequest {
 }
 ///
 ///
-class SpeedMeasurementRequest_Old: BasicRequest {
-    
+public class SpeedMeasurementRequest_Old: BasicRequest {
+    public static let locationPermissionGrantedKey = "locationPermissionsGranted"
+    public static let telephonyPermissionGrantedKey = "phoneStatePermissionsGranted"
+    public static let uuidPermissionGrantedKey = "persistentClientUuidEnabled"
     
     ///
     var ndt = false
@@ -131,9 +133,12 @@ class SpeedMeasurementRequest_Old: BasicRequest {
     ///
     var measurementServerId: UInt64?
     
+    var telephonyPermissionGranted = false
+    var locationPermissionGranted = false
+    var uuidPermissionGranted = false
     
     ///
-    override func mapping(map: Map) {
+    public override func mapping(map: Map) {
         super.mapping(map: map)
         
         
@@ -152,6 +157,10 @@ class SpeedMeasurementRequest_Old: BasicRequest {
         //
         measurementServerId <- map["prefer_server"]
         measurementTypeFlag <- map["measurement_type_flag"]
+        
+        telephonyPermissionGranted <- map["telephony_permission_granted"]
+        locationPermissionGranted <- map["location_permission_granted"]
+        uuidPermissionGranted <- map["uuid_permission_granted"]
     }
 }
 

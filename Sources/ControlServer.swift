@@ -471,6 +471,9 @@ class ControlServer {
             speedMeasurementRequest.uuid = uuid
             speedMeasurementRequest.ndt = false
             speedMeasurementRequest.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
+            speedMeasurementRequest.locationPermissionGranted = UserDefaults.standard.bool(forKey: SpeedMeasurementRequest_Old.locationPermissionGrantedKey)
+            speedMeasurementRequest.telephonyPermissionGranted = UserDefaults.standard.bool(forKey: SpeedMeasurementRequest_Old.telephonyPermissionGrantedKey)
+            speedMeasurementRequest.uuidPermissionGranted = UserDefaults.standard.bool(forKey: SpeedMeasurementRequest_Old.uuidPermissionGrantedKey)
             
             self.request(.post, path: "/mobile/testRequest", requestObject: speedMeasurementRequest, success: success, error: failure)
         }, error: failure)
