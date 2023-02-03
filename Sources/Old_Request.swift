@@ -96,11 +96,7 @@ open class IPRequest_Old: BasicRequest {
 }
 ///
 ///
-public class SpeedMeasurementRequest_Old: BasicRequest {
-    public static let locationPermissionGrantedKey = "locationPermissionsGranted"
-    public static let telephonyPermissionGrantedKey = "phoneStatePermissionsGranted"
-    public static let uuidPermissionGrantedKey = "persistentClientUuidEnabled"
-    
+public class SpeedMeasurementRequest_Old: BasicRequest {    
     ///
     var ndt = false
     

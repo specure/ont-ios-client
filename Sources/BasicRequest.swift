@@ -72,6 +72,9 @@ open class BasicRequest: Mappable {
 
     ///
     var clientType: String? // ClientType enum
+    
+    ///
+    var appVersion: String?
 
     ///
     init() {
@@ -113,5 +116,7 @@ open class BasicRequest: Mappable {
         softwareVersionName <- map["software_version_name"]
         timezone            <- map["timezone"]
         clientType          <- map["client_type"]
+        
+        appVersion          <- map["app_version"]
     }
 }

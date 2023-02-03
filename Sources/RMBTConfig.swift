@@ -26,6 +26,9 @@ public let DEFAULT_LANGUAGE = "en"
 public let PREFFERED_LANGUAGE = Bundle.main.preferredLocalizations.first ?? DEFAULT_LANGUAGE
 
 public class RMBTConfig {
+    public var locationPermissionGranted = false
+    public var uuidPermissionGranted = false
+    public var appVersion: String?
     
     public enum SettingsMode {
         case urlsLocally
@@ -91,10 +94,6 @@ public class RMBTConfig {
 
     public func configNewCS_checkIPv4(server: String) {
         RMBT_CHECK_IPV4_URL = server.hasPrefix(secureRequestPrefix) ? server : secureRequestPrefix + server
-    }
-    
-    public func configClientIdentifier(_ clientIdentifier: String?) {
-        self.clientIdentifier = clientIdentifier
     }
     
     //
