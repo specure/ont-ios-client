@@ -57,7 +57,15 @@ internal class ControlServerHelper: NSObject {
             }
         } else {
             let speedMeasurementRequestOld = SpeedMeasurementRequest_Old()
+            speedMeasurementRequestOld.appVersion = RMBTConfig.sharedInstance.appVersion
+            speedMeasurementRequestOld.ndt = false
+            speedMeasurementRequestOld.time = RMBTTimestampWithNSDate(NSDate() as Date) as? UInt64
+            speedMeasurementRequestOld.telephonyPermissionGranted = true
+            speedMeasurementRequestOld.locationPermissionGranted = RMBTConfig.sharedInstance.locationPermissionGranted
+            speedMeasurementRequestOld.uuidPermissionGranted = RMBTConfig.sharedInstance.uuidPermissionGranted
+            speedMeasurementRequestOld.loopModeInfo = RMBTConfig.sharedInstance.loopModeInfo
             speedMeasurementRequestOld.testCounter = RMBTSettings.sharedSettings.testCounter
+            
             //
             if let serverId = RMBTConfig.sharedInstance.measurementServer?.id as? UInt64 {
                 speedMeasurementRequestOld.measurementServerId = serverId

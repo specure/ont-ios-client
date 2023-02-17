@@ -133,6 +133,17 @@ public class SpeedMeasurementRequest_Old: BasicRequest {
     var locationPermissionGranted = false
     var uuidPermissionGranted = false
     
+    var userLoopMode: Bool?
+    var loopModeInfo: [String:Any]? {
+        didSet {
+            if let _ = loopModeInfo {
+                userLoopMode = true
+            } else {
+                userLoopMode = false
+            }
+        }
+    }
+    
     ///
     public override func mapping(map: Map) {
         super.mapping(map: map)
@@ -157,6 +168,9 @@ public class SpeedMeasurementRequest_Old: BasicRequest {
         telephonyPermissionGranted <- map["telephony_permission_granted"]
         locationPermissionGranted <- map["location_permission_granted"]
         uuidPermissionGranted <- map["uuid_permission_granted"]
+        
+        userLoopMode        <- map["user_loop_mode"]
+        loopModeInfo        <- map["loopmode_info"]
     }
 }
 

@@ -29,6 +29,7 @@ public class RMBTConfig {
     public var locationPermissionGranted = false
     public var uuidPermissionGranted = false
     public var appVersion: String?
+    public var loopModeInfo: [String:Any]?
     
     public enum SettingsMode {
         case urlsLocally

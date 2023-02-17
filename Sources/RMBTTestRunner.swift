@@ -682,6 +682,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         speedMeasurementResult.token = testParams?.testToken ?? ""
         speedMeasurementResult.uuid = testParams?.testUuid ?? ""
         speedMeasurementResult.loopUuid = loopModeUUID
+        speedMeasurementResult.loopModeInfo = RMBTConfig.sharedInstance.loopModeInfo
 
         //speedMeasurementResultRequest.portRemote =
 

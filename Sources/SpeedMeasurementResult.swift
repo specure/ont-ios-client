@@ -41,7 +41,7 @@ class SpeedMeasurementResult: BasicRequest {
     var pings: [Ping] = []
     var speedDetail: [SpeedRawItem] = []
     
-    var loopMode: Bool?
+    var loopModeInfo: [String:Any]?
     var userServerSelection: Bool?
 
     var jpl: SpeedMeasurementJPLResult? {
@@ -624,7 +624,7 @@ class SpeedMeasurementResult: BasicRequest {
         relativeTimeDlNs  <- map["time_dl_ns"]
         relativeTimeUlNs  <- map["time_ul_ns"]
         
-        loopMode <- map["user_loop_mode"] // TODO: //
+        loopModeInfo <- map["loopmode_info"]
         userServerSelection <- map["user_server_selection"] // TODO: //
 #if os(iOS)
         signals       <- map["signals"]
