@@ -62,6 +62,7 @@
     
     NSString *address;
     uint16_t port = 0;
+    uint16_t ipv = 0;
     
     res_state res = malloc(sizeof(struct __res_state));
     
@@ -78,6 +79,7 @@
                 NSString *dnsIP = [NSString stringWithUTF8String: ip];
                 port = htons(addr_union[i].sin.sin_port);
                 address = dnsIP;
+                ipv = 4;
                 break;
             } else if (addr_union[i].sin6.sin6_family == AF_INET6) {
                 char ip[INET6_ADDRSTRLEN];
@@ -85,6 +87,7 @@
                 NSString *dnsIP = [NSString stringWithUTF8String: ip];
                 port = htons(addr_union[i].sin6.sin6_port);
                 address = dnsIP;
+                ipv = 6;
                 break;
             }
         }
@@ -98,7 +101,8 @@
     if (address) {
         return @{
                  @"host": address,
-                 @"port": [NSNumber numberWithUnsignedShort: port]
+                 @"port": [NSNumber numberWithUnsignedShort: port],
+                 @"ipv": [NSNumber numberWithUnsignedShort: ipv]
                  };
     } else {
         return nil;
