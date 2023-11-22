@@ -173,11 +173,11 @@ class SpeedMeasurementResult: BasicRequest {
             self.telephonyNetworkCountry = telephonyInfo?.networkCountry
             self.telephonyNetworkIsRoaming = telephonyInfo?.networkIsRoaming
             self.telephonyNetworkOperator = telephonyInfo?.networkOperator
-            self.telephonyNetworkOperatorName = telephonyInfo?.networkOperatorName
-            self.telephonyNetworkSimCountry = telephonyInfo?.networkSimCountry
-            self.telephonyNetworkSimOperator = telephonyInfo?.networkSimOperator
-            self.telephonyNetworkSimOperatorName = telephonyInfo?.networkSimOperatorName
             self.telephonyPhoneType = telephonyInfo?.phoneType
+            self.telephonyNetworkOperatorName = telephonyInfo?.networkOperatorName ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkOperatorName"] as? String
+            self.telephonyNetworkSimCountry = telephonyInfo?.networkSimCountry ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimCountry"] as? String
+            self.telephonyNetworkSimOperator = telephonyInfo?.networkSimOperator ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperator"] as? String
+            self.telephonyNetworkSimOperatorName = telephonyInfo?.networkSimOperatorName ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperatorName"] as? String
         }
     }
 
