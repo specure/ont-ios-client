@@ -184,7 +184,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
     private var uplinkTestStartedAtNanos: UInt64 = 0
     
     ///
-    open var isNewVersion = false
+    open var clientType: RMBTClientType = .nkom
     open var isStoreZeroMeasurement = false
     
     private let controlServerHelper = ControlServerHelper()
@@ -333,7 +333,11 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                             self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .Init)
                             self?.delegate?.testRunnerDidFinishPhase(.Init)
                         }
-                        self?.startLatencyPhase()
+                        if (self?.clientType == .flutter) {
+                            self?.startDownlinkTest()
+                        } else {
+                            self?.startLatencyPhase()
+                        }
                     })
                 })
             }
@@ -397,6 +401,19 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
     }
     
+    func copyExeternalPings(_ externalPings: [Double], externalStartNanos: Double) {
+        guard clientType == .flutter else { return }
+        var delay: Double = 0
+        let now: DispatchTime = .now()
+        speedMeasurementResult.testStartNanos = UInt64(externalStartNanos)
+        externalPings.forEach { ping in
+            DispatchQueue.main.asyncAfter(deadline: now + delay) { [self] in // adding delay to emulate the real thing here
+                speedMeasurementResult.addPingWithServerNanos(UInt64(ping), clientNanos: UInt64(ping))
+            }
+            delay += ping / 1e9
+        }
+    }
+    
     func startLatencyPhase() {
         self.phase = .latency
         DispatchQueue.main.async {
@@ -425,11 +442,10 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 self.delegate?.testRunnerDidFinishPhase(.latency)
             }
             
-            if self.isNewVersion {
+            if self.clientType == .standard {
                 self.del?.runVOIPTest() //TODO: Remake to call run Packet Loss and Jitter tests
                 self.phase = .jitter
-            }
-            else {
+            } else {
                 if self.markWorkerAsFinished() {
                     self.startDownlinkTest()
                 }
@@ -455,28 +471,17 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
 
         if markWorkerAsFinished() {
             // We stopped all but one workers because of slow connection. Proceed to latency with single worker.
-            self.startLatencyPhase()
+            if (clientType == .flutter) {
+                self.startDownlinkTest()
+            } else {
+                self.startLatencyPhase()
+            }
 //            startPhase(.latency, withAllWorkers: false, performingSelector: #selector(RMBTTestWorker.startLatencyTest), expectedDuration: 0, completion: nil)
         }
     }
 
     open func testWorker(_ worker: RMBTTestWorker, startPing: Int, totalPings: Int) {
     }
-//    ///
-//    open func testWorkerDidFinishLatencyTest(_ worker: RMBTTestWorker) {
-//        //ASSERT_ON_WORKER_QUEUE();
-//        assert(phase == .latency, "Invalid state")
-//        assert(!dead, "Invalid state")
-//
-//        if isNewVersion {
-//            del?.runVOIPTest()
-//        }
-//        else {
-//            if markWorkerAsFinished() {
-//                startPhase(.down, withAllWorkers: true, performingSelector: #selector(RMBTTestWorker.startDownlinkTest), expectedDuration: testParams.duration, completion: nil)
-//            }
-//        }
-//    }
 
     ///
     open func testWorker(_ worker: RMBTTestWorker, didStartDownlinkTestAtNanos nanos: UInt64) -> UInt64 {
@@ -608,19 +613,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                 }
             }
             
-            /// ONT added
-//            if isNewVersion {
-////                if del?.shouldRunQOSTest() == true {
-//                    /////////
-//                    del?.runVOIPTest()
-////                }
-////                else {
-////                    submitResult()
-////                }
-//
-//            } else {
-                submitResult()
-//            }
+            submitResult()
 
         }
     }

@@ -133,6 +133,7 @@ public enum RMBTClientType {
     case original // delay, down, up + QoS
     case standard // delay, down, up, jitter, packet loss + QoS
     case nkom // delay, down, up + QoS
+    case flutter
 }
 
 /////////////
@@ -151,6 +152,8 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
 
     ///
     open var testRunner: RMBTTestRunner?
+    open var externalPings: [Double] = []
+    open var externalStartNanos: Double = 0
     
     /// init
     private var clientType: RMBTClientType = .standard
@@ -219,11 +222,10 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
         testRunner = RMBTTestRunner(delegate: self)
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
         testRunner?.loopModeUUID = self.loopModeUUID
-        testRunner?.start()
+        testRunner?.clientType = clientType
+        testRunner?.copyExeternalPings(externalPings, externalStartNanos: externalStartNanos)
         
-        if clientType == .standard {
-            testRunner?.isNewVersion = true
-        }
+        testRunner?.start()
 
         _running = true
 
