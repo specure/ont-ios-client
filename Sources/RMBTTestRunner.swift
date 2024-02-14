@@ -401,17 +401,19 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         }
     }
     
-    func copyExeternalPings(_ externalPings: [Double], externalStartNanos: Double) {
+    func copyExternalValues(pings: [Double], startNanos: Double, jitter: Double, packetLoss: Double) {
         guard clientType == .flutter else { return }
         var delay: Double = 0
         let now: DispatchTime = .now()
-        speedMeasurementResult.testStartNanos = UInt64(externalStartNanos)
-        externalPings.forEach { ping in
+        speedMeasurementResult.testStartNanos = UInt64(startNanos)
+        pings.forEach { ping in
             DispatchQueue.main.asyncAfter(deadline: now + delay) { [self] in // adding delay to emulate the real thing here
                 speedMeasurementResult.addPingWithServerNanos(UInt64(ping), clientNanos: UInt64(ping))
             }
             delay += ping / 1e9
         }
+        speedMeasurementResult.jitter = String(format: "%.1f", jitter / Double(1e6))
+        speedMeasurementResult.packetLoss = String(format: "%0.1f", packetLoss)
     }
     
     func startLatencyPhase() {

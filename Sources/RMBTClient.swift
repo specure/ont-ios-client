@@ -154,6 +154,8 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
     open var testRunner: RMBTTestRunner?
     open var externalPings: [Double] = []
     open var externalStartNanos: Double = 0
+    open var externalPacketLoss: Double = 0
+    open var externalJitterNanos: Double = 0
     
     /// init
     private var clientType: RMBTClientType = .standard
@@ -223,7 +225,12 @@ open class RMBTClient: RMBTMainTestExtendedDelegate {
         testRunner?.isStoreZeroMeasurement = self.isStoreZeroMeasurement
         testRunner?.loopModeUUID = self.loopModeUUID
         testRunner?.clientType = clientType
-        testRunner?.copyExeternalPings(externalPings, externalStartNanos: externalStartNanos)
+        testRunner?.copyExternalValues(
+            pings: externalPings,
+            startNanos: externalStartNanos,
+            jitter: externalJitterNanos,
+            packetLoss: externalPacketLoss
+        )
         
         testRunner?.start()
 
