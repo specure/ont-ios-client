@@ -406,12 +406,14 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
         var delay: Double = 0
         let now: DispatchTime = .now()
         speedMeasurementResult.testStartNanos = UInt64(startNanos)
+        var prevPing = UInt64.max
         pings.forEach { extPing in
             let ping = round(extPing)
-            DispatchQueue.main.asyncAfter(deadline: now + delay) { [self] in // adding delay to emulate the real thing here
-                speedMeasurementResult.addPingWithServerNanos(UInt64(ping), clientNanos: UInt64(ping))
-            }
-            delay += ping / 1e9
+            delay += ping
+            let pingObj = Ping(serverNanos: UInt64(ping), clientNanos: UInt64(ping), relativeTimestampNanos: UInt64(delay))
+            speedMeasurementResult.pings.append(pingObj)
+            speedMeasurementResult.bestPingNanos = min(prevPing, UInt64(ping))
+            prevPing = UInt64(ping)
         }
         speedMeasurementResult.jitter = String(format: "%.1f", jitter / 1.0e6)
         speedMeasurementResult.packetLoss = String(format: "%0.1f", packetLoss)
