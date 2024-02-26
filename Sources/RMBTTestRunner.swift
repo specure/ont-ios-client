@@ -244,6 +244,15 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             })
         })
     }
+    
+    private func ensureCorrectServer(_ testParams: SpeedMeasurementResponse) -> SpeedMeasurementResponse {
+        guard let targetServer = RMBTConfig.sharedInstance.measurementServer else {
+            return testParams
+        }
+        testParams.measurementServer = targetServer
+        testParams.testServerType = targetServer.serverType
+        return testParams
+    }
 
     ///
     private func continueWithTestParams(_ testParams: SpeedMeasurementResponse/*RMBTTestParams*/) {
@@ -254,7 +263,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             return
         }
 
-        self.testParams = testParams
+        self.testParams = ensureCorrectServer(testParams)
 
         speedMeasurementResult.markTestStart()
 

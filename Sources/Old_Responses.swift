@@ -307,8 +307,6 @@ open class SpeedMeasurementResponse_Old: BasicResponse {
     
     open var testServerType: String?
     
-    open var isRmbtHTTP: Bool { return testServerType == "RMBThttp" }
-    
     ///
     override open func mapping(map: Map) {
         super.mapping(map: map)

@@ -52,8 +52,6 @@ open class SpeedMeasurementResponse: BasicResponse {
     
     open var testServerType: String?
     
-    open var isRmbtHTTP: Bool { return testServerType == "RMBThttp" }
-    
     ///
     open func add(details:TargetMeasurementServer) {
         self.measurementServer = details
@@ -73,7 +71,7 @@ open class SpeedMeasurementResponse: BasicResponse {
         numPings            <- map["num_pings"]
         testWait            <- map["test_wait"]
         measurementServer   <- map["target_measurement_server"]
-        measurementServer   <- map["test_server_type"]
+        testServerType      <- map["test_server_type"]
     }
 
     ///
@@ -123,7 +121,10 @@ open class TargetMeasurementServer: Mappable {
     var uuid: String?
     
     ///
-    var ip: String? // TODO: drop this?
+    var id: UInt64?
+    
+    ///
+    var serverType = "RMBTws"
     
     ///
     init() {
@@ -142,6 +143,7 @@ open class TargetMeasurementServer: Mappable {
         name        <- map["name"]
         port        <- map["port"]
         uuid        <- map["uuid"]
-        ip          <- map["ip"]
+        id          <- map["id"]
+        serverType  <- map["serverType"]
     }
 }

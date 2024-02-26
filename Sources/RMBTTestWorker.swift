@@ -328,41 +328,15 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
     open func connect() {
         guard socket.isDisconnected else { return }
         do {
-            //setupConnectionFailedTimer()
-
-            // iOS 9: fails with socketDidDisconnect(_:withError:) > Socket disconnected with error Error Domain=kCFStreamErrorDomainNetDB Code=8
-            // "nodename nor servname provided, or not known" UserInfo={NSLocalizedDescription=nodename nor servname provided, or not known}
-
-            // try dns lookup first as a workaround for the ios 9 bug
-            var sAddr = params.measurementServer?.address ?? "" // TODO
-            if let ip = tryDNSLookup(sAddr) {
-                sAddr = ip
-            }
-            
-            let port = self.params.measurementServer?.port ?? 443
+            let sAddr = params.measurementServer?.address ?? ""
+            let port = params.measurementServer?.port ?? 443
 
             Log.logger.debug("Connecting to host \(sAddr):\(port)")
-            try socket.connect(toHost: sAddr, onPort: UInt16(port) /*TODO*/, withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
-            connectAttempts = defaultConnectAttempts
+            try socket.connect(toHost: sAddr, onPort: UInt16(port), withTimeout: RMBT_TEST_SOCKET_TIMEOUT_S)
         } catch {
-            if connectAttempts > 0 {
-                connectAttempts -= 1
-                connect()
-            } else {
-                fail()
-            }
+            fail()
         }
     }
-
-    ///
-    /*private func setupConnectionFailedTimer() {
-        serverConnectionFailedTimer.interval = 5 // fail after 5 seconds if no connection can be established
-        serverConnectionFailedTimer.timerCallback = {
-            Log.logger.debug("CONNECTION TIMER FIRED!")
-            self.fail()
-        }
-        serverConnectionFailedTimer.start()
-    }*/
 
     ///
     open func abort() {
@@ -370,7 +344,6 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             return
         }
 
-        //serverConnectionFailedTimer.stop()
         state = .aborted
 
         if socket.isConnected {
@@ -401,7 +374,7 @@ open class RMBTTestWorker: NSObject, GCDAsyncSocketDelegate {
             return
         }
         
-        if params.isRmbtHTTP {
+        if params.testServerType == "RMBTws" {
             let line = "GET /rmbt HTTP/1.1\r\nConnection: Upgrade\r\nUpgrade: RMBT\r\nRMBT-Version: 1.2.0@\r\n\r\n"
             self.writeLine(line, withTag: .txUpgrade)
         } else {
