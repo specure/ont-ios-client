@@ -39,7 +39,7 @@ open class SpeedMeasurementResponse: BasicResponse {
     var pretestMinChunkCountForMultithreading: Int = RMBT_TEST_PRETEST_MIN_CHUNKS_FOR_MULTITHREADED_TEST
 
     ///
-    var numThreads: Int = 3
+    var numThreads: Int = 5
 
     ///
     var numPings: Int = 10

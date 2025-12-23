@@ -234,15 +234,28 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             self.delegate?.testRunnerDidStartPhase(.fetchingTestParams)
             self.delegate?.testRunnerDidUpdateProgress(0.0, inPhase: .fetchingTestParams)
         }
-        controlServerHelper.requestSpeedMeasurement(completionHandler: { [weak self] result, error in
-            DispatchQueue.main.async {
+        if RMBTConfig.sharedInstance.isLocalMeasurement {
+            let response = SpeedMeasurementResponse()
+            response.testUuid = UUID().uuidString.lowercased()
+            response.testToken = UUID().uuidString.lowercased()
+            DispatchQueue.main.async { [weak self] in
                 self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .fetchingTestParams)
                 self?.delegate?.testRunnerDidFinishPhase(.fetchingTestParams)
             }
-            self?.workerQueue.async(execute: {
-                completionHandler(result, error)
+            workerQueue.async(execute: {
+                completionHandler(response, nil)
             })
-        })
+        } else {
+            controlServerHelper.requestSpeedMeasurement(completionHandler: { [weak self] result, error in
+                DispatchQueue.main.async {
+                    self?.delegate?.testRunnerDidUpdateProgress(1.0, inPhase: .fetchingTestParams)
+                    self?.delegate?.testRunnerDidFinishPhase(.fetchingTestParams)
+                }
+                self?.workerQueue.async(execute: {
+                    completionHandler(result, error)
+                })
+            })
+        }
     }
     
     private func ensureCorrectServer(_ testParams: SpeedMeasurementResponse) -> SpeedMeasurementResponse {
@@ -655,8 +668,8 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             let speedMeasurementResultRequest = self.resultObject()
             
             let controlServer = ControlServer.sharedControlServer
-
-            controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { [weak self] response in
+            
+            let reportFinish = {[weak self] in
                 self?.workerQueue.async {
                     self?.setPhase(.none)
                     self?.dead = true
@@ -674,12 +687,20 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
                         }
                     }
                 }
-            }, error: { [weak self] error in
-                self?.delegate?.testRunnerDidCatchError(error)
-                self?.workerQueue.async {
-                    self?.cancelWithReason(.errorSubmittingTestResult)
-                }
-            })
+            }
+            
+            if RMBTConfig.sharedInstance.isLocalMeasurement {
+                reportFinish()
+            } else {
+                controlServer.submitSpeedMeasurementResult(speedMeasurementResultRequest, success: { _ in
+                    reportFinish()
+                }, error: { [weak self] error in
+                    self?.delegate?.testRunnerDidCatchError(error)
+                    self?.workerQueue.async {
+                        self?.cancelWithReason(.errorSubmittingTestResult)
+                    }
+                })
+            }
         }
     }
 

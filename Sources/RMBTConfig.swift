@@ -31,6 +31,7 @@ public class RMBTConfig {
     public var appVersion: String?
     public var loopModeInfo: [String:Any]?
     public var telephonyInfo: [String:Any]?
+    public var isLocalMeasurement = false
     
     public enum SettingsMode {
         case urlsLocally
