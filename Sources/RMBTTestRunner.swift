@@ -671,7 +671,6 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             
             let reportFinish = {[weak self] in
                 self?.workerQueue.async {
-                    self?.setPhase(.none)
                     self?.dead = true
                     
                     RMBTSettings.sharedSettings.previousTestStatus = RMBTTestStatus.Ended.rawValue
