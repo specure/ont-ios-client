@@ -85,6 +85,9 @@ static void *const kWorkerQueueIdentityKey = (void *)&kWorkerQueueIdentityKey;
 
     ///
     func testRunnerDidDetectLocation(_ location: CLLocation)
+    
+    ///
+    func testRunnerWillCompleteWithResult(_ result: [String: Any])
 
     ///
     func testRunnerDidCompleteWithResult(_ uuid: String)
@@ -666,6 +669,7 @@ open class RMBTTestRunner: NSObject, RMBTTestWorkerDelegate, RMBTConnectivityTra
             self.setPhase(.submittingTestResult)
 
             let speedMeasurementResultRequest = self.resultObject()
+            self.delegate?.testRunnerWillCompleteWithResult(speedMeasurementResultRequest.toJSON())
             
             let controlServer = ControlServer.sharedControlServer
             

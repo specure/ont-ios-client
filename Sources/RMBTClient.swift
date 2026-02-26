@@ -74,7 +74,10 @@ public protocol RMBTClientDelegate {
     
     ///
     func measurementDidCompleteVoip(_ client: RMBTClient, withResult: [String:Any])
-
+    
+    ///
+    func measurementWillComplete(_ client: RMBTClient, withResult result: [String:Any])
+    
     ///
     func measurementDidComplete(_ client: RMBTClient, withResult result: String)
 
@@ -406,6 +409,10 @@ extension RMBTClient: RMBTTestRunnerDelegate {
 //            delegate?.speedMeasurementDidMeasureSpeed(Int(kbps), inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
 //        }
         delegate?.speedMeasurementDidMeasureSpeed(throughputs: (throughputs as? [RMBTThroughput])!, inPhase: SpeedMeasurementPhase.mapFromRmbtRunnerPhase(phase))
+    }
+    
+    public func testRunnerWillCompleteWithResult(_ result: [String : Any]) {
+        delegate?.measurementWillComplete(self, withResult: result)
     }
 
     ///
