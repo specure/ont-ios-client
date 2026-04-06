@@ -174,10 +174,10 @@ class SpeedMeasurementResult: BasicRequest {
             self.telephonyNetworkIsRoaming = telephonyInfo?.networkIsRoaming
             self.telephonyNetworkOperator = telephonyInfo?.networkOperator
             self.telephonyPhoneType = telephonyInfo?.phoneType
-            self.telephonyNetworkOperatorName = telephonyInfo?.networkOperatorName ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkOperatorName"] as? String
-            self.telephonyNetworkSimCountry = telephonyInfo?.networkSimCountry ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimCountry"] as? String
-            self.telephonyNetworkSimOperator = telephonyInfo?.networkSimOperator ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperator"] as? String
-            self.telephonyNetworkSimOperatorName = telephonyInfo?.networkSimOperatorName ?? RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperatorName"] as? String
+            self.telephonyNetworkOperatorName = RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkOperatorName"] as? String ?? telephonyInfo?.networkOperatorName
+            self.telephonyNetworkSimCountry = RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimCountry"] as? String ?? telephonyInfo?.networkSimCountry
+            self.telephonyNetworkSimOperator = RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperator"] as? String ?? telephonyInfo?.networkSimOperator
+            self.telephonyNetworkSimOperatorName = RMBTConfig.sharedInstance.telephonyInfo?["telephonyNetworkSimOperatorName"] as? String ?? telephonyInfo?.networkSimOperatorName
         }
     }
 
